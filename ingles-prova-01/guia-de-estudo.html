@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Flash Cards - Inglês 6o Ano</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);
+  min-height:100vh;color:#fff;
+  -webkit-tap-highlight-color:transparent;
+  user-select:none;-webkit-user-select:none;
+}
+.app{max-width:600px;margin:0 auto;padding:15px 15px 30px}
+h1{
+  text-align:center;font-size:1.6em;margin:10px 0 5px;
+  background:linear-gradient(90deg,#f7dc6f,#e74c3c,#9b59b6,#3498db,#2ecc71);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.subtitle{text-align:center;color:#aaa;font-size:.9em;margin-bottom:15px}
+
+/* Category tabs */
+.tabs{
+  display:flex;flex-wrap:wrap;gap:6px;justify-content:center;
+  margin-bottom:18px;
+}
+.tab{
+  padding:8px 14px;border-radius:20px;font-size:.8em;font-weight:700;
+  cursor:pointer;border:2px solid transparent;
+  transition:all .2s;opacity:.5;
+  background:rgba(255,255,255,.08);
+}
+.tab:hover{opacity:.8}
+.tab.active{opacity:1;border-color:rgba(255,255,255,.4);transform:scale(1.05)}
+
+/* Progress bar */
+.progress-row{
+  display:flex;align-items:center;gap:10px;margin-bottom:15px;
+}
+.progress-track{
+  flex:1;height:8px;background:rgba(255,255,255,.1);border-radius:4px;overflow:hidden;
+}
+.progress-fill{height:100%;border-radius:4px;transition:width .4s ease}
+.progress-text{font-size:.8em;opacity:.7;white-space:nowrap}
+
+/* Card container */
+.card-area{
+  perspective:1000px;
+  min-height:320px;
+  position:relative;
+  margin-bottom:18px;
+}
+.card{
+  width:100%;min-height:300px;position:relative;
+  transform-style:preserve-3d;
+  transition:transform .5s ease;
+  cursor:pointer;
+}
+.card.flipped{transform:rotateY(180deg)}
+.card-face{
+  position:absolute;top:0;left:0;width:100%;min-height:300px;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  border-radius:20px;padding:25px;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  text-align:center;
+  box-shadow:0 10px 40px rgba(0,0,0,.3);
+}
+.card-front{
+  background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(255,255,255,.04));
+  border:2px solid rgba(255,255,255,.15);
+}
+.card-back{
+  transform:rotateY(180deg);
+  background:linear-gradient(145deg,rgba(255,255,255,.18),rgba(255,255,255,.08));
+  border:2px solid rgba(255,255,255,.25);
+}
+.card-category{
+  font-size:.75em;text-transform:uppercase;letter-spacing:2px;
+  opacity:.6;margin-bottom:8px;
+}
+.card-front .card-main{font-size:1.5em;font-weight:800;line-height:1.4}
+.card-front .card-hint{font-size:.85em;opacity:.5;margin-top:12px}
+.card-back .card-main{font-size:1.3em;font-weight:700;line-height:1.5}
+.card-back .card-detail{
+  font-size:.9em;opacity:.8;margin-top:12px;line-height:1.6;
+  background:rgba(0,0,0,.15);padding:12px 16px;border-radius:12px;
+  text-align:left;width:100%;
+}
+.card-back .card-emoji{font-size:2em;margin-bottom:10px}
+.card-front .card-emoji{font-size:3em;margin-bottom:10px}
+.tap-hint{
+  font-size:.7em;opacity:.3;margin-top:15px;
+}
+
+/* Navigation */
+.nav{display:flex;gap:10px;justify-content:center;align-items:center}
+.nav-btn{
+  width:50px;height:50px;border-radius:50%;border:2px solid rgba(255,255,255,.2);
+  background:rgba(255,255,255,.08);color:#fff;font-size:1.3em;
+  cursor:pointer;transition:all .2s;
+  display:flex;align-items:center;justify-content:center;
+}
+.nav-btn:hover{background:rgba(255,255,255,.15);transform:scale(1.1)}
+.nav-btn:disabled{opacity:.2;cursor:not-allowed;transform:none}
+.nav-counter{font-size:1em;font-weight:700;min-width:80px;text-align:center}
+.shuffle-btn{
+  display:block;margin:15px auto 0;padding:8px 20px;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);
+  color:rgba(255,255,255,.5);border-radius:10px;font-size:.8em;cursor:pointer;
+}
+.shuffle-btn:hover{color:#fff;border-color:rgba(255,255,255,.3)}
+
+/* Quiz mode */
+.mode-toggle{
+  display:flex;justify-content:center;gap:8px;margin-bottom:15px;
+}
+.mode-btn{
+  padding:8px 18px;border-radius:20px;font-size:.8em;font-weight:700;
+  cursor:pointer;border:2px solid rgba(255,255,255,.15);
+  background:rgba(255,255,255,.05);color:rgba(255,255,255,.5);
+  transition:all .2s;
+}
+.mode-btn.active{
+  background:rgba(255,255,255,.15);color:#fff;
+  border-color:rgba(255,255,255,.3);
+}
+
+/* Quiz card */
+.quiz-options{
+  display:flex;flex-direction:column;gap:8px;width:100%;margin-top:15px;
+}
+.quiz-opt{
+  padding:12px 16px;border-radius:12px;text-align:left;
+  background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.1);
+  cursor:pointer;font-size:.95em;font-weight:600;transition:all .2s;
+}
+.quiz-opt:hover{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.25)}
+.quiz-opt.correct{background:rgba(46,204,113,.3)!important;border-color:#2ecc71!important}
+.quiz-opt.wrong{background:rgba(231,76,60,.3)!important;border-color:#e74c3c!important}
+.quiz-opt.disabled{pointer-events:none;opacity:.6}
+.quiz-feedback{
+  margin-top:10px;padding:10px;border-radius:10px;font-weight:700;
+  font-size:.95em;display:none;
+}
+.quiz-feedback.show{display:block}
+.quiz-feedback.ok{background:rgba(46,204,113,.15);color:#2ecc71}
+.quiz-feedback.nok{background:rgba(231,76,60,.15);color:#e74c3c}
+
+.score-display{
+  text-align:center;padding:12px;margin-top:15px;
+  background:rgba(255,255,255,.08);border-radius:12px;
+  font-weight:700;font-size:1em;
+}
+
+/* Keyboard hint */
+.kb-hint{text-align:center;font-size:.7em;opacity:.25;margin-top:10px}
+
+@media(max-width:500px){
+  .card-front .card-main{font-size:1.2em}
+  .card-back .card-main{font-size:1.1em}
+  .card-area{min-height:280px}
+  .card-face{min-height:280px;padding:20px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <h1>Flash Cards</h1>
+  <p class="subtitle">Inglês 6o Ano - Toque no card para virar</p>
+
+  <!-- Mode toggle -->
+  <div class="mode-toggle">
+    <div class="mode-btn active" onclick="setMode('study')" id="modeStudy">Estudar</div>
+    <div class="mode-btn" onclick="setMode('quiz')" id="modeQuiz">Quiz</div>
+  </div>
+
+  <!-- Category tabs -->
+  <div class="tabs" id="tabs"></div>
+
+  <!-- Progress -->
+  <div class="progress-row">
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-text" id="progressText"></div>
+  </div>
+
+  <!-- Card -->
+  <div class="card-area" id="cardArea"></div>
+
+  <!-- Navigation -->
+  <div class="nav">
+    <button class="nav-btn" id="prevBtn" onclick="prev()">&#9664;</button>
+    <div class="nav-counter" id="navCounter"></div>
+    <button class="nav-btn" id="nextBtn" onclick="next()">&#9654;</button>
+  </div>
+
+  <button class="shuffle-btn" onclick="shuffleCards()">Embaralhar</button>
+
+  <!-- Score (quiz mode) -->
+  <div class="score-display" id="scoreDisplay" style="display:none"></div>
+
+  <div class="kb-hint">Use as setas do teclado ou deslize para navegar</div>
+</div>
+
+<script>
+// ==================== FLASHCARD DATA ====================
+const CATEGORIES = [
+  { id:'all', name:'Todos', color:'#fff', emoji:'' },
+  { id:'greetings', name:'Greetings', color:'#e74c3c', emoji:'👋' },
+  { id:'countries', name:'Countries', color:'#3498db', emoji:'🌍' },
+  { id:'numbers', name:'Numbers', color:'#2ecc71', emoji:'🔢' },
+  { id:'pronouns', name:'Pronouns', color:'#f39c12', emoji:'👤' },
+  { id:'verbtobe', name:'Verb To Be', color:'#9b59b6', emoji:'📝' },
+  { id:'personal', name:'Personal', color:'#1abc9c', emoji:'🪪' },
+];
+
+const cards = [
+  // ===== GREETINGS =====
+  {cat:'greetings', front:'Hello / Hi / Hey', back:'Olá / Oi', detail:'Formas informais de cumprimentar alguém no dia a dia.'},
+  {cat:'greetings', front:'How do you do?', back:'Como vai? (formal)', detail:'Usado quando você conhece alguém pela primeira vez. Bastante formal.'},
+  {cat:'greetings', front:'Nice to meet you.', back:'Prazer em conhecer você.', detail:'Outras formas: Good to meet you / Glad to meet you / Happy to meet you.'},
+  {cat:'greetings', front:'Goodbye / Bye', back:'Tchau / Até logo', detail:'Formas de se despedir.'},
+  {cat:'greetings', front:'See you later!', back:'Até mais!', detail:'Forma informal e muito comum de dizer tchau.'},
+  {cat:'greetings', front:'Good morning', back:'Bom dia', detail:'Usado até o meio-dia.'},
+  {cat:'greetings', front:'Good afternoon', back:'Boa tarde', detail:'Usado do meio-dia até o anoitecer.'},
+  {cat:'greetings', front:'Good night', back:'Boa noite', detail:'Usado para se despedir à noite, ou ao ir dormir.'},
+
+  // ===== COUNTRIES =====
+  {cat:'countries', front:'Brazil', back:'Brazilian', detail:'He is from Brazil. He is Brazilian.'},
+  {cat:'countries', front:'Argentina', back:'Argentinean', detail:'Lionel Messi is from Argentina. He is Argentinean.'},
+  {cat:'countries', front:'United States', back:'American', detail:'She is from the United States. She is American.'},
+  {cat:'countries', front:'Canada', back:'Canadian', detail:'Justin Bieber is from Canada. He is Canadian.'},
+  {cat:'countries', front:'England', back:'English', detail:'He is from England. He is English.'},
+  {cat:'countries', front:'France', back:'French', detail:'She is from France. She is French.'},
+  {cat:'countries', front:'Germany', back:'German', detail:'He is from Germany. He is German.'},
+  {cat:'countries', front:'Spain', back:'Spanish', detail:'She is from Spain. She is Spanish.'},
+  {cat:'countries', front:'Italy', back:'Italian', detail:'He is from Italy. He is Italian.'},
+  {cat:'countries', front:'Portugal', back:'Portuguese', detail:'Cristiano Ronaldo is from Portugal. He is Portuguese.'},
+  {cat:'countries', front:'Japan', back:'Japanese', detail:'She is from Japan. She is Japanese.'},
+  {cat:'countries', front:'China', back:'Chinese', detail:'Jackie Chan is from China. He is Chinese.'},
+  {cat:'countries', front:'Colombia', back:'Colombian', detail:'Shakira is from Colombia. She is Colombian.'},
+  {cat:'countries', front:'India', back:'Indian', detail:'She is from India. She is Indian.'},
+  {cat:'countries', front:'Australia', back:'Australian', detail:'He is from Australia. He is Australian.'},
+  {cat:'countries', front:'Russia', back:'Russian', detail:'He is from Russia. He is Russian.'},
+
+  // ===== NUMBERS =====
+  {cat:'numbers', front:'1 - 5', back:'one, two, three, four, five', detail:'Os cinco primeiros números em inglês.'},
+  {cat:'numbers', front:'6 - 10', back:'six, seven, eight, nine, ten', detail:'Atenção: eight tem "gh" mudo!'},
+  {cat:'numbers', front:'11 - 15', back:'eleven, twelve, thirteen, fourteen, fifteen', detail:'11 e 12 são irregulares! A partir do 13, terminam em -teen.'},
+  {cat:'numbers', front:'16 - 20', back:'sixteen, seventeen, eighteen, nineteen, twenty', detail:'Os "teens" vão de 13 a 19. 20 = twenty.'},
+  {cat:'numbers', front:'30, 40, 50', back:'thirty, forty, fifty', detail:'Cuidado! forty NÃO tem "u" (não é "fourty").'},
+  {cat:'numbers', front:'60, 70, 80, 90, 100', back:'sixty, seventy, eighty, ninety, one hundred', detail:'Para compor: thirty-five (35), ninety-nine (99), etc.'},
+  {cat:'numbers', front:'+ (mais)', back:'plus', detail:'Three plus two = five (3 + 2 = 5)'},
+  {cat:'numbers', front:'- (menos)', back:'minus', detail:'Ten minus four = six (10 - 4 = 6)'},
+  {cat:'numbers', front:'x (vezes)', back:'times', detail:'Three times eight = twenty-four (3 x 8 = 24)'},
+  {cat:'numbers', front:'÷ (dividido por)', back:'divided by', detail:'Twenty divided by four = five (20 ÷ 4 = 5)'},
+
+  // ===== PRONOUNS =====
+  {cat:'pronouns', front:'I', back:'Eu', detail:'Sempre escrito com letra MAIÚSCULA! Ex: I am a student.'},
+  {cat:'pronouns', front:'You', back:'Você / Vocês', detail:'Serve para singular E plural! Ex: You are my friend. / You are my friends.'},
+  {cat:'pronouns', front:'He', back:'Ele', detail:'Para homens/meninos. Ex: He is from Brazil.'},
+  {cat:'pronouns', front:'She', back:'Ela', detail:'Para mulheres/meninas. Ex: She is a teacher.'},
+  {cat:'pronouns', front:'It', back:'Ele/Ela (coisa, animal, lugar)', detail:'Para objetos, animais e lugares. Ex: It is a beautiful dog. It is my school.'},
+  {cat:'pronouns', front:'We', back:'Nós', detail:'Eu + outras pessoas. Ex: We are students.'},
+  {cat:'pronouns', front:'They', back:'Eles / Elas', detail:'Para outras pessoas ou coisas. Ex: They are from Japan.'},
+
+  // ===== VERB TO BE =====
+  {cat:'verbtobe', front:'I ___', back:'I am (I\'m)', detail:'I am from Brazil. = I\'m from Brazil.'},
+  {cat:'verbtobe', front:'You ___', back:'You are (You\'re)', detail:'You are 10 years old. = You\'re 10 years old.'},
+  {cat:'verbtobe', front:'He ___', back:'He is (He\'s)', detail:'He is Brazilian. = He\'s Brazilian.'},
+  {cat:'verbtobe', front:'She ___', back:'She is (She\'s)', detail:'She is from Canada. = She\'s from Canada.'},
+  {cat:'verbtobe', front:'It ___', back:'It is (It\'s)', detail:'It is my bike. = It\'s my bike.'},
+  {cat:'verbtobe', front:'We ___', back:'We are (We\'re)', detail:'We are at school. = We\'re at school.'},
+  {cat:'verbtobe', front:'They ___', back:'They are (They\'re)', detail:'They are 11 years old. = They\'re 11 years old.'},
+
+  {cat:'verbtobe', front:'I am not', back:'I\'m not', detail:'I\'m not from China. (Única forma de contração!)'},
+  {cat:'verbtobe', front:'He/She/It is not', back:'isn\'t / he\'s not', detail:'He isn\'t Italian. = He\'s not Italian.'},
+  {cat:'verbtobe', front:'You/We/They are not', back:'aren\'t / you\'re not', detail:'They aren\'t German. = They\'re not German.'},
+
+  {cat:'verbtobe', front:'Pergunta com TO BE:\ncomo formar?', back:'Verbo + Sujeito + Complemento?', detail:'Are you from Brazil?\nIs she a student?\nAm I late?'},
+  {cat:'verbtobe', front:'Is he Brazilian?\n(sim)', back:'Yes, he is.', detail:'NUNCA use contração na resposta afirmativa curta!\n❌ Yes, he\'s.  ✅ Yes, he is.'},
+  {cat:'verbtobe', front:'Are they from Japan?\n(não)', back:'No, they aren\'t.', detail:'Na negativa PODE usar contração:\nNo, they aren\'t. = No, they\'re not.'},
+  {cat:'verbtobe', front:'What', back:'O que / Qual', detail:'What is your name? = Qual é o seu nome?'},
+  {cat:'verbtobe', front:'Where', back:'Onde / De onde', detail:'Where are you from? = De onde você é?'},
+  {cat:'verbtobe', front:'How old', back:'Quantos anos', detail:'How old are you? = Quantos anos você tem?\nI\'m 11 years old.'},
+  {cat:'verbtobe', front:'Who', back:'Quem', detail:'Who is your teacher? = Quem é seu professor?'},
+
+  // ===== PERSONAL =====
+  {cat:'personal', front:'What\'s your name?', back:'My name is [nome].', detail:'Forma mais comum de perguntar o nome.'},
+  {cat:'personal', front:'Where are you from?', back:'I\'m from [país/cidade].', detail:'Ex: I\'m from Brazil. I\'m from São Paulo.'},
+  {cat:'personal', front:'How old are you?', back:'I\'m [número] years old.', detail:'NÃO use "I have 11 years"! Em inglês usa-se o verbo TO BE para idade.'},
+  {cat:'personal', front:'How do you spell\nyour name?', back:'Soletrar letra por letra', detail:'Ex: My name is Ana. A-N-A.'},
+  {cat:'personal', front:'Apresentação completa', back:'Hi! My name is [nome].\nI\'m from [país].\nI\'m [idade] years old.\nI\'m a student.', detail:'Exemplo:\nHi! My name is Mike. I\'m from Canada. I\'m 10 years old. I\'m a student.'},
+];
+
+// ==================== STATE ====================
+let currentCat = 'all';
+let filteredCards = [...cards];
+let currentIndex = 0;
+let mode = 'study'; // 'study' or 'quiz'
+let quizScore = 0;
+let quizAnswered = 0;
+
+// ==================== RENDER ====================
+function buildTabs() {
+  const el = document.getElementById('tabs');
+  el.innerHTML = '';
+  CATEGORIES.forEach(c => {
+    const t = document.createElement('div');
+    t.className = 'tab' + (c.id === currentCat ? ' active' : '');
+    t.style.color = c.color;
+    if (c.id === currentCat) t.style.borderColor = c.color + '66';
+    t.textContent = (c.emoji ? c.emoji + ' ' : '') + c.name;
+    t.onclick = () => selectCategory(c.id);
+    el.appendChild(t);
+  });
+}
+
+function selectCategory(catId) {
+  currentCat = catId;
+  filteredCards = catId === 'all' ? [...cards] : cards.filter(c => c.cat === catId);
+  currentIndex = 0;
+  quizScore = 0;
+  quizAnswered = 0;
+  buildTabs();
+  renderCard();
+}
+
+function renderCard() {
+  if (filteredCards.length === 0) return;
+  const c = filteredCards[currentIndex];
+  const cat = CATEGORIES.find(x => x.id === c.cat);
+  const area = document.getElementById('cardArea');
+
+  if (mode === 'study') {
+    area.innerHTML = `
+      <div class="card" id="card" onclick="flipCard()">
+        <div class="card-face card-front" style="border-color:${cat.color}33">
+          <div class="card-category" style="color:${cat.color}">${cat.emoji} ${cat.name}</div>
+          <div class="card-main" style="color:#fff">${c.front.replace(/\n/g,'<br>')}</div>
+          <div class="tap-hint">toque para ver a resposta</div>
+        </div>
+        <div class="card-face card-back" style="border-color:${cat.color}55">
+          <div class="card-category" style="color:${cat.color}">${cat.emoji} ${cat.name}</div>
+          <div class="card-main" style="color:${cat.color}">${c.back.replace(/\n/g,'<br>')}</div>
+          ${c.detail ? `<div class="card-detail">${c.detail.replace(/\n/g,'<br>')}</div>` : ''}
+          <div class="tap-hint">toque para voltar</div>
+        </div>
+      </div>`;
+  } else {
+    // Quiz mode - generate quiz question from card
+    const q = generateQuiz(c, cat);
+    area.innerHTML = `
+      <div class="card" id="card">
+        <div class="card-face card-front" style="border-color:${cat.color}33;transform:none;position:relative">
+          <div class="card-category" style="color:${cat.color}">${cat.emoji} ${cat.name}</div>
+          <div class="card-main" style="color:#fff;font-size:1.2em">${q.question}</div>
+          <div class="quiz-options" id="quizOptions">
+            ${q.options.map((o,i) => `<div class="quiz-opt" onclick="answerQuiz(${i},${q.correct})">${['A','B','C','D'][i]}) ${o}</div>`).join('')}
+          </div>
+          <div class="quiz-feedback" id="quizFb"></div>
+        </div>
+      </div>`;
+  }
+
+  // Update nav
+  document.getElementById('navCounter').textContent = `${currentIndex + 1} / ${filteredCards.length}`;
+  document.getElementById('prevBtn').disabled = currentIndex === 0;
+  document.getElementById('nextBtn').disabled = currentIndex === filteredCards.length - 1;
+
+  // Update progress
+  const pct = ((currentIndex + 1) / filteredCards.length) * 100;
+  const cat2 = CATEGORIES.find(x => x.id === currentCat) || CATEGORIES[0];
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressFill').style.background = cat2.color;
+  document.getElementById('progressText').textContent = `${currentIndex + 1}/${filteredCards.length}`;
+
+  // Score
+  const sd = document.getElementById('scoreDisplay');
+  if (mode === 'quiz') {
+    sd.style.display = 'block';
+    sd.textContent = `Acertos: ${quizScore} / ${quizAnswered}`;
+  } else {
+    sd.style.display = 'none';
+  }
+}
+
+function flipCard() {
+  const card = document.getElementById('card');
+  if (card) card.classList.toggle('flipped');
+}
+
+function generateQuiz(card, cat) {
+  // Generate a multiple-choice question from the flashcard
+  const sameCategory = cards.filter(c => c.cat === card.cat && c !== card);
+  const wrongAnswers = [];
+  const shuffled = [...sameCategory].sort(() => Math.random() - 0.5);
+  for (let i = 0; i < Math.min(3, shuffled.length); i++) {
+    wrongAnswers.push(shuffled[i].back.split('\n')[0]);
+  }
+  // Pad with generic wrong if needed
+  while (wrongAnswers.length < 3) {
+    wrongAnswers.push(['???','not sure','none'][wrongAnswers.length]);
+  }
+
+  const correctAnswer = card.back.split('\n')[0];
+  const options = [...wrongAnswers, correctAnswer].sort(() => Math.random() - 0.5);
+  const correctIdx = options.indexOf(correctAnswer);
+
+  return {
+    question: card.front.replace(/\n/g,'<br>'),
+    options: options,
+    correct: correctIdx
+  };
+}
+
+function answerQuiz(chosen, correct) {
+  const opts = document.querySelectorAll('.quiz-opt');
+  opts.forEach(o => o.classList.add('disabled'));
+  opts[correct].classList.add('correct');
+  const fb = document.getElementById('quizFb');
+  fb.classList.add('show');
+  quizAnswered++;
+
+  if (chosen === correct) {
+    quizScore++;
+    fb.className = 'quiz-feedback show ok';
+    fb.textContent = 'Correto!';
+  } else {
+    opts[chosen].classList.add('wrong');
+    fb.className = 'quiz-feedback show nok';
+    fb.textContent = 'Errado! A resposta era: ' + filteredCards[currentIndex].back.split('\n')[0];
+  }
+
+  document.getElementById('scoreDisplay').textContent = `Acertos: ${quizScore} / ${quizAnswered}`;
+
+  // Auto advance after 1.5s
+  setTimeout(() => {
+    if (currentIndex < filteredCards.length - 1) { next(); }
+  }, 1800);
+}
+
+// ==================== NAVIGATION ====================
+function next() {
+  if (currentIndex < filteredCards.length - 1) {
+    currentIndex++;
+    renderCard();
+  }
+}
+function prev() {
+  if (currentIndex > 0) {
+    currentIndex--;
+    renderCard();
+  }
+}
+
+function shuffleCards() {
+  filteredCards.sort(() => Math.random() - 0.5);
+  currentIndex = 0;
+  quizScore = 0;
+  quizAnswered = 0;
+  renderCard();
+}
+
+function setMode(m) {
+  mode = m;
+  document.getElementById('modeStudy').classList.toggle('active', m === 'study');
+  document.getElementById('modeQuiz').classList.toggle('active', m === 'quiz');
+  currentIndex = 0;
+  quizScore = 0;
+  quizAnswered = 0;
+  renderCard();
+}
+
+// Keyboard nav
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') next();
+  else if (e.key === 'ArrowLeft') prev();
+  else if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); flipCard(); }
+});
+
+// Touch swipe
+let touchStartX = 0;
+document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+document.addEventListener('touchend', e => {
+  const diff = e.changedTouches[0].clientX - touchStartX;
+  if (Math.abs(diff) > 60) {
+    if (diff < 0) next(); else prev();
+  }
+});
+
+// ==================== INIT ====================
+buildTabs();
+renderCard();
+</script>
+</body>
+</html>

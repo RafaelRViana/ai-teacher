@@ -1,0 +1,6 @@
+*.HEIC
+*.heic
+*.jpg
+*.JPG
+jpg/
+continent_paths.json
