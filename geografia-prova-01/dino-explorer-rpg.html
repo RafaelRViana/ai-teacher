@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dino Explorer RPG - Eras Geologicas</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Nunito',sans-serif;background:#111;overflow:hidden;height:100vh;width:100vw;display:flex;align-items:center;justify-content:center}
+canvas{display:block;image-rendering:auto}
+
+/* HUD */
+#hud{position:fixed;top:0;left:0;right:0;padding:10px 16px;display:none;justify-content:space-between;align-items:center;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);z-index:100;font-family:'Fredoka One',cursive;font-size:1.05em;color:#fff;gap:8px;flex-wrap:wrap}
+.hud-score{color:#fbbf24}.hud-era{color:#4ade80;font-size:0.95em}.hud-lives{font-size:1.15em}
+.hud-hint{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.7);color:#c084fc;font-family:'Fredoka One',cursive;padding:8px 22px;border-radius:20px;z-index:100;display:none;font-size:0.95em;backdrop-filter:blur(4px);transition:opacity 0.5s}
+
+/* INTRO */
+#intro{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(180deg,#0f0c29,#302b63,#24243e);z-index:200;text-align:center;padding:20px}
+#intro .logo{font-size:100px;animation:bounce 2s infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}
+#intro h1{font-family:'Fredoka One',cursive;font-size:2.8em;color:#4ade80;text-shadow:0 0 30px rgba(74,222,128,0.4);margin:10px 0}
+#intro p{color:#94a3b8;font-size:1.1em;max-width:520px;margin-bottom:6px;line-height:1.6}
+#intro .keys{color:#67e8f9;font-size:0.9em;margin:14px 0 22px}
+#intro .keys kbd{background:rgba(255,255,255,0.15);padding:3px 9px;border-radius:5px;margin:0 2px}
+.play-btn{font-family:'Fredoka One',cursive;font-size:1.5em;padding:15px 50px;background:linear-gradient(135deg,#4ade80,#22c55e);color:#1a1a2e;border:none;border-radius:50px;cursor:pointer;transition:all 0.3s;box-shadow:0 8px 30px rgba(74,222,128,0.4)}
+.play-btn:hover{transform:scale(1.1)}
+
+/* DIALOG */
+#dialog-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.65);display:none;align-items:center;justify-content:center;z-index:150;padding:20px}
+#dialog-box{background:linear-gradient(180deg,#1e1b4b,#312e81);border:3px solid #4f46e5;border-radius:22px;padding:28px;max-width:580px;width:100%;color:#fff;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+#dialog-box .npc-row{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+#dialog-box .npc-icon{font-size:40px}
+#dialog-box .npc-name{font-family:'Fredoka One',cursive;font-size:1.1em;color:#a78bfa}
+#dialog-box .q-text{font-size:1.12em;font-weight:700;text-align:center;margin-bottom:20px;line-height:1.6}
+#dialog-box .options{display:flex;flex-direction:column;gap:9px}
+.opt-btn{font-family:'Nunito',sans-serif;font-size:1em;font-weight:700;padding:13px 18px;background:rgba(255,255,255,0.08);color:#fff;border:2px solid rgba(255,255,255,0.15);border-radius:13px;cursor:pointer;transition:all 0.25s;text-align:left}
+.opt-btn:hover:not(:disabled){background:rgba(255,255,255,0.15);border-color:#818cf8;transform:translateX(5px)}
+.opt-btn.correct{background:rgba(74,222,128,0.25);border-color:#4ade80;color:#4ade80}
+.opt-btn.wrong{background:rgba(239,68,68,0.25);border-color:#ef4444;color:#ef4444}
+.opt-btn:disabled{cursor:default}
+.dlg-feedback{margin-top:16px;padding:14px;border-radius:13px;font-size:0.95em;line-height:1.5;display:none}
+.dlg-feedback.correct{background:rgba(74,222,128,0.1);border:2px solid #4ade80;color:#bbf7d0}
+.dlg-feedback.wrong{background:rgba(239,68,68,0.1);border:2px solid #ef4444;color:#fca5a5}
+.dlg-next{display:none;margin:16px auto 0;font-family:'Fredoka One',cursive;font-size:1.05em;padding:11px 36px;background:linear-gradient(135deg,#818cf8,#6366f1);color:#fff;border:none;border-radius:26px;cursor:pointer;transition:all 0.3s}
+.dlg-next:hover{transform:scale(1.08)}
+
+/* PORTAL DIALOG */
+#portal-dialog{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;z-index:150;padding:20px}
+.portal-box{background:linear-gradient(180deg,#1a1a2e,#16213e);border:3px solid #4ade80;border-radius:22px;padding:32px;max-width:430px;width:100%;text-align:center;color:#fff;box-shadow:0 0 50px rgba(74,222,128,0.3)}
+.portal-box .p-icon{font-size:65px;margin-bottom:12px}
+.portal-box h3{font-family:'Fredoka One',cursive;font-size:1.5em;color:#4ade80;margin-bottom:8px}
+.portal-box p{color:#94a3b8;margin-bottom:18px;line-height:1.5}
+.portal-btn{font-family:'Fredoka One',cursive;font-size:1.15em;padding:13px 40px;background:linear-gradient(135deg,#4ade80,#22c55e);color:#1a1a2e;border:none;border-radius:28px;cursor:pointer;transition:all 0.3s}
+.portal-btn:hover{transform:scale(1.08)}
+
+/* METEOR OVERLAY */
+#meteor-overlay{position:fixed;inset:0;display:none;z-index:180;pointer-events:none}
+#meteor-overlay canvas{width:100%;height:100%}
+
+/* END */
+#end-screen{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(180deg,#0f0c29,#302b63,#24243e);z-index:200;text-align:center;padding:30px}
+#end-screen .trophy{font-size:90px;margin-bottom:12px}
+#end-screen h2{font-family:'Fredoka One',cursive;font-size:2.3em;color:#fbbf24;margin-bottom:8px}
+#end-screen .f-score{font-size:1.2em;color:#94a3b8;margin-bottom:6px}
+#end-screen .stars{font-size:45px;margin:12px 0}
+#end-screen .msg{font-size:1.05em;color:#d1d5db;max-width:460px;margin-bottom:22px;line-height:1.6}
+.retry-btn{font-family:'Fredoka One',cursive;font-size:1.2em;padding:14px 45px;background:linear-gradient(135deg,#a78bfa,#7c3aed);color:#fff;border:none;border-radius:50px;cursor:pointer;transition:all 0.3s}
+.retry-btn:hover{transform:scale(1.1)}
+
+/* MOBILE CONTROLS */
+#mobile-controls{position:fixed;bottom:10px;left:50%;transform:translateX(-50%);display:none;z-index:100}
+.dpad{display:grid;grid-template-columns:56px 56px 56px;grid-template-rows:56px 56px;gap:4px}
+.m-btn{width:56px;height:56px;border-radius:12px;background:rgba(255,255,255,0.18);backdrop-filter:blur(6px);border:2px solid rgba(255,255,255,0.25);color:#fff;font-size:22px;display:flex;align-items:center;justify-content:center;cursor:pointer;user-select:none;-webkit-user-select:none}
+.m-btn:active{background:rgba(255,255,255,0.35)}
+.dpad .m-up{grid-column:2}.dpad .m-left{grid-column:1;grid-row:2}.dpad .m-down{grid-column:2;grid-row:2}.dpad .m-right{grid-column:3;grid-row:2}
+@media(pointer:coarse){#mobile-controls{display:flex}}
+</style>
+</head>
+<body>
+
+<div id="intro">
+  <div class="logo">🦕</div>
+  <h1>Dino Explorer RPG</h1>
+  <p>Explore um mundo aberto cheio de florestas, lagos e caminhos! Os cristais estao escondidos na grama alta — entre nos matinhos para encontra-los!</p>
+  <p style="color:#c084fc;font-size:0.95em">⚠️ Cuidado! Se perder as 3 vidas... um meteoro vem te extinguir!</p>
+  <div class="keys"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> ou setas para mover</div>
+  <button class="play-btn" onclick="startGame()">Explorar o Mundo!</button>
+</div>
+
+<div id="hud">
+  <span class="hud-score">⭐ <span id="hud-score">0</span></span>
+  <span class="hud-era" id="hud-era">🌋 Pre-Cambriano</span>
+  <span>🦴 <span id="hud-bones">0</span>/30</span>
+  <span>💎 <span id="hud-crys">0</span>/<span id="hud-crys-total">5</span></span>
+  <span class="hud-lives" id="hud-lives">❤️❤️❤️</span>
+</div>
+<div class="hud-hint" id="hud-hint"></div>
+
+<canvas id="game"></canvas>
+
+<div id="dialog-overlay">
+  <div id="dialog-box">
+    <div class="npc-row"><span class="npc-icon" id="dlg-icon"></span><span class="npc-name" id="dlg-name"></span></div>
+    <div class="q-text" id="dlg-question"></div>
+    <div class="options" id="dlg-options"></div>
+    <div class="dlg-feedback" id="dlg-feedback"></div>
+    <button class="dlg-next" id="dlg-next">Continuar</button>
+  </div>
+</div>
+
+<div id="portal-dialog">
+  <div class="portal-box">
+    <div class="p-icon">🌀</div>
+    <h3 id="portal-title"></h3>
+    <p id="portal-text"></p>
+    <button class="portal-btn" id="portal-btn">Entrar!</button>
+  </div>
+</div>
+
+<div id="meteor-overlay"><canvas id="meteor-canvas"></canvas></div>
+
+<div id="end-screen">
+  <div class="trophy" id="end-trophy">🏆</div>
+  <h2 id="end-title"></h2>
+  <div class="f-score" id="end-score"></div>
+  <div class="stars" id="end-stars"></div>
+  <div class="msg" id="end-msg"></div>
+  <button class="retry-btn" onclick="location.reload()">Jogar de Novo!</button>
+</div>
+
+<div id="mobile-controls">
+  <div class="dpad">
+    <div class="m-btn m-up" data-dir="up">▲</div>
+    <div class="m-btn m-left" data-dir="left">◀</div>
+    <div class="m-btn m-down" data-dir="down">▼</div>
+    <div class="m-btn m-right" data-dir="right">▶</div>
+  </div>
+</div>
+
+<script>
+// =============================================================
+//  TILE CONSTANTS
+// =============================================================
+const T = 32; // tile size
+const SPEED = 2.2;
+
+// Tile types
+const EMPTY = 0, WALL = 1, GRASS_TALL = 2, TREE = 3, WATER = 4,
+      PATH = 5, FLOWER = 6, BUSH = 7, CRYSTAL = 8, PORTAL = 9,
+      ROCK = 10, FENCE = 11, SIGN = 12, BRIDGE = 13, LAVA = 14,
+      SAND = 15, ICE = 16, CAVE_WALL = 17, STALAGMITE = 18;
+
+// =============================================================
+//  ERA DATA
+// =============================================================
+const ERAS = [
+  {
+    name:'Pre-Cambriano', icon:'🌋',
+    ground:'#3d2b1a', path:'#6b4f31', wall:'#2a1a0a',
+    grassBase:'#4a6b2a', grassTall:'#2d5016', water:'#1a3a5c',
+    tree1:'#2d5016', tree2:'#1a3a0a', accent:'#ef4444',
+    questions:[
+      {text:'Qual e a era geologica mais antiga da Terra?',options:['Mesozoica','Cenozoica','Pre-Cambriano','Paleozoica'],correct:2,explanation:'O Pre-Cambriano comecou ha 4,6 bilhoes de anos!'},
+      {text:'O que surgiu durante o Pre-Cambriano?',options:['Dinossauros','Seres humanos','Bacterias e algas','Mamiferos'],correct:2,explanation:'As primeiras formas de vida foram bacterias e algas!'},
+      {text:'Quantos anos tem o planeta Terra?',options:['541 milhoes','4,6 bilhoes','252 milhoes','66 milhoes'],correct:1,explanation:'A Terra tem cerca de 4,6 bilhoes de anos!'},
+      {text:'O que e o tempo geologico?',options:['Tempo em horas','Escala em milhoes/bilhoes de anos','Tempo de erupcao','Horario de Greenwich'],correct:1,explanation:'O tempo geologico mede mudancas em milhoes e bilhoes de anos!'},
+      {text:'A crosta terrestre se formou em qual era?',options:['Mesozoica','Cenozoica','Pre-Cambriano','Paleozoica'],correct:2,explanation:'A crosta se formou no Pre-Cambriano!'}
+    ]
+  },
+  {
+    name:'Paleozoica', icon:'🐟',
+    ground:'#1a4a2a', path:'#8b7355', wall:'#0a2a1a',
+    grassBase:'#2d7a3a', grassTall:'#1a5a26', water:'#1a5a8b',
+    tree1:'#1a5a26', tree2:'#0a3a16', accent:'#3b82f6',
+    questions:[
+      {text:'Qual evento aconteceu na Paleozoica?',options:['Surgimento dos humanos','Formacao da Pangeia','Extincao dos dinos','Formacao da Lua'],correct:1,explanation:'Na Paleozoica os continentes formaram a Pangeia!'},
+      {text:'Quais seres surgiram na Paleozoica?',options:['Apenas bacterias','Peixes, anfibios e repteis','Dinossauros','Apenas insetos'],correct:1,explanation:'Surgiram peixes, anfibios, repteis e as primeiras florestas!'},
+      {text:'O que e a Pangeia?',options:['Tipo de rocha','Oceano antigo','Supercontinente','Era geologica'],correct:2,explanation:'Pangeia era o supercontinente que reunia todas as terras!'},
+      {text:'Primeiras florestas surgiram em qual era?',options:['Pre-Cambriano','Paleozoica','Mesozoica','Cenozoica'],correct:1,explanation:'As primeiras florestas surgiram na Paleozoica!'},
+      {text:'A Paleozoica durou quantos anos?',options:['66 milhoes','252 milhoes','289 milhoes','4 bilhoes'],correct:2,explanation:'A Paleozoica durou cerca de 289 milhoes de anos!'}
+    ]
+  },
+  {
+    name:'Mesozoica', icon:'🦖',
+    ground:'#2a5a1a', path:'#a08050', wall:'#1a3a0a',
+    grassBase:'#3a8a2a', grassTall:'#226a16', water:'#2a6a9a',
+    tree1:'#226a16', tree2:'#0a4a06', accent:'#22c55e',
+    questions:[
+      {text:'A Mesozoica e a era dos:',options:['Mamiferos','Dinossauros','Humanos','Peixes'],correct:1,explanation:'A Mesozoica e a Era dos Dinossauros!'},
+      {text:'O que aconteceu no final da Mesozoica?',options:['Surgimento humano','Formacao da Pangeia','Extincao dos dinos','Formacao da crosta'],correct:2,explanation:'Um asteroide causou a extincao dos dinossauros!'},
+      {text:'Fosseis de dinos estao em qual rocha?',options:['Igneas','Metamorficas','Sedimentares','Vulcanicas'],correct:2,explanation:'Fosseis sao preservados em rochas sedimentares!'},
+      {text:'Na Mesozoica a Pangeia comecou a:',options:['Se formar','Se dividir','Desaparecer','Congelar'],correct:1,explanation:'A Pangeia se separou nos continentes atuais!'},
+      {text:'O que sao fosseis?',options:['Rochas bonitas','Restos de seres vivos em rochas','Pedras preciosas','Cristais vulcanicos'],correct:1,explanation:'Fosseis sao vestigios de organismos preservados em rochas!'}
+    ]
+  },
+  {
+    name:'Cenozoica', icon:'🏔️',
+    ground:'#3a4a3a', path:'#9a8a7a', wall:'#2a3a2a',
+    grassBase:'#4a7a4a', grassTall:'#2a5a2a', water:'#3a7aaa',
+    tree1:'#2a5a2a', tree2:'#1a4a1a', accent:'#a78bfa',
+    questions:[
+      {text:'A Cenozoica e a era dos:',options:['Dinossauros','Repteis','Mamiferos','Bacterias'],correct:2,explanation:'A Cenozoica e a Era dos Mamiferos!'},
+      {text:'O Homo sapiens surgiu em qual era?',options:['Mesozoica','Paleozoica','Pre-Cambriano','Cenozoica'],correct:3,explanation:'O Homo sapiens surgiu na Cenozoica!'},
+      {text:'Montanhas formadas na Cenozoica:',options:['Nenhuma','Alpes, Andes, Himalaia','Apenas Everest','Serra do Mar'],correct:1,explanation:'Alpes, Andes, Himalaia e outras se formaram na Cenozoica!'},
+      {text:'O que e Antropoceno?',options:['Era dos dinos','Periodo de impacto humano na Terra','Primeiro humano','Tipo de rocha'],correct:1,explanation:'Antropoceno e o periodo de grande impacto humano no planeta!'},
+      {text:'Qual acao ajuda o planeta?',options:['Desmatar','Reciclar e plantar arvores','Mais plastico','Queimar lixo'],correct:1,explanation:'Reciclar, economizar agua e plantar arvores ajudam!'}
+    ]
+  },
+  {
+    name:'Estrutura da Terra', icon:'🌍',
+    ground:'#4a3020', path:'#8a6a4a', wall:'#3a2010',
+    grassBase:'#6a5a2a', grassTall:'#4a3a1a', water:'#aa4a1a',
+    tree1:'#5a4a1a', tree2:'#3a2a0a', accent:'#f59e0b',
+    questions:[
+      {text:'Quais as tres camadas da Terra?',options:['Solo, agua, ar','Crosta, manto, nucleo','Areia, rocha, magma','Superficie, interior, centro'],correct:1,explanation:'Crosta, manto e nucleo!'},
+      {text:'A crosta e como qual parte do ovo?',options:['Gema','Clara','Casca','Membrana'],correct:2,explanation:'A crosta e fina como a casca do ovo!'},
+      {text:'Nucleo interno e feito de:',options:['Agua','Areia','Ferro solido','Gelo'],correct:2,explanation:'O nucleo interno e solido, feito de ferro!'},
+      {text:'Qual camada e mais quente?',options:['Crosta','Manto superior','Nucleo','Atmosfera'],correct:2,explanation:'O nucleo pode passar de 5.000 graus!'},
+      {text:'O manto tem comportamento:',options:['Solido rigido','Fluido com movimentos lentos','Gasoso','Liquido como agua'],correct:1,explanation:'O manto se move lentamente por conveccao!'}
+    ]
+  },
+  {
+    name:'Tipos de Rochas', icon:'🪨',
+    ground:'#2a2a3a', path:'#6a6a7a', wall:'#1a1a2a',
+    grassBase:'#3a4a3a', grassTall:'#2a3a2a', water:'#4a4a6a',
+    tree1:'#3a4a3a', tree2:'#1a2a1a', accent:'#ec4899',
+    questions:[
+      {text:'Quais os tres tipos de rochas?',options:['Duras, moles, medias','Igneas, sedimentares, metamorficas','Grandes, pequenas, medias','Naturais, artificiais, mistas'],correct:1,explanation:'Igneas, sedimentares e metamorficas!'},
+      {text:'Rochas igneas se formam do:',options:['Acumulo de areia','Resfriamento do magma','Pressao sobre rochas','Acumulo de fosseis'],correct:1,explanation:'Rochas igneas se formam quando o magma esfria!'},
+      {text:'Metamorficas se formam por:',options:['Magma esfria','Temperatura e pressao','Sedimentos acumulam','Dissolucao na agua'],correct:1,explanation:'Muita temperatura e pressao transformam rochas!'},
+      {text:'Sequencia das rochas sedimentares:',options:['Deposicao-Erosao-Transporte','Intemperismo-Erosao-Transporte-Deposicao-Litificacao','Litificacao-Deposicao-Transporte','Erosao-Litificacao-Deposicao'],correct:1,explanation:'Intemperismo, erosao, transporte, deposicao e litificacao!'},
+      {text:'O ciclo das rochas mostra que:',options:['Nunca mudam','Um tipo pode virar outro','So vulcoes criam rochas','So existem na superficie'],correct:1,explanation:'As rochas estao sempre se transformando!'}
+    ]
+  }
+];
+
+// =============================================================
+//  MAP GENERATOR (30x22 per era)
+// =============================================================
+const MW = 30, MH = 22;
+
+function generateMap(eraIdx) {
+  const m = Array.from({length:MH}, ()=>Array(MW).fill(EMPTY));
+
+  // border walls
+  for(let x=0;x<MW;x++){m[0][x]=WALL;m[MH-1][x]=WALL;}
+  for(let y=0;y<MH;y++){m[y][0]=WALL;m[y][MW-1]=WALL;}
+
+  // --- paths (cross shape + some winding) ---
+  const pathY = Math.floor(MH/2);
+  const pathX = Math.floor(MW/2);
+  for(let x=1;x<MW-1;x++) m[pathY][x]=PATH;
+  for(let y=1;y<MH-1;y++) m[y][pathX]=PATH;
+  // extra path branches
+  for(let x=2;x<10;x++) m[6][x]=PATH;
+  for(let x=MW-10;x<MW-2;x++) m[MH-6][x]=PATH;
+  for(let y=3;y<8;y++) m[y][8]=PATH;
+  for(let y=MH-8;y<MH-3;y++) m[y][MW-8]=PATH;
+
+  // --- water features ---
+  const lakes = [
+    {cx:6,cy:4,r:2},{cx:MW-7,cy:MH-5,r:2},{cx:MW-5,cy:5,r:1}
+  ];
+  lakes.forEach(l=>{
+    for(let dy=-l.r;dy<=l.r;dy++){
+      for(let dx=-l.r;dx<=l.r;dx++){
+        const nx=l.cx+dx, ny=l.cy+dy;
+        if(nx>0&&nx<MW-1&&ny>0&&ny<MH-1&&dx*dx+dy*dy<=l.r*l.r+0.5){
+          m[ny][nx]=WATER;
+        }
+      }
+    }
+  });
+  // river
+  let ry=3;
+  for(let rx=MW-4;rx>MW-12;rx--){
+    if(ry>1&&ry<MH-2&&rx>1){
+      m[ry][rx]=WATER;
+      if(Math.random()<0.3) ry+=Math.random()<0.5?1:-1;
+      ry=Math.max(2,Math.min(MH-3,ry));
+    }
+  }
+
+  // bridges over paths crossing water
+  for(let y=1;y<MH-1;y++){
+    for(let x=1;x<MW-1;x++){
+      if(m[y][x]===WATER){
+        // if neighbor is path, make bridge
+        if((m[y-1]&&m[y-1][x]===PATH)||(m[y+1]&&m[y+1][x]===PATH)||
+           m[y][x-1]===PATH||m[y][x+1]===PATH){
+          m[y][x]=BRIDGE;
+        }
+      }
+    }
+  }
+
+  // --- trees (clusters) ---
+  const treeClusters = [
+    {cx:3,cy:MH-5,r:3},{cx:MW-4,cy:3,r:2},
+    {cx:4,cy:pathY+4,r:2},{cx:MW-5,cy:pathY-3,r:2},
+    {cx:pathX+5,cy:4,r:2},{cx:pathX-4,cy:MH-4,r:2}
+  ];
+  treeClusters.forEach(tc=>{
+    for(let dy=-tc.r;dy<=tc.r;dy++){
+      for(let dx=-tc.r;dx<=tc.r;dx++){
+        const nx=tc.cx+dx, ny=tc.cy+dy;
+        if(nx>1&&nx<MW-2&&ny>1&&ny<MH-2&&dx*dx+dy*dy<=tc.r*tc.r){
+          if(m[ny][nx]===EMPTY && Math.random()<0.7) m[ny][nx]=TREE;
+        }
+      }
+    }
+  });
+
+  // scattered trees
+  for(let i=0;i<20;i++){
+    const x=2+Math.floor(Math.random()*(MW-4));
+    const y=2+Math.floor(Math.random()*(MH-4));
+    if(m[y][x]===EMPTY) m[y][x]=TREE;
+  }
+
+  // --- tall grass patches (where crystals hide!) ---
+  const grassPatches = [
+    {cx:4,cy:9,r:3},{cx:MW-6,cy:MH-8,r:3},
+    {cx:pathX-5,cy:6,r:2},{cx:pathX+5,cy:MH-6,r:2},
+    {cx:12,cy:MH-4,r:2},{cx:MW-10,cy:8,r:2},
+    {cx:8,cy:MH-9,r:2},{cx:MW-12,cy:4,r:2}
+  ];
+  grassPatches.forEach(gp=>{
+    for(let dy=-gp.r;dy<=gp.r;dy++){
+      for(let dx=-gp.r;dx<=gp.r;dx++){
+        const nx=gp.cx+dx, ny=gp.cy+dy;
+        if(nx>1&&nx<MW-2&&ny>1&&ny<MH-2&&dx*dx+dy*dy<=gp.r*gp.r+0.8){
+          if(m[ny][nx]===EMPTY && Math.random()<0.8) m[ny][nx]=GRASS_TALL;
+        }
+      }
+    }
+  });
+
+  // --- flowers scattered ---
+  for(let i=0;i<12;i++){
+    const x=2+Math.floor(Math.random()*(MW-4));
+    const y=2+Math.floor(Math.random()*(MH-4));
+    if(m[y][x]===EMPTY) m[y][x]=FLOWER;
+  }
+
+  // --- rocks ---
+  for(let i=0;i<8;i++){
+    const x=2+Math.floor(Math.random()*(MW-4));
+    const y=2+Math.floor(Math.random()*(MH-4));
+    if(m[y][x]===EMPTY) m[y][x]=ROCK;
+  }
+
+  // --- fences along some paths ---
+  for(let x=2;x<8;x++){
+    if(m[pathY-1][x]===EMPTY) m[pathY-1][x]=FENCE;
+    if(m[pathY+1][x]===EMPTY) m[pathY+1][x]=FENCE;
+  }
+
+  // --- signs ---
+  m[pathY][2]=SIGN;
+  m[2][pathX]=SIGN;
+
+  // --- place crystals hidden in tall grass ---
+  const grassCells=[];
+  for(let y=2;y<MH-2;y++){
+    for(let x=2;x<MW-2;x++){
+      if(m[y][x]===GRASS_TALL) grassCells.push({x,y});
+    }
+  }
+  // shuffle
+  for(let i=grassCells.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [grassCells[i],grassCells[j]]=[grassCells[j],grassCells[i]];
+  }
+  const numCrystals = ERAS[eraIdx].questions.length;
+  for(let i=0;i<Math.min(numCrystals,grassCells.length);i++){
+    m[grassCells[i].y][grassCells[i].x]=CRYSTAL;
+  }
+
+  // --- portal (far corner) ---
+  let px=MW-3, py=MH-3;
+  // clear space around portal
+  for(let dy=-1;dy<=1;dy++){
+    for(let dx=-1;dx<=1;dx++){
+      const nx=px+dx,ny=py+dy;
+      if(nx>0&&nx<MW-1&&ny>0&&ny<MH-1&&m[ny][nx]!==WATER){
+        if(dx===0&&dy===0) m[ny][nx]=PORTAL;
+        else if(m[ny][nx]!==PATH) m[ny][nx]=EMPTY;
+      }
+    }
+  }
+
+  return m;
+}
+
+// =============================================================
+//  GAME STATE
+// =============================================================
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+let cw, ch;
+
+let player = {x:0, y:0, dir:2, moving:false, stepTimer:0};
+let cam = {x:0, y:0};
+let currentEra = 0;
+let map = [];
+let crystalList = [];
+let portalPos = {x:0,y:0};
+let portalOpen = false;
+let score = 0, lives = 3, bones = 0, totalCorrect = 0, totalQ = 0;
+let questionsAnswered = 0;
+let dialogOpen = false, gameStarted = false, gameOver = false;
+let keys = {};
+let particles = [];
+let grassReveal = {}; // "x,y" -> true when player walked through
+let animTime = 0;
+let discoveredCrystal = null; // flash effect
+let shakeTimer = 0;
+
+// METEOR state
+let meteorActive = false;
+let meteorPhase = 0; // 0=falling, 1=flash, 2=crater
+let meteorTimer = 0;
+let meteorX=0, meteorY=0;
+
+function resize(){
+  cw = Math.min(window.innerWidth, MW*T);
+  ch = Math.min(window.innerHeight-48, MH*T);
+  canvas.width = cw;
+  canvas.height = ch;
+  canvas.style.width = cw+'px';
+  canvas.style.height = ch+'px';
+
+  const mc = document.getElementById('meteor-canvas');
+  mc.width = window.innerWidth;
+  mc.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+
+// =============================================================
+//  INIT ERA
+// =============================================================
+function initEra(idx){
+  currentEra = idx;
+  map = generateMap(idx);
+  crystalList = [];
+  portalOpen = false;
+  questionsAnswered = 0;
+  grassReveal = {};
+
+  for(let y=0;y<MH;y++){
+    for(let x=0;x<MW;x++){
+      if(map[y][x]===CRYSTAL) crystalList.push({x,y,found:false,qIdx:crystalList.length});
+      if(map[y][x]===PORTAL) portalPos={x,y};
+    }
+  }
+
+  // player start near top-left path
+  player.x = 3*T + T/2;
+  player.y = Math.floor(MH/2)*T + T/2;
+  player.dir = 1;
+
+  updateHUD();
+  showHint('Explore a grama alta para encontrar os cristais! 💎');
+}
+
+function showHint(text){
+  const h = document.getElementById('hud-hint');
+  h.textContent = text;
+  h.style.display = 'block';
+  h.style.opacity = '1';
+  setTimeout(()=>{h.style.opacity='0';setTimeout(()=>{h.style.display='none'},500)},3500);
+}
+
+function updateHUD(){
+  document.getElementById('hud-score').textContent=score;
+  document.getElementById('hud-era').textContent=ERAS[currentEra].icon+' '+ERAS[currentEra].name;
+  document.getElementById('hud-bones').textContent=bones;
+  const found=crystalList.filter(c=>c.found).length;
+  document.getElementById('hud-crys').textContent=found;
+  document.getElementById('hud-crys-total').textContent=crystalList.length;
+  let l='';for(let i=0;i<3;i++)l+=i<lives?'❤️':'🖤';
+  document.getElementById('hud-lives').textContent=l;
+}
+
+// =============================================================
+//  INPUT
+// =============================================================
+window.addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true;e.preventDefault()});
+window.addEventListener('keyup',e=>{keys[e.key.toLowerCase()]=false});
+document.querySelectorAll('.m-btn').forEach(btn=>{
+  const dir=btn.dataset.dir;
+  const km={up:'w',down:'s',left:'a',right:'d'};
+  btn.addEventListener('touchstart',e=>{e.preventDefault();keys[km[dir]]=true});
+  btn.addEventListener('touchend',e=>{e.preventDefault();keys[km[dir]]=false});
+  btn.addEventListener('mousedown',()=>{keys[km[dir]]=true});
+  btn.addEventListener('mouseup',()=>{keys[km[dir]]=false});
+});
+
+// =============================================================
+//  COLLISION
+// =============================================================
+function isSolid(px,py){
+  const tx=Math.floor(px/T),ty=Math.floor(py/T);
+  if(tx<0||tx>=MW||ty<0||ty>=MH)return true;
+  const t=map[ty][tx];
+  return t===WALL||t===TREE||t===WATER||t===ROCK||t===FENCE||t===STALAGMITE||t===CAVE_WALL;
+}
+function canMove(nx,ny){
+  const r=7;
+  return !isSolid(nx-r,ny-r)&&!isSolid(nx+r,ny-r)&&!isSolid(nx-r,ny+r)&&!isSolid(nx+r,ny+r);
+}
+
+// =============================================================
+//  PARTICLES
+// =============================================================
+function spawnP(x,y,color,n,spread){
+  spread=spread||4;
+  for(let i=0;i<n;i++){
+    particles.push({x,y,vx:(Math.random()-0.5)*spread,vy:(Math.random()-0.5)*spread-1,
+      life:30+Math.random()*25,maxLife:55,color,size:2+Math.random()*3});
+  }
+}
+
+// =============================================================
+//  DRAWING HELPERS
+// =============================================================
+function drawRect(x,y,w,h,c){ctx.fillStyle=c;ctx.fillRect(x,y,w,h);}
+
+function drawTree(sx,sy,era){
+  // trunk
+  drawRect(sx+12,sy+18,8,14,'#5a3a1a');
+  // canopy layers
+  const c1=era.tree1, c2=era.tree2;
+  ctx.fillStyle=c2;
+  ctx.beginPath();ctx.arc(sx+16,sy+14,12,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle=c1;
+  ctx.beginPath();ctx.arc(sx+16,sy+11,10,0,Math.PI*2);ctx.fill();
+  // highlight
+  ctx.fillStyle='rgba(255,255,255,0.08)';
+  ctx.beginPath();ctx.arc(sx+13,sy+8,5,0,Math.PI*2);ctx.fill();
+}
+
+function drawTallGrass(sx,sy,era,revealed,time){
+  if(revealed){
+    // trampled grass - flat
+    ctx.fillStyle=era.grassBase;
+    ctx.fillRect(sx+2,sy+24,28,6);
+    ctx.fillStyle='rgba(0,0,0,0.1)';
+    ctx.fillRect(sx+4,sy+26,24,3);
+    return;
+  }
+  // animated grass tufts
+  const sway = Math.sin(time*0.003 + sx*0.1)*2;
+  ctx.fillStyle=era.grassTall;
+  // several blades
+  for(let i=0;i<5;i++){
+    const bx=sx+4+i*5.5;
+    const bh=14+Math.sin(time*0.004+i+sy*0.1)*3;
+    const sw=sway*(i%2===0?1:-0.7);
+    ctx.beginPath();
+    ctx.moveTo(bx, sy+T);
+    ctx.quadraticCurveTo(bx+sw, sy+T-bh, bx+2+sw, sy+T-bh-2);
+    ctx.quadraticCurveTo(bx+4+sw, sy+T-bh, bx+4, sy+T);
+    ctx.fill();
+  }
+  // darker base
+  ctx.fillStyle='rgba(0,0,0,0.15)';
+  ctx.fillRect(sx,sy+26,T,6);
+}
+
+function drawWater(sx,sy,time){
+  ctx.fillStyle=ERAS[currentEra].water;
+  ctx.fillRect(sx,sy,T,T);
+  // ripples
+  ctx.strokeStyle='rgba(255,255,255,0.12)';
+  ctx.lineWidth=1;
+  const phase=time*0.002+sx*0.3+sy*0.2;
+  ctx.beginPath();
+  ctx.arc(sx+16+Math.sin(phase)*4, sy+16+Math.cos(phase)*3, 6+Math.sin(phase)*2, 0, Math.PI*2);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(sx+10+Math.cos(phase+1)*3, sy+22+Math.sin(phase+1)*2, 4, 0, Math.PI*2);
+  ctx.stroke();
+}
+
+function drawFlower(sx,sy,time){
+  const colors=['#ff6b8a','#ffda44','#ff8844','#ff44aa','#44aaff'];
+  const c=colors[Math.floor((sx+sy)%colors.length)];
+  // stem
+  ctx.strokeStyle='#2a7a2a';ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(sx+16,sy+28);ctx.lineTo(sx+16,sy+16);ctx.stroke();
+  // petals
+  ctx.fillStyle=c;
+  for(let a=0;a<5;a++){
+    const angle=a*Math.PI*2/5+time*0.001;
+    ctx.beginPath();
+    ctx.arc(sx+16+Math.cos(angle)*5, sy+14+Math.sin(angle)*5, 3.5, 0, Math.PI*2);
+    ctx.fill();
+  }
+  // center
+  ctx.fillStyle='#ffee00';
+  ctx.beginPath();ctx.arc(sx+16,sy+14,2.5,0,Math.PI*2);ctx.fill();
+}
+
+function drawRock(sx,sy){
+  ctx.fillStyle='#7a7a7a';
+  ctx.beginPath();
+  ctx.ellipse(sx+16,sy+22,12,8,0,0,Math.PI*2);
+  ctx.fill();
+  ctx.fillStyle='#8a8a8a';
+  ctx.beginPath();
+  ctx.ellipse(sx+14,sy+20,8,5,-0.2,0,Math.PI*2);
+  ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,0.1)';
+  ctx.beginPath();
+  ctx.ellipse(sx+12,sy+18,4,3,0,0,Math.PI*2);
+  ctx.fill();
+}
+
+function drawFence(sx,sy){
+  ctx.fillStyle='#8a6a3a';
+  ctx.fillRect(sx+2,sy+12,4,18);
+  ctx.fillRect(sx+26,sy+12,4,18);
+  ctx.fillRect(sx,sy+14,T,3);
+  ctx.fillRect(sx,sy+22,T,3);
+  ctx.fillStyle='rgba(255,255,255,0.08)';
+  ctx.fillRect(sx,sy+14,T,1);
+}
+
+function drawSign(sx,sy){
+  ctx.fillStyle='#6a4a2a';
+  ctx.fillRect(sx+14,sy+16,4,14);
+  ctx.fillStyle='#8a6a3a';
+  ctx.fillRect(sx+4,sy+8,24,12);
+  ctx.fillStyle='#fff';
+  ctx.font='8px sans-serif';
+  ctx.textAlign='center';
+  ctx.fillText('!',sx+16,sy+17);
+}
+
+function drawPortal(sx,sy,time){
+  if(portalOpen){
+    const s=8+Math.sin(time*0.005)*3;
+    const grad=ctx.createRadialGradient(sx+16,sy+16,2,sx+16,sy+16,s+8);
+    grad.addColorStop(0,'rgba(74,222,128,0.6)');
+    grad.addColorStop(0.5,'rgba(34,211,238,0.3)');
+    grad.addColorStop(1,'rgba(74,222,128,0)');
+    ctx.fillStyle=grad;
+    ctx.beginPath();ctx.arc(sx+16,sy+16,s+8,0,Math.PI*2);ctx.fill();
+    // swirl
+    ctx.strokeStyle='rgba(74,222,128,0.5)';ctx.lineWidth=2;
+    const a=time*0.01;
+    ctx.beginPath();
+    ctx.arc(sx+16,sy+16,s,a,a+Math.PI*1.2);ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(sx+16,sy+16,s-3,a+Math.PI,a+Math.PI*2.2);ctx.stroke();
+    // emoji
+    ctx.font='22px serif';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText('🌀',sx+16,sy+16);
+  } else {
+    ctx.globalAlpha=0.35;
+    ctx.font='18px serif';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText('🔒',sx+16,sy+16);
+    ctx.globalAlpha=1;
+  }
+}
+
+function drawCrystal(sx,sy,time,found){
+  if(found) return;
+  // hidden in grass — subtle sparkle only
+  const sparkle = Math.sin(time*0.006+sx+sy)>0.7;
+  if(sparkle){
+    ctx.fillStyle='rgba(192,132,252,0.5)';
+    ctx.beginPath();
+    ctx.arc(sx+16+Math.sin(time*0.01)*4, sy+12, 2, 0, Math.PI*2);
+    ctx.fill();
+  }
+}
+
+function drawBridge(sx,sy){
+  ctx.fillStyle='#8a6a3a';
+  ctx.fillRect(sx,sy,T,T);
+  ctx.fillStyle='#6a4a2a';
+  ctx.fillRect(sx,sy,T,2);
+  ctx.fillRect(sx,sy+T-2,T,2);
+  // planks
+  ctx.strokeStyle='rgba(0,0,0,0.15)';
+  ctx.lineWidth=1;
+  for(let i=0;i<4;i++){
+    ctx.beginPath();ctx.moveTo(sx,sy+4+i*8);ctx.lineTo(sx+T,sy+4+i*8);ctx.stroke();
+  }
+}
+
+// =============================================================
+//  DRAW PLAYER
+// =============================================================
+function drawPlayer(time){
+  const sx = player.x - cam.x;
+  const sy = player.y - cam.y;
+  // shadow
+  ctx.fillStyle='rgba(0,0,0,0.25)';
+  ctx.beginPath();ctx.ellipse(sx,sy+10,10,4,0,0,Math.PI*2);ctx.fill();
+  // bob
+  const bob = player.moving ? Math.sin(time*0.012)*3 : Math.sin(time*0.004)*1;
+  // emoji based on direction
+  const dinos = ['🦕','🦖','🦕','🦖']; // up right down left
+  ctx.font='26px serif';ctx.textAlign='center';ctx.textBaseline='middle';
+  // flip for left
+  ctx.save();
+  if(player.dir===3){
+    ctx.translate(sx,sy+bob-4);
+    ctx.scale(-1,1);
+    ctx.fillText(dinos[player.dir],0,0);
+  } else {
+    ctx.fillText(dinos[player.dir],sx,sy+bob-4);
+  }
+  ctx.restore();
+}
+
+// =============================================================
+//  CAMERA
+// =============================================================
+function updateCamera(){
+  const targetX = player.x - cw/2;
+  const targetY = player.y - ch/2;
+  cam.x += (targetX - cam.x)*0.1;
+  cam.y += (targetY - cam.y)*0.1;
+  cam.x = Math.max(0, Math.min(MW*T - cw, cam.x));
+  cam.y = Math.max(0, Math.min(MH*T - ch, cam.y));
+}
+
+// =============================================================
+//  RENDER MAP
+// =============================================================
+function renderMap(time){
+  const era = ERAS[currentEra];
+
+  // background
+  ctx.fillStyle=era.ground;
+  ctx.fillRect(0,0,cw,ch);
+
+  // visible tile range
+  const startX = Math.max(0,Math.floor(cam.x/T));
+  const startY = Math.max(0,Math.floor(cam.y/T));
+  const endX = Math.min(MW, Math.ceil((cam.x+cw)/T)+1);
+  const endY = Math.min(MH, Math.ceil((cam.y+ch)/T)+1);
+
+  // ground pass (below player)
+  for(let y=startY;y<endY;y++){
+    for(let x=startX;x<endX;x++){
+      const sx=x*T-cam.x, sy=y*T-cam.y;
+      const t=map[y][x];
+
+      // base ground
+      if(t!==WALL&&t!==WATER){
+        ctx.fillStyle=era.grassBase;
+        ctx.fillRect(sx,sy,T,T);
+        // subtle variation
+        if((x+y)%3===0){
+          ctx.fillStyle='rgba(0,0,0,0.04)';
+          ctx.fillRect(sx,sy,T,T);
+        }
+      }
+
+      switch(t){
+        case WALL:
+          ctx.fillStyle=era.wall;ctx.fillRect(sx,sy,T,T);
+          ctx.fillStyle='rgba(255,255,255,0.04)';ctx.fillRect(sx,sy,T,2);
+          ctx.fillStyle='rgba(0,0,0,0.1)';ctx.fillRect(sx,sy+T-2,T,2);
+          break;
+        case PATH:
+          ctx.fillStyle=era.path;ctx.fillRect(sx,sy,T,T);
+          ctx.fillStyle='rgba(0,0,0,0.05)';
+          if((x+y)%2===0)ctx.fillRect(sx,sy,T/2,T/2);
+          break;
+        case WATER: drawWater(sx,sy,time);break;
+        case BRIDGE: drawBridge(sx,sy);break;
+        case FLOWER: drawFlower(sx,sy,time);break;
+        case SIGN: drawSign(sx,sy);break;
+        case FENCE: drawFence(sx,sy);break;
+        case ROCK: drawRock(sx,sy);break;
+      }
+    }
+  }
+
+  // objects pass (trees, grass – sorted by Y for depth)
+  const objects=[];
+  for(let y=startY;y<endY;y++){
+    for(let x=startX;x<endX;x++){
+      const t=map[y][x];
+      if(t===TREE||t===GRASS_TALL||t===CRYSTAL||t===PORTAL){
+        objects.push({x,y,t});
+      }
+    }
+  }
+  // add player
+  objects.push({x:Math.floor(player.x/T),y:Math.floor(player.y/T),t:-1,isPlayer:true});
+  objects.sort((a,b)=>a.y-b.y||(a.isPlayer?0.5:0)-(b.isPlayer?0.5:0));
+
+  objects.forEach(obj=>{
+    if(obj.isPlayer){
+      drawPlayer(time);
+      return;
+    }
+    const sx=obj.x*T-cam.x, sy=obj.y*T-cam.y;
+    const k=obj.x+','+obj.y;
+
+    switch(obj.t){
+      case TREE: drawTree(sx,sy,era);break;
+      case GRASS_TALL: drawTallGrass(sx,sy,era,grassReveal[k],time);break;
+      case CRYSTAL:
+        // draw as tall grass first, with crystal hidden
+        const cObj=crystalList.find(c=>c.x===obj.x&&c.y===obj.y);
+        const found=cObj&&cObj.found;
+        if(!found){
+          drawTallGrass(sx,sy,era,false,time);
+          drawCrystal(sx,sy,time,found);
+        } else {
+          drawTallGrass(sx,sy,era,true,time);
+        }
+        break;
+      case PORTAL: drawPortal(sx,sy,time);break;
+    }
+  });
+
+  // particles
+  particles.forEach(p=>{
+    const a=p.life/p.maxLife;
+    ctx.globalAlpha=a;ctx.fillStyle=p.color;
+    ctx.beginPath();ctx.arc(p.x-cam.x,p.y-cam.y,p.size*a,0,Math.PI*2);ctx.fill();
+  });
+  ctx.globalAlpha=1;
+
+  // crystal discovery flash
+  if(discoveredCrystal){
+    const dc=discoveredCrystal;
+    dc.timer--;
+    const a=dc.timer/dc.maxTimer;
+    ctx.fillStyle=`rgba(192,132,252,${a*0.3})`;
+    ctx.beginPath();
+    ctx.arc(dc.x*T+T/2-cam.x, dc.y*T+T/2-cam.y, 30+30*(1-a), 0, Math.PI*2);
+    ctx.fill();
+    ctx.font=`${18+10*(1-a)}px serif`;ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.globalAlpha=a;
+    ctx.fillText('💎',dc.x*T+T/2-cam.x, dc.y*T+T/2-cam.y-20*(1-a));
+    ctx.globalAlpha=1;
+    if(dc.timer<=0) discoveredCrystal=null;
+  }
+
+  // screen shake
+  if(shakeTimer>0){
+    shakeTimer--;
+    ctx.save();
+    ctx.translate(Math.random()*6-3, Math.random()*6-3);
+    ctx.restore();
+  }
+}
+
+// =============================================================
+//  DIALOG
+// =============================================================
+function showQuestion(crystalIdx){
+  dialogOpen=true;
+  const era=ERAS[currentEra];
+  const q=era.questions[crystalIdx];
+  document.getElementById('dialog-overlay').style.display='flex';
+  document.getElementById('dlg-icon').textContent=era.icon;
+  document.getElementById('dlg-name').textContent=era.name;
+  document.getElementById('dlg-question').textContent=q.text;
+  const opt=document.getElementById('dlg-options');
+  opt.innerHTML='';
+  ['A','B','C','D'].forEach((l,i)=>{
+    const btn=document.createElement('button');
+    btn.className='opt-btn';
+    btn.textContent=l+') '+q.options[i];
+    btn.onclick=()=>answerQ(crystalIdx,i);
+    opt.appendChild(btn);
+  });
+  document.getElementById('dlg-feedback').style.display='none';
+  document.getElementById('dlg-feedback').className='dlg-feedback';
+  document.getElementById('dlg-next').style.display='none';
+}
+
+function answerQ(cIdx,sel){
+  const q=ERAS[currentEra].questions[cIdx];
+  const btns=document.querySelectorAll('.opt-btn');
+  const fb=document.getElementById('dlg-feedback');
+  totalQ++;
+  btns.forEach((b,i)=>{
+    b.disabled=true;
+    if(i===q.correct) b.classList.add('correct');
+    if(i===sel&&sel!==q.correct) b.classList.add('wrong');
+  });
+  if(sel===q.correct){
+    score+=10;bones++;totalCorrect++;
+    fb.className='dlg-feedback correct';
+    fb.innerHTML='<strong>✅ Muito bem!</strong><br>'+q.explanation;
+    spawnP(player.x,player.y,'#4ade80',15);
+  } else {
+    lives--;
+    fb.className='dlg-feedback wrong';
+    fb.innerHTML='<strong>❌ Quase!</strong><br>'+q.explanation;
+    shakeTimer=15;
+    spawnP(player.x,player.y,'#ef4444',10);
+  }
+  fb.style.display='block';
+  questionsAnswered++;
+  updateHUD();
+
+  if(lives<=0){
+    setTimeout(()=>{
+      document.getElementById('dialog-overlay').style.display='none';
+      dialogOpen=false;
+      startMeteor();
+    },1800);
+    return;
+  }
+
+  const nb=document.getElementById('dlg-next');
+  nb.style.display='block';
+  nb.onclick=()=>{
+    document.getElementById('dialog-overlay').style.display='none';
+    dialogOpen=false;
+    if(questionsAnswered>=crystalList.length){
+      portalOpen=true;
+      spawnP(portalPos.x*T+T/2, portalPos.y*T+T/2, '#4ade80', 25, 6);
+      showHint('🌀 Portal aberto! Va ate o canto inferior direito!');
+    }
+  };
+}
+
+function showPortalDialog(){
+  dialogOpen=true;
+  const isLast=currentEra>=ERAS.length-1;
+  document.getElementById('portal-dialog').style.display='flex';
+  document.getElementById('portal-title').textContent=isLast?'Aventura Completa!':'Portal Desbloqueado!';
+  document.getElementById('portal-text').textContent=isLast?'Voce explorou todas as eras geologicas!':'Proxima era: '+ERAS[currentEra+1].name+'!';
+  document.getElementById('portal-btn').textContent=isLast?'Ver Resultado!':'Entrar no Portal!';
+  document.getElementById('portal-btn').onclick=()=>{
+    document.getElementById('portal-dialog').style.display='none';
+    dialogOpen=false;
+    if(isLast) showEndScreen(false);
+    else initEra(currentEra+1);
+  };
+}
+
+// =============================================================
+//  METEOR EXTINCTION ANIMATION
+// =============================================================
+function startMeteor(){
+  meteorActive=true;
+  meteorPhase=0;
+  meteorTimer=0;
+  meteorX=player.x;
+  meteorY=player.y;
+  document.getElementById('meteor-overlay').style.display='block';
+  document.getElementById('hud').style.display='none';
+  document.getElementById('hud-hint').style.display='none';
+  animateMeteor();
+}
+
+function animateMeteor(){
+  if(!meteorActive) return;
+  const mc=document.getElementById('meteor-canvas');
+  const mctx=mc.getContext('2d');
+  const W=mc.width, H=mc.height;
+  meteorTimer++;
+
+  mctx.clearRect(0,0,W,H);
+
+  if(meteorPhase===0){
+    // sky darkening
+    const dark=Math.min(meteorTimer/80, 0.7);
+    mctx.fillStyle=`rgba(0,0,0,${dark})`;
+    mctx.fillRect(0,0,W,H);
+
+    // red sky tint
+    mctx.fillStyle=`rgba(200,50,0,${dark*0.3})`;
+    mctx.fillRect(0,0,W,H);
+
+    // meteor falling
+    if(meteorTimer>30){
+      const t=(meteorTimer-30)/70;
+      const mx=W*0.7 - t*W*0.35;
+      const my=-50 + t*(H*0.6);
+      const size=15+t*35;
+
+      // trail
+      mctx.strokeStyle='rgba(255,150,0,0.6)';
+      mctx.lineWidth=size*0.6;
+      mctx.beginPath();
+      mctx.moveTo(mx+size*2,my-size*2);
+      mctx.lineTo(mx,my);
+      mctx.stroke();
+
+      // glow
+      const grad=mctx.createRadialGradient(mx,my,0,mx,my,size*3);
+      grad.addColorStop(0,'rgba(255,200,50,0.8)');
+      grad.addColorStop(0.4,'rgba(255,100,0,0.4)');
+      grad.addColorStop(1,'rgba(255,0,0,0)');
+      mctx.fillStyle=grad;
+      mctx.beginPath();mctx.arc(mx,my,size*3,0,Math.PI*2);mctx.fill();
+
+      // meteor body
+      mctx.fillStyle='#aa3300';
+      mctx.beginPath();mctx.arc(mx,my,size,0,Math.PI*2);mctx.fill();
+      mctx.fillStyle='#ff6600';
+      mctx.beginPath();mctx.arc(mx-size*0.2,my-size*0.2,size*0.6,0,Math.PI*2);mctx.fill();
+
+      // fire particles
+      for(let i=0;i<3;i++){
+        mctx.fillStyle=['#ff4400','#ffaa00','#ff6600'][i];
+        mctx.beginPath();
+        mctx.arc(mx+Math.random()*size*3-size*1.5+size, my+Math.random()*size*2-size*2,
+          3+Math.random()*5, 0, Math.PI*2);
+        mctx.fill();
+      }
+    }
+
+    if(meteorTimer>100) {meteorPhase=1;meteorTimer=0;}
+  }
+  else if(meteorPhase===1){
+    // IMPACT FLASH
+    const flashA=1-meteorTimer/25;
+    mctx.fillStyle=`rgba(255,255,200,${Math.max(0,flashA)})`;
+    mctx.fillRect(0,0,W,H);
+
+    // shockwave
+    if(meteorTimer>5){
+      const r=(meteorTimer-5)*15;
+      mctx.strokeStyle=`rgba(255,150,0,${Math.max(0,1-meteorTimer/30)})`;
+      mctx.lineWidth=8;
+      mctx.beginPath();mctx.arc(W/2,H*0.55,r,0,Math.PI*2);mctx.stroke();
+    }
+
+    // screen shake via CSS
+    mc.style.transform=`translate(${Math.random()*12-6}px,${Math.random()*12-6}px)`;
+
+    if(meteorTimer>30){meteorPhase=2;meteorTimer=0;mc.style.transform='';}
+  }
+  else if(meteorPhase===2){
+    // aftermath - dark + fire particles + smoke
+    mctx.fillStyle='rgba(0,0,0,0.85)';
+    mctx.fillRect(0,0,W,H);
+
+    // fire glow at center
+    const grad=mctx.createRadialGradient(W/2,H*0.55,10,W/2,H*0.55,150);
+    grad.addColorStop(0,'rgba(255,80,0,0.4)');
+    grad.addColorStop(1,'rgba(0,0,0,0)');
+    mctx.fillStyle=grad;
+    mctx.beginPath();mctx.arc(W/2,H*0.55,150,0,Math.PI*2);mctx.fill();
+
+    // floating embers
+    for(let i=0;i<8;i++){
+      const ex=W/2+Math.sin(meteorTimer*0.02+i*2)*100+Math.random()*60-30;
+      const ey=H*0.55-meteorTimer*0.8-i*15+Math.random()*20;
+      mctx.fillStyle=['#ff4400','#ffaa00','#ff6600','#ff2200'][i%4];
+      mctx.globalAlpha=Math.max(0,1-meteorTimer/120);
+      mctx.beginPath();mctx.arc(ex,ey,2+Math.random()*3,0,Math.PI*2);mctx.fill();
+    }
+    mctx.globalAlpha=1;
+
+    // "EXTINTO!" text
+    if(meteorTimer>30){
+      const ta=Math.min(1,(meteorTimer-30)/20);
+      mctx.globalAlpha=ta;
+      mctx.font="bold 52px 'Fredoka One', cursive";
+      mctx.textAlign='center';mctx.textBaseline='middle';
+      mctx.fillStyle='#ff4444';
+      mctx.fillText('☄️ EXTINTO! ☄️',W/2,H*0.35);
+      mctx.font="22px 'Nunito', sans-serif";
+      mctx.fillStyle='#fca5a5';
+      mctx.fillText('O meteoro extinguiu o dinossauro...',W/2,H*0.35+50);
+      mctx.globalAlpha=1;
+    }
+
+    // dino skeleton emoji
+    if(meteorTimer>50){
+      const sa=Math.min(1,(meteorTimer-50)/20);
+      mctx.globalAlpha=sa;
+      mctx.font='60px serif';
+      mctx.fillText('🦴',W/2,H*0.55);
+      mctx.globalAlpha=1;
+    }
+
+    if(meteorTimer>130){
+      meteorActive=false;
+      document.getElementById('meteor-overlay').style.display='none';
+      showEndScreen(true);
+    }
+  }
+
+  if(meteorActive) requestAnimationFrame(animateMeteor);
+}
+
+// =============================================================
+//  END SCREEN
+// =============================================================
+function showEndScreen(died){
+  gameOver=true;
+  document.getElementById('hud').style.display='none';
+  document.getElementById('hud-hint').style.display='none';
+  const pct=totalQ>0?Math.round((totalCorrect/totalQ)*100):0;
+  let stars,title,msg,trophy;
+
+  if(died){
+    trophy='☄️';
+    title='Extinto pelo Meteoro!';
+    msg=`Voce acertou ${totalCorrect} de ${totalQ} perguntas (${pct}%). Estude mais e tente sobreviver da proxima vez!`;
+    stars=pct>=50?'⭐💫':'💫💫';
+  } else if(pct>=90){
+    trophy='🏆';title='Paleontologista Mestre!';
+    msg='Voce dominou todas as eras geologicas! Incrivel!';stars='⭐⭐⭐';
+  } else if(pct>=70){
+    trophy='🥈';title='Otimo Explorador!';
+    msg='Voce sabe muito! Continue estudando!';stars='⭐⭐';
+  } else if(pct>=50){
+    trophy='🥉';title='Bom Trabalho!';
+    msg='Voce esta aprendendo! Tente de novo!';stars='⭐';
+  } else {
+    trophy='📚';title='Continue Estudando!';
+    msg='A historia da Terra e fascinante! Tente novamente!';stars='💫';
+  }
+
+  document.getElementById('end-trophy').textContent=trophy;
+  document.getElementById('end-title').textContent=title;
+  document.getElementById('end-score').textContent=`${score} pontos | ${totalCorrect}/${totalQ} acertos (${pct}%)`;
+  document.getElementById('end-stars').textContent=stars;
+  document.getElementById('end-msg').textContent=msg;
+  document.getElementById('end-screen').style.display='flex';
+}
+
+// =============================================================
+//  UPDATE
+// =============================================================
+function update(){
+  if(dialogOpen||gameOver||meteorActive) return;
+
+  let dx=0,dy=0;
+  if(keys['w']||keys['arrowup']){dy=-SPEED;player.dir=0;}
+  if(keys['s']||keys['arrowdown']){dy=SPEED;player.dir=2;}
+  if(keys['a']||keys['arrowleft']){dx=-SPEED;player.dir=3;}
+  if(keys['d']||keys['arrowright']){dx=SPEED;player.dir=1;}
+  if(dx&&dy){dx*=0.707;dy*=0.707;}
+  player.moving=dx!==0||dy!==0;
+
+  const nx=player.x+dx, ny=player.y+dy;
+  if(canMove(nx,player.y)) player.x=nx;
+  if(canMove(player.x,ny)) player.y=ny;
+
+  // step into grass / crystal check
+  const ptx=Math.floor(player.x/T), pty=Math.floor(player.y/T);
+  const pk=ptx+','+pty;
+
+  if(map[pty]&&map[pty][ptx]===GRASS_TALL){
+    grassReveal[pk]=true;
+    // rustle particles
+    if(Math.random()<0.15) spawnP(player.x,player.y+8,ERAS[currentEra].grassTall,2,2);
+  }
+
+  if(map[pty]&&map[pty][ptx]===CRYSTAL){
+    const c=crystalList.find(cc=>cc.x===ptx&&cc.y===pty&&!cc.found);
+    if(c){
+      c.found=true;
+      grassReveal[pk]=true;
+      discoveredCrystal={x:ptx,y:pty,timer:40,maxTimer:40};
+      spawnP(ptx*T+T/2, pty*T+T/2, '#c084fc', 20, 5);
+      showQuestion(c.qIdx);
+      updateHUD();
+    }
+  }
+
+  if(map[pty]&&map[pty][ptx]===PORTAL&&portalOpen){
+    const pd=Math.hypot(player.x-(portalPos.x*T+T/2), player.y-(portalPos.y*T+T/2));
+    if(pd<T*0.7) showPortalDialog();
+  }
+
+  // particles
+  particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=0.04;p.life--;});
+  particles=particles.filter(p=>p.life>0);
+
+  updateCamera();
+}
+
+// =============================================================
+//  MAIN LOOP
+// =============================================================
+function loop(time){
+  if(!gameStarted){requestAnimationFrame(loop);return;}
+  animTime=time;
+  if(!gameOver&&!meteorActive){
+    update();
+    renderMap(time);
+  }
+  requestAnimationFrame(loop);
+}
+
+function startGame(){
+  document.getElementById('intro').style.display='none';
+  document.getElementById('hud').style.display='flex';
+  gameStarted=true;
+  resize();
+  initEra(0);
+  requestAnimationFrame(loop);
+}
+
+resize();
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>

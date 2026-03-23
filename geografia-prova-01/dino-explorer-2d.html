@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dino Explorer 2D - Aventura nas Eras Geologicas</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;900&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: #111;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  canvas { display: block; image-rendering: pixelated; }
+
+  /* ===== HUD OVERLAY ===== */
+  #hud {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    padding: 12px 20px;
+    display: none;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(6px);
+    z-index: 100;
+    font-family: 'Fredoka One', cursive;
+  }
+  #hud .hud-item { font-size: 1.2em; color: #fff; }
+  #hud .hud-score { color: #fbbf24; }
+  #hud .hud-era { color: #4ade80; font-size: 1em; }
+  #hud .hud-lives { font-size: 1.3em; }
+
+  /* ===== INTRO SCREEN ===== */
+  #intro {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(180deg, #0f0c29, #302b63, #24243e);
+    z-index: 200;
+    text-align: center;
+    padding: 20px;
+  }
+  #intro .logo { font-size: 100px; animation: bounce 2s infinite; }
+  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-18px)} }
+  #intro h1 { font-family:'Fredoka One',cursive; font-size:3em; color:#4ade80; text-shadow:0 0 30px rgba(74,222,128,0.4); margin:10px 0; }
+  #intro p { color:#94a3b8; font-size:1.15em; max-width:500px; margin-bottom:8px; line-height:1.6; }
+  #intro .controls-info { color: #67e8f9; font-size: 0.95em; margin: 15px 0 25px; }
+  #intro .controls-info kbd { background: rgba(255,255,255,0.15); padding: 4px 10px; border-radius: 6px; margin: 0 3px; }
+  .play-btn {
+    font-family:'Fredoka One',cursive; font-size:1.6em; padding:16px 55px;
+    background:linear-gradient(135deg,#4ade80,#22c55e); color:#1a1a2e;
+    border:none; border-radius:50px; cursor:pointer; transition:all 0.3s;
+    box-shadow:0 8px 30px rgba(74,222,128,0.4);
+  }
+  .play-btn:hover { transform:scale(1.1); }
+
+  /* ===== DIALOG BOX ===== */
+  #dialog-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.65);
+    display: none; align-items: center; justify-content: center;
+    z-index: 150; padding: 20px;
+  }
+  #dialog-box {
+    background: linear-gradient(180deg, #1e1b4b, #312e81);
+    border: 3px solid #4f46e5;
+    border-radius: 24px;
+    padding: 30px;
+    max-width: 600px;
+    width: 100%;
+    color: #fff;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  #dialog-box .npc-icon { font-size: 50px; text-align: center; margin-bottom: 10px; }
+  #dialog-box .npc-name { font-family:'Fredoka One',cursive; text-align:center; font-size:1.1em; color:#a78bfa; margin-bottom:12px; }
+  #dialog-box .q-text { font-size:1.15em; font-weight:700; text-align:center; margin-bottom:22px; line-height:1.6; }
+  #dialog-box .options { display:flex; flex-direction:column; gap:10px; }
+  #dialog-box .opt-btn {
+    font-family:'Nunito',sans-serif; font-size:1.05em; font-weight:700;
+    padding:14px 20px; background:rgba(255,255,255,0.08);
+    color:#fff; border:2px solid rgba(255,255,255,0.15);
+    border-radius:14px; cursor:pointer; transition:all 0.3s; text-align:left;
+  }
+  #dialog-box .opt-btn:hover:not(:disabled) { background:rgba(255,255,255,0.15); border-color:#818cf8; transform:translateX(6px); }
+  #dialog-box .opt-btn.correct { background:rgba(74,222,128,0.25); border-color:#4ade80; color:#4ade80; }
+  #dialog-box .opt-btn.wrong { background:rgba(239,68,68,0.25); border-color:#ef4444; color:#ef4444; }
+  #dialog-box .opt-btn:disabled { cursor:default; }
+  #dialog-box .feedback { margin-top:18px; padding:16px; border-radius:14px; font-size:1em; line-height:1.5; display:none; }
+  #dialog-box .feedback.correct { background:rgba(74,222,128,0.1); border:2px solid #4ade80; color:#bbf7d0; }
+  #dialog-box .feedback.wrong { background:rgba(239,68,68,0.1); border:2px solid #ef4444; color:#fca5a5; }
+  #dialog-box .next-btn {
+    display:none; margin:18px auto 0; font-family:'Fredoka One',cursive;
+    font-size:1.1em; padding:12px 40px;
+    background:linear-gradient(135deg,#818cf8,#6366f1); color:#fff;
+    border:none; border-radius:30px; cursor:pointer; transition:all 0.3s;
+  }
+  #dialog-box .next-btn:hover { transform:scale(1.08); }
+
+  /* ===== PORTAL DIALOG ===== */
+  #portal-dialog {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7);
+    display: none; align-items: center; justify-content: center;
+    z-index: 150; padding: 20px;
+  }
+  #portal-dialog .portal-box {
+    background: linear-gradient(180deg, #1a1a2e, #16213e);
+    border: 3px solid #4ade80;
+    border-radius: 24px; padding: 35px;
+    max-width: 450px; width: 100%; text-align: center; color: #fff;
+    box-shadow: 0 0 50px rgba(74,222,128,0.3);
+  }
+  #portal-dialog .portal-icon { font-size: 70px; margin-bottom: 15px; }
+  #portal-dialog h3 { font-family:'Fredoka One',cursive; font-size:1.6em; color:#4ade80; margin-bottom:10px; }
+  #portal-dialog p { color:#94a3b8; font-size:1.05em; margin-bottom:20px; line-height:1.5; }
+  #portal-dialog .portal-btn {
+    font-family:'Fredoka One',cursive; font-size:1.2em; padding:14px 45px;
+    background:linear-gradient(135deg,#4ade80,#22c55e); color:#1a1a2e;
+    border:none; border-radius:30px; cursor:pointer; transition:all 0.3s;
+  }
+  #portal-dialog .portal-btn:hover { transform:scale(1.08); }
+
+  /* ===== END SCREEN ===== */
+  #end-screen {
+    position: fixed; inset: 0;
+    display: none; flex-direction: column;
+    align-items: center; justify-content: center;
+    background: linear-gradient(180deg, #0f0c29, #302b63, #24243e);
+    z-index: 200; text-align: center; padding: 30px;
+  }
+  #end-screen .trophy { font-size: 100px; margin-bottom: 15px; }
+  #end-screen h2 { font-family:'Fredoka One',cursive; font-size:2.5em; color:#fbbf24; margin-bottom:10px; }
+  #end-screen .final-score { font-size:1.3em; color:#94a3b8; margin-bottom:8px; }
+  #end-screen .stars { font-size:50px; margin:15px 0; }
+  #end-screen .msg { font-size:1.1em; color:#d1d5db; max-width:480px; margin-bottom:25px; line-height:1.6; }
+  #end-screen .retry-btn {
+    font-family:'Fredoka One',cursive; font-size:1.3em; padding:15px 50px;
+    background:linear-gradient(135deg,#a78bfa,#7c3aed); color:#fff;
+    border:none; border-radius:50px; cursor:pointer; transition:all 0.3s;
+  }
+  #end-screen .retry-btn:hover { transform:scale(1.1); }
+
+  /* ===== MOBILE CONTROLS ===== */
+  #mobile-controls {
+    position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%);
+    display: none; z-index: 100; gap: 5px;
+  }
+  .m-btn {
+    width: 60px; height: 60px; border-radius: 14px;
+    background: rgba(255,255,255,0.15); backdrop-filter: blur(6px);
+    border: 2px solid rgba(255,255,255,0.2);
+    color: #fff; font-size: 24px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; user-select: none; -webkit-user-select: none;
+  }
+  .m-btn:active { background: rgba(255,255,255,0.3); }
+  .dpad { display: grid; grid-template-columns: 60px 60px 60px; grid-template-rows: 60px 60px; gap: 5px; }
+  .dpad .m-up { grid-column: 2; }
+  .dpad .m-left { grid-column: 1; grid-row: 2; }
+  .dpad .m-down { grid-column: 2; grid-row: 2; }
+  .dpad .m-right { grid-column: 3; grid-row: 2; }
+
+  @media (pointer: coarse) {
+    #mobile-controls { display: flex; }
+  }
+</style>
+</head>
+<body>
+
+<!-- INTRO -->
+<div id="intro">
+  <div class="logo">🦕</div>
+  <h1>Dino Explorer 2D</h1>
+  <p>Explore o mundo pelas eras geologicas! Caminhe pelo mapa, encontre os cristais brilhantes e responda as perguntas para desbloquear os portais para a proxima era!</p>
+  <div class="controls-info">
+    <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> ou setas para mover | Encoste nos cristais <span style="color:#c084fc">💎</span> para responder
+  </div>
+  <button class="play-btn" onclick="startGame()">Explorar!</button>
+</div>
+
+<!-- HUD -->
+<div id="hud">
+  <span class="hud-item hud-score">⭐ <span id="hud-score">0</span></span>
+  <span class="hud-item hud-era" id="hud-era">Pre-Cambriano</span>
+  <span class="hud-item">🦴 <span id="hud-bones">0</span>/<span id="hud-total">30</span></span>
+  <span class="hud-item hud-lives" id="hud-lives">❤️❤️❤️</span>
+</div>
+
+<!-- CANVAS -->
+<canvas id="game"></canvas>
+
+<!-- QUESTION DIALOG -->
+<div id="dialog-overlay">
+  <div id="dialog-box">
+    <div class="npc-icon" id="dlg-icon"></div>
+    <div class="npc-name" id="dlg-name"></div>
+    <div class="q-text" id="dlg-question"></div>
+    <div class="options" id="dlg-options"></div>
+    <div class="feedback" id="dlg-feedback"></div>
+    <button class="next-btn" id="dlg-next">Continuar</button>
+  </div>
+</div>
+
+<!-- PORTAL DIALOG -->
+<div id="portal-dialog">
+  <div class="portal-box">
+    <div class="portal-icon">🌀</div>
+    <h3 id="portal-title">Portal Desbloqueado!</h3>
+    <p id="portal-text">Voce respondeu todas as perguntas desta era!</p>
+    <button class="portal-btn" id="portal-btn">Entrar no Portal!</button>
+  </div>
+</div>
+
+<!-- END SCREEN -->
+<div id="end-screen">
+  <div class="trophy">🏆</div>
+  <h2 id="end-title">Parabens!</h2>
+  <div class="final-score" id="end-score"></div>
+  <div class="stars" id="end-stars"></div>
+  <div class="msg" id="end-msg"></div>
+  <button class="retry-btn" onclick="location.reload()">Jogar de Novo!</button>
+</div>
+
+<!-- MOBILE CONTROLS -->
+<div id="mobile-controls">
+  <div class="dpad">
+    <div class="m-btn m-up" data-dir="up">▲</div>
+    <div class="m-btn m-left" data-dir="left">◀</div>
+    <div class="m-btn m-down" data-dir="down">▼</div>
+    <div class="m-btn m-right" data-dir="right">▶</div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+//  GAME DATA
+// ============================================================
+const TILE = 48;
+const PLAYER_SPEED = 3;
+
+const ERAS = [
+  {
+    name: 'Pre-Cambriano', icon: '🌋', bgColor: '#2d1b00', groundColor: '#5c3a1a',
+    wallColor: '#3d2510', accentColor: '#ef4444', tileEmoji: '🌋',
+    portalMsg: 'Voce desbloqueou a Era Paleozoica!',
+    questions: [
+      { text:'Qual e a era geologica mais antiga da Terra?', options:['Mesozoica','Cenozoica','Pre-Cambriano','Paleozoica'], correct:2, explanation:'O Pre-Cambriano e a era mais antiga, comecando ha 4,6 bilhoes de anos!' },
+      { text:'O que surgiu durante o Pre-Cambriano?', options:['Dinossauros','Seres humanos','Bacterias e algas','Mamiferos gigantes'], correct:2, explanation:'As primeiras formas de vida foram bacterias e algas!' },
+      { text:'Quantos anos tem o planeta Terra?', options:['541 milhoes','4,6 bilhoes','252 milhoes','66 milhoes'], correct:1, explanation:'A Terra tem aproximadamente 4,6 bilhoes de anos!' },
+      { text:'O que e o tempo geologico?', options:['Tempo em horas e dias','Escala em milhoes e bilhoes de anos','Tempo de erupcao vulcanica','Horario de Greenwich'], correct:1, explanation:'O tempo geologico mede as mudancas da Terra em milhoes e bilhoes de anos!' },
+      { text:'A crosta terrestre se formou em qual era?', options:['Mesozoica','Cenozoica','Pre-Cambriano','Paleozoica'], correct:2, explanation:'A crosta terrestre se formou no Pre-Cambriano!' }
+    ]
+  },
+  {
+    name: 'Paleozoica', icon: '🐟', bgColor: '#0a2a3a', groundColor: '#1a5276',
+    wallColor: '#0e3d54', accentColor: '#3b82f6', tileEmoji: '🌿',
+    portalMsg: 'Voce desbloqueou a Era Mesozoica!',
+    questions: [
+      { text:'Qual evento importante aconteceu na Paleozoica?', options:['Surgimento dos humanos','Formacao da Pangeia','Extincao dos dinossauros','Formacao da Lua'], correct:1, explanation:'Na Paleozoica, todos os continentes se juntaram formando a Pangeia!' },
+      { text:'Quais seres surgiram na Paleozoica?', options:['Apenas bacterias','Peixes, anfibios e repteis','Dinossauros','Apenas insetos'], correct:1, explanation:'Surgiram peixes, anfibios, repteis, insetos e as primeiras florestas!' },
+      { text:'O que e a Pangeia?', options:['Um tipo de rocha','Um oceano antigo','Supercontinente com todas as terras','Uma era geologica'], correct:2, explanation:'A Pangeia era um supercontinente que reunia todas as terras!' },
+      { text:'As primeiras florestas surgiram em qual era?', options:['Pre-Cambriano','Paleozoica','Mesozoica','Cenozoica'], correct:1, explanation:'As primeiras florestas surgiram na Era Paleozoica!' },
+      { text:'A Paleozoica durou aproximadamente:', options:['66 milhoes de anos','252 milhoes de anos','289 milhoes de anos','4 bilhoes de anos'], correct:2, explanation:'A Paleozoica durou cerca de 289 milhoes de anos!' }
+    ]
+  },
+  {
+    name: 'Mesozoica', icon: '🦖', bgColor: '#0a3a0a', groundColor: '#2d6a2d',
+    wallColor: '#1a4a1a', accentColor: '#22c55e', tileEmoji: '🌴',
+    portalMsg: 'Voce desbloqueou a Era Cenozoica!',
+    questions: [
+      { text:'A Mesozoica e conhecida como a era dos:', options:['Mamiferos','Dinossauros','Seres humanos','Peixes'], correct:1, explanation:'A Mesozoica e a Era dos Dinossauros!' },
+      { text:'O que aconteceu no final da Mesozoica?', options:['Surgimento do humano','Formacao da Pangeia','Extincao dos dinossauros','Formacao da crosta'], correct:2, explanation:'Um asteroide causou a extincao dos dinossauros ha 66 milhoes de anos!' },
+      { text:'Fosseis de dinossauros estao em qual rocha?', options:['Igneas','Metamorficas','Sedimentares','Vulcanicas'], correct:2, explanation:'Fosseis sao preservados em rochas sedimentares!' },
+      { text:'Na Mesozoica, a Pangeia comecou a:', options:['Se formar','Se dividir nos continentes','Desaparecer no oceano','Congelar'], correct:1, explanation:'Na Mesozoica a Pangeia se separou formando os continentes atuais!' },
+      { text:'O que sao fosseis?', options:['Rochas bonitas','Restos de seres vivos em rochas','Pedras preciosas','Cristais de vulcoes'], correct:1, explanation:'Fosseis sao vestigios de organismos preservados em rochas!' }
+    ]
+  },
+  {
+    name: 'Cenozoica', icon: '🏔️', bgColor: '#1a1a3a', groundColor: '#4a4a7a',
+    wallColor: '#2a2a5a', accentColor: '#a78bfa', tileEmoji: '🏔️',
+    portalMsg: 'Voce desbloqueou a Estrutura da Terra!',
+    questions: [
+      { text:'A Cenozoica e conhecida como a era dos:', options:['Dinossauros','Repteis','Mamiferos','Bacterias'], correct:2, explanation:'A Cenozoica e a Era dos Mamiferos!' },
+      { text:'O Homo sapiens surgiu em qual era?', options:['Mesozoica','Paleozoica','Pre-Cambriano','Cenozoica'], correct:3, explanation:'O Homo sapiens surgiu na Cenozoica, ha cerca de 300.000 anos!' },
+      { text:'Quais montanhas se formaram na Cenozoica?', options:['Nenhuma','Alpes, Andes, Himalaia','Apenas o Everest','Serra do Mar'], correct:1, explanation:'Na Cenozoica se formaram Alpes, Andes, Himalaia e outras!' },
+      { text:'O que e o Antropoceno?', options:['Era dos dinossauros','Periodo de grande impacto humano na Terra','Nome do primeiro humano','Um tipo de rocha'], correct:1, explanation:'Antropoceno e o periodo em que a atividade humana impacta fortemente o planeta!' },
+      { text:'Qual acao ajuda a reduzir o impacto humano?', options:['Desmatar florestas','Reciclar e plantar arvores','Usar mais plastico','Queimar lixo'], correct:1, explanation:'Reciclar, economizar agua e plantar arvores ajudam o planeta!' }
+    ]
+  },
+  {
+    name: 'Estrutura da Terra', icon: '🌍', bgColor: '#3a1a00', groundColor: '#8b4513',
+    wallColor: '#5a2d0a', accentColor: '#f59e0b', tileEmoji: '🔥',
+    portalMsg: 'Voce desbloqueou os Tipos de Rochas!',
+    questions: [
+      { text:'Quais as tres camadas da Terra?', options:['Solo, agua e ar','Crosta, manto e nucleo','Areia, rocha e magma','Superficie, interior, centro'], correct:1, explanation:'Crosta, manto e nucleo sao as tres camadas!' },
+      { text:'A crosta terrestre e como qual parte do ovo?', options:['A gema','A clara','A casca','A membrana'], correct:2, explanation:'A crosta e como a casca: fina mas muito importante!' },
+      { text:'O nucleo interno e feito de:', options:['Agua','Areia','Ferro solido','Gelo'], correct:2, explanation:'O nucleo interno e solido e feito principalmente de ferro!' },
+      { text:'Qual camada e mais quente?', options:['Crosta','Manto superior','Nucleo','Atmosfera'], correct:2, explanation:'O nucleo pode chegar a mais de 5.000 graus Celsius!' },
+      { text:'O manto tem comportamento:', options:['Completamente solido','Fluido com movimentos lentos','Gasoso','Liquido como agua'], correct:1, explanation:'O manto se movimenta lentamente por correntes de conveccao!' }
+    ]
+  },
+  {
+    name: 'Tipos de Rochas', icon: '🪨', bgColor: '#1a1a1a', groundColor: '#4a4a4a',
+    wallColor: '#2a2a2a', accentColor: '#ec4899', tileEmoji: '💎',
+    portalMsg: 'Voce completou todas as eras!',
+    questions: [
+      { text:'Quais os tres tipos de rochas?', options:['Duras, moles e medias','Igneas, sedimentares e metamorficas','Grandes, pequenas e medias','Naturais, artificiais e mistas'], correct:1, explanation:'Igneas, sedimentares e metamorficas!' },
+      { text:'Rochas igneas se formam a partir do:', options:['Acumulo de areia','Resfriamento do magma','Pressao sobre rochas','Acumulo de fosseis'], correct:1, explanation:'Rochas igneas se formam quando o magma esfria e endurece!' },
+      { text:'Rochas metamorficas se formam por:', options:['Magma esfria','Temperatura e pressao transformam rochas','Sedimentos se acumulam','Rocha dissolve na agua'], correct:1, explanation:'Rochas metamorficas se formam por muita temperatura e pressao!' },
+      { text:'Sequencia de formacao das rochas sedimentares:', options:['Deposicao-Erosao-Transporte','Intemperismo-Erosao-Transporte-Deposicao-Litificacao','Litificacao-Deposicao-Transporte','Erosao-Litificacao-Deposicao'], correct:1, explanation:'Intemperismo, erosao, transporte, deposicao e litificacao!' },
+      { text:'O ciclo das rochas mostra que:', options:['Rochas nunca mudam','Um tipo pode virar outro ao longo do tempo','So vulcoes criam rochas','Rochas so existem na superficie'], correct:1, explanation:'As rochas estao sempre se transformando umas nas outras!' }
+    ]
+  }
+];
+
+// ============================================================
+//  MAP LAYOUTS (16x12 tiles each)  0=ground, 1=wall, 2=crystal, 3=portal
+// ============================================================
+const W = 16, H = 12;
+function makeMap(crystalPositions, portalPos) {
+  const m = [];
+  for (let y = 0; y < H; y++) {
+    const row = [];
+    for (let x = 0; x < W; x++) {
+      if (x === 0 || x === W-1 || y === 0 || y === H-1) row.push(1);
+      else row.push(0);
+    }
+    m.push(row);
+  }
+  // inner walls for interest
+  const walls = [
+    [3,3],[4,3],[5,3],[10,3],[11,3],
+    [3,8],[4,8],[10,8],[11,8],[12,8],
+    [7,5],[7,6],[7,7],
+    [13,5],[13,6]
+  ];
+  walls.forEach(([x,y]) => { if(m[y] && m[y][x] !== undefined) m[y][x] = 1; });
+  crystalPositions.forEach(([x,y]) => { m[y][x] = 2; });
+  m[portalPos[1]][portalPos[0]] = 3;
+  return m;
+}
+
+const MAPS = [
+  makeMap([[2,2],[6,2],[12,2],[4,6],[10,9]], [14,10]),
+  makeMap([[2,5],[6,4],[9,2],[13,4],[11,9]], [14,10]),
+  makeMap([[3,2],[8,2],[13,2],[2,9],[12,9]], [14,10]),
+  makeMap([[5,2],[10,2],[2,6],[14,6],[8,9]], [14,10]),
+  makeMap([[2,2],[14,2],[3,6],[11,6],[8,9]], [14,10]),
+  makeMap([[4,2],[12,2],[2,6],[14,6],[8,10]], [8,5]),
+];
+
+// ============================================================
+//  GAME STATE
+// ============================================================
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+
+let gw, gh, scale;
+let player = { x: 0, y: 0, dir: 0, frame: 0, frameTimer: 0 };
+let currentEra = 0;
+let currentMap = [];
+let crystals = [];
+let portalPos = { x: 0, y: 0 };
+let portalOpen = false;
+let score = 0;
+let lives = 3;
+let bones = 0;
+let totalCorrect = 0;
+let totalQuestions = 0;
+let questionsAnswered = 0;
+let dialogOpen = false;
+let gameStarted = false;
+let gameOver = false;
+let keys = {};
+let particles = [];
+let decorations = [];
+let cameraSx = 0, cameraSy = 0;
+
+// ============================================================
+//  RESIZE
+// ============================================================
+function resize() {
+  const mw = W * TILE;
+  const mh = H * TILE;
+  scale = Math.min(window.innerWidth / mw, (window.innerHeight - 50) / mh, 2);
+  canvas.width = mw;
+  canvas.height = mh;
+  canvas.style.width = (mw * scale) + 'px';
+  canvas.style.height = (mh * scale) + 'px';
+}
+window.addEventListener('resize', resize);
+
+// ============================================================
+//  INIT ERA
+// ============================================================
+function initEra(eraIdx) {
+  currentEra = eraIdx;
+  currentMap = JSON.parse(JSON.stringify(MAPS[eraIdx]));
+  crystals = [];
+  questionsAnswered = 0;
+  portalOpen = false;
+  decorations = [];
+
+  // find crystals + portal
+  for (let y = 0; y < H; y++) {
+    for (let x = 0; x < W; x++) {
+      if (currentMap[y][x] === 2) crystals.push({ x, y, collected: false, qIndex: crystals.length, bobT: Math.random()*Math.PI*2 });
+      if (currentMap[y][x] === 3) portalPos = { x, y };
+    }
+  }
+
+  // player start
+  player.x = 1.5 * TILE;
+  player.y = 1.5 * TILE;
+  player.dir = 0;
+
+  // random decorations
+  for (let i = 0; i < 15; i++) {
+    const dx = Math.floor(Math.random() * (W-2)) + 1;
+    const dy = Math.floor(Math.random() * (H-2)) + 1;
+    if (currentMap[dy][dx] === 0) {
+      decorations.push({ x: dx * TILE + Math.random()*20, y: dy * TILE + Math.random()*20, emoji: ERAS[eraIdx].tileEmoji, size: 12 + Math.random()*10 });
+    }
+  }
+
+  updateHUD();
+}
+
+// ============================================================
+//  HUD
+// ============================================================
+function updateHUD() {
+  document.getElementById('hud-score').textContent = score;
+  document.getElementById('hud-era').textContent = ERAS[currentEra].icon + ' ' + ERAS[currentEra].name;
+  document.getElementById('hud-bones').textContent = bones;
+  let lStr = '';
+  for (let i = 0; i < 3; i++) lStr += i < lives ? '❤️' : '🖤';
+  document.getElementById('hud-lives').textContent = lStr;
+}
+
+// ============================================================
+//  INPUT
+// ============================================================
+window.addEventListener('keydown', e => { keys[e.key.toLowerCase()] = true; });
+window.addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
+
+// Mobile
+document.querySelectorAll('.m-btn').forEach(btn => {
+  const dir = btn.dataset.dir;
+  const keyMap = { up: 'w', down: 's', left: 'a', right: 'd' };
+  btn.addEventListener('touchstart', e => { e.preventDefault(); keys[keyMap[dir]] = true; });
+  btn.addEventListener('touchend', e => { e.preventDefault(); keys[keyMap[dir]] = false; });
+  btn.addEventListener('mousedown', e => { keys[keyMap[dir]] = true; });
+  btn.addEventListener('mouseup', e => { keys[keyMap[dir]] = false; });
+});
+
+// ============================================================
+//  COLLISION
+// ============================================================
+function isSolid(px, py) {
+  const tx = Math.floor(px / TILE);
+  const ty = Math.floor(py / TILE);
+  if (tx < 0 || tx >= W || ty < 0 || ty >= H) return true;
+  return currentMap[ty][tx] === 1;
+}
+
+function canMove(nx, ny) {
+  const r = 10; // player radius
+  return !isSolid(nx - r, ny - r) && !isSolid(nx + r, ny - r) &&
+         !isSolid(nx - r, ny + r) && !isSolid(nx + r, ny + r);
+}
+
+// ============================================================
+//  PARTICLES
+// ============================================================
+function spawnParticles(x, y, color, count) {
+  for (let i = 0; i < count; i++) {
+    particles.push({
+      x, y,
+      vx: (Math.random()-0.5)*4,
+      vy: (Math.random()-0.5)*4,
+      life: 40 + Math.random()*30,
+      maxLife: 70,
+      color,
+      size: 3 + Math.random()*4
+    });
+  }
+}
+
+// ============================================================
+//  DIALOG SYSTEM
+// ============================================================
+function showQuestion(crystalIdx) {
+  dialogOpen = true;
+  const era = ERAS[currentEra];
+  const q = era.questions[crystalIdx];
+
+  document.getElementById('dialog-overlay').style.display = 'flex';
+  document.getElementById('dlg-icon').textContent = era.icon;
+  document.getElementById('dlg-name').textContent = era.name;
+  document.getElementById('dlg-question').textContent = q.text;
+
+  const optDiv = document.getElementById('dlg-options');
+  optDiv.innerHTML = '';
+  const letters = ['A','B','C','D'];
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.textContent = `${letters[i]}) ${opt}`;
+    btn.onclick = () => answerQuestion(crystalIdx, i);
+    optDiv.appendChild(btn);
+  });
+
+  document.getElementById('dlg-feedback').style.display = 'none';
+  document.getElementById('dlg-feedback').className = 'feedback';
+  document.getElementById('dlg-next').style.display = 'none';
+}
+
+function answerQuestion(crystalIdx, selected) {
+  const q = ERAS[currentEra].questions[crystalIdx];
+  const btns = document.querySelectorAll('.opt-btn');
+  const fb = document.getElementById('dlg-feedback');
+  totalQuestions++;
+
+  btns.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.correct) btn.classList.add('correct');
+    if (i === selected && selected !== q.correct) btn.classList.add('wrong');
+  });
+
+  if (selected === q.correct) {
+    score += 10;
+    bones++;
+    totalCorrect++;
+    fb.className = 'feedback correct';
+    fb.innerHTML = `<strong>✅ Isso ai!</strong><br>${q.explanation}`;
+    const c = crystals[crystalIdx];
+    spawnParticles(c.x * TILE + TILE/2, c.y * TILE + TILE/2, '#4ade80', 15);
+  } else {
+    lives--;
+    fb.className = 'feedback wrong';
+    fb.innerHTML = `<strong>❌ Ops!</strong><br>${q.explanation}`;
+  }
+
+  fb.style.display = 'block';
+  questionsAnswered++;
+  updateHUD();
+
+  if (lives <= 0) {
+    setTimeout(() => {
+      document.getElementById('dialog-overlay').style.display = 'none';
+      dialogOpen = false;
+      showEndScreen();
+    }, 2000);
+    return;
+  }
+
+  const nextBtn = document.getElementById('dlg-next');
+  nextBtn.style.display = 'block';
+  nextBtn.onclick = () => {
+    document.getElementById('dialog-overlay').style.display = 'none';
+    dialogOpen = false;
+
+    // Check if all crystals collected
+    if (questionsAnswered >= crystals.length) {
+      portalOpen = true;
+      spawnParticles(portalPos.x * TILE + TILE/2, portalPos.y * TILE + TILE/2, '#4ade80', 25);
+    }
+  };
+}
+
+function showPortalDialog() {
+  dialogOpen = true;
+  const era = ERAS[currentEra];
+  const isLast = currentEra >= ERAS.length - 1;
+
+  document.getElementById('portal-dialog').style.display = 'flex';
+  document.getElementById('portal-title').textContent = isLast ? 'Aventura Completa!' : 'Portal Desbloqueado!';
+  document.getElementById('portal-text').textContent = era.portalMsg;
+
+  const btn = document.getElementById('portal-btn');
+  btn.textContent = isLast ? 'Ver Resultado!' : 'Entrar no Portal!';
+  btn.onclick = () => {
+    document.getElementById('portal-dialog').style.display = 'none';
+    dialogOpen = false;
+    if (isLast) {
+      showEndScreen();
+    } else {
+      initEra(currentEra + 1);
+    }
+  };
+}
+
+// ============================================================
+//  END SCREEN
+// ============================================================
+function showEndScreen() {
+  gameOver = true;
+  document.getElementById('hud').style.display = 'none';
+  const pct = totalQuestions > 0 ? Math.round((totalCorrect/totalQuestions)*100) : 0;
+  let stars, title, msg;
+
+  if (pct >= 90) { stars='⭐⭐⭐'; title='Paleontologista Mestre!'; msg='Voce dominou todas as eras! Os dinossauros aplaudem! 🦕🎉'; }
+  else if (pct >= 70) { stars='⭐⭐'; title='Otimo Explorador!'; msg='Voce sabe muito! Continue estudando para virar um mestre! 🌍'; }
+  else if (pct >= 50) { stars='⭐'; title='Bom Trabalho!'; msg='Voce esta no caminho certo! Tente de novo para melhorar! 💪'; }
+  else { stars='💫'; title='Continue Tentando!'; msg='A historia da Terra e incrivel! Estude mais e tente novamente! 📚'; }
+
+  document.getElementById('end-title').textContent = title;
+  document.getElementById('end-score').textContent = `${score} pontos | ${totalCorrect}/${totalQuestions} acertos (${pct}%)`;
+  document.getElementById('end-stars').textContent = stars;
+  document.getElementById('end-msg').textContent = msg;
+  document.getElementById('end-screen').style.display = 'flex';
+}
+
+// ============================================================
+//  DRAW
+// ============================================================
+function drawTile(x, y, color) {
+  ctx.fillStyle = color;
+  ctx.fillRect(x * TILE, y * TILE, TILE, TILE);
+}
+
+function drawEmoji(emoji, x, y, size) {
+  ctx.font = `${size}px serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(emoji, x, y);
+}
+
+function drawMap() {
+  const era = ERAS[currentEra];
+
+  // background
+  ctx.fillStyle = era.bgColor;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // tiles
+  for (let y = 0; y < H; y++) {
+    for (let x = 0; x < W; x++) {
+      const t = currentMap[y][x];
+      if (t === 1) {
+        drawTile(x, y, era.wallColor);
+        // wall highlight
+        ctx.fillStyle = 'rgba(255,255,255,0.05)';
+        ctx.fillRect(x*TILE, y*TILE, TILE, 2);
+        ctx.fillRect(x*TILE, y*TILE, 2, TILE);
+      } else {
+        drawTile(x, y, era.groundColor);
+        // subtle grid
+        ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+        ctx.strokeRect(x*TILE, y*TILE, TILE, TILE);
+      }
+    }
+  }
+
+  // decorations
+  decorations.forEach(d => {
+    ctx.globalAlpha = 0.3;
+    drawEmoji(d.emoji, d.x, d.y, d.size);
+    ctx.globalAlpha = 1;
+  });
+}
+
+function drawCrystals(time) {
+  crystals.forEach((c, i) => {
+    if (c.collected) return;
+    const cx = c.x * TILE + TILE/2;
+    const cy = c.y * TILE + TILE/2 + Math.sin(time * 0.003 + c.bobT) * 5;
+
+    // glow
+    const grad = ctx.createRadialGradient(cx, cy, 5, cx, cy, TILE * 0.8);
+    grad.addColorStop(0, 'rgba(192, 132, 252, 0.35)');
+    grad.addColorStop(1, 'rgba(192, 132, 252, 0)');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(cx, cy, TILE * 0.8, 0, Math.PI * 2);
+    ctx.fill();
+
+    drawEmoji('💎', cx, cy, 28);
+  });
+}
+
+function drawPortal(time) {
+  const px = portalPos.x * TILE + TILE/2;
+  const py = portalPos.y * TILE + TILE/2;
+
+  if (portalOpen) {
+    // animated portal
+    const s = 0.8 + Math.sin(time * 0.005) * 0.15;
+    const grad = ctx.createRadialGradient(px, py, 5, px, py, TILE * s);
+    grad.addColorStop(0, 'rgba(74, 222, 128, 0.6)');
+    grad.addColorStop(0.5, 'rgba(34, 211, 238, 0.3)');
+    grad.addColorStop(1, 'rgba(74, 222, 128, 0)');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(px, py, TILE * s, 0, Math.PI * 2);
+    ctx.fill();
+    drawEmoji('🌀', px, py, 32);
+  } else {
+    // locked portal
+    ctx.globalAlpha = 0.3;
+    drawEmoji('🔒', px, py, 24);
+    ctx.globalAlpha = 1;
+  }
+}
+
+function drawPlayer(time) {
+  const px = player.x;
+  const py = player.y;
+
+  // shadow
+  ctx.fillStyle = 'rgba(0,0,0,0.3)';
+  ctx.beginPath();
+  ctx.ellipse(px, py + 14, 12, 5, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // dino body
+  const bobY = Math.sin(time * 0.008) * 2;
+  drawEmoji('🦕', px, py + bobY - 2, 32);
+
+  // direction indicator (small arrow)
+  const dirs = [[0,-1],[1,0],[0,1],[-1,0]];
+  const d = dirs[player.dir];
+  ctx.fillStyle = 'rgba(74, 222, 128, 0.5)';
+  ctx.beginPath();
+  ctx.arc(px + d[0]*16, py + d[1]*16 + bobY - 2, 3, 0, Math.PI*2);
+  ctx.fill();
+}
+
+function drawParticles() {
+  particles.forEach(p => {
+    const alpha = p.life / p.maxLife;
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = p.color;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.size * alpha, 0, Math.PI * 2);
+    ctx.fill();
+  });
+  ctx.globalAlpha = 1;
+}
+
+function drawMiniInfo() {
+  // crystal counter at bottom
+  const total = crystals.length;
+  const collected = crystals.filter(c => c.collected).length;
+  ctx.fillStyle = 'rgba(0,0,0,0.5)';
+  ctx.fillRect(0, canvas.height - 28, canvas.width, 28);
+  ctx.font = '14px Nunito, sans-serif';
+  ctx.fillStyle = '#c084fc';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(`💎 Cristais: ${collected}/${total}` + (portalOpen ? '  |  🌀 Portal aberto!' : '  |  Encontre todos os cristais!'), canvas.width/2, canvas.height - 14);
+}
+
+// ============================================================
+//  UPDATE
+// ============================================================
+function update() {
+  if (dialogOpen || gameOver) return;
+
+  let dx = 0, dy = 0;
+  if (keys['w'] || keys['arrowup']) { dy = -PLAYER_SPEED; player.dir = 0; }
+  if (keys['s'] || keys['arrowdown']) { dy = PLAYER_SPEED; player.dir = 2; }
+  if (keys['a'] || keys['arrowleft']) { dx = -PLAYER_SPEED; player.dir = 3; }
+  if (keys['d'] || keys['arrowright']) { dx = PLAYER_SPEED; player.dir = 1; }
+
+  // normalize diagonal
+  if (dx !== 0 && dy !== 0) {
+    dx *= 0.707;
+    dy *= 0.707;
+  }
+
+  const nx = player.x + dx;
+  const ny = player.y + dy;
+  if (canMove(nx, player.y)) player.x = nx;
+  if (canMove(player.x, ny)) player.y = ny;
+
+  // check crystal collision
+  const ptx = Math.floor(player.x / TILE);
+  const pty = Math.floor(player.y / TILE);
+
+  crystals.forEach((c, i) => {
+    if (c.collected) return;
+    const dist = Math.hypot(player.x - (c.x*TILE+TILE/2), player.y - (c.y*TILE+TILE/2));
+    if (dist < TILE * 0.6) {
+      c.collected = true;
+      currentMap[c.y][c.x] = 0;
+      showQuestion(i);
+    }
+  });
+
+  // check portal
+  if (portalOpen) {
+    const pd = Math.hypot(player.x - (portalPos.x*TILE+TILE/2), player.y - (portalPos.y*TILE+TILE/2));
+    if (pd < TILE * 0.6) {
+      showPortalDialog();
+    }
+  }
+
+  // update particles
+  particles.forEach(p => {
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vy += 0.05;
+    p.life--;
+  });
+  particles = particles.filter(p => p.life > 0);
+}
+
+// ============================================================
+//  MAIN LOOP
+// ============================================================
+function gameLoop(time) {
+  if (!gameStarted || gameOver) { requestAnimationFrame(gameLoop); return; }
+  update();
+
+  drawMap();
+  drawPortal(time);
+  drawCrystals(time);
+  drawParticles();
+  drawPlayer(time);
+  drawMiniInfo();
+
+  requestAnimationFrame(gameLoop);
+}
+
+// ============================================================
+//  START
+// ============================================================
+function startGame() {
+  document.getElementById('intro').style.display = 'none';
+  document.getElementById('hud').style.display = 'flex';
+  gameStarted = true;
+  resize();
+  initEra(0);
+  requestAnimationFrame(gameLoop);
+}
+
+resize();
+requestAnimationFrame(gameLoop);
+</script>
+</body>
+</html>
