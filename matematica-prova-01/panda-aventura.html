@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Aventura Matemática da Panda</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --pink:#ff6b9d;--green:#4ade80;--blue:#60a5fa;--purple:#a78bfa;
+  --yellow:#fbbf24;--red:#f87171;--orange:#fb923c;
+}
+body{
+  font-family:'Nunito',sans-serif;
+  background:linear-gradient(180deg,#fce4ec,#f8bbd0,#f48fb1);
+  min-height:100vh;color:#333;overflow-x:hidden;
+  -webkit-tap-highlight-color:transparent;
+  user-select:none;-webkit-user-select:none;
+}
+
+/* ========== SCREENS ========== */
+.screen{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:20px;animation:fadeIn 0.5s ease}
+.screen.active{display:flex}
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* ========== INTRO ========== */
+#intro{background:linear-gradient(180deg,#e8f5e9,#c8e6c9,#a5d6a7);text-align:center}
+.panda-logo{font-size:120px;animation:bounce 2s infinite}
+@keyframes bounce{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-20px) rotate(5deg)}}
+#intro h1{font-family:'Fredoka One',cursive;font-size:2.2em;color:#2e7d32;margin:10px 0;text-shadow:2px 2px 0 rgba(255,255,255,0.5)}
+#intro p{color:#558b2f;font-size:1.1em;max-width:400px;line-height:1.6;margin-bottom:20px}
+.btn-play{
+  font-family:'Fredoka One',cursive;font-size:1.4em;padding:16px 50px;
+  background:linear-gradient(135deg,#66bb6a,#43a047);color:#fff;
+  border:none;border-radius:50px;cursor:pointer;
+  box-shadow:0 6px 20px rgba(76,175,80,0.4);transition:all 0.3s;
+}
+.btn-play:hover{transform:scale(1.08)}
+.btn-play:active{transform:scale(0.95)}
+
+/* ========== MAP ========== */
+#map{background:linear-gradient(180deg,#e3f2fd,#bbdefb,#90caf9);text-align:center;gap:20px}
+#map h2{font-family:'Fredoka One',cursive;font-size:1.8em;color:#1565c0}
+.map-container{
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+  max-width:400px;width:100%;position:relative;
+}
+.map-path{width:4px;height:40px;background:rgba(21,101,192,0.3);border-radius:4px}
+.map-path.done{background:var(--green)}
+.phase-card{
+  width:100%;padding:20px;border-radius:20px;
+  display:flex;align-items:center;gap:16px;
+  transition:all 0.3s;cursor:pointer;position:relative;
+}
+.phase-card.locked{background:rgba(255,255,255,0.3);opacity:0.6;cursor:not-allowed}
+.phase-card.available{background:rgba(255,255,255,0.85);box-shadow:0 4px 20px rgba(0,0,0,0.1);animation:pulse 2s infinite}
+.phase-card.completed{background:rgba(255,255,255,0.85);box-shadow:0 4px 20px rgba(0,0,0,0.1)}
+@keyframes pulse{0%,100%{box-shadow:0 4px 20px rgba(0,0,0,0.1)}50%{box-shadow:0 4px 30px rgba(76,175,80,0.3)}}
+.phase-icon{font-size:50px}
+.phase-info{text-align:left;flex:1}
+.phase-info h3{font-family:'Fredoka One',cursive;font-size:1.1em;color:#333}
+.phase-info p{font-size:0.85em;color:#666;margin-top:2px}
+.phase-stars{font-size:22px;letter-spacing:2px}
+.phase-lock{font-size:28px}
+
+/* ========== GAME PHASE ========== */
+#game{background:linear-gradient(180deg,#e8f5e9,#c8e6c9);padding:15px}
+.game-header{
+  display:flex;justify-content:space-between;align-items:center;
+  width:100%;max-width:600px;padding:10px 16px;
+  background:rgba(255,255,255,0.8);border-radius:16px;
+  margin-bottom:15px;flex-wrap:wrap;gap:8px;
+}
+.game-header .phase-title{font-family:'Fredoka One',cursive;font-size:1em;color:#2e7d32}
+.game-header .progress{font-family:'Fredoka One',cursive;font-size:0.9em;color:#666}
+.game-header .score{font-family:'Fredoka One',cursive;font-size:0.9em;color:var(--yellow)}
+
+.progress-bar{width:100%;max-width:600px;height:12px;background:rgba(255,255,255,0.5);border-radius:10px;overflow:hidden;margin-bottom:15px}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--green),#22c55e);border-radius:10px;transition:width 0.5s ease}
+
+.game-scene{
+  width:100%;max-width:600px;min-height:180px;
+  border-radius:20px;padding:20px;margin-bottom:15px;
+  display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+}
+.scene-lake{background:linear-gradient(180deg,#e0f7fa,#80deea,#4dd0e1)}
+.scene-forest{background:linear-gradient(180deg,#e8f5e9,#a5d6a7,#66bb6a)}
+.scene-mountain{background:linear-gradient(180deg,#e3f2fd,#90caf9,#64b5f6)}
+
+.scene-panda{font-size:60px;transition:all 0.5s ease;position:relative;z-index:2}
+.scene-panda.happy{animation:jump 0.5s ease}
+.scene-panda.sad{animation:shake 0.5s ease}
+@keyframes jump{0%{transform:translateY(0)}30%{transform:translateY(-30px) rotate(10deg)}60%{transform:translateY(-15px)}100%{transform:translateY(0)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-10px)}75%{transform:translateX(10px)}}
+
+.scene-items{position:absolute;inset:0;pointer-events:none;font-size:30px;overflow:hidden}
+.scene-item{position:absolute;animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+
+.question-card{
+  width:100%;max-width:600px;background:rgba(255,255,255,0.9);
+  border-radius:20px;padding:24px;text-align:center;
+  box-shadow:0 4px 20px rgba(0,0,0,0.08);
+}
+.question-text{
+  font-size:1.2em;font-weight:700;color:#333;
+  line-height:1.6;margin-bottom:20px;
+}
+.question-highlight{
+  display:inline-block;font-family:'Fredoka One',cursive;
+  font-size:1.8em;color:#1565c0;margin:10px 0;
+  background:rgba(21,101,192,0.1);padding:8px 24px;border-radius:16px;
+}
+.options-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.options-grid.single-col{grid-template-columns:1fr}
+.opt-btn{
+  font-family:'Nunito',sans-serif;font-size:1.05em;font-weight:700;
+  padding:14px 18px;background:#fff;color:#333;
+  border:3px solid #e0e0e0;border-radius:16px;cursor:pointer;
+  transition:all 0.25s;text-align:center;
+}
+.opt-btn:hover:not(:disabled){border-color:var(--blue);background:#e3f2fd;transform:scale(1.03)}
+.opt-btn.correct{background:#e8f5e9;border-color:var(--green);color:#2e7d32;animation:correctPop 0.4s ease}
+.opt-btn.wrong{background:#ffebee;border-color:var(--red);color:#c62828;animation:shake 0.4s ease}
+.opt-btn:disabled{cursor:default;opacity:0.85}
+@keyframes correctPop{0%{transform:scale(1)}50%{transform:scale(1.08)}100%{transform:scale(1)}}
+
+.feedback-box{
+  margin-top:16px;padding:14px 18px;border-radius:14px;
+  font-size:1em;font-weight:700;line-height:1.5;display:none;
+}
+.feedback-box.show{display:block;animation:fadeIn 0.3s ease}
+.feedback-box.correct{background:#e8f5e9;border:2px solid var(--green);color:#2e7d32}
+.feedback-box.wrong{background:#fff3e0;border:2px solid var(--orange);color:#e65100}
+
+.btn-next{
+  display:none;margin:16px auto 0;font-family:'Fredoka One',cursive;
+  font-size:1.05em;padding:12px 36px;
+  background:linear-gradient(135deg,var(--blue),#2196f3);color:#fff;
+  border:none;border-radius:26px;cursor:pointer;transition:all 0.3s;
+}
+.btn-next.show{display:block;animation:fadeIn 0.3s ease}
+.btn-next:hover{transform:scale(1.06)}
+
+/* ========== PHASE COMPLETE ========== */
+#phase-complete{background:linear-gradient(180deg,#fff9c4,#fff176,#ffee58);text-align:center;gap:16px}
+#phase-complete .big-icon{font-size:80px;animation:bounce 1.5s infinite}
+#phase-complete h2{font-family:'Fredoka One',cursive;font-size:1.8em;color:#e65100;text-shadow:1px 1px 0 rgba(255,255,255,0.5)}
+#phase-complete .stars-earned{font-size:50px;letter-spacing:8px;margin:10px 0}
+#phase-complete .score-text{font-size:1.2em;color:#5d4037;font-weight:700}
+.btn-continue{
+  font-family:'Fredoka One',cursive;font-size:1.2em;padding:14px 44px;
+  background:linear-gradient(135deg,var(--orange),#f57c00);color:#fff;
+  border:none;border-radius:50px;cursor:pointer;transition:all 0.3s;
+  box-shadow:0 6px 20px rgba(245,124,0,0.3);
+}
+.btn-continue:hover{transform:scale(1.08)}
+
+/* ========== FINAL ========== */
+#final{background:linear-gradient(180deg,#f3e5f5,#ce93d8,#ab47bc);text-align:center;gap:16px}
+#final .trophy{font-size:100px;animation:bounce 1.5s infinite}
+#final h2{font-family:'Fredoka One',cursive;font-size:2em;color:#fff;text-shadow:2px 2px 0 rgba(0,0,0,0.2)}
+#final .total-stars{font-size:50px;letter-spacing:8px;margin:8px 0}
+#final .final-msg{font-size:1.1em;color:#fff;max-width:400px;line-height:1.6;font-weight:700;text-shadow:1px 1px 0 rgba(0,0,0,0.15)}
+.btn-replay{
+  font-family:'Fredoka One',cursive;font-size:1.2em;padding:14px 44px;
+  background:linear-gradient(135deg,var(--pink),#e91e63);color:#fff;
+  border:none;border-radius:50px;cursor:pointer;transition:all 0.3s;
+  box-shadow:0 6px 20px rgba(233,30,99,0.3);
+}
+.btn-replay:hover{transform:scale(1.08)}
+
+/* ========== CONFETTI ========== */
+.confetti-container{position:fixed;inset:0;pointer-events:none;z-index:999;overflow:hidden}
+.confetti{
+  position:absolute;width:10px;height:10px;top:-10px;
+  animation:confettiFall linear forwards;
+}
+@keyframes confettiFall{
+  0%{transform:translateY(0) rotate(0deg);opacity:1}
+  100%{transform:translateY(100vh) rotate(720deg);opacity:0}
+}
+
+/* ========== RESPONSIVE ========== */
+@media(max-width:500px){
+  .panda-logo{font-size:80px}
+  #intro h1{font-size:1.6em}
+  .question-text{font-size:1.05em}
+  .question-highlight{font-size:1.4em}
+  .options-grid{grid-template-columns:1fr}
+  .phase-card{padding:14px}
+  .phase-icon{font-size:38px}
+}
+</style>
+</head>
+<body>
+
+<!-- INTRO -->
+<div id="intro" class="screen active">
+  <div class="panda-logo">🐼</div>
+  <h1>Aventura da Panda</h1>
+  <p>A Panda precisa atravessar 3 reinos mágicos para encontrar seus amigos! Resolva os desafios de matemática para ajudá-la!</p>
+  <button class="btn-play" onclick="startGame()">Vamos Jogar!</button>
+</div>
+
+<!-- MAP -->
+<div id="map" class="screen">
+  <h2>🗺️ Mapa da Aventura</h2>
+  <div class="map-container" id="map-container"></div>
+</div>
+
+<!-- GAME -->
+<div id="game" class="screen">
+  <div class="game-header">
+    <span class="phase-title" id="phase-title"></span>
+    <span class="progress" id="progress-text"></span>
+    <span class="score" id="score-text">⭐ 0</span>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+  <div class="game-scene" id="game-scene">
+    <div class="scene-items" id="scene-items"></div>
+    <div class="scene-panda" id="scene-panda">🐼</div>
+  </div>
+  <div class="question-card">
+    <div class="question-text" id="question-text"></div>
+    <div class="options-grid" id="options-grid"></div>
+    <div class="feedback-box" id="feedback-box"></div>
+    <button class="btn-next" id="btn-next" onclick="nextQuestion()">Próxima ➜</button>
+  </div>
+</div>
+
+<!-- PHASE COMPLETE -->
+<div id="phase-complete" class="screen">
+  <div class="big-icon">🎉</div>
+  <h2 id="phase-complete-title"></h2>
+  <div class="stars-earned" id="stars-earned"></div>
+  <p class="score-text" id="phase-score-text"></p>
+  <button class="btn-continue" id="btn-phase-continue" onclick="continueAfterPhase()">Continuar ➜</button>
+</div>
+
+<!-- FINAL -->
+<div id="final" class="screen">
+  <div class="trophy">🏆</div>
+  <h2>Parabéns!</h2>
+  <div class="total-stars" id="total-stars"></div>
+  <p class="final-msg" id="final-msg"></p>
+  <button class="btn-replay" onclick="resetGame()">Jogar de Novo 🔄</button>
+</div>
+
+<div class="confetti-container" id="confetti-container"></div>
+
+<script>
+// ========== GAME STATE ==========
+const state = {
+  currentPhase: 0,
+  currentQuestion: 0,
+  phaseScores: [0, 0, 0],
+  phaseTotal: [0, 0, 0],
+  phaseStars: [0, 0, 0],
+  questions: [],
+  answered: false,
+};
+
+// ========== PHASE DEFINITIONS ==========
+const phases = [
+  {
+    name: 'Lago dos Números',
+    subtitle: 'Par ou Ímpar?',
+    icon: '🌊',
+    sceneClass: 'scene-lake',
+    sceneItems: ['🪷','🐸','🦆','🐟','🌺','💧','🪻','🦋'],
+    bgGradient: 'linear-gradient(180deg,#e0f7fa,#b2ebf2,#80deea)',
+  },
+  {
+    name: 'Floresta das Histórias',
+    subtitle: 'Histórias Matemáticas',
+    icon: '🌳',
+    sceneClass: 'scene-forest',
+    sceneItems: ['🌿','🍄','🐿️','🦊','🌸','🍃','🐝','🦌'],
+    bgGradient: 'linear-gradient(180deg,#e8f5e9,#c8e6c9,#a5d6a7)',
+  },
+  {
+    name: 'Montanha das Centenas',
+    subtitle: 'Contas com Números Grandes',
+    icon: '🏔️',
+    sceneClass: 'scene-mountain',
+    sceneItems: ['☁️','🦅','⛅','🌤️','🏔️','❄️','🌈','🦋'],
+    bgGradient: 'linear-gradient(180deg,#e3f2fd,#bbdefb,#90caf9)',
+  },
+];
+
+// ========== QUESTION GENERATORS ==========
+
+function generateParImpar() {
+  const questions = [];
+
+  // Tipo 1: Números diretos (2-3 dígitos) - 4 perguntas
+  const usedNumbers = new Set();
+  for (let i = 0; i < 4; i++) {
+    let num;
+    do { num = randInt(10, 99); } while (usedNumbers.has(num));
+    usedNumbers.add(num);
+    const isPar = num % 2 === 0;
+    questions.push({
+      text: 'Este número é PAR ou ÍMPAR?',
+      highlight: String(num),
+      options: ['PAR', 'ÍMPAR'],
+      correct: isPar ? 0 : 1,
+      feedbackCorrect: `Isso! ${num} é ${isPar ? 'PAR' : 'ÍMPAR'}! ${isPar ? 'Termina em ' + String(num).slice(-1) + ', que é par.' : 'Termina em ' + String(num).slice(-1) + ', que é ímpar.'}`,
+      feedbackWrong: `Quase! ${num} é ${isPar ? 'PAR' : 'ÍMPAR'}. Olhe o último algarismo: ${String(num).slice(-1)}. ${isPar ? 'Números pares terminam em 0, 2, 4, 6 ou 8.' : 'Números ímpares terminam em 1, 3, 5, 7 ou 9.'}`,
+    });
+  }
+
+  // Tipo 2: Resolver a operação PRIMEIRO, depois classificar - 6 perguntas
+  // (como no caderno: 30-15=15, é par ou ímpar?)
+  for (let i = 0; i < 6; i++) {
+    let a, b, result, opSymbol;
+    if (i < 3) {
+      // Adição
+      a = randInt(10, 50); b = randInt(5, 30);
+      result = a + b; opSymbol = '+';
+    } else {
+      // Subtração
+      a = randInt(30, 80); b = randInt(5, a - 5);
+      result = a - b; opSymbol = '-';
+    }
+    const isPar = result % 2 === 0;
+    questions.push({
+      text: `Resolva a conta e diga: o resultado é PAR ou ÍMPAR?`,
+      highlight: `${a} ${opSymbol} ${b} = ?`,
+      options: ['PAR', 'ÍMPAR'],
+      correct: isPar ? 0 : 1,
+      feedbackCorrect: `Isso! ${a} ${opSymbol} ${b} = ${result}, que é ${isPar ? 'PAR' : 'ÍMPAR'}! 🎯`,
+      feedbackWrong: `${a} ${opSymbol} ${b} = ${result}. O número ${result} é ${isPar ? 'PAR' : 'ÍMPAR'} porque termina em ${String(result).slice(-1)}.`,
+    });
+  }
+
+  return shuffle(questions);
+}
+
+function generateHistorias() {
+  // Histórias com números de 3 dígitos, como no caderno da escola
+  const templates = [
+    // ADIÇÃO simples de 3 dígitos
+    () => {
+      const a = randInt(120, 450); const b = randInt(100, 400);
+      return {
+        text: `Um sorveteiro fez ${a} picolés de creme e ${b} de morango. Quantos picolés ele fez ao todo?`,
+        correctValue: a + b,
+        feedbackCorrect: `Isso mesmo! ${a} + ${b} = ${a + b} picolés! 🍦`,
+        feedbackWrong: `A conta é ${a} + ${b} = ${a + b} picolés!`,
+      };
+    },
+    () => {
+      const a = randInt(100, 300); const b = randInt(80, 250);
+      return {
+        text: `Leonardo tem ${a} figurinhas e sua prima Mariana tem ${b}. Quantas figurinhas eles têm juntos?`,
+        correctValue: a + b,
+        feedbackCorrect: `Perfeito! ${a} + ${b} = ${a + b} figurinhas! 🎴`,
+        feedbackWrong: `A conta é ${a} + ${b} = ${a + b} figurinhas!`,
+      };
+    },
+    () => {
+      const a = randInt(100, 400); const b = randInt(100, 350);
+      return {
+        text: `Uma confeiteira fez ${a} brigadeiros e ${b} beijinhos. Quantos doces ela fez no total?`,
+        correctValue: a + b,
+        feedbackCorrect: `Arrasou! ${a} + ${b} = ${a + b} doces! 🍫`,
+        feedbackWrong: `A conta é ${a} + ${b} = ${a + b} doces!`,
+      };
+    },
+    // SUBTRAÇÃO de 3 dígitos
+    () => {
+      const a = randInt(400, 850); const b = randInt(100, a - 50);
+      return {
+        text: `Em um estádio cabem ${a} pessoas. Entraram apenas ${b}. Quantas pessoas faltam para lotar o estádio?`,
+        correctValue: a - b,
+        feedbackCorrect: `Isso! ${a} - ${b} = ${a - b} pessoas! ⚽`,
+        feedbackWrong: `A conta é ${a} - ${b} = ${a - b} pessoas!`,
+      };
+    },
+    () => {
+      const a = randInt(500, 900); const b = randInt(100, a - 50);
+      return {
+        text: `O sorveteiro saiu de casa com ${a} picolés. Vendeu ${b} durante o dia. Quantos sobraram?`,
+        correctValue: a - b,
+        feedbackCorrect: `Certíssimo! ${a} - ${b} = ${a - b} picolés! 🍦`,
+        feedbackWrong: `A conta é ${a} - ${b} = ${a - b} picolés!`,
+      };
+    },
+    () => {
+      const total = randInt(400, 800); const tem = randInt(100, total - 50);
+      return {
+        text: `Sebastião quer comprar um videogame de ${total} reais. Ele já tem ${tem} reais. Quantos reais faltam?`,
+        correctValue: total - tem,
+        feedbackCorrect: `Exato! ${total} - ${tem} = ${total - tem} reais! 🎮`,
+        feedbackWrong: `A conta é ${total} - ${tem} = ${total - tem} reais!`,
+      };
+    },
+    // ADIÇÃO + SUBTRAÇÃO (multi-step)
+    () => {
+      const a = randInt(100, 250); const b = randInt(80, 200); const c = randInt(50, 150);
+      return {
+        text: `Um feirante tinha ${a} pêras e ${b} maçãs. Vendeu ${c} frutas. Quantas frutas ainda restam?`,
+        correctValue: a + b - c,
+        feedbackCorrect: `Incrível! ${a} + ${b} = ${a + b}, depois ${a + b} - ${c} = ${a + b - c} frutas! 🍎`,
+        feedbackWrong: `Primeiro some: ${a} + ${b} = ${a + b}. Depois tire: ${a + b} - ${c} = ${a + b - c} frutas!`,
+      };
+    },
+    () => {
+      const a = randInt(100, 300); const b = randInt(50, 150); const c = randInt(30, 100);
+      return {
+        text: `Numa estante tinha ${a} livros. Compraram mais ${b} e depois emprestaram ${c}. Quantos livros ficaram?`,
+        correctValue: a + b - c,
+        feedbackCorrect: `Muito bem! ${a} + ${b} = ${a + b}, depois ${a + b} - ${c} = ${a + b - c} livros! 📚`,
+        feedbackWrong: `Primeiro: ${a} + ${b} = ${a + b}. Depois: ${a + b} - ${c} = ${a + b - c} livros!`,
+      };
+    },
+    // Contextos do caderno
+    () => {
+      const a = randInt(50, 150); const b = randInt(50, 150);
+      return {
+        text: `Brayan coleciona carrinhos. Ele tinha ${a} carrinhos e ganhou ${b} do seu tio. Quantos carrinhos ele possui agora?`,
+        correctValue: a + b,
+        feedbackCorrect: `Isso! ${a} + ${b} = ${a + b} carrinhos! 🚗`,
+        feedbackWrong: `A conta é ${a} + ${b} = ${a + b} carrinhos!`,
+      };
+    },
+    () => {
+      const total = randInt(300, 600); const precisa = randInt(100, 250);
+      return {
+        text: `José precisa de ${total} figurinhas para completar o álbum. Ele já tem ${precisa}. Quantas figurinhas faltam?`,
+        correctValue: total - precisa,
+        feedbackCorrect: `Perfeito! ${total} - ${precisa} = ${total - precisa} figurinhas! 🎴`,
+        feedbackWrong: `A conta é ${total} - ${precisa} = ${total - precisa} figurinhas!`,
+      };
+    },
+  ];
+
+  const questions = [];
+  const shuffledTemplates = shuffle([...templates]);
+  for (let i = 0; i < 8; i++) {
+    const template = shuffledTemplates[i % shuffledTemplates.length];
+    const q = template();
+    // Distratores próximos ao valor correto (variação de 10-50)
+    const opts = makeOptions(q.correctValue, 4, randInt(10, 40), 1200);
+    const correctIdx = opts.indexOf(q.correctValue);
+    questions.push({
+      text: q.text,
+      highlight: null,
+      options: opts.map(String),
+      correct: correctIdx,
+      feedbackCorrect: q.feedbackCorrect,
+      feedbackWrong: q.feedbackWrong,
+      singleCol: true,
+    });
+  }
+  return questions;
+}
+
+function generateCentenas() {
+  const questions = [];
+
+  // ===== PARTE 1: Perguntas de CDU (Centena, Dezena, Unidade) - 8 perguntas =====
+  const cduUsed = new Set();
+  const cduTypes = ['centena', 'dezena', 'unidade'];
+  const cduLabels = { centena: 'CENTENA', dezena: 'DEZENA', unidade: 'UNIDADE' };
+  const cduExamples = {
+    centena: 'A centena é o primeiro algarismo (mais à esquerda).',
+    dezena: 'A dezena é o algarismo do meio.',
+    unidade: 'A unidade é o último algarismo (mais à direita).',
+  };
+
+  // 8 perguntas CDU: ~3 centena, ~3 dezena, ~2 unidade
+  const cduSequence = ['centena','dezena','unidade','centena','dezena','unidade','centena','dezena'];
+  for (let i = 0; i < 8; i++) {
+    let num;
+    do { num = randInt(102, 987); } while (cduUsed.has(num) || num % 10 === 0 || Math.floor(num/10) % 10 === 0);
+    cduUsed.add(num);
+
+    const digits = String(num).split('').map(Number);
+    const c = digits[0], d = digits[1], u = digits[2];
+    const type = cduSequence[i];
+    const correct = type === 'centena' ? c : type === 'dezena' ? d : u;
+
+    // Montar opções com os 3 algarismos + um distrator
+    const optsSet = new Set([c, d, u]);
+    while (optsSet.size < 4) { optsSet.add(randInt(1, 9)); }
+    const opts = shuffle([...optsSet]);
+
+    questions.push({
+      text: `No número ${num}, qual é o algarismo da ${cduLabels[type]}?`,
+      highlight: `${num}  →  C  D  U`,
+      options: opts.map(String),
+      correct: opts.indexOf(correct),
+      feedbackCorrect: `Isso! No número ${num}, o algarismo da ${cduLabels[type]} é ${correct}! (${c} centena, ${d} dezena, ${u} unidade) 🎯`,
+      feedbackWrong: `No número ${num}: ${c} é a centena, ${d} é a dezena, ${u} é a unidade. ${cduExamples[type]} A ${cduLabels[type]} é ${correct}!`,
+    });
+  }
+
+  // ===== PARTE 2: Contas de adição/subtração com números quebrados - 4 perguntas =====
+  const operations = [];
+
+  // Adição de números quebrados de 3 dígitos
+  for (let i = 0; i < 2; i++) {
+    const a = randInt(150, 550); const b = randInt(100, 400);
+    operations.push({ a, b, op: '+', result: a + b });
+  }
+
+  // Subtração de números quebrados de 3 dígitos
+  for (let i = 0; i < 2; i++) {
+    const a = randInt(400, 950); const b = randInt(100, Math.min(a - 50, 500));
+    operations.push({ a, b, op: '-', result: a - b });
+  }
+
+  for (const op of shuffle(operations)) {
+    const symbol = op.op === '+' ? '+' : '-';
+    const opts = makeOptions(op.result, 4, randInt(5, 30), 1200);
+    const correctIdx = opts.indexOf(op.result);
+    questions.push({
+      text: 'Quanto é?',
+      highlight: `${op.a} ${symbol} ${op.b}`,
+      options: opts.map(String),
+      correct: correctIdx,
+      feedbackCorrect: `Arrasou! ${op.a} ${symbol} ${op.b} = ${op.result}! 🎯`,
+      feedbackWrong: `A resposta é ${op.a} ${symbol} ${op.b} = ${op.result}. Vamos tentar a próxima!`,
+    });
+  }
+
+  // Mesclar: CDU primeiro (4) + contas intercaladas (8) = 12 perguntas
+  // Mas vamos embaralhar tudo junto para ficar dinâmico
+  return shuffle(questions);
+}
+
+// ========== HELPERS ==========
+function randInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function makeOptions(correct, count, step, max) {
+  const opts = new Set([correct]);
+  let attempts = 0;
+  while (opts.size < count && attempts < 100) {
+    const offset = (Math.floor(Math.random() * 3) + 1) * step * (Math.random() > 0.5 ? 1 : -1);
+    const val = correct + offset;
+    if (val > 0 && val <= (max || 999) && val !== correct) {
+      opts.add(val);
+    }
+    attempts++;
+  }
+  // Fill remaining if needed
+  let fill = 1;
+  while (opts.size < count) {
+    opts.add(correct + fill * step);
+    fill++;
+  }
+  return shuffle([...opts]);
+}
+
+// ========== SCREEN MANAGEMENT ==========
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ========== SOUND EFFECTS ==========
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let audioCtx;
+function getAudioCtx() {
+  if (!audioCtx) audioCtx = new AudioCtx();
+  return audioCtx;
+}
+
+function playSound(type) {
+  try {
+    const ctx = getAudioCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    gain.gain.value = 0.15;
+
+    if (type === 'correct') {
+      osc.frequency.value = 523;
+      osc.type = 'sine';
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.3);
+      // Second note
+      const osc2 = ctx.createOscillator();
+      const gain2 = ctx.createGain();
+      osc2.connect(gain2);
+      gain2.connect(ctx.destination);
+      osc2.frequency.value = 659;
+      osc2.type = 'sine';
+      gain2.gain.value = 0.15;
+      gain2.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+      osc2.start(ctx.currentTime + 0.15);
+      osc2.stop(ctx.currentTime + 0.5);
+    } else if (type === 'wrong') {
+      osc.frequency.value = 200;
+      osc.type = 'triangle';
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.4);
+    } else if (type === 'win') {
+      const notes = [523, 587, 659, 784];
+      notes.forEach((freq, i) => {
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.connect(g);
+        g.connect(ctx.destination);
+        o.frequency.value = freq;
+        o.type = 'sine';
+        g.gain.value = 0.12;
+        g.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + i * 0.2 + 0.3);
+        o.start(ctx.currentTime + i * 0.2);
+        o.stop(ctx.currentTime + i * 0.2 + 0.3);
+      });
+    }
+  } catch (e) {}
+}
+
+// ========== CONFETTI ==========
+function showConfetti() {
+  const container = document.getElementById('confetti-container');
+  container.innerHTML = '';
+  const colors = ['#ff6b9d','#4ade80','#60a5fa','#fbbf24','#a78bfa','#fb923c'];
+  for (let i = 0; i < 60; i++) {
+    const el = document.createElement('div');
+    el.classList.add('confetti');
+    el.style.left = Math.random() * 100 + '%';
+    el.style.background = colors[Math.floor(Math.random() * colors.length)];
+    el.style.width = (Math.random() * 8 + 6) + 'px';
+    el.style.height = (Math.random() * 8 + 6) + 'px';
+    el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    el.style.animationDuration = (Math.random() * 2 + 1.5) + 's';
+    el.style.animationDelay = (Math.random() * 0.8) + 's';
+    container.appendChild(el);
+  }
+  setTimeout(() => container.innerHTML = '', 4000);
+}
+
+// ========== GAME FLOW ==========
+function startGame() {
+  showScreen('map');
+  renderMap();
+}
+
+function renderMap() {
+  const container = document.getElementById('map-container');
+  container.innerHTML = '';
+  phases.forEach((phase, i) => {
+    if (i > 0) {
+      const path = document.createElement('div');
+      path.className = 'map-path' + (state.phaseStars[i - 1] > 0 ? ' done' : '');
+      container.appendChild(path);
+    }
+    const card = document.createElement('div');
+    card.className = 'phase-card';
+
+    let statusHTML = '';
+    if (state.phaseStars[i] > 0) {
+      card.classList.add('completed');
+      statusHTML = `<span class="phase-stars">${'⭐'.repeat(state.phaseStars[i])}${'☆'.repeat(3 - state.phaseStars[i])}</span>`;
+    } else if (i === 0 || state.phaseStars[i - 1] > 0) {
+      card.classList.add('available');
+      statusHTML = `<span class="phase-lock" style="opacity:0.5">🐼</span>`;
+      card.onclick = () => startPhase(i);
+    } else {
+      card.classList.add('locked');
+      statusHTML = `<span class="phase-lock">🔒</span>`;
+    }
+
+    card.innerHTML = `
+      <span class="phase-icon">${phase.icon}</span>
+      <div class="phase-info">
+        <h3>${phase.name}</h3>
+        <p>${phase.subtitle}</p>
+      </div>
+      ${statusHTML}
+    `;
+    container.appendChild(card);
+  });
+}
+
+function startPhase(phaseIndex) {
+  state.currentPhase = phaseIndex;
+  state.currentQuestion = 0;
+  state.phaseScores[phaseIndex] = 0;
+  state.answered = false;
+
+  // Generate questions
+  if (phaseIndex === 0) {
+    state.questions = generateParImpar();
+  } else if (phaseIndex === 1) {
+    state.questions = generateHistorias();
+  } else {
+    state.questions = generateCentenas();
+  }
+
+  state.phaseTotal[phaseIndex] = state.questions.length;
+
+  const phase = phases[phaseIndex];
+  document.getElementById('game').style.background = phase.bgGradient;
+  document.getElementById('phase-title').textContent = `${phase.icon} ${phase.name}`;
+
+  showScreen('game');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = state.questions[state.currentQuestion];
+  const total = state.questions.length;
+  const phase = phases[state.currentPhase];
+
+  // Header
+  document.getElementById('progress-text').textContent = `${state.currentQuestion + 1}/${total}`;
+  document.getElementById('score-text').textContent = `⭐ ${state.phaseScores[state.currentPhase]}`;
+  document.getElementById('progress-fill').style.width = ((state.currentQuestion) / total * 100) + '%';
+
+  // Scene
+  const scene = document.getElementById('game-scene');
+  scene.className = 'game-scene ' + phase.sceneClass;
+  const itemsEl = document.getElementById('scene-items');
+  itemsEl.innerHTML = '';
+  phase.sceneItems.forEach((item, i) => {
+    const el = document.createElement('span');
+    el.className = 'scene-item';
+    el.textContent = item;
+    el.style.left = (10 + Math.random() * 75) + '%';
+    el.style.top = (10 + Math.random() * 70) + '%';
+    el.style.animationDelay = (i * 0.3) + 's';
+    itemsEl.appendChild(el);
+  });
+
+  const panda = document.getElementById('scene-panda');
+  panda.className = 'scene-panda';
+
+  // Question
+  let questionHTML = '';
+  if (q.highlight) {
+    questionHTML = `${q.text}<br><span class="question-highlight">${q.highlight}</span>`;
+  } else {
+    questionHTML = q.text;
+  }
+  document.getElementById('question-text').innerHTML = questionHTML;
+
+  // Options
+  const grid = document.getElementById('options-grid');
+  grid.className = 'options-grid' + (q.singleCol ? ' single-col' : '');
+  grid.innerHTML = '';
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.textContent = opt;
+    btn.onclick = () => answer(i);
+    grid.appendChild(btn);
+  });
+
+  // Reset feedback
+  const fb = document.getElementById('feedback-box');
+  fb.className = 'feedback-box';
+  fb.style.display = 'none';
+  document.getElementById('btn-next').className = 'btn-next';
+  state.answered = false;
+}
+
+function answer(idx) {
+  if (state.answered) return;
+  state.answered = true;
+
+  const q = state.questions[state.currentQuestion];
+  const isCorrect = idx === q.correct;
+  const btns = document.querySelectorAll('#options-grid .opt-btn');
+
+  // Disable all and highlight
+  btns.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.correct) btn.classList.add('correct');
+    if (i === idx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  // Panda animation
+  const panda = document.getElementById('scene-panda');
+  if (isCorrect) {
+    panda.classList.add('happy');
+    state.phaseScores[state.currentPhase]++;
+    document.getElementById('score-text').textContent = `⭐ ${state.phaseScores[state.currentPhase]}`;
+    playSound('correct');
+  } else {
+    panda.classList.add('sad');
+    playSound('wrong');
+  }
+
+  // Feedback
+  const fb = document.getElementById('feedback-box');
+  fb.className = 'feedback-box show ' + (isCorrect ? 'correct' : 'wrong');
+  fb.textContent = isCorrect
+    ? `🐼 ${q.feedbackCorrect}`
+    : `🐼 ${q.feedbackWrong}`;
+  fb.style.display = 'block';
+
+  // Next button
+  document.getElementById('btn-next').className = 'btn-next show';
+}
+
+function nextQuestion() {
+  state.currentQuestion++;
+  if (state.currentQuestion >= state.questions.length) {
+    completePhase();
+  } else {
+    renderQuestion();
+  }
+}
+
+function completePhase() {
+  const phaseIdx = state.currentPhase;
+  const score = state.phaseScores[phaseIdx];
+  const total = state.phaseTotal[phaseIdx];
+  const pct = score / total;
+
+  // Calculate stars
+  let stars = 1;
+  if (pct >= 1) stars = 3;
+  else if (pct >= 0.7) stars = 2;
+  state.phaseStars[phaseIdx] = Math.max(state.phaseStars[phaseIdx], stars);
+
+  // Update progress bar to full
+  document.getElementById('progress-fill').style.width = '100%';
+
+  // Show phase complete
+  const phase = phases[phaseIdx];
+  document.getElementById('phase-complete-title').textContent = `${phase.name} Completo!`;
+  document.getElementById('stars-earned').textContent = '⭐'.repeat(stars) + '☆'.repeat(3 - stars);
+  document.getElementById('phase-score-text').textContent = `Você acertou ${score} de ${total}!`;
+
+  const btn = document.getElementById('btn-phase-continue');
+  if (phaseIdx < 2) {
+    btn.textContent = 'Próxima Fase ➜';
+  } else {
+    btn.textContent = 'Ver Resultado Final 🏆';
+  }
+
+  showScreen('phase-complete');
+  showConfetti();
+  playSound('win');
+}
+
+function continueAfterPhase() {
+  if (state.currentPhase < 2) {
+    showScreen('map');
+    renderMap();
+  } else {
+    showFinal();
+  }
+}
+
+function showFinal() {
+  const totalStars = state.phaseStars.reduce((a, b) => a + b, 0);
+  document.getElementById('total-stars').textContent = '⭐'.repeat(totalStars) + '☆'.repeat(9 - totalStars);
+
+  let msg = '';
+  if (totalStars >= 8) {
+    msg = 'Você é uma estrela da matemática! A Panda está orgulhosa de você! 🐼✨';
+  } else if (totalStars >= 5) {
+    msg = 'Muito bem! Você ajudou a Panda a completar a aventura! Continue praticando! 🐼💪';
+  } else {
+    msg = 'Você completou a aventura! Que tal jogar de novo para ganhar mais estrelas? 🐼🌟';
+  }
+  document.getElementById('final-msg').textContent = msg;
+
+  showScreen('final');
+  showConfetti();
+  playSound('win');
+}
+
+function resetGame() {
+  state.currentPhase = 0;
+  state.currentQuestion = 0;
+  state.phaseScores = [0, 0, 0];
+  state.phaseTotal = [0, 0, 0];
+  state.phaseStars = [0, 0, 0];
+  state.questions = [];
+  state.answered = false;
+  showScreen('map');
+  renderMap();
+}
+</script>
+</body>
+</html>
