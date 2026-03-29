@@ -1,0 +1,2254 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Aventura Espacial - Ciências 6º Ano</title>
+<style>
+  :root {
+    --bg-dark: #0a0e27;
+    --bg-card: #151a3a;
+    --primary: #6c63ff;
+    --primary-light: #8b83ff;
+    --accent: #ff6b6b;
+    --accent-green: #51cf66;
+    --accent-yellow: #ffd43b;
+    --text: #e8e8f0;
+    --text-dim: #8888aa;
+    --glow: rgba(108, 99, 255, 0.3);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg-dark);
+    color: var(--text);
+    min-height: 100dvh;
+    overflow-x: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* Stars background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.8), transparent),
+      radial-gradient(1px 1px at 30% 60%, rgba(255,255,255,0.6), transparent),
+      radial-gradient(1.5px 1.5px at 50% 10%, rgba(255,255,255,0.9), transparent),
+      radial-gradient(1px 1px at 70% 40%, rgba(255,255,255,0.5), transparent),
+      radial-gradient(1px 1px at 90% 80%, rgba(255,255,255,0.7), transparent),
+      radial-gradient(1.5px 1.5px at 15% 85%, rgba(255,255,255,0.6), transparent),
+      radial-gradient(1px 1px at 45% 45%, rgba(255,255,255,0.4), transparent),
+      radial-gradient(1px 1px at 80% 15%, rgba(255,255,255,0.8), transparent),
+      radial-gradient(1.5px 1.5px at 60% 70%, rgba(255,255,255,0.5), transparent),
+      radial-gradient(1px 1px at 25% 35%, rgba(255,255,255,0.7), transparent);
+    pointer-events: none;
+    z-index: 0;
+    animation: twinkle 4s ease-in-out infinite alternate;
+  }
+
+  @keyframes twinkle {
+    0% { opacity: 0.7; }
+    100% { opacity: 1; }
+  }
+
+  .screen {
+    display: none;
+    position: relative;
+    z-index: 1;
+    min-height: 100dvh;
+    padding: 20px;
+    animation: fadeIn 0.5s ease;
+  }
+
+  .screen.active { display: flex; flex-direction: column; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes popIn {
+    0% { transform: scale(0.5); opacity: 0; }
+    70% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-8px); }
+    40%, 80% { transform: translateX(8px); }
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  @keyframes orbit {
+    from { transform: rotate(0deg) translateX(60px) rotate(0deg); }
+    to { transform: rotate(360deg) translateX(60px) rotate(-360deg); }
+  }
+
+  /* ===== TITLE SCREEN ===== */
+  #title-screen {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 30px;
+  }
+
+  .title-planet {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #4facfe, #00f2fe, #43e97b);
+    box-shadow: 0 0 40px rgba(79, 172, 254, 0.4), inset -20px -10px 30px rgba(0,0,0,0.3);
+    animation: float 3s ease-in-out infinite;
+    position: relative;
+  }
+
+  .title-planet::after {
+    content: '';
+    position: absolute;
+    width: 180px;
+    height: 20px;
+    border-radius: 50%;
+    border: 3px solid rgba(255,255,255,0.2);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotateX(75deg);
+  }
+
+  .game-title {
+    font-size: 28px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #6c63ff, #ff6b6b, #ffd43b);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1.3;
+  }
+
+  .game-subtitle {
+    color: var(--text-dim);
+    font-size: 16px;
+  }
+
+  .btn {
+    padding: 16px 40px;
+    border: none;
+    border-radius: 16px;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn:active { transform: scale(0.95); }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    box-shadow: 0 4px 20px var(--glow);
+  }
+
+  .btn-next {
+    background: linear-gradient(135deg, var(--accent-green), #2ecc71);
+    box-shadow: 0 4px 20px rgba(81, 207, 102, 0.3);
+  }
+
+  .btn-small {
+    padding: 10px 24px;
+    font-size: 15px;
+    border-radius: 12px;
+  }
+
+  /* ===== MAP SCREEN ===== */
+  #map-screen { padding: 16px; }
+
+  .map-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    margin-bottom: 16px;
+  }
+
+  .score-display {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-card);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 16px;
+    border: 1px solid rgba(255, 215, 59, 0.3);
+  }
+
+  .map-title {
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .map-section-label {
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    margin: 20px 0 10px;
+    position: relative;
+  }
+
+  .map-section-label::before,
+  .map-section-label::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 20%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(136,136,170,0.3), transparent);
+  }
+
+  .map-section-label::before { left: 5%; }
+  .map-section-label::after { right: 5%; }
+
+  .map-path {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    position: relative;
+  }
+
+  .map-connector {
+    width: 3px;
+    height: 30px;
+    background: linear-gradient(to bottom, var(--primary), rgba(108,99,255,0.2));
+    border-radius: 2px;
+  }
+
+  .map-connector.locked {
+    background: linear-gradient(to bottom, rgba(136,136,170,0.2), rgba(136,136,170,0.1));
+  }
+
+  .map-connector.done {
+    background: linear-gradient(to bottom, var(--accent-green), rgba(81,207,102,0.3));
+  }
+
+  .map-node {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    border: 3px solid;
+  }
+
+  .map-node.current {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    border-color: var(--primary-light);
+    box-shadow: 0 0 25px var(--glow);
+    animation: pulse 2s infinite;
+  }
+
+  .map-node.done {
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+    border-color: var(--accent-green);
+    box-shadow: 0 0 15px rgba(81, 207, 102, 0.3);
+  }
+
+  .map-node.locked {
+    background: var(--bg-card);
+    border-color: #333;
+    opacity: 0.5;
+    cursor: default;
+  }
+
+  .map-node-label {
+    font-size: 11px;
+    color: var(--text-dim);
+    text-align: center;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    max-width: 120px;
+    line-height: 1.3;
+  }
+
+  .map-node-label.current { color: var(--primary-light); font-weight: 600; }
+  .map-node-label.done { color: var(--accent-green); }
+
+  .node-stars {
+    position: absolute;
+    bottom: -8px;
+    display: flex;
+    gap: 2px;
+    font-size: 12px;
+  }
+
+  /* ===== ACTIVITY SCREENS ===== */
+  .activity-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .back-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--bg-card);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--text);
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .activity-title {
+    font-size: 18px;
+    font-weight: 700;
+    flex: 1;
+  }
+
+  .activity-icon {
+    font-size: 28px;
+  }
+
+  .progress-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 3px;
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--accent-yellow));
+    border-radius: 3px;
+    transition: width 0.5s ease;
+  }
+
+  /* Quiz styles */
+  .question-card {
+    background: var(--bg-card);
+    border-radius: 20px;
+    padding: 24px;
+    border: 1px solid rgba(255,255,255,0.05);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .question-number {
+    font-size: 12px;
+    color: var(--primary-light);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+  }
+
+  .question-text {
+    font-size: 17px;
+    line-height: 1.6;
+    margin-bottom: 24px;
+    font-weight: 500;
+  }
+
+  .question-text .highlight {
+    color: var(--accent-yellow);
+    font-weight: 700;
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+  }
+
+  .option {
+    padding: 16px 20px;
+    background: rgba(255,255,255,0.04);
+    border: 2px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    font-size: 15px;
+    line-height: 1.5;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--text);
+    text-align: left;
+  }
+
+  .option:active { transform: scale(0.98); }
+
+  .option.selected {
+    border-color: var(--primary);
+    background: rgba(108, 99, 255, 0.15);
+  }
+
+  .option.correct {
+    border-color: var(--accent-green);
+    background: rgba(81, 207, 102, 0.15);
+    animation: popIn 0.3s ease;
+  }
+
+  .option.wrong {
+    border-color: var(--accent);
+    background: rgba(255, 107, 107, 0.15);
+    animation: shake 0.4s ease;
+  }
+
+  .option.disabled { pointer-events: none; opacity: 0.5; }
+  .option.correct.disabled, .option.wrong.disabled { opacity: 1; }
+
+  .feedback-box {
+    margin-top: 16px;
+    padding: 16px;
+    border-radius: 14px;
+    font-size: 14px;
+    line-height: 1.6;
+    animation: popIn 0.3s ease;
+  }
+
+  .feedback-box.correct {
+    background: rgba(81, 207, 102, 0.1);
+    border: 1px solid rgba(81, 207, 102, 0.3);
+  }
+
+  .feedback-box.wrong {
+    background: rgba(255, 107, 107, 0.1);
+    border: 1px solid rgba(255, 107, 107, 0.3);
+  }
+
+  .feedback-box .fb-title {
+    font-weight: 700;
+    margin-bottom: 6px;
+    font-size: 15px;
+  }
+
+  .activity-footer {
+    padding: 16px 0;
+    display: flex;
+    justify-content: center;
+  }
+
+  /* ===== DRAG & DROP ===== */
+  .drag-instruction {
+    font-size: 14px;
+    color: var(--text-dim);
+    text-align: center;
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+
+  .drag-zone {
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 16px;
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .drag-zone-title {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+    color: var(--text-dim);
+  }
+
+  .drag-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    min-height: 50px;
+  }
+
+  .drag-item {
+    padding: 10px 16px;
+    background: rgba(108, 99, 255, 0.15);
+    border: 2px solid var(--primary);
+    border-radius: 12px;
+    font-size: 14px;
+    cursor: grab;
+    transition: all 0.2s;
+    touch-action: none;
+    line-height: 1.4;
+  }
+
+  .drag-item:active { cursor: grabbing; transform: scale(1.05); }
+  .drag-item.dragging { opacity: 0.5; }
+
+  .drag-item.placed {
+    background: rgba(81, 207, 102, 0.15);
+    border-color: var(--accent-green);
+  }
+
+  .drag-item.wrong-place {
+    background: rgba(255, 107, 107, 0.15);
+    border-color: var(--accent);
+    animation: shake 0.4s;
+  }
+
+  .drop-slots {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .drop-slot {
+    padding: 14px 16px;
+    background: rgba(255,255,255,0.03);
+    border: 2px dashed rgba(255,255,255,0.15);
+    border-radius: 12px;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.2s;
+    font-size: 14px;
+  }
+
+  .drop-slot.drag-over {
+    border-color: var(--primary);
+    background: rgba(108, 99, 255, 0.1);
+  }
+
+  .drop-slot.filled {
+    border-style: solid;
+    border-color: var(--accent-green);
+    background: rgba(81, 207, 102, 0.08);
+  }
+
+  .drop-slot.wrong-slot {
+    border-color: var(--accent);
+    background: rgba(255, 107, 107, 0.08);
+    animation: shake 0.4s;
+  }
+
+  .slot-number {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .slot-label {
+    color: var(--text-dim);
+    font-size: 13px;
+  }
+
+  .slot-filled-text {
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  /* ===== SIMULATION ===== */
+  .sim-container {
+    background: var(--bg-card);
+    border-radius: 20px;
+    padding: 16px;
+    border: 1px solid rgba(255,255,255,0.05);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sim-canvas-wrap {
+    border-radius: 14px;
+    overflow: hidden;
+    background: #000;
+    margin-bottom: 16px;
+    position: relative;
+    touch-action: none;
+  }
+
+  .sim-canvas-wrap canvas {
+    width: 100%;
+    display: block;
+  }
+
+  .sim-description {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+
+  .sim-controls {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .sim-btn {
+    padding: 10px 20px;
+    border: 2px solid var(--primary);
+    background: rgba(108,99,255,0.15);
+    color: var(--text);
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .sim-btn:active { transform: scale(0.95); }
+  .sim-btn.active { background: var(--primary); }
+
+  .sim-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text-dim);
+    justify-content: center;
+    margin-top: 8px;
+  }
+
+  /* ===== MATCH GAME ===== */
+  .match-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .match-item {
+    padding: 14px 12px;
+    background: var(--bg-card);
+    border: 2px solid rgba(255,255,255,0.1);
+    border-radius: 14px;
+    font-size: 13px;
+    line-height: 1.4;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .match-item.selected-match {
+    border-color: var(--primary);
+    background: rgba(108,99,255,0.15);
+    transform: scale(1.03);
+  }
+
+  .match-item.matched {
+    border-color: var(--accent-green);
+    background: rgba(81, 207, 102, 0.1);
+    opacity: 0.7;
+    pointer-events: none;
+  }
+
+  .match-item.wrong-match {
+    border-color: var(--accent);
+    animation: shake 0.4s;
+  }
+
+  .match-col-header {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-dim);
+    text-align: center;
+    padding: 8px;
+  }
+
+  /* ===== VF (True/False) ===== */
+  .vf-statement {
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 14px;
+    border: 2px solid rgba(255,255,255,0.05);
+    transition: all 0.3s;
+  }
+
+  .vf-text {
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+
+  .vf-buttons {
+    display: flex;
+    gap: 10px;
+  }
+
+  .vf-btn {
+    flex: 1;
+    padding: 12px;
+    border: 2px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.03);
+    color: var(--text);
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .vf-btn:active { transform: scale(0.95); }
+  .vf-btn.correct-answer { border-color: var(--accent-green); background: rgba(81,207,102,0.15); }
+  .vf-btn.wrong-answer { border-color: var(--accent); background: rgba(255,107,107,0.15); }
+
+  .vf-feedback {
+    margin-top: 12px;
+    font-size: 13px;
+    line-height: 1.5;
+    padding: 12px;
+    border-radius: 10px;
+    animation: popIn 0.3s;
+  }
+
+  .vf-statement.answered { pointer-events: none; }
+  .vf-statement.answered.was-correct { border-color: rgba(81,207,102,0.3); }
+  .vf-statement.answered.was-wrong { border-color: rgba(255,107,107,0.3); }
+
+  /* ===== RESULTS ===== */
+  #results-screen { align-items: center; justify-content: center; text-align: center; gap: 24px; }
+
+  .results-stars { font-size: 50px; animation: popIn 0.5s ease; }
+
+  .results-score {
+    font-size: 48px;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent-yellow), #ff9f43);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .results-label {
+    font-size: 16px;
+    color: var(--text-dim);
+  }
+
+  .results-message {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.5;
+  }
+
+  .results-detail {
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 20px;
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .results-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-size: 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .results-row:last-child { border: none; }
+
+  /* Scrollable content */
+  .scroll-content {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 80px;
+  }
+
+  .fixed-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 16px 20px;
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+    background: linear-gradient(to top, var(--bg-dark) 60%, transparent);
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+  }
+
+  .fixed-footer .btn { width: 100%; max-width: 360px; }
+
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<!-- ===== TITLE SCREEN ===== -->
+<div id="title-screen" class="screen active">
+  <div class="title-planet"></div>
+  <div>
+    <h1 class="game-title">Aventura Espacial</h1>
+    <p class="game-subtitle">Ciências - Planeta Terra</p>
+  </div>
+  <p style="color: var(--text-dim); font-size: 14px; max-width: 280px; line-height: 1.6;">
+    Explore o espaço, descubra evidências sobre a forma da Terra e domine o método científico!
+  </p>
+  <button class="btn btn-primary" onclick="startGame()">Iniciar Jornada</button>
+</div>
+
+<!-- ===== MAP SCREEN ===== -->
+<div id="map-screen" class="screen">
+  <div class="map-header">
+    <span class="map-title">Mapa Estelar</span>
+    <div class="score-display">
+      <span id="map-stars-display">0</span> pts
+    </div>
+  </div>
+  <div class="scroll-content" id="map-scroll">
+    <div class="map-section-label">Esfericidade da Terra</div>
+    <div class="map-path" id="map-path"></div>
+  </div>
+</div>
+
+<!-- ===== ACTIVITY SCREEN (reused) ===== -->
+<div id="activity-screen" class="screen">
+  <div class="activity-header">
+    <button class="back-btn" onclick="showMap()">&#8592;</button>
+    <span class="activity-title" id="act-title"></span>
+    <span class="activity-icon" id="act-icon"></span>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="act-progress"></div></div>
+  <div class="scroll-content" id="act-content"></div>
+  <div class="fixed-footer hidden" id="act-footer">
+    <button class="btn btn-next" id="act-next-btn" onclick="actNext()">Continuar</button>
+  </div>
+</div>
+
+<!-- ===== RESULTS SCREEN ===== -->
+<div id="results-screen" class="screen">
+  <div class="results-stars" id="res-stars"></div>
+  <div>
+    <div class="results-score" id="res-score"></div>
+    <div class="results-label">pontos</div>
+  </div>
+  <div class="results-message" id="res-message"></div>
+  <div class="results-detail" id="res-detail"></div>
+  <button class="btn btn-primary" onclick="restartGame()">Jogar Novamente</button>
+</div>
+
+<script>
+// ===== GAME STATE =====
+let totalScore = 0;
+let activityScores = {};
+let currentActivity = 0;
+let actState = {};
+
+// ===== ACTIVITIES DATA =====
+const activities = [
+  // --- ESFERICIDADE DA TERRA ---
+  {
+    id: 'quiz-evidencias',
+    title: 'Evidências da Esfericidade',
+    icon: '🌍',
+    label: 'Quiz: Evidências',
+    section: 'terra',
+    type: 'quiz',
+    maxScore: 50,
+    data: {
+      questions: [
+        {
+          text: 'Qual pensador grego usou a <span class="highlight">sombra circular da Terra durante eclipses lunares</span> como evidência da esfericidade?',
+          options: ['Pitágoras', 'Aristóteles', 'Eratóstenes', 'Galileu'],
+          correct: 1,
+          explanation: 'Aristóteles (384-322 a.C.) observou que a sombra da Terra projetada na Lua durante eclipses é sempre circular — isso só é possível se a Terra for esférica.'
+        },
+        {
+          text: 'Eratóstenes conseguiu calcular o diâmetro da Terra comparando as sombras em duas cidades. Quais eram essas cidades?',
+          options: ['Atenas e Esparta', 'Roma e Cartago', 'Alexandria e Siena', 'Tebas e Memphis'],
+          correct: 2,
+          explanation: 'Eratóstenes notou que no solstício de verão, em Siena o Sol iluminava o fundo de um poço (estava "a pino"), mas em Alexandria havia sombra. Essa diferença só se explica pela curvatura da Terra.'
+        },
+        {
+          text: 'Quando um navio se afasta no mar, o que observamos primeiro desaparecer?',
+          options: ['O mastro (parte de cima)', 'O casco (parte de baixo)', 'As velas', 'Todo o navio de uma vez'],
+          correct: 1,
+          explanation: 'O casco desaparece primeiro por causa da curvatura da Terra. Se a Terra fosse plana, o navio inteiro ficaria menor mas continuaríamos vendo tudo.'
+        },
+        {
+          text: 'Se a Terra fosse plana, como seria a sombra projetada na Lua durante um eclipse?',
+          options: [
+            'Sempre circular',
+            'Poderia ter formatos diferentes (oval, reta, etc.)',
+            'Não haveria sombra',
+            'Seria sempre quadrada'
+          ],
+          correct: 1,
+          explanation: 'Um disco plano projetaria sombras de formatos diferentes dependendo do ângulo. Somente uma esfera projeta sombra circular em qualquer posição.'
+        },
+        {
+          text: 'Por que não "caímos" da Terra se ela é redonda?',
+          options: [
+            'Porque a atmosfera nos segura',
+            'Porque a Terra gira muito rápido',
+            'Por causa da força da gravidade que nos puxa para o centro',
+            'Porque estamos no lado de cima'
+          ],
+          correct: 2,
+          explanation: 'A força da gravidade puxa tudo em direção ao centro da Terra. Não existe "lado de cima" ou "de baixo" — a gravidade aponta sempre para o centro, não importa onde você esteja.'
+        }
+      ]
+    }
+  },
+  {
+    id: 'sim-eclipse',
+    title: 'Simulação: Eclipse Lunar',
+    icon: '🌑',
+    label: 'Eclipse Lunar',
+    section: 'terra',
+    type: 'simulation-eclipse',
+    maxScore: 20,
+    data: {}
+  },
+  {
+    id: 'sim-navio',
+    title: 'Simulação: Navio no Horizonte',
+    icon: '⛵',
+    label: 'Navio e Curvatura',
+    section: 'terra',
+    type: 'simulation-ship',
+    maxScore: 20,
+    data: {}
+  },
+  {
+    id: 'match-pensadores',
+    title: 'Associar Pensadores',
+    icon: '🧠',
+    label: 'Pensadores',
+    section: 'terra',
+    type: 'match',
+    maxScore: 40,
+    data: {
+      pairs: [
+        { left: 'Pitágoras', right: 'Um dos pioneiros a defender a esfericidade (~500 a.C.)' },
+        { left: 'Aristóteles', right: 'Sombra circular nos eclipses lunares' },
+        { left: 'Eratóstenes', right: 'Calculou o diâmetro da Terra com sombras' },
+        { left: 'Carl Sagan', right: '"Pálido ponto azul" — foto da Terra pela Voyager 1' }
+      ]
+    }
+  },
+  {
+    id: 'vf-terra',
+    title: 'Verdadeiro ou Falso',
+    icon: '✅',
+    label: 'V ou F: Terra',
+    section: 'terra',
+    type: 'truefalse',
+    maxScore: 50,
+    data: {
+      statements: [
+        {
+          text: 'A Terra está na zona habitável do Sistema Solar, o que permite a existência de água líquida.',
+          answer: true,
+          explanation: 'A zona habitável é a região do sistema solar onde a temperatura permite água líquida — essencial para a vida.'
+        },
+        {
+          text: 'Se a Terra fosse plana, as sombras em Alexandria e Siena teriam tamanhos diferentes no mesmo horário.',
+          answer: false,
+          explanation: 'Se a Terra fosse plana, os raios solares chegariam com o mesmo ângulo nos dois lugares, gerando sombras iguais. É justamente porque a Terra é curva que as sombras são diferentes!'
+        },
+        {
+          text: 'Terraplanistas se baseiam em evidências científicas comprovadas para defender suas ideias.',
+          answer: false,
+          explanation: 'O terraplanismo não é respaldado pela ciência. É influenciado por percepções cotidianas (o chão "parece" plano), mas todas as evidências científicas confirmam a esfericidade.'
+        },
+        {
+          text: 'A sombra da Terra projetada na Lua durante um eclipse lunar é sempre circular.',
+          answer: true,
+          explanation: 'Sim! Isso é uma das principais evidências da esfericidade. Apenas um objeto esférico produz sombra circular em qualquer ângulo.'
+        },
+        {
+          text: 'Na Antiguidade, várias culturas, como a grega e a hindu, já imaginavam diferentes formatos para a Terra.',
+          answer: true,
+          explanation: 'Sim! Os hindus, por exemplo, acreditavam que a Terra era metade de uma esfera sobre elefantes e uma tartaruga gigante. Diversas culturas tiveram seus próprios modelos.'
+        }
+      ]
+    }
+  },
+  // --- MÉTODO CIENTÍFICO ---
+  {
+    id: 'drag-metodo',
+    title: 'Etapas do Método Científico',
+    icon: '🔬',
+    label: 'Ordenar Etapas',
+    section: 'metodo',
+    type: 'order',
+    maxScore: 30,
+    data: {
+      correctOrder: [
+        'Observação do problema',
+        'Revisão de bibliografia',
+        'Elaboração de hipótese',
+        'Teste / Experimento',
+        'Análise dos resultados',
+        'Conclusão'
+      ]
+    }
+  },
+  {
+    id: 'quiz-metodo',
+    title: 'Quiz: Método Científico',
+    icon: '🧪',
+    label: 'Quiz: Método',
+    section: 'metodo',
+    type: 'quiz',
+    maxScore: 40,
+    data: {
+      questions: [
+        {
+          text: 'René Descartes escreveu o livro <span class="highlight">"Discurso do Método"</span>. Qual era sua famosa frase?',
+          options: [
+            '"Eureka!"',
+            '"Penso, logo existo"',
+            '"A Terra se move"',
+            '"Sei que nada sei"'
+          ],
+          correct: 1,
+          explanation: 'Descartes (1596-1650) defendia que a razão é a base do conhecimento. Sua frase "Penso, logo existo" resume essa ideia: a única certeza é o pensamento.'
+        },
+        {
+          text: 'No experimento de Van Helmont com a planta e o solo, qual foi a conclusão?',
+          options: [
+            'A planta se alimenta do solo',
+            'A planta cresceu muito mas o solo quase não diminuiu — a planta não se "alimenta" do solo',
+            'O solo engordou junto com a planta',
+            'A planta não cresceu nada'
+          ],
+          correct: 1,
+          explanation: 'A planta cresceu de 2kg para 76kg, mas o solo só perdeu 0,1kg (de 90kg para 89,9kg). A planta não se "alimenta" de terra — ela faz fotossíntese!'
+        },
+        {
+          text: 'Se uma hipótese é <span class="highlight">rejeitada</span> após um experimento, o que devemos fazer?',
+          options: [
+            'Desistir da pesquisa',
+            'Mudar os resultados para que a hipótese funcione',
+            'Formular uma nova hipótese e testar novamente',
+            'Ignorar e publicar mesmo assim'
+          ],
+          correct: 2,
+          explanation: 'Uma hipótese rejeitada não é fracasso! Faz parte do método científico. Devemos formular uma nova hipótese com base no que aprendemos e testar novamente.'
+        },
+        {
+          text: 'Por que a comunicação dos resultados é uma etapa importante do método científico?',
+          options: [
+            'Para ficar famoso',
+            'Não é importante, cada cientista trabalha sozinho',
+            'Para que outros cientistas possam reproduzir o experimento e usar as conclusões',
+            'Apenas para ganhar prêmios'
+          ],
+          correct: 2,
+          explanation: 'A comunicação permite que outros cientistas reproduzam o experimento, verifiquem os resultados e usem as conclusões em novas pesquisas. Ciência é colaboração!'
+        }
+      ]
+    }
+  },
+  {
+    id: 'vf-metodo',
+    title: 'V ou F: Método Científico',
+    icon: '📋',
+    label: 'V ou F: Método',
+    section: 'metodo',
+    type: 'truefalse',
+    maxScore: 30,
+    data: {
+      statements: [
+        {
+          text: 'Roger Bacon defendia que a experimentação e a observação são fontes de conhecimento.',
+          answer: true,
+          explanation: 'Correto! Roger Bacon (1220-1292) foi pioneiro ao valorizar a experimentação, a observação pelos sentidos e os testes como forma de estudar a ciência.'
+        },
+        {
+          text: 'O método científico pode ser usado apenas na Biologia e na Química.',
+          answer: false,
+          explanation: 'O método científico é usado em TODAS as áreas: Física, Astronomia, Medicina, Arqueologia, Psicologia e muitas outras!'
+        },
+        {
+          text: 'Francis Bacon acreditava que a investigação científica poderia garantir o domínio do homem sobre a natureza.',
+          answer: true,
+          explanation: 'Francis Bacon (1561-1626) elaborou as bases do método científico moderno, acreditando que a ciência daria ao ser humano poder sobre a natureza.'
+        }
+      ]
+    }
+  }
+];
+
+// ===== SCREEN MANAGEMENT =====
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function startGame() {
+  totalScore = 0;
+  activityScores = {};
+  currentActivity = 0;
+  showScreen('map-screen');
+  renderMap();
+}
+
+function restartGame() {
+  startGame();
+}
+
+// ===== MAP =====
+function renderMap() {
+  const path = document.getElementById('map-path');
+  let html = '';
+  let lastSection = '';
+
+  activities.forEach((act, i) => {
+    if (act.section !== lastSection) {
+      if (lastSection !== '') {
+        html += `<div class="map-section-label" style="margin-top:24px;">${act.section === 'metodo' ? 'Método Científico' : 'Esfericidade da Terra'}</div>`;
+      }
+      lastSection = act.section;
+    }
+
+    const done = activityScores[act.id] !== undefined;
+    const isCurrent = i === currentActivity;
+    const locked = i > currentActivity;
+    const stateClass = done ? 'done' : isCurrent ? 'current' : 'locked';
+
+    if (i > 0) {
+      html += `<div class="map-connector ${done ? 'done' : locked ? 'locked' : ''}"></div>`;
+    }
+
+    html += `
+      <div class="map-node-label ${stateClass}">${act.label}</div>
+      <div class="map-node ${stateClass}" onclick="${locked ? '' : `launchActivity(${i})`}" data-idx="${i}">
+        ${done ? '✓' : act.icon}
+        ${done ? `<div class="node-stars">${getStarsForScore(activityScores[act.id], act.maxScore)}</div>` : ''}
+      </div>
+    `;
+  });
+
+  path.innerHTML = html;
+  document.getElementById('map-stars-display').textContent = totalScore;
+}
+
+function getStarsForScore(score, max) {
+  const pct = score / max;
+  if (pct >= 0.9) return '⭐⭐⭐';
+  if (pct >= 0.6) return '⭐⭐';
+  if (pct > 0) return '⭐';
+  return '';
+}
+
+// ===== LAUNCH ACTIVITY =====
+function launchActivity(idx) {
+  currentActivity = idx;
+  const act = activities[idx];
+  actState = { step: 0, score: 0, answered: 0 };
+
+  document.getElementById('act-title').textContent = act.title;
+  document.getElementById('act-icon').textContent = act.icon;
+  document.getElementById('act-progress').style.width = '0%';
+  document.getElementById('act-footer').classList.add('hidden');
+
+  showScreen('activity-screen');
+
+  switch (act.type) {
+    case 'quiz': renderQuiz(act); break;
+    case 'truefalse': renderTrueFalse(act); break;
+    case 'match': renderMatch(act); break;
+    case 'order': renderOrder(act); break;
+    case 'simulation-eclipse': renderEclipseSimulation(act); break;
+    case 'simulation-ship': renderShipSimulation(act); break;
+  }
+}
+
+function updateProgress(current, total) {
+  document.getElementById('act-progress').style.width = `${(current / total) * 100}%`;
+}
+
+function showNextBtn(text = 'Continuar') {
+  const footer = document.getElementById('act-footer');
+  document.getElementById('act-next-btn').textContent = text;
+  footer.classList.remove('hidden');
+}
+
+function hideNextBtn() {
+  document.getElementById('act-footer').classList.add('hidden');
+}
+
+function actNext() {
+  hideNextBtn();
+  const act = activities[currentActivity];
+  switch (act.type) {
+    case 'quiz': nextQuizQuestion(act); break;
+    case 'truefalse': finishActivity(act); break;
+    case 'match': finishActivity(act); break;
+    case 'order': finishActivity(act); break;
+    case 'simulation-eclipse': finishActivity(act); break;
+    case 'simulation-ship': finishActivity(act); break;
+  }
+}
+
+function finishActivity(act) {
+  activityScores[act.id] = actState.score;
+  totalScore = Object.values(activityScores).reduce((a, b) => a + b, 0);
+  if (currentActivity < activities.length - 1) {
+    currentActivity++;
+  }
+  if (Object.keys(activityScores).length === activities.length) {
+    showResults();
+  } else {
+    showScreen('map-screen');
+    renderMap();
+  }
+}
+
+// ===== QUIZ =====
+function renderQuiz(act) {
+  const q = act.data.questions[actState.step];
+  const content = document.getElementById('act-content');
+  const total = act.data.questions.length;
+
+  updateProgress(actState.step, total);
+
+  content.innerHTML = `
+    <div class="question-card">
+      <div class="question-number">Pergunta ${actState.step + 1} de ${total}</div>
+      <div class="question-text">${q.text}</div>
+      <div class="options">
+        ${q.options.map((opt, i) => `
+          <div class="option" data-idx="${i}" onclick="selectQuizOption(this, ${i}, ${q.correct})">${opt}</div>
+        `).join('')}
+      </div>
+      <div id="quiz-feedback"></div>
+    </div>
+  `;
+}
+
+function selectQuizOption(el, idx, correct) {
+  if (actState.locked) return;
+  actState.locked = true;
+
+  const options = document.querySelectorAll('.option');
+  const isCorrect = idx === correct;
+  const q = activities[currentActivity].data.questions[actState.step];
+
+  options.forEach((o, i) => {
+    if (i === correct) o.classList.add('correct');
+    if (i === idx && !isCorrect) o.classList.add('wrong');
+    if (i !== idx && i !== correct) o.classList.add('disabled');
+  });
+
+  if (isCorrect) {
+    const pts = Math.round(activities[currentActivity].maxScore / activities[currentActivity].data.questions.length);
+    actState.score += pts;
+  }
+
+  const fb = document.getElementById('quiz-feedback');
+  fb.innerHTML = `
+    <div class="feedback-box ${isCorrect ? 'correct' : 'wrong'}">
+      <div class="fb-title">${isCorrect ? 'Correto! +' + Math.round(activities[currentActivity].maxScore / activities[currentActivity].data.questions.length) + ' pts' : 'Não foi dessa vez...'}</div>
+      ${q.explanation}
+    </div>
+  `;
+
+  actState.step++;
+  const isLast = actState.step >= activities[currentActivity].data.questions.length;
+  showNextBtn(isLast ? 'Finalizar' : 'Próxima');
+}
+
+function nextQuizQuestion(act) {
+  actState.locked = false;
+  if (actState.step >= act.data.questions.length) {
+    finishActivity(act);
+  } else {
+    renderQuiz(act);
+  }
+}
+
+// ===== TRUE/FALSE =====
+function renderTrueFalse(act) {
+  const content = document.getElementById('act-content');
+  const stmts = act.data.statements;
+  actState.answered = 0;
+  actState.total = stmts.length;
+
+  content.innerHTML = stmts.map((s, i) => `
+    <div class="vf-statement" id="vf-${i}">
+      <div class="vf-text">${s.text}</div>
+      <div class="vf-buttons">
+        <div class="vf-btn" onclick="answerVF(${i}, true, this)">Verdadeiro</div>
+        <div class="vf-btn" onclick="answerVF(${i}, false, this)">Falso</div>
+      </div>
+      <div id="vf-fb-${i}"></div>
+    </div>
+  `).join('');
+}
+
+function answerVF(idx, answer, btn) {
+  const act = activities[currentActivity];
+  const stmt = act.data.statements[idx];
+  const card = document.getElementById(`vf-${idx}`);
+  if (card.classList.contains('answered')) return;
+
+  card.classList.add('answered');
+  const isCorrect = answer === stmt.answer;
+  const btns = card.querySelectorAll('.vf-btn');
+
+  btns.forEach(b => {
+    const bAnswer = b.textContent === 'Verdadeiro';
+    if (bAnswer === stmt.answer) b.classList.add('correct-answer');
+    if (bAnswer === answer && !isCorrect) b.classList.add('wrong-answer');
+  });
+
+  card.classList.add(isCorrect ? 'was-correct' : 'was-wrong');
+
+  if (isCorrect) {
+    actState.score += Math.round(act.maxScore / act.data.statements.length);
+  }
+
+  const fb = document.getElementById(`vf-fb-${idx}`);
+  fb.innerHTML = `
+    <div class="vf-feedback" style="background: ${isCorrect ? 'rgba(81,207,102,0.1)' : 'rgba(255,107,107,0.1)'}; border: 1px solid ${isCorrect ? 'rgba(81,207,102,0.3)' : 'rgba(255,107,107,0.3)'};">
+      ${isCorrect ? '✓ ' : '✗ '}${stmt.explanation}
+    </div>
+  `;
+
+  actState.answered++;
+  updateProgress(actState.answered, actState.total);
+
+  if (actState.answered === actState.total) {
+    showNextBtn('Finalizar');
+  }
+}
+
+// ===== MATCH =====
+function renderMatch(act) {
+  const content = document.getElementById('act-content');
+  const pairs = act.data.pairs;
+  actState.matchedCount = 0;
+  actState.selectedLeft = null;
+  actState.total = pairs.length;
+
+  const shuffledRight = [...pairs].sort(() => Math.random() - 0.5);
+
+  content.innerHTML = `
+    <div class="drag-instruction">Toque em um pensador e depois na sua contribuição correspondente.</div>
+    <div class="match-grid">
+      <div class="match-col-header">Pensador</div>
+      <div class="match-col-header">Contribuição</div>
+      ${pairs.map((p, i) => `
+        <div class="match-item" data-side="left" data-id="${i}" onclick="selectMatch(this)">${p.left}</div>
+        <div class="match-item" data-side="right" data-id="${shuffledRight.indexOf(p)}" data-pair="${pairs.indexOf(shuffledRight[i])}" onclick="selectMatch(this)">${shuffledRight[i].right}</div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function selectMatch(el) {
+  if (el.classList.contains('matched')) return;
+
+  const side = el.dataset.side;
+
+  if (side === 'left') {
+    document.querySelectorAll('.match-item[data-side="left"]').forEach(e => e.classList.remove('selected-match'));
+    el.classList.add('selected-match');
+    actState.selectedLeft = parseInt(el.dataset.id);
+  } else if (actState.selectedLeft !== null) {
+    const pairId = parseInt(el.dataset.pair);
+    const isCorrect = pairId === actState.selectedLeft;
+
+    if (isCorrect) {
+      el.classList.add('matched');
+      const leftEl = document.querySelector(`.match-item[data-side="left"][data-id="${actState.selectedLeft}"]`);
+      leftEl.classList.add('matched');
+      leftEl.classList.remove('selected-match');
+      actState.matchedCount++;
+      actState.score += Math.round(activities[currentActivity].maxScore / actState.total);
+      updateProgress(actState.matchedCount, actState.total);
+
+      if (actState.matchedCount === actState.total) {
+        showNextBtn('Finalizar');
+      }
+    } else {
+      el.classList.add('wrong-match');
+      setTimeout(() => el.classList.remove('wrong-match'), 500);
+    }
+    actState.selectedLeft = null;
+  }
+}
+
+// ===== ORDER (Drag) =====
+function renderOrder(act) {
+  const content = document.getElementById('act-content');
+  const items = [...act.data.correctOrder].sort(() => Math.random() - 0.5);
+  actState.placedItems = new Array(act.data.correctOrder.length).fill(null);
+  actState.orderItems = items;
+
+  content.innerHTML = `
+    <div class="drag-instruction">Toque em uma etapa e depois no número onde ela deve ficar para colocá-la na ordem correta.</div>
+    <div class="drag-zone">
+      <div class="drag-zone-title">Etapas (toque para selecionar)</div>
+      <div class="drag-items" id="order-bank">
+        ${items.map((item, i) => `
+          <div class="drag-item" data-text="${item}" data-idx="${i}" onclick="selectOrderItem(this)">${item}</div>
+        `).join('')}
+      </div>
+    </div>
+    <div class="drag-zone">
+      <div class="drag-zone-title">Ordem correta</div>
+      <div class="drop-slots" id="order-slots">
+        ${act.data.correctOrder.map((_, i) => `
+          <div class="drop-slot" data-slot="${i}" onclick="placeOrderItem(${i})">
+            <div class="slot-number">${i + 1}</div>
+            <div class="slot-label">Toque aqui para posicionar</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+    <div style="text-align:center; margin-top:12px;">
+      <button class="sim-btn" onclick="checkOrder()">Verificar Ordem</button>
+    </div>
+  `;
+}
+
+function selectOrderItem(el) {
+  if (el.classList.contains('placed')) return;
+  document.querySelectorAll('#order-bank .drag-item').forEach(e => e.style.outline = '');
+  el.style.outline = '3px solid var(--accent-yellow)';
+  actState.selectedOrderItem = el;
+}
+
+function placeOrderItem(slotIdx) {
+  const sel = actState.selectedOrderItem;
+  if (!sel) return;
+
+  const slot = document.querySelector(`[data-slot="${slotIdx}"]`);
+  if (actState.placedItems[slotIdx] !== null) {
+    // Remove existing item from slot
+    const existingText = actState.placedItems[slotIdx];
+    actState.placedItems[slotIdx] = null;
+    const bankItem = document.querySelector(`#order-bank .drag-item[data-text="${existingText}"]`);
+    if (bankItem) {
+      bankItem.classList.remove('placed');
+      bankItem.style.display = '';
+    }
+  }
+
+  actState.placedItems[slotIdx] = sel.dataset.text;
+  sel.classList.add('placed');
+  sel.style.display = 'none';
+  sel.style.outline = '';
+  actState.selectedOrderItem = null;
+
+  slot.classList.add('filled');
+  slot.innerHTML = `
+    <div class="slot-number">${slotIdx + 1}</div>
+    <div class="slot-filled-text">${actState.placedItems[slotIdx]}</div>
+  `;
+  slot.onclick = () => {
+    // Allow removing
+    const text = actState.placedItems[slotIdx];
+    actState.placedItems[slotIdx] = null;
+    slot.classList.remove('filled');
+    slot.innerHTML = `<div class="slot-number">${slotIdx + 1}</div><div class="slot-label">Toque aqui para posicionar</div>`;
+    slot.onclick = () => placeOrderItem(slotIdx);
+    const bankItem = document.querySelector(`#order-bank .drag-item[data-text="${text}"]`);
+    if (bankItem) {
+      bankItem.classList.remove('placed');
+      bankItem.style.display = '';
+    }
+  };
+
+  updateProgress(actState.placedItems.filter(x => x !== null).length, actState.placedItems.length);
+}
+
+function checkOrder() {
+  const act = activities[currentActivity];
+  const correct = act.data.correctOrder;
+
+  if (actState.placedItems.some(x => x === null)) {
+    alert('Posicione todas as etapas antes de verificar!');
+    return;
+  }
+
+  let allCorrect = true;
+  const slots = document.querySelectorAll('.drop-slot');
+  slots.forEach((slot, i) => {
+    if (actState.placedItems[i] === correct[i]) {
+      slot.style.borderColor = 'var(--accent-green)';
+      slot.style.background = 'rgba(81,207,102,0.1)';
+    } else {
+      slot.style.borderColor = 'var(--accent)';
+      slot.style.background = 'rgba(255,107,107,0.1)';
+      slot.classList.add('wrong-slot');
+      allCorrect = false;
+    }
+    slot.onclick = null;
+  });
+
+  if (allCorrect) {
+    actState.score = act.maxScore;
+    showNextBtn('Finalizar');
+  } else {
+    // Count correct positions
+    let correctCount = 0;
+    actState.placedItems.forEach((item, i) => {
+      if (item === correct[i]) correctCount++;
+    });
+    actState.score = Math.round((correctCount / correct.length) * act.maxScore);
+
+    setTimeout(() => {
+      // Reset wrong ones
+      slots.forEach((slot, i) => {
+        if (actState.placedItems[i] !== correct[i]) {
+          const text = actState.placedItems[i];
+          actState.placedItems[i] = null;
+          slot.classList.remove('filled', 'wrong-slot');
+          slot.style.borderColor = '';
+          slot.style.background = '';
+          slot.innerHTML = `<div class="slot-number">${i + 1}</div><div class="slot-label">Toque aqui para posicionar</div>`;
+          slot.onclick = () => placeOrderItem(i);
+          const bankItem = document.querySelector(`#order-bank .drag-item[data-text="${text}"]`);
+          if (bankItem) {
+            bankItem.classList.remove('placed');
+            bankItem.style.display = '';
+          }
+        }
+      });
+    }, 1200);
+  }
+}
+
+// ===== ECLIPSE SIMULATION =====
+function renderEclipseSimulation(act) {
+  const content = document.getElementById('act-content');
+  content.innerHTML = `
+    <div class="sim-container">
+      <div class="sim-canvas-wrap">
+        <canvas id="eclipse-canvas" width="700" height="400"></canvas>
+      </div>
+      <div class="sim-description">
+        Arraste a <strong style="color:#4facfe">Terra</strong> para alinhar com o Sol e a Lua.
+        Observe a <strong style="color:#e74c3c">sombra vermelha</strong> projetada na Lua!
+      </div>
+      <div class="sim-controls">
+        <div class="sim-btn" onclick="toggleEarthShape('sphere')" id="btn-sphere" style="border-color:var(--accent-green);background:rgba(81,207,102,0.15);">Terra Esférica</div>
+        <div class="sim-btn" onclick="toggleEarthShape('flat')" id="btn-flat">Terra Plana</div>
+      </div>
+      <div class="sim-label" id="eclipse-hint">Troque entre as formas e compare a sombra na Lua!</div>
+      <div id="shadow-label" style="text-align:center;margin-top:8px;font-size:15px;font-weight:700;min-height:24px;"></div>
+    </div>
+  `;
+
+  actState.earthShape = 'sphere';
+  actState.earthX = 350;
+  actState.earthY = 200;
+  actState.dragging = false;
+  actState.triedBoth = { sphere: false, flat: false };
+  actState.triedBoth.sphere = true;
+
+  const canvas = document.getElementById('eclipse-canvas');
+
+  function getPos(e) {
+    const touch = e.touches ? e.touches[0] : e;
+    const r = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / r.width;
+    const scaleY = canvas.height / r.height;
+    return { x: (touch.clientX - r.left) * scaleX, y: (touch.clientY - r.top) * scaleY };
+  }
+
+  canvas.addEventListener('touchstart', e => { e.preventDefault(); handleDown(getPos(e)); }, { passive: false });
+  canvas.addEventListener('touchmove', e => { e.preventDefault(); handleMove(getPos(e)); }, { passive: false });
+  canvas.addEventListener('touchend', () => actState.dragging = false);
+  canvas.addEventListener('mousedown', e => handleDown(getPos(e)));
+  canvas.addEventListener('mousemove', e => handleMove(getPos(e)));
+  canvas.addEventListener('mouseup', () => actState.dragging = false);
+
+  function handleDown(pos) {
+    const dx = pos.x - actState.earthX;
+    const dy = pos.y - actState.earthY;
+    if (Math.sqrt(dx * dx + dy * dy) < 60) {
+      actState.dragging = true;
+      actState.dragOff = { x: dx, y: dy };
+    }
+  }
+
+  function handleMove(pos) {
+    if (!actState.dragging) return;
+    actState.earthX = Math.max(160, Math.min(540, pos.x - actState.dragOff.x));
+    actState.earthY = Math.max(60, Math.min(340, pos.y - actState.dragOff.y));
+    drawEclipse();
+  }
+
+  drawEclipse();
+
+  function drawEclipse() {
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+
+    // Background
+    ctx.fillStyle = '#05050f';
+    ctx.fillRect(0, 0, W, H);
+
+    // Tiny stars
+    const starPositions = [[50,30],[120,80],[200,20],[300,50],[400,30],[500,80],[600,20],[650,60],[80,350],[180,300],[350,370],[550,350]];
+    starPositions.forEach(([sx, sy]) => {
+      ctx.fillStyle = 'rgba(255,255,255,0.5)';
+      ctx.beginPath();
+      ctx.arc(sx, sy, 1, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    const sunX = 70, sunY = H / 2, sunR = 50;
+    const moonX = 620, moonY = H / 2, moonR = 35;
+    const eX = actState.earthX, eY = actState.earthY;
+    const earthR = 30;
+
+    // Sun glow
+    const sunGlow = ctx.createRadialGradient(sunX, sunY, sunR * 0.5, sunX, sunY, sunR * 3.5);
+    sunGlow.addColorStop(0, 'rgba(255,200,50,0.4)');
+    sunGlow.addColorStop(1, 'transparent');
+    ctx.fillStyle = sunGlow;
+    ctx.fillRect(0, 0, W, H);
+
+    // Calculate shadow on moon
+    const earthInPath = eX > sunX + 70 && eX < moonX - 50;
+    let shadowOnMoon = false;
+    let shadowCenterY = 0;
+    let shadowRadiusY = 0;
+    let shadowRadiusX = 0;
+
+    if (earthInPath) {
+      // Direction from sun to earth
+      const dirY = eY - sunY;
+      // Where the shadow center hits at moonX
+      const t = (moonX - eX) / (eX - sunX);
+      shadowCenterY = eY + dirY * t;
+
+      // Distance from shadow center to moon center
+      const distToMoon = Math.abs(shadowCenterY - moonY);
+
+      if (actState.earthShape === 'sphere') {
+        // Sphere always casts circular shadow
+        const shadowR = earthR * (1 + t * 0.3);
+        shadowRadiusY = shadowR;
+        shadowRadiusX = shadowR;
+        shadowOnMoon = distToMoon < (moonR + shadowR);
+      } else {
+        // Flat disk casts varying shadow based on angle
+        // The disk is thin, so vertical shadow component depends on Earth's Y position
+        const vertAngle = Math.atan2(Math.abs(eY - sunY), eX - sunX);
+        const apparentH = Math.max(4, Math.sin(vertAngle) * earthR * 2);
+        const shadowH = apparentH * (1 + t * 0.3);
+        shadowRadiusY = shadowH / 2;
+        shadowRadiusX = earthR * (1 + t * 0.3);
+        shadowOnMoon = distToMoon < (moonR + shadowRadiusY);
+      }
+    }
+
+    // Draw shadow cone from earth to moon area
+    if (earthInPath) {
+      ctx.save();
+      ctx.globalAlpha = 0.2;
+      ctx.fillStyle = '#000';
+
+      if (actState.earthShape === 'sphere') {
+        ctx.beginPath();
+        ctx.moveTo(eX, eY - earthR);
+        ctx.lineTo(moonX + 40, shadowCenterY - shadowRadiusY * 1.2);
+        ctx.lineTo(moonX + 40, shadowCenterY + shadowRadiusY * 1.2);
+        ctx.lineTo(eX, eY + earthR);
+        ctx.closePath();
+        ctx.fill();
+      } else {
+        const vertAngle = Math.atan2(Math.abs(eY - sunY), eX - sunX);
+        const apparentH = Math.max(4, Math.sin(vertAngle) * earthR * 2);
+        ctx.beginPath();
+        ctx.moveTo(eX, eY - apparentH / 2);
+        ctx.lineTo(moonX + 40, shadowCenterY - shadowRadiusY * 1.2);
+        ctx.lineTo(moonX + 40, shadowCenterY + shadowRadiusY * 1.2);
+        ctx.lineTo(eX, eY + apparentH / 2);
+        ctx.closePath();
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    // Sun
+    const sunGrad = ctx.createRadialGradient(sunX, sunY, 0, sunX, sunY, sunR);
+    sunGrad.addColorStop(0, '#fff9c4');
+    sunGrad.addColorStop(0.5, '#ffb300');
+    sunGrad.addColorStop(1, '#e65100');
+    ctx.fillStyle = sunGrad;
+    ctx.beginPath();
+    ctx.arc(sunX, sunY, sunR, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 14px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Sol', sunX, sunY + sunR + 22);
+
+    // Earth
+    if (actState.earthShape === 'sphere') {
+      const earthGrad = ctx.createRadialGradient(eX - 6, eY - 6, 0, eX, eY, earthR);
+      earthGrad.addColorStop(0, '#5dade2');
+      earthGrad.addColorStop(0.6, '#2e86c1');
+      earthGrad.addColorStop(1, '#1a5276');
+      ctx.fillStyle = earthGrad;
+      ctx.beginPath();
+      ctx.arc(eX, eY, earthR, 0, Math.PI * 2);
+      ctx.fill();
+      // Continent hints
+      ctx.fillStyle = 'rgba(46,125,50,0.5)';
+      ctx.beginPath();
+      ctx.arc(eX - 4, eY - 6, 8, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(eX + 8, eY + 6, 6, 0, Math.PI * 2);
+      ctx.fill();
+      // Border glow
+      ctx.strokeStyle = 'rgba(93,173,226,0.4)';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(eX, eY, earthR + 2, 0, Math.PI * 2);
+      ctx.stroke();
+    } else {
+      // Flat disk — always viewed from the side (edge-on relative to Sun)
+      ctx.fillStyle = '#2e86c1';
+      ctx.save();
+      ctx.translate(eX, eY);
+      // Rotate to face the sun direction
+      const angle = Math.atan2(eY - sunY, eX - sunX);
+      ctx.rotate(angle);
+      ctx.beginPath();
+      ctx.ellipse(0, 0, 6, earthR, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#5dade2';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      // Surface detail
+      ctx.strokeStyle = 'rgba(46,125,50,0.6)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(0, -earthR * 0.6);
+      ctx.lineTo(0, earthR * 0.6);
+      ctx.stroke();
+      ctx.restore();
+      // Label "disco"
+      ctx.fillStyle = 'rgba(255,255,255,0.4)';
+      ctx.font = '10px sans-serif';
+      ctx.fillText('(disco)', eX, eY + earthR + 28);
+    }
+    ctx.fillStyle = '#4facfe';
+    ctx.font = 'bold 14px sans-serif';
+    ctx.fillText('Terra', eX, eY + earthR + 18);
+
+    // Moon — draw base
+    const moonGrad = ctx.createRadialGradient(moonX - 5, moonY - 5, 0, moonX, moonY, moonR);
+    moonGrad.addColorStop(0, '#f5f5f5');
+    moonGrad.addColorStop(0.8, '#bdc3c7');
+    moonGrad.addColorStop(1, '#95a5a6');
+    ctx.fillStyle = moonGrad;
+    ctx.beginPath();
+    ctx.arc(moonX, moonY, moonR, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Craters
+    ctx.fillStyle = 'rgba(0,0,0,0.1)';
+    ctx.beginPath(); ctx.arc(moonX - 8, moonY - 7, 6, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(moonX + 10, moonY + 9, 5, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(moonX + 3, moonY - 14, 4, 0, Math.PI * 2); ctx.fill();
+
+    // Draw shadow ON the moon
+    if (shadowOnMoon && earthInPath) {
+      ctx.save();
+      // Clip to moon circle
+      ctx.beginPath();
+      ctx.arc(moonX, moonY, moonR, 0, Math.PI * 2);
+      ctx.clip();
+
+      // Shadow shape on moon
+      if (actState.earthShape === 'sphere') {
+        // Always circular shadow — reddish (like real lunar eclipse)
+        const grad = ctx.createRadialGradient(moonX, shadowCenterY, 0, moonX, shadowCenterY, shadowRadiusY);
+        grad.addColorStop(0, 'rgba(180, 30, 30, 0.85)');
+        grad.addColorStop(0.6, 'rgba(139, 20, 20, 0.7)');
+        grad.addColorStop(1, 'rgba(100, 10, 10, 0.0)');
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(moonX, shadowCenterY, shadowRadiusY * 1.3, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Darker core
+        ctx.fillStyle = 'rgba(40, 0, 0, 0.6)';
+        ctx.beginPath();
+        ctx.arc(moonX, shadowCenterY, shadowRadiusY * 0.6, 0, Math.PI * 2);
+        ctx.fill();
+      } else {
+        // Flat: thin line/oval shadow — NOT circular
+        ctx.fillStyle = 'rgba(180, 30, 30, 0.8)';
+        ctx.beginPath();
+        ctx.ellipse(moonX, shadowCenterY, shadowRadiusX * 1.2, Math.max(shadowRadiusY * 1.3, 3), 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Darker core
+        ctx.fillStyle = 'rgba(40, 0, 0, 0.5)';
+        ctx.beginPath();
+        ctx.ellipse(moonX, shadowCenterY, shadowRadiusX * 0.7, Math.max(shadowRadiusY * 0.6, 2), 0, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+
+      // Arrow pointing to shadow on moon
+      ctx.fillStyle = 'var(--accent-yellow)';
+      ctx.font = 'bold 12px sans-serif';
+      ctx.fillStyle = '#ffd43b';
+      const arrowY = moonY - moonR - 22;
+      ctx.fillText(actState.earthShape === 'sphere' ? 'Sombra CIRCULAR' : 'Sombra ACHATADA', moonX, arrowY);
+      // Arrow
+      ctx.beginPath();
+      ctx.moveTo(moonX, arrowY + 4);
+      ctx.lineTo(moonX - 5, arrowY + 10);
+      ctx.lineTo(moonX + 5, arrowY + 10);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    ctx.fillStyle = '#bdc3c7';
+    ctx.font = 'bold 14px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Lua', moonX, moonY + moonR + 22);
+
+    // Hint text on canvas
+    if (!earthInPath) {
+      ctx.fillStyle = 'rgba(255,255,255,0.5)';
+      ctx.font = '13px sans-serif';
+      ctx.fillText('Alinhe a Terra entre o Sol e a Lua', W / 2, H - 15);
+    }
+
+    // Update shadow label
+    const label = document.getElementById('shadow-label');
+    if (label) {
+      if (shadowOnMoon && earthInPath) {
+        if (actState.earthShape === 'sphere') {
+          label.innerHTML = '<span style="color:var(--accent-green)">Esfera: sombra sempre REDONDA na Lua</span>';
+        } else {
+          label.innerHTML = '<span style="color:var(--accent)">Disco plano: sombra ACHATADA e muda de forma</span>';
+        }
+      } else {
+        label.innerHTML = '<span style="color:var(--text-dim)">Mova a Terra para alinhar com Sol e Lua</span>';
+      }
+    }
+  }
+
+  window.drawEclipse = drawEclipse;
+}
+
+function toggleEarthShape(shape) {
+  actState.earthShape = shape;
+  actState.triedBoth[shape] = true;
+
+  document.getElementById('btn-sphere').style.borderColor = shape === 'sphere' ? 'var(--accent-green)' : 'var(--primary)';
+  document.getElementById('btn-sphere').style.background = shape === 'sphere' ? 'rgba(81,207,102,0.15)' : 'rgba(108,99,255,0.15)';
+  document.getElementById('btn-flat').style.borderColor = shape === 'flat' ? 'var(--accent-green)' : 'var(--primary)';
+  document.getElementById('btn-flat').style.background = shape === 'flat' ? 'rgba(81,207,102,0.15)' : 'rgba(108,99,255,0.15)';
+
+  if (actState.triedBoth.sphere && actState.triedBoth.flat) {
+    actState.score = activities[currentActivity].maxScore;
+    document.getElementById('eclipse-hint').innerHTML = '<strong style="color:var(--accent-green)">Parabéns!</strong> A esfera SEMPRE projeta sombra circular. O disco muda de formato!';
+    showNextBtn('Finalizar');
+  }
+
+  window.drawEclipse();
+}
+
+// ===== SHIP SIMULATION =====
+function renderShipSimulation(act) {
+  const content = document.getElementById('act-content');
+  content.innerHTML = `
+    <div class="sim-container">
+      <div class="sim-canvas-wrap">
+        <canvas id="ship-canvas" width="700" height="350"></canvas>
+      </div>
+      <div class="sim-description">
+        Use os botões para mover o navio para longe. Compare o que acontece na <strong>Terra esférica</strong> vs <strong>Terra plana</strong>.
+      </div>
+      <div class="sim-controls">
+        <div class="sim-btn" onclick="toggleShipShape('sphere')" id="btn-ship-sphere" style="border-color:var(--accent-green);background:rgba(81,207,102,0.15);">Terra Esférica</div>
+        <div class="sim-btn" onclick="toggleShipShape('flat')" id="btn-ship-flat">Terra Plana</div>
+      </div>
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:12px;">
+        <button class="sim-btn" id="ship-sail-btn" ontouchstart="startSailing()" ontouchend="stopSailing()" onmousedown="startSailing()" onmouseup="stopSailing()" onmouseleave="stopSailing()">Afastar Navio ➡️</button>
+        <button class="sim-btn" onclick="resetShip()">Voltar</button>
+      </div>
+      <div class="sim-label" id="ship-hint">Segure o botão para afastar o navio</div>
+    </div>
+  `;
+
+  actState.shipShape = 'sphere';
+  actState.shipPos = 0;
+  actState.sailing = false;
+  actState.shipTriedBoth = { sphere: false, flat: false };
+  actState.shipTriedBoth.sphere = true;
+
+  drawShip();
+  function animate() {
+    if (actState.sailing && actState.shipPos < 100) {
+      actState.shipPos += 0.5;
+      drawShip();
+    }
+    requestAnimationFrame(animate);
+  }
+  animate();
+}
+
+function startSailing() { actState.sailing = true; }
+function stopSailing() { actState.sailing = false; }
+function resetShip() { actState.shipPos = 0; drawShip(); }
+
+function toggleShipShape(shape) {
+  actState.shipShape = shape;
+  actState.shipTriedBoth[shape] = true;
+  actState.shipPos = 0;
+
+  document.getElementById('btn-ship-sphere').style.borderColor = shape === 'sphere' ? 'var(--accent-green)' : 'var(--primary)';
+  document.getElementById('btn-ship-sphere').style.background = shape === 'sphere' ? 'rgba(81,207,102,0.15)' : 'rgba(108,99,255,0.15)';
+  document.getElementById('btn-ship-flat').style.borderColor = shape === 'flat' ? 'var(--accent-green)' : 'var(--primary)';
+  document.getElementById('btn-ship-flat').style.background = shape === 'flat' ? 'rgba(81,207,102,0.15)' : 'rgba(108,99,255,0.15)';
+
+  if (actState.shipTriedBoth.sphere && actState.shipTriedBoth.flat) {
+    actState.score = activities[currentActivity].maxScore;
+    document.getElementById('ship-hint').innerHTML = '<strong style="color:var(--accent-green)">Parabéns!</strong> Na Terra esférica, o casco some primeiro pela curvatura!';
+    showNextBtn('Finalizar');
+  }
+
+  drawShip();
+}
+
+function drawShip() {
+  const canvas = document.getElementById('ship-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  const horizonY = H * 0.48;
+  const t = actState.shipPos / 100; // 0 to 1
+  const shipX = 100 + t * 520;
+
+  // Sky (both modes)
+  const skyGrad = ctx.createLinearGradient(0, 0, 0, horizonY);
+  skyGrad.addColorStop(0, '#0d1b3e');
+  skyGrad.addColorStop(0.5, '#1a4a7a');
+  skyGrad.addColorStop(1, '#4fc3f7');
+  ctx.fillStyle = skyGrad;
+  ctx.fillRect(0, 0, W, horizonY + 5);
+
+  // Clouds
+  ctx.fillStyle = 'rgba(255,255,255,0.25)';
+  ctx.beginPath(); ctx.arc(180, 45, 25, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(205, 40, 18, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(480, 55, 28, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(510, 48, 20, 0, Math.PI * 2); ctx.fill();
+
+  if (actState.shipShape === 'sphere') {
+    // === TERRA ESFÉRICA ===
+    // Strategy: draw the boat FIRST, then draw water ON TOP to occlude it from below.
+    // The boat "sinks" behind the curved water as it goes further.
+
+    // Boat anchor Y = horizonY (sits on water surface near observer)
+    // As t increases, the boat position stays at horizonY but the
+    // "water cover" rises to hide it from bottom up.
+    const boatY = horizonY;
+
+    // How many pixels of the boat are hidden (boat is ~70px tall: -55 to +15)
+    // At t=0: 0px hidden. At t=1: 75px hidden (everything).
+    const hideStart = 0.15;
+    const hidePixels = t <= hideStart ? 0 : ((t - hideStart) / (1 - hideStart)) * 80;
+
+    // Clip: only show the part of the boat ABOVE the water cover line
+    const waterCoverY = boatY + 15 - hidePixels; // starts at hull bottom, rises up
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(0, 0, W, waterCoverY);
+    ctx.clip();
+    drawBoat(ctx, shipX, boatY, 1);
+    ctx.restore();
+
+    // Now draw the ocean on top (covers anything below waterCoverY)
+    ctx.fillStyle = '#01579b';
+    ctx.beginPath();
+    ctx.moveTo(0, horizonY);
+    ctx.quadraticCurveTo(W * 0.4, horizonY + 50, W, horizonY + 100);
+    ctx.lineTo(W, H);
+    ctx.lineTo(0, H);
+    ctx.closePath();
+    ctx.fill();
+
+    // Lighter top layer of water
+    const waterGrad = ctx.createLinearGradient(0, horizonY, 0, horizonY + 60);
+    waterGrad.addColorStop(0, '#0288d1');
+    waterGrad.addColorStop(1, 'transparent');
+    ctx.fillStyle = waterGrad;
+    ctx.beginPath();
+    ctx.moveTo(0, horizonY);
+    ctx.quadraticCurveTo(W * 0.4, horizonY + 50, W, horizonY + 100);
+    ctx.lineTo(W, horizonY + 140);
+    ctx.lineTo(0, horizonY + 140);
+    ctx.closePath();
+    ctx.fill();
+
+    // Waves
+    ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+    ctx.lineWidth = 1;
+    for (let wy = horizonY + 6; wy < H; wy += 13) {
+      ctx.beginPath();
+      for (let wx = 0; wx < W; wx += 4) {
+        const curveOff = 50 * (wx / W) * (wx / W);
+        ctx.lineTo(wx, wy + curveOff + Math.sin((wx + wy) * 0.06) * 2);
+      }
+      ctx.stroke();
+    }
+
+    // Observer (on land, left side)
+    drawObserver(ctx, 45, horizonY - 5);
+
+    // Horizon line
+    ctx.setLineDash([5, 5]);
+    ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+    ctx.beginPath();
+    ctx.moveTo(0, horizonY);
+    ctx.lineTo(W, horizonY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+    ctx.font = '11px sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('Linha do horizonte', W - 15, horizonY - 6);
+
+    // Annotations
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#ffd43b';
+    ctx.font = 'bold 14px sans-serif';
+    if (t > 0.7) {
+      ctx.fillText('O casco sumiu! Só a vela aparece!', Math.min(shipX, W - 150), horizonY - 75);
+      ctx.beginPath();
+      ctx.moveTo(Math.min(shipX, W - 150), horizonY - 71);
+      ctx.lineTo(Math.min(shipX, W - 150) - 5, horizonY - 65);
+      ctx.lineTo(Math.min(shipX, W - 150) + 5, horizonY - 65);
+      ctx.closePath();
+      ctx.fill();
+    } else if (t > 0.35) {
+      ctx.fillText('O casco começa a sumir...', shipX, horizonY - 70);
+      ctx.beginPath();
+      ctx.moveTo(shipX, horizonY - 66);
+      ctx.lineTo(shipX - 5, horizonY - 60);
+      ctx.lineTo(shipX + 5, horizonY - 60);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+  } else {
+    // === TERRA PLANA ===
+    // Flat water, ship just shrinks uniformly
+    ctx.fillStyle = '#01579b';
+    ctx.fillRect(0, horizonY, W, H - horizonY);
+
+    const waterGrad = ctx.createLinearGradient(0, horizonY, 0, horizonY + 40);
+    waterGrad.addColorStop(0, '#0288d1');
+    waterGrad.addColorStop(1, 'transparent');
+    ctx.fillStyle = waterGrad;
+    ctx.fillRect(0, horizonY, W, 40);
+
+    // Waves
+    ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+    ctx.lineWidth = 1;
+    for (let wy = horizonY + 6; wy < H; wy += 13) {
+      ctx.beginPath();
+      for (let wx = 0; wx < W; wx += 4) {
+        ctx.lineTo(wx, wy + Math.sin((wx + wy) * 0.06) * 2);
+      }
+      ctx.stroke();
+    }
+
+    // Ship just gets smaller — everything visible including hull
+    const scale = Math.max(0.18, 1 - t * 0.82);
+    drawBoat(ctx, shipX, horizonY - 10 * scale, scale);
+
+    // Observer
+    drawObserver(ctx, 45, horizonY - 5);
+
+    // Horizon line
+    ctx.setLineDash([5, 5]);
+    ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+    ctx.beginPath();
+    ctx.moveTo(0, horizonY);
+    ctx.lineTo(W, horizonY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+    ctx.font = '11px sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('Linha do horizonte', W - 15, horizonY - 6);
+
+    // Annotation
+    if (t > 0.35) {
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#ffd43b';
+      ctx.font = 'bold 14px sans-serif';
+      ctx.fillText('Navio inteiro visível, só fica menor!', shipX, horizonY - 25 * scale - 45);
+    }
+  }
+
+  // Mode label
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 15px sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText(actState.shipShape === 'sphere' ? 'Terra Esférica' : 'Terra Plana', 15, 25);
+}
+
+function drawBoat(ctx, x, y, scale) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(scale, scale);
+
+  // Hull
+  ctx.fillStyle = '#5d4037';
+  ctx.beginPath();
+  ctx.moveTo(-25, 0);
+  ctx.lineTo(-20, 15);
+  ctx.lineTo(25, 15);
+  ctx.lineTo(30, 0);
+  ctx.closePath();
+  ctx.fill();
+
+  // Mast
+  ctx.fillStyle = '#795548';
+  ctx.fillRect(-2, -50, 4, 50);
+
+  // Sail
+  ctx.fillStyle = '#fafafa';
+  ctx.beginPath();
+  ctx.moveTo(2, -45);
+  ctx.lineTo(2, -5);
+  ctx.lineTo(25, -10);
+  ctx.closePath();
+  ctx.fill();
+
+  // Flag
+  ctx.fillStyle = '#e53935';
+  ctx.fillRect(-2, -55, 12, 8);
+
+  ctx.restore();
+}
+
+function drawObserver(ctx, x, y) {
+  ctx.save();
+  ctx.translate(x, y);
+  // Body
+  ctx.fillStyle = '#fdd835';
+  ctx.fillRect(-4, -25, 8, 15);
+  // Head
+  ctx.fillStyle = '#ffcc80';
+  ctx.beginPath();
+  ctx.arc(0, -30, 7, 0, Math.PI * 2);
+  ctx.fill();
+  // Legs
+  ctx.fillStyle = '#1565c0';
+  ctx.fillRect(-4, -10, 3, 12);
+  ctx.fillRect(1, -10, 3, 12);
+  ctx.restore();
+}
+
+// ===== RESULTS =====
+function showResults() {
+  showScreen('results-screen');
+
+  const maxTotal = activities.reduce((sum, a) => sum + a.maxScore, 0);
+  const pct = totalScore / maxTotal;
+
+  let stars, message;
+  if (pct >= 0.9) {
+    stars = '🌟🌟🌟';
+    message = 'Incrível! Você é um mestre da ciência!';
+  } else if (pct >= 0.7) {
+    stars = '⭐⭐';
+    message = 'Muito bom! Você aprendeu bastante!';
+  } else if (pct >= 0.5) {
+    stars = '⭐';
+    message = 'Bom trabalho! Jogue de novo para melhorar!';
+  } else {
+    stars = '💪';
+    message = 'Continue estudando! Você vai conseguir!';
+  }
+
+  document.getElementById('res-stars').textContent = stars;
+  document.getElementById('res-score').textContent = totalScore;
+  document.getElementById('res-message').textContent = message;
+
+  let detail = '';
+  activities.forEach(act => {
+    const score = activityScores[act.id] || 0;
+    detail += `
+      <div class="results-row">
+        <span>${act.icon} ${act.label}</span>
+        <span>${score}/${act.maxScore}</span>
+      </div>
+    `;
+  });
+  detail += `
+    <div class="results-row" style="font-weight:700; font-size:16px; border-top: 2px solid rgba(255,255,255,0.1); padding-top: 12px;">
+      <span>Total</span>
+      <span>${totalScore}/${maxTotal}</span>
+    </div>
+  `;
+  document.getElementById('res-detail').innerHTML = detail;
+}
+
+function showMap() {
+  showScreen('map-screen');
+  renderMap();
+}
+</script>
+</body>
+</html>
