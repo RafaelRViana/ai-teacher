@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Aventura Espacial - Ciências 6º Ano</title>
 <style>
   :root {
@@ -20,14 +20,26 @@
 
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
+  html {
+    height: 100%;
+    overflow: hidden;
+  }
+
   body {
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     background: var(--bg-dark);
     color: var(--text);
     min-height: 100dvh;
+    min-height: -webkit-fill-available;
+    height: 100%;
     overflow-x: hidden;
+    overflow-y: auto;
     user-select: none;
     -webkit-user-select: none;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
   }
 
   /* Stars background */
@@ -61,8 +73,12 @@
     position: relative;
     z-index: 1;
     min-height: 100dvh;
+    min-height: -webkit-fill-available;
+    height: 100%;
     padding: 20px;
     animation: fadeIn 0.5s ease;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .screen.active { display: flex; flex-direction: column; }
@@ -810,6 +826,18 @@
   .fixed-footer .btn { width: 100%; max-width: 360px; }
 
   .hidden { display: none !important; }
+
+  /* Fullscreen on landscape orientation */
+  @media (orientation: landscape) {
+    body {
+      height: 100vh;
+      height: 100dvh;
+    }
+    .screen {
+      min-height: 100vh;
+      min-height: 100dvh;
+    }
+  }
 </style>
 </head>
 <body>
@@ -2274,6 +2302,23 @@ function showMap() {
   showScreen('map-screen');
   renderMap();
 }
+
+// Force layout recalculation on orientation change
+function handleOrientationChange() {
+  document.body.style.height = window.innerHeight + 'px';
+  const activeScreen = document.querySelector('.screen.active');
+  if (activeScreen) {
+    activeScreen.style.minHeight = window.innerHeight + 'px';
+  }
+  window.scrollTo(0, 0);
+}
+
+window.addEventListener('resize', handleOrientationChange);
+window.addEventListener('orientationchange', function() {
+  setTimeout(handleOrientationChange, 100);
+  setTimeout(handleOrientationChange, 300);
+});
+handleOrientationChange();
 </script>
 </body>
 </html>
