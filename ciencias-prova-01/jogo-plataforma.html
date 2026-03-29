@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+<title>Explorador das Evidências - Fase 1</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0a0e27;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100dvh;
+    overflow: hidden;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+  }
+  canvas {
+    display: block;
+    width: 100vw;
+    max-width: 100%;
+    image-rendering: pixelated;
+    border-radius: 0;
+  }
+  #question-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 100;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  #question-overlay.visible { display: flex; }
+  .q-card {
+    background: #1a1f4a;
+    border-radius: 20px;
+    padding: 28px 24px;
+    max-width: 400px;
+    width: 100%;
+    border: 2px solid rgba(108,99,255,0.4);
+  }
+  .q-enemy-label {
+    font-size: 12px;
+    color: #ff6b6b;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+  .q-text {
+    color: #e8e8f0;
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+  .q-options { display: flex; flex-direction: column; gap: 10px; }
+  .q-opt {
+    padding: 14px 18px;
+    background: rgba(255,255,255,0.05);
+    border: 2px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    color: #e8e8f0;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+    line-height: 1.4;
+  }
+  .q-opt:active { transform: scale(0.97); }
+  .q-opt.correct { border-color: #51cf66; background: rgba(81,207,102,0.15); }
+  .q-opt.wrong { border-color: #ff6b6b; background: rgba(255,107,107,0.15); }
+  .q-feedback {
+    margin-top: 16px;
+    padding: 14px;
+    border-radius: 12px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #e8e8f0;
+    display: none;
+  }
+  .q-feedback.visible { display: block; }
+  .q-feedback.correct { background: rgba(81,207,102,0.1); border: 1px solid rgba(81,207,102,0.3); }
+  .q-feedback.wrong { background: rgba(255,107,107,0.1); border: 1px solid rgba(255,107,107,0.3); }
+</style>
+</head>
+<body>
+<canvas id="game"></canvas>
+<div id="question-overlay">
+  <div class="q-card">
+    <div class="q-enemy-label" id="q-label"></div>
+    <div class="q-text" id="q-text"></div>
+    <div class="q-options" id="q-options"></div>
+    <div class="q-feedback" id="q-feedback"></div>
+  </div>
+</div>
+
+<script>
+// ===== CANVAS SETUP =====
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+const GW = 800, GH = 450;
+canvas.width = GW;
+canvas.height = GH;
+
+// ===== GAME CONSTANTS =====
+const GRAVITY = 0.6;
+const JUMP_FORCE = -12;
+const PLAYER_SPEED = 3;
+const GROUND_Y = GH - 60;
+
+// ===== GAME STATE =====
+let state = 'TITLE'; // TITLE, PLAYING, QUESTION, BOSS_FIGHT, WIN, DEAD, GAMEOVER
+let camera = { x: 0 };
+let frameCount = 0;
+let shakeTimer = 0;
+let questionCallback = null;
+
+const player = {
+  x: 80, y: GROUND_Y - 40,
+  w: 28, h: 40,
+  vx: 0, vy: 0,
+  onGround: false,
+  lives: 3,
+  score: 0,
+  scrolls: 0,
+  maxScrolls: 0,
+  facing: 1,
+  runFrame: 0,
+  invincible: 0,
+  autoRun: true
+};
+
+// ===== LEVEL DATA =====
+const LEVEL_END = 5200;
+let platforms = [];
+let collectibles = [];
+let enemies = [];
+let decorations = [];
+let particles = [];
+let stars = [];
+let boss = null;
+
+function buildLevel() {
+  platforms = [];
+  collectibles = [];
+  enemies = [];
+  decorations = [];
+  particles = [];
+  stars = [];
+
+  // Generate stars
+  for (let i = 0; i < 80; i++) {
+    stars.push({
+      x: Math.random() * LEVEL_END,
+      y: Math.random() * (GH * 0.5),
+      size: Math.random() * 2 + 0.5,
+      twinkle: Math.random() * Math.PI * 2
+    });
+  }
+
+  // Ground segments (with gaps)
+  const groundSegments = [
+    [0, 600], [680, 1100], [1180, 1700], [1800, 2200],
+    [2320, 2800], [2900, 3400], [3500, 3900], [4000, LEVEL_END + 200]
+  ];
+  groundSegments.forEach(([start, end]) => {
+    platforms.push({ x: start, y: GROUND_Y, w: end - start, h: 80, isGround: true });
+  });
+
+  // Floating platforms
+  const floats = [
+    // Section 1: Tutorial
+    [350, GROUND_Y - 70, 100], [500, GROUND_Y - 130, 80],
+    // Section 2: First challenges
+    [750, GROUND_Y - 80, 90], [900, GROUND_Y - 140, 80], [1050, GROUND_Y - 90, 100],
+    // Section 3: Enemies area
+    [1350, GROUND_Y - 100, 120], [1550, GROUND_Y - 160, 90],
+    [1750, GROUND_Y - 80, 100],
+    // Section 4: Harder
+    [2050, GROUND_Y - 120, 80], [2150, GROUND_Y - 190, 70], [2280, GROUND_Y - 130, 80],
+    [2500, GROUND_Y - 100, 100], [2650, GROUND_Y - 170, 80], [2780, GROUND_Y - 110, 100],
+    // Section 5: Pre-boss
+    [3100, GROUND_Y - 90, 110], [3250, GROUND_Y - 160, 80], [3400, GROUND_Y - 100, 100],
+    [3650, GROUND_Y - 130, 90], [3800, GROUND_Y - 80, 100],
+  ];
+  floats.forEach(([x, y, w]) => {
+    platforms.push({ x, y, w, h: 16, isGround: false });
+  });
+
+  // Collectible scrolls
+  const scrollPositions = [
+    [200, GROUND_Y - 50], [380, GROUND_Y - 110], [530, GROUND_Y - 170],
+    [780, GROUND_Y - 120], [930, GROUND_Y - 180], [1080, GROUND_Y - 130],
+    [1400, GROUND_Y - 140], [1580, GROUND_Y - 200],
+    [2080, GROUND_Y - 160], [2180, GROUND_Y - 230],
+    [2530, GROUND_Y - 140], [2680, GROUND_Y - 210],
+    [3130, GROUND_Y - 130], [3280, GROUND_Y - 200],
+    [3680, GROUND_Y - 170], [3830, GROUND_Y - 120],
+  ];
+  scrollPositions.forEach(([x, y], i) => {
+    collectibles.push({ x, y, w: 20, h: 24, collected: false, type: 'scroll', bobOffset: i * 0.7 });
+  });
+  player.maxScrolls = scrollPositions.length;
+
+  // Star collectibles (bonus)
+  const starPositions = [
+    [450, GROUND_Y - 200], [1000, GROUND_Y - 200], [1600, GROUND_Y - 230],
+    [2200, GROUND_Y - 260], [2700, GROUND_Y - 240], [3350, GROUND_Y - 230],
+  ];
+  starPositions.forEach(([x, y], i) => {
+    collectibles.push({ x, y, w: 18, h: 18, collected: false, type: 'star', bobOffset: i * 1.1 });
+  });
+
+  // === QUESTION POOL (shuffled each playthrough) ===
+  const questionPool = [
+    {
+      label: 'Mito Antigo',
+      text: '"A Terra parece plana, então ela é plana!" Isso é verdade?',
+      options: ['Sim, nossos olhos não mentem', 'Não — somos muito pequenos para ver a curvatura', 'Sim, os gregos concordavam'],
+      correct: 1,
+      explanation: 'Somos muito pequenos em relação à Terra. É como uma formiga numa bola de futebol — ela não percebe a curva.'
+    },
+    {
+      label: 'Mito do Eclipse',
+      text: 'Um disco plano também projetaria sombra circular na Lua durante um eclipse?',
+      options: ['Sim, qualquer formato faz sombra circular', 'Não — um disco faz sombras ovais ou retas dependendo do ângulo'],
+      correct: 1,
+      explanation: 'Um disco só faz sombra circular de frente. De lado, a sombra é uma linha fina. A Terra SEMPRE projeta sombra circular — só uma esfera faz isso!'
+    },
+    {
+      label: 'Mito da Gravidade',
+      text: 'Se a Terra é redonda, por que não caímos?',
+      options: ['Porque a Terra gira rápido', 'Porque estamos no lado de cima', 'Porque a gravidade puxa tudo para o centro'],
+      correct: 2,
+      explanation: 'A gravidade puxa tudo para o centro da Terra. "Baixo" é sempre o centro, não importa onde você esteja!'
+    },
+    {
+      label: 'Mito do Navio',
+      text: 'O que some primeiro quando um navio se afasta no mar?',
+      options: ['O mastro (parte de cima)', 'O casco (parte de baixo)', 'Tudo some de uma vez'],
+      correct: 1,
+      explanation: 'O casco some primeiro por estar "atrás" da curvatura. O mastro continua visível por mais tempo.'
+    },
+    {
+      label: 'Mito das Culturas',
+      text: 'Os hindus antigos acreditavam que a Terra ficava sobre o quê?',
+      options: ['Um barco gigante', 'Elefantes sobre uma tartaruga', 'Uma grande montanha', 'Nuvens mágicas'],
+      correct: 1,
+      explanation: 'Os hindus imaginavam a Terra como metade de uma esfera sobre elefantes, que ficavam no casco de uma tartaruga gigante!'
+    },
+    {
+      label: 'Mito de Pitágoras',
+      text: 'Pitágoras foi um dos primeiros a defender que a Terra é esférica. Em que século ele viveu?',
+      options: ['Século 1 d.C.', 'Cerca de 500 a.C.', 'Século 15', 'Século 10 a.C.'],
+      correct: 1,
+      explanation: 'Pitágoras viveu por volta de 500 a.C. e foi um dos pioneiros a propor a esfericidade da Terra!'
+    },
+    {
+      label: 'Mito do "Pálido Ponto Azul"',
+      text: 'Quem pediu que a sonda Voyager 1 tirasse a foto da Terra conhecida como "Pálido Ponto Azul"?',
+      options: ['Albert Einstein', 'Isaac Newton', 'Carl Sagan', 'Galileu Galilei'],
+      correct: 2,
+      explanation: 'Carl Sagan pediu que a Voyager 1 fotografasse a Terra de longe. Na foto, a Terra aparece como um pequeno ponto azul.'
+    },
+    {
+      label: 'Mito da Zona Habitável',
+      text: 'O que torna a Terra especial no Sistema Solar para abrigar vida?',
+      options: ['Estar mais perto do Sol', 'Estar na zona habitável, com água líquida e atmosfera', 'Ter anéis como Saturno'],
+      correct: 1,
+      explanation: 'A Terra está na zona habitável — região com temperatura que permite água líquida, essencial para a vida.'
+    },
+    {
+      label: 'Mito de Eratóstenes',
+      text: 'Como Eratóstenes provou que a Terra é esférica?',
+      options: ['Viajou ao redor do mundo', 'Comparou sombras em Alexandria e Siena', 'Olhou pelo telescópio', 'Mergulhou no oceano'],
+      correct: 1,
+      explanation: 'Eratóstenes viu que no solstício, Siena não tinha sombra (Sol a pino) mas Alexandria tinha. Isso só é possível com curvatura!'
+    },
+    {
+      label: 'Mito Terraplanista',
+      text: 'Por que sentimos que o chão é plano se a Terra é redonda?',
+      options: ['Porque a Terra É plana', 'Porque a Terra é tão grande que a curvatura é imperceptível para nós', 'Porque só o Brasil é plano'],
+      correct: 1,
+      explanation: 'A Terra tem ~12.700 km de diâmetro. Somos tão pequenos que não percebemos a curva, assim como uma formiga não percebe a curva de uma bola.'
+    },
+    {
+      label: 'Mito do Método',
+      text: 'Qual é a primeira etapa do método científico?',
+      options: ['Criar uma hipótese', 'Observar o problema', 'Fazer um experimento', 'Publicar o resultado'],
+      correct: 1,
+      explanation: 'Tudo começa com a observação! Primeiro você percebe algo, depois formula hipóteses e testa.'
+    },
+    {
+      label: 'Mito de Descartes',
+      text: 'René Descartes é famoso pela frase "Penso, logo existo". O que ele defendia?',
+      options: ['Que pensar é mais importante que comer', 'Que a razão é a base de todo conhecimento', 'Que os planetas pensam'],
+      correct: 1,
+      explanation: 'Descartes defendia o racionalismo — a razão como base do conhecimento. Ele lançou as bases do método científico moderno.'
+    },
+  ];
+
+  // Shuffle question pool
+  function shuffleArr(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  const shuffledQuestions = shuffleArr(questionPool);
+
+  // Enemy positions (fixed) get random questions from pool
+  const enemyPositions = [
+    { x: 1380, y: GROUND_Y - 140 },
+    { x: 2080, y: GROUND_Y - 160 },
+    { x: 2530, y: GROUND_Y - 140 },
+    { x: 3130, y: GROUND_Y - 130 },
+  ];
+  enemyPositions.forEach((pos, i) => {
+    const q = shuffledQuestions[i];
+    enemies.push({
+      ...pos, ...q,
+      w: 44, h: 44,
+      defeated: false,
+      bobOffset: Math.random() * Math.PI * 2
+    });
+  });
+
+  // Decorations (Greek columns)
+  const colPositions = [100, 400, 800, 1200, 1600, 2000, 2400, 2800, 3200, 3600, 4000, 4400];
+  colPositions.forEach(x => {
+    if (Math.random() > 0.3) {
+      decorations.push({ x, type: 'column', h: 60 + Math.random() * 40 });
+    }
+  });
+  // Trees/bushes
+  for (let x = 50; x < LEVEL_END; x += 200 + Math.random() * 300) {
+    decorations.push({ x, type: 'bush' });
+  }
+
+  // Boss
+  boss = {
+    x: 4600, y: GROUND_Y - 70,
+    w: 70, h: 70,
+    phase: 0, // 0=waiting, 1=fighting, 2=defeated
+    currentQ: 0,
+    health: 3,
+    shakeTimer: 0,
+    questions: shuffledQuestions.slice(4, 7).map(q => ({
+      ...q,
+      label: 'Boss: O Grande Mito'
+    }))
+  };
+}
+
+// ===== PARTICLE SYSTEM =====
+function spawnParticles(x, y, color, count) {
+  for (let i = 0; i < count; i++) {
+    particles.push({
+      x, y,
+      vx: (Math.random() - 0.5) * 6,
+      vy: (Math.random() - 1) * 5,
+      life: 30 + Math.random() * 20,
+      maxLife: 50,
+      color,
+      size: 2 + Math.random() * 3
+    });
+  }
+}
+
+// ===== INPUT =====
+let jumpPressed = false;
+let jumpHeld = false;
+
+function handleTouchStart(e) {
+  e.preventDefault();
+  if (state === 'TITLE') { startGame(); return; }
+  if (state === 'WIN' || state === 'GAMEOVER') { resetGame(); return; }
+  if (state === 'PLAYING' || state === 'BOSS_FIGHT') {
+    jumpPressed = true;
+    jumpHeld = true;
+  }
+}
+
+function handleTouchEnd(e) {
+  e.preventDefault();
+  jumpHeld = false;
+}
+
+canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
+canvas.addEventListener('touchend', handleTouchEnd, { passive: false });
+canvas.addEventListener('mousedown', handleTouchStart);
+canvas.addEventListener('mouseup', handleTouchEnd);
+
+// Keyboard support
+document.addEventListener('keydown', e => {
+  if (e.code === 'Space' || e.code === 'ArrowUp') {
+    e.preventDefault();
+    if (state === 'TITLE') { startGame(); return; }
+    if (state === 'WIN' || state === 'GAMEOVER') { resetGame(); return; }
+    jumpPressed = true;
+    jumpHeld = true;
+  }
+});
+document.addEventListener('keyup', e => {
+  if (e.code === 'Space' || e.code === 'ArrowUp') jumpHeld = false;
+});
+
+// ===== GAME LOGIC =====
+function startGame() {
+  state = 'PLAYING';
+  player.x = 80;
+  player.y = GROUND_Y - 50;
+  player.vx = 0;
+  player.vy = 0;
+  player.lives = 3;
+  player.score = 0;
+  player.scrolls = 0;
+  player.invincible = 0;
+  player.autoRun = true;
+  camera.x = 0;
+  buildLevel();
+}
+
+function resetGame() {
+  state = 'TITLE';
+}
+
+function update() {
+  frameCount++;
+  if (state !== 'PLAYING' && state !== 'BOSS_FIGHT') return;
+
+  // Player auto-run
+  if (player.autoRun) {
+    player.vx = PLAYER_SPEED;
+    player.facing = 1;
+  }
+
+  // Jump
+  if (jumpPressed && player.onGround) {
+    player.vy = JUMP_FORCE;
+    player.onGround = false;
+    jumpPressed = false;
+  }
+  // Variable jump height
+  if (!jumpHeld && player.vy < -4) {
+    player.vy = -4;
+  }
+  jumpPressed = false;
+
+  // Gravity
+  player.vy += GRAVITY;
+  if (player.vy > 15) player.vy = 15;
+
+  // Move X
+  player.x += player.vx;
+
+  // Move Y
+  player.y += player.vy;
+  player.onGround = false;
+
+  // Platform collision
+  platforms.forEach(p => {
+    if (player.x + player.w > p.x && player.x < p.x + p.w) {
+      // Landing on top
+      if (player.vy >= 0 &&
+          player.y + player.h >= p.y &&
+          player.y + player.h <= p.y + p.h + player.vy + 2) {
+        player.y = p.y - player.h;
+        player.vy = 0;
+        player.onGround = true;
+      }
+    }
+  });
+
+  // Fall death
+  if (player.y > GH + 50) {
+    playerHit();
+    // Respawn at last safe position
+    player.x = Math.max(80, player.x - 200);
+    player.y = GROUND_Y - 80;
+    player.vy = 0;
+  }
+
+  // Run animation
+  if (player.onGround && Math.abs(player.vx) > 0) {
+    player.runFrame += 0.2;
+  }
+
+  // Invincibility timer
+  if (player.invincible > 0) player.invincible--;
+
+  // Collectibles
+  collectibles.forEach(c => {
+    if (c.collected) return;
+    if (rectsOverlap(player, c)) {
+      c.collected = true;
+      if (c.type === 'scroll') {
+        player.scrolls++;
+        player.score += 15;
+        spawnParticles(c.x + c.w/2, c.y + c.h/2, '#ffd43b', 8);
+      } else {
+        player.score += 25;
+        spawnParticles(c.x + c.w/2, c.y + c.h/2, '#6c63ff', 10);
+      }
+    }
+  });
+
+  // Enemies
+  enemies.forEach(en => {
+    if (en.defeated) return;
+    if (rectsOverlap(player, en)) {
+      player.autoRun = false;
+      player.vx = 0;
+      state = 'QUESTION';
+      showQuestion(en, (correct) => {
+        if (correct) {
+          en.defeated = true;
+          player.score += 30;
+          spawnParticles(en.x + en.w/2, en.y + en.h/2, '#51cf66', 15);
+        } else {
+          playerHit();
+          player.x -= 60;
+        }
+        player.autoRun = true;
+        state = 'PLAYING';
+      });
+    }
+  });
+
+  // Boss trigger
+  if (boss && boss.phase === 0 && player.x > boss.x - 100) {
+    boss.phase = 1;
+    player.autoRun = false;
+    player.vx = 0;
+    state = 'BOSS_FIGHT';
+    showBossQuestion();
+  }
+
+  // Camera
+  const targetCam = player.x - GW * 0.35;
+  camera.x += (targetCam - camera.x) * 0.1;
+  if (camera.x < 0) camera.x = 0;
+
+  // Particles
+  particles.forEach(p => {
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vy += 0.15;
+    p.life--;
+  });
+  particles = particles.filter(p => p.life > 0);
+
+  // Shake
+  if (shakeTimer > 0) shakeTimer--;
+}
+
+function playerHit() {
+  if (player.invincible > 0) return;
+  player.lives--;
+  player.invincible = 90;
+  shakeTimer = 15;
+  spawnParticles(player.x + player.w/2, player.y + player.h/2, '#ff6b6b', 10);
+  if (player.lives <= 0) {
+    state = 'GAMEOVER';
+  }
+}
+
+function rectsOverlap(a, b) {
+  return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
+}
+
+// ===== QUESTION SYSTEM =====
+function showQuestion(data, callback) {
+  const overlay = document.getElementById('question-overlay');
+  overlay.classList.add('visible');
+  document.getElementById('q-label').textContent = data.label || 'Derrote o Mito!';
+  document.getElementById('q-text').textContent = data.text;
+  const fb = document.getElementById('q-feedback');
+  fb.classList.remove('visible', 'correct', 'wrong');
+
+  const optDiv = document.getElementById('q-options');
+  optDiv.innerHTML = '';
+
+  // Shuffle option order while tracking correct answer
+  const indices = data.options.map((_, i) => i);
+  for (let i = indices.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [indices[i], indices[j]] = [indices[j], indices[i]];
+  }
+  const shuffledCorrect = indices.indexOf(data.correct);
+
+  indices.forEach((origIdx, displayIdx) => {
+    const btn = document.createElement('div');
+    btn.className = 'q-opt';
+    btn.textContent = data.options[origIdx];
+    btn.onclick = () => {
+      if (btn.dataset.answered) return;
+      optDiv.querySelectorAll('.q-opt').forEach((b, j) => {
+        b.dataset.answered = '1';
+        if (j === shuffledCorrect) b.classList.add('correct');
+        if (j === displayIdx && j !== shuffledCorrect) b.classList.add('wrong');
+      });
+      const isCorrect = displayIdx === shuffledCorrect;
+      fb.textContent = (isCorrect ? '✓ ' : '✗ ') + data.explanation;
+      fb.className = 'q-feedback visible ' + (isCorrect ? 'correct' : 'wrong');
+
+      setTimeout(() => {
+        overlay.classList.remove('visible');
+        callback(isCorrect);
+      }, 2200);
+    };
+    optDiv.appendChild(btn);
+  });
+}
+
+function showBossQuestion() {
+  if (boss.currentQ >= boss.questions.length) {
+    boss.phase = 2;
+    player.score += 50;
+    spawnParticles(boss.x + boss.w/2, boss.y + boss.h/2, '#ffd43b', 30);
+    state = 'WIN';
+    return;
+  }
+  const q = boss.questions[boss.currentQ];
+  showQuestion(q, (correct) => {
+    if (correct) {
+      boss.health--;
+      boss.currentQ++;
+      boss.shakeTimer = 20;
+      spawnParticles(boss.x + boss.w/2, boss.y + boss.h/2, '#ff6b6b', 12);
+      if (boss.currentQ >= boss.questions.length) {
+        boss.phase = 2;
+        player.score += 50;
+        state = 'WIN';
+        spawnParticles(boss.x + boss.w/2, boss.y + boss.h/2, '#ffd43b', 30);
+      } else {
+        state = 'BOSS_FIGHT';
+        setTimeout(() => showBossQuestion(), 500);
+      }
+    } else {
+      playerHit();
+      if (player.lives <= 0) {
+        state = 'GAMEOVER';
+      } else {
+        state = 'BOSS_FIGHT';
+        setTimeout(() => showBossQuestion(), 500);
+      }
+    }
+  });
+  state = 'QUESTION';
+}
+
+// ===== RENDERING =====
+function draw() {
+  ctx.save();
+
+  // Screen shake
+  if (shakeTimer > 0) {
+    ctx.translate(Math.random() * 6 - 3, Math.random() * 6 - 3);
+  }
+
+  if (state === 'TITLE') {
+    drawTitle();
+  } else if (state === 'GAMEOVER') {
+    drawGameOver();
+  } else if (state === 'WIN') {
+    drawWin();
+  } else {
+    drawGame();
+  }
+
+  ctx.restore();
+}
+
+function drawTitle() {
+  // Sky gradient
+  const grad = ctx.createLinearGradient(0, 0, 0, GH);
+  grad.addColorStop(0, '#0a0e27');
+  grad.addColorStop(0.6, '#1a237e');
+  grad.addColorStop(1, '#283593');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, GW, GH);
+
+  // Stars
+  for (let i = 0; i < 40; i++) {
+    const sx = (i * 97 + frameCount * 0.1) % GW;
+    const sy = (i * 53) % (GH * 0.6);
+    ctx.fillStyle = `rgba(255,255,255,${0.3 + Math.sin(frameCount * 0.05 + i) * 0.3})`;
+    ctx.fillRect(sx, sy, 1.5, 1.5);
+  }
+
+  // Ground
+  ctx.fillStyle = '#2e7d32';
+  ctx.fillRect(0, GROUND_Y, GW, GH - GROUND_Y);
+  ctx.fillStyle = '#1b5e20';
+  ctx.fillRect(0, GROUND_Y, GW, 4);
+
+  // Columns
+  drawColumn(150, GROUND_Y, 80);
+  drawColumn(600, GROUND_Y, 100);
+
+  // Player standing
+  drawPlayer(GW / 2 - 14, GROUND_Y - 44, 0, 1, false);
+
+  // Title
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#ffd43b';
+  ctx.font = 'bold 36px sans-serif';
+  ctx.fillText('Explorador das Evidências', GW / 2, 100);
+
+  ctx.fillStyle = '#b0bec5';
+  ctx.font = '18px sans-serif';
+  ctx.fillText('Fase 1 — Grécia Antiga', GW / 2, 135);
+
+  ctx.fillStyle = '#e8e8f0';
+  ctx.font = '15px sans-serif';
+  ctx.fillText('Colete pergaminhos e derrote os mitos!', GW / 2, 175);
+
+  // Blinking text
+  if (Math.floor(frameCount / 40) % 2 === 0) {
+    ctx.fillStyle = '#6c63ff';
+    ctx.font = 'bold 20px sans-serif';
+    ctx.fillText('TOQUE PARA COMEÇAR', GW / 2, GH - 100);
+  }
+
+  // Controls hint
+  ctx.fillStyle = '#78909c';
+  ctx.font = '13px sans-serif';
+  ctx.fillText('Toque na tela para pular • O explorador corre sozinho', GW / 2, GH - 60);
+}
+
+function drawGame() {
+  const cx = camera.x;
+
+  // Sky
+  const skyGrad = ctx.createLinearGradient(0, 0, 0, GH * 0.7);
+  skyGrad.addColorStop(0, '#0a0e27');
+  skyGrad.addColorStop(0.4, '#1a237e');
+  skyGrad.addColorStop(1, '#303f9f');
+  ctx.fillStyle = skyGrad;
+  ctx.fillRect(0, 0, GW, GH);
+
+  // Parallax mountains
+  ctx.fillStyle = '#1a2744';
+  for (let i = 0; i < 8; i++) {
+    const mx = i * 250 - (cx * 0.15) % 250;
+    const mh = 60 + Math.sin(i * 2.3) * 30;
+    ctx.beginPath();
+    ctx.moveTo(mx, GROUND_Y);
+    ctx.lineTo(mx + 100, GROUND_Y - mh);
+    ctx.lineTo(mx + 200, GROUND_Y);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  // Stars (parallax)
+  stars.forEach(s => {
+    const sx = s.x - cx * 0.3;
+    if (sx < -10 || sx > GW + 10) return;
+    const alpha = 0.3 + Math.sin(frameCount * 0.03 + s.twinkle) * 0.3;
+    ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+    ctx.beginPath();
+    ctx.arc(sx, s.y, s.size, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  // Decorations (behind platforms)
+  decorations.forEach(d => {
+    const dx = d.x - cx;
+    if (dx < -100 || dx > GW + 100) return;
+    if (d.type === 'column') drawColumn(dx, GROUND_Y, d.h);
+    if (d.type === 'bush') drawBush(dx, GROUND_Y);
+  });
+
+  // Platforms
+  platforms.forEach(p => {
+    const px = p.x - cx;
+    if (px > GW + 50 || px + p.w < -50) return;
+
+    if (p.isGround) {
+      // Ground
+      ctx.fillStyle = '#2e7d32';
+      ctx.fillRect(px, p.y, p.w, p.h);
+      // Grass top
+      ctx.fillStyle = '#43a047';
+      ctx.fillRect(px, p.y, p.w, 5);
+      // Dirt lines
+      ctx.fillStyle = '#1b5e20';
+      for (let gx = px; gx < px + p.w; gx += 30) {
+        ctx.fillRect(gx, p.y + 15, 15, 2);
+      }
+    } else {
+      // Floating platform — stone block
+      ctx.fillStyle = '#78909c';
+      ctx.fillRect(px, p.y, p.w, p.h);
+      ctx.fillStyle = '#90a4ae';
+      ctx.fillRect(px, p.y, p.w, 4);
+      ctx.fillStyle = '#546e7a';
+      ctx.fillRect(px, p.y + p.h - 3, p.w, 3);
+      // Stone pattern
+      ctx.fillStyle = '#607d8b';
+      ctx.fillRect(px + p.w * 0.3, p.y + 4, 2, p.h - 7);
+      ctx.fillRect(px + p.w * 0.7, p.y + 4, 2, p.h - 7);
+    }
+  });
+
+  // Collectibles
+  collectibles.forEach(c => {
+    if (c.collected) return;
+    const ccx = c.x - cx;
+    if (ccx < -30 || ccx > GW + 30) return;
+    const bob = Math.sin(frameCount * 0.06 + c.bobOffset) * 4;
+
+    if (c.type === 'scroll') {
+      // Scroll (golden)
+      ctx.fillStyle = '#ffd54f';
+      ctx.fillRect(ccx + 3, c.y + bob, 14, 20);
+      ctx.fillStyle = '#ffb300';
+      ctx.fillRect(ccx + 1, c.y + bob - 2, 18, 4);
+      ctx.fillRect(ccx + 1, c.y + bob + 18, 18, 4);
+      // Glow
+      ctx.fillStyle = 'rgba(255,213,79,0.15)';
+      ctx.beginPath();
+      ctx.arc(ccx + 10, c.y + bob + 10, 16, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      // Star
+      drawStar(ccx + 9, c.y + bob + 9, 9, '#6c63ff', '#b39ddb');
+    }
+  });
+
+  // Enemies
+  enemies.forEach(en => {
+    if (en.defeated) return;
+    const ex = en.x - cx;
+    if (ex < -50 || ex > GW + 50) return;
+    const bob = Math.sin(frameCount * 0.04 + en.bobOffset) * 5;
+    drawEnemy(ex, en.y + bob, en.w, en.h);
+  });
+
+  // Boss
+  if (boss && boss.phase !== 2) {
+    const bx = boss.x - cx;
+    if (bx < GW + 100) {
+      drawBoss(bx, boss.y, boss.w, boss.h);
+    }
+  }
+  if (boss && boss.phase === 2) {
+    // Defeated boss — smaller, grayed out
+    const bx = boss.x - cx;
+    ctx.globalAlpha = 0.3;
+    drawBoss(bx, boss.y + 20, boss.w * 0.7, boss.h * 0.7);
+    ctx.globalAlpha = 1;
+  }
+
+  // Particles
+  particles.forEach(p => {
+    const px = p.x - cx;
+    const alpha = p.life / p.maxLife;
+    ctx.fillStyle = p.color;
+    ctx.globalAlpha = alpha;
+    ctx.fillRect(px - p.size/2, p.y - p.size/2, p.size, p.size);
+  });
+  ctx.globalAlpha = 1;
+
+  // Player
+  if (player.invincible > 0 && Math.floor(frameCount / 4) % 2 === 0) {
+    // Blink when invincible
+  } else {
+    drawPlayer(player.x - cx, player.y, player.runFrame, player.facing, !player.onGround);
+  }
+
+  // === HUD ===
+  // Lives
+  for (let i = 0; i < 3; i++) {
+    ctx.fillStyle = i < player.lives ? '#ff5252' : '#37474f';
+    ctx.font = '22px sans-serif';
+    ctx.fillText('♥', 15 + i * 28, 30);
+  }
+
+  // Score
+  ctx.fillStyle = '#ffd43b';
+  ctx.font = 'bold 16px sans-serif';
+  ctx.textAlign = 'right';
+  ctx.fillText(`${player.score} pts`, GW - 15, 28);
+
+  // Scrolls counter
+  ctx.fillStyle = '#ffb300';
+  ctx.font = '14px sans-serif';
+  ctx.textAlign = 'right';
+  ctx.fillText(`📜 ${player.scrolls}/${player.maxScrolls}`, GW - 15, 50);
+
+  ctx.textAlign = 'left';
+
+  // Tutorial hint
+  if (player.x < 300 && state === 'PLAYING') {
+    ctx.fillStyle = 'rgba(255,255,255,0.6)';
+    ctx.font = '14px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Toque na tela para PULAR!', GW / 2, 80);
+    ctx.textAlign = 'left';
+  }
+
+  // Boss health bar
+  if (boss && boss.phase === 1) {
+    const barW = 200, barH = 14, barX = GW/2 - barW/2, barY = 15;
+    ctx.fillStyle = '#37474f';
+    ctx.fillRect(barX, barY, barW, barH);
+    ctx.fillStyle = '#ff5252';
+    ctx.fillRect(barX, barY, barW * (boss.health / 3), barH);
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(barX, barY, barW, barH);
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 11px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('O GRANDE MITO', GW/2, barY + 11);
+    ctx.textAlign = 'left';
+  }
+}
+
+// ===== DRAWING HELPERS =====
+function drawPlayer(x, y, runFrame, facing, jumping) {
+  ctx.save();
+  ctx.translate(x + 14, y + 20);
+  if (facing < 0) ctx.scale(-1, 1);
+
+  // Legs
+  const legAnim = jumping ? 0.3 : Math.sin(runFrame * 3);
+  ctx.fillStyle = '#1565c0';
+  ctx.fillRect(-6, 12, 5, 12 + legAnim * 3);
+  ctx.fillRect(2, 12, 5, 12 - legAnim * 3);
+
+  // Body
+  ctx.fillStyle = '#e53935';
+  ctx.fillRect(-8, -2, 16, 16);
+
+  // Belt
+  ctx.fillStyle = '#fdd835';
+  ctx.fillRect(-8, 10, 16, 3);
+
+  // Head
+  ctx.fillStyle = '#ffcc80';
+  ctx.beginPath();
+  ctx.arc(0, -10, 9, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Hair
+  ctx.fillStyle = '#4e342e';
+  ctx.beginPath();
+  ctx.arc(0, -14, 9, Math.PI, Math.PI * 2);
+  ctx.fill();
+
+  // Eye
+  ctx.fillStyle = '#212121';
+  ctx.fillRect(3, -12, 3, 3);
+
+  // Helmet/hat brim
+  ctx.fillStyle = '#f9a825';
+  ctx.fillRect(-10, -18, 20, 5);
+
+  ctx.restore();
+}
+
+function drawColumn(x, groundY, h) {
+  ctx.fillStyle = '#bdbdbd';
+  ctx.fillRect(x + 5, groundY - h, 20, h);
+  // Capital (top)
+  ctx.fillStyle = '#e0e0e0';
+  ctx.fillRect(x, groundY - h - 6, 30, 8);
+  // Base
+  ctx.fillRect(x, groundY - 6, 30, 8);
+  // Fluting lines
+  ctx.fillStyle = '#9e9e9e';
+  ctx.fillRect(x + 10, groundY - h, 2, h);
+  ctx.fillRect(x + 18, groundY - h, 2, h);
+}
+
+function drawBush(x, groundY) {
+  ctx.fillStyle = '#1b5e20';
+  ctx.beginPath();
+  ctx.arc(x + 12, groundY - 10, 14, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#2e7d32';
+  ctx.beginPath();
+  ctx.arc(x + 6, groundY - 8, 10, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(x + 20, groundY - 7, 11, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+function drawEnemy(x, y, w, h) {
+  // Red glowing bubble with myth text
+  ctx.fillStyle = 'rgba(255,82,82,0.2)';
+  ctx.beginPath();
+  ctx.arc(x + w/2, y + h/2, w * 0.7, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = '#ff5252';
+  ctx.beginPath();
+  ctx.arc(x + w/2, y + h/2, w * 0.45, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Angry face
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(x + w * 0.3, y + h * 0.3, 5, 5);
+  ctx.fillRect(x + w * 0.6, y + h * 0.3, 5, 5);
+  // Angry brows
+  ctx.fillStyle = '#b71c1c';
+  ctx.fillRect(x + w * 0.25, y + h * 0.22, 8, 2);
+  ctx.fillRect(x + w * 0.58, y + h * 0.22, 8, 2);
+  // Mouth
+  ctx.fillRect(x + w * 0.35, y + h * 0.6, 12, 3);
+
+  // "!" indicator
+  ctx.fillStyle = '#ffd43b';
+  ctx.font = 'bold 16px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('!', x + w/2, y - 8);
+  ctx.textAlign = 'left';
+}
+
+function drawBoss(x, y, w, h) {
+  const shake = boss.shakeTimer > 0 ? Math.sin(boss.shakeTimer * 2) * 3 : 0;
+  boss.shakeTimer = Math.max(0, boss.shakeTimer - 1);
+
+  // Large dark orb
+  ctx.fillStyle = 'rgba(183,28,28,0.25)';
+  ctx.beginPath();
+  ctx.arc(x + w/2 + shake, y + h/2, w * 0.8, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = '#b71c1c';
+  ctx.beginPath();
+  ctx.arc(x + w/2 + shake, y + h/2, w * 0.5, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = '#d32f2f';
+  ctx.beginPath();
+  ctx.arc(x + w/2 + shake, y + h/2, w * 0.35, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Angry eyes
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(x + w * 0.3 + shake, y + h * 0.3, 8, 8);
+  ctx.fillRect(x + w * 0.6 + shake, y + h * 0.3, 8, 8);
+  ctx.fillStyle = '#212121';
+  ctx.fillRect(x + w * 0.33 + shake, y + h * 0.33, 4, 4);
+  ctx.fillRect(x + w * 0.63 + shake, y + h * 0.33, 4, 4);
+
+  // Angry brows
+  ctx.fillStyle = '#fff';
+  ctx.save();
+  ctx.translate(x + w * 0.35 + shake, y + h * 0.22);
+  ctx.rotate(-0.3);
+  ctx.fillRect(0, 0, 10, 3);
+  ctx.restore();
+  ctx.save();
+  ctx.translate(x + w * 0.65 + shake, y + h * 0.22);
+  ctx.rotate(0.3);
+  ctx.fillRect(0, 0, 10, 3);
+  ctx.restore();
+
+  // Mouth
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(x + w * 0.3 + shake, y + h * 0.65, w * 0.4, 5);
+  // Teeth
+  ctx.fillStyle = '#b71c1c';
+  for (let i = 0; i < 4; i++) {
+    ctx.fillRect(x + w * 0.33 + i * 8 + shake, y + h * 0.65, 3, 5);
+  }
+
+  // "O GRANDE MITO" label
+  ctx.fillStyle = '#ff8a80';
+  ctx.font = 'bold 11px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('O GRANDE MITO', x + w/2 + shake, y - 15);
+  // Health dots
+  for (let i = 0; i < 3; i++) {
+    ctx.fillStyle = i < boss.health ? '#ff5252' : '#424242';
+    ctx.beginPath();
+    ctx.arc(x + w/2 - 15 + i * 15 + shake, y - 5, 4, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.textAlign = 'left';
+}
+
+function drawStar(cx, cy, r, c1, c2) {
+  ctx.fillStyle = c1;
+  ctx.beginPath();
+  for (let i = 0; i < 5; i++) {
+    const a = (i * 4 * Math.PI / 5) - Math.PI / 2;
+    const ax = cx + Math.cos(a) * r;
+    const ay = cy + Math.sin(a) * r;
+    if (i === 0) ctx.moveTo(ax, ay);
+    else ctx.lineTo(ax, ay);
+  }
+  ctx.closePath();
+  ctx.fill();
+  // Glow
+  ctx.fillStyle = c2 || c1;
+  ctx.globalAlpha = 0.3;
+  ctx.beginPath();
+  ctx.arc(cx, cy, r * 1.3, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+}
+
+function drawGameOver() {
+  ctx.fillStyle = '#0a0e27';
+  ctx.fillRect(0, 0, GW, GH);
+
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#ff5252';
+  ctx.font = 'bold 40px sans-serif';
+  ctx.fillText('Fim de Jogo', GW/2, GH/2 - 40);
+
+  ctx.fillStyle = '#e8e8f0';
+  ctx.font = '18px sans-serif';
+  ctx.fillText(`Pontuação: ${player.score} pts`, GW/2, GH/2 + 10);
+  ctx.fillText(`Pergaminhos: ${player.scrolls}/${player.maxScrolls}`, GW/2, GH/2 + 40);
+
+  if (Math.floor(frameCount / 40) % 2 === 0) {
+    ctx.fillStyle = '#6c63ff';
+    ctx.font = 'bold 18px sans-serif';
+    ctx.fillText('TOQUE PARA TENTAR DE NOVO', GW/2, GH/2 + 100);
+  }
+  ctx.textAlign = 'left';
+}
+
+function drawWin() {
+  ctx.fillStyle = '#0a0e27';
+  ctx.fillRect(0, 0, GW, GH);
+
+  // Celebration particles
+  if (frameCount % 5 === 0) {
+    const colors = ['#ffd43b', '#6c63ff', '#51cf66', '#ff6b6b', '#4fc3f7'];
+    spawnParticles(Math.random() * GW, Math.random() * GH * 0.5, colors[Math.floor(Math.random() * colors.length)], 3);
+  }
+  particles.forEach(p => {
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vy += 0.1;
+    p.life--;
+    const alpha = p.life / p.maxLife;
+    ctx.fillStyle = p.color;
+    ctx.globalAlpha = alpha;
+    ctx.fillRect(p.x - p.size/2, p.y - p.size/2, p.size, p.size);
+  });
+  ctx.globalAlpha = 1;
+  particles = particles.filter(p => p.life > 0);
+
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#ffd43b';
+  ctx.font = 'bold 38px sans-serif';
+  ctx.fillText('Fase Completa!', GW/2, 80);
+
+  ctx.fillStyle = '#51cf66';
+  ctx.font = 'bold 22px sans-serif';
+  ctx.fillText('O Grande Mito foi derrotado!', GW/2, 125);
+
+  // Stats
+  ctx.fillStyle = '#e8e8f0';
+  ctx.font = '18px sans-serif';
+  ctx.fillText(`Pontuação: ${player.score} pts`, GW/2, 190);
+  ctx.fillText(`Pergaminhos: ${player.scrolls}/${player.maxScrolls}`, GW/2, 220);
+  ctx.fillText(`Vidas restantes: ${'♥'.repeat(player.lives)}`, GW/2, 250);
+
+  // Stars rating
+  const pct = player.score / (player.maxScrolls * 15 + 4 * 30 + 6 * 25 + 50);
+  let starsCount = pct > 0.85 ? 3 : pct > 0.6 ? 2 : 1;
+  ctx.font = '44px sans-serif';
+  let starStr = '';
+  for (let i = 0; i < 3; i++) starStr += i < starsCount ? '⭐' : '☆';
+  ctx.fillText(starStr, GW/2, 310);
+
+  // Selo
+  ctx.fillStyle = '#6c63ff';
+  ctx.font = 'bold 16px sans-serif';
+  ctx.fillText('🏛️ Selo: Grécia Antiga — Esfericidade da Terra', GW/2, 360);
+
+  if (Math.floor(frameCount / 40) % 2 === 0) {
+    ctx.fillStyle = '#6c63ff';
+    ctx.font = 'bold 18px sans-serif';
+    ctx.fillText('TOQUE PARA VOLTAR AO MENU', GW/2, GH - 40);
+  }
+  ctx.textAlign = 'left';
+}
+
+// ===== GAME LOOP =====
+function gameLoop() {
+  update();
+  draw();
+  requestAnimationFrame(gameLoop);
+}
+
+gameLoop();
+</script>
+</body>
+</html>

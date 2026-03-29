@@ -1112,6 +1112,15 @@ const activities = [
   }
 ];
 
+function shuffleArray(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
 // ===== SCREEN MANAGEMENT =====
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -1188,6 +1197,14 @@ function launchActivity(idx) {
 
   showScreen('activity-screen');
 
+  // Shuffle questions/statements for this playthrough
+  if (act.type === 'quiz' && act.data.questions) {
+    act.data.questions = shuffleArray(act.data.questions);
+  }
+  if (act.type === 'truefalse' && act.data.statements) {
+    act.data.statements = shuffleArray(act.data.statements);
+  }
+
   switch (act.type) {
     case 'quiz': renderQuiz(act); break;
     case 'truefalse': renderTrueFalse(act); break;
@@ -1247,13 +1264,21 @@ function renderQuiz(act) {
 
   updateProgress(actState.step, total);
 
+  // Shuffle options
+  const indices = q.options.map((_, i) => i);
+  for (let i = indices.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [indices[i], indices[j]] = [indices[j], indices[i]];
+  }
+  const shuffledCorrect = indices.indexOf(q.correct);
+
   content.innerHTML = `
     <div class="question-card">
       <div class="question-number">Pergunta ${actState.step + 1} de ${total}</div>
       <div class="question-text">${q.text}</div>
       <div class="options">
-        ${q.options.map((opt, i) => `
-          <div class="option" data-idx="${i}" onclick="selectQuizOption(this, ${i}, ${q.correct})">${opt}</div>
+        ${indices.map((origIdx, i) => `
+          <div class="option" data-idx="${i}" onclick="selectQuizOption(this, ${i}, ${shuffledCorrect})">${q.options[origIdx]}</div>
         `).join('')}
       </div>
       <div id="quiz-feedback"></div>
