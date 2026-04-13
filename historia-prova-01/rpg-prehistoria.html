@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pré-História: O RPG da Sala</title>
+  <style>
+    :root {
+      --bg:       #120b06;
+      --surface:  #1e1108;
+      --card:     #2a1a0e;
+      --border:   #5a3a1a;
+      --orange:   #d4703a;
+      --gold:     #c9a227;
+      --green:    #4a8c5c;
+      --red:      #c0392b;
+      --text:     #f0e6d3;
+      --muted:    #9a7a5a;
+      --correct:  #27ae60;
+      --wrong:    #e74c3c;
+      --partial:  #e67e22;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    /* ── Screens ── */
+    .screen { display: none; width: 100%; max-width: 860px; animation: fadeUp .4s ease; }
+    .screen.active { display: block; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Typography ── */
+    h1 { font-size: 2.6rem; color: var(--gold); text-align: center; line-height: 1.2; }
+    h2 { font-size: 1.7rem; color: var(--orange); margin-bottom: 12px; }
+    h3 { font-size: 1.2rem; color: var(--gold); }
+    p  { line-height: 1.65; }
+
+    .sub { color: var(--muted); font-size: .95rem; text-align: center; margin-top: 6px; }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-block; cursor: pointer; border: none; border-radius: 8px;
+      padding: 12px 28px; font-size: 1rem; font-family: inherit;
+      transition: filter .15s, transform .1s;
+    }
+    .btn:hover  { filter: brightness(1.15); }
+    .btn:active { transform: scale(.97); }
+    .btn-primary  { background: var(--orange); color: #fff; }
+    .btn-gold     { background: var(--gold);   color: #1a0e00; font-weight: bold; }
+    .btn-outline  { background: transparent; color: var(--orange); border: 2px solid var(--orange); }
+    .btn-sm       { padding: 8px 16px; font-size: .88rem; }
+    .btn-full     { width: 100%; text-align: center; margin-top: 10px; }
+    .btn:disabled { opacity: .45; cursor: not-allowed; filter: none; }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 20px; margin-bottom: 14px;
+    }
+
+    /* ── Progress bar ── */
+    .progress-bar-wrap {
+      background: var(--surface); border-radius: 99px; height: 10px;
+      overflow: hidden; margin-bottom: 20px;
+    }
+    .progress-bar-fill {
+      background: linear-gradient(90deg, var(--orange), var(--gold));
+      height: 100%; border-radius: 99px; transition: width .5s ease;
+    }
+
+    /* ════════════════════════════════
+       WELCOME SCREEN
+    ════════════════════════════════ */
+    #screen-welcome { text-align: center; }
+    .title-emoji { font-size: 4rem; display: block; margin-bottom: 12px; }
+    .title-subtitle {
+      font-size: 1.05rem; color: var(--muted); margin: 10px 0 30px;
+      font-style: italic;
+    }
+    .title-tagline {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 10px; padding: 14px 24px; display: inline-block;
+      margin-bottom: 28px; font-size: .95rem; color: var(--text);
+    }
+    .title-tagline span { color: var(--gold); }
+
+    /* ════════════════════════════════
+       SETUP SCREEN
+    ════════════════════════════════ */
+    .input-row { display: flex; gap: 10px; margin-bottom: 14px; }
+    .input-row input {
+      flex: 1; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: 10px 14px; color: var(--text);
+      font-size: 1rem; font-family: inherit;
+    }
+    .input-row input:focus { outline: none; border-color: var(--orange); }
+    .player-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+    .chip {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 99px; padding: 6px 14px; font-size: .88rem;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .chip-remove {
+      cursor: pointer; color: var(--red); font-weight: bold;
+      line-height: 1; font-size: 1rem;
+    }
+    .chip-remove:hover { color: #ff6b6b; }
+    .notice {
+      background: var(--surface); border-left: 3px solid var(--gold);
+      border-radius: 4px; padding: 10px 14px; font-size: .9rem;
+      color: var(--muted); margin-bottom: 14px;
+    }
+
+    /* ════════════════════════════════
+       ERA SELECTION SCREEN
+    ════════════════════════════════ */
+    .era-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 14px; margin-top: 14px;
+    }
+    .era-card {
+      background: var(--surface); border: 2px solid var(--border);
+      border-radius: 12px; padding: 18px; cursor: pointer;
+      transition: border-color .2s, transform .15s, background .2s;
+      text-align: center;
+    }
+    .era-card:hover { border-color: var(--orange); transform: translateY(-3px); background: var(--card); }
+    .era-card.selected { border-color: var(--gold); background: #2a1e08; }
+    .era-emoji { font-size: 2.6rem; display: block; margin-bottom: 8px; }
+    .era-name  { font-size: 1.1rem; font-weight: bold; color: var(--gold); margin-bottom: 4px; }
+    .era-desc  { font-size: .82rem; color: var(--muted); margin-bottom: 8px; }
+    .era-bonus { font-size: .8rem; color: var(--green); font-style: italic; }
+
+    /* ════════════════════════════════
+       GAME SCREEN
+    ════════════════════════════════ */
+    .game-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 16px; flex-wrap: wrap; gap: 8px;
+    }
+    .round-badge {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 99px; padding: 5px 16px; font-size: .88rem; color: var(--muted);
+    }
+    .round-badge strong { color: var(--gold); }
+
+    .scenario-header {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 10px;
+    }
+    .scenario-emoji-big { font-size: 2.2rem; }
+    .scenario-category {
+      background: var(--orange); color: #fff; border-radius: 99px;
+      padding: 3px 12px; font-size: .8rem; font-weight: bold; letter-spacing: .5px;
+    }
+
+    .scenario-text {
+      font-size: 1.08rem; line-height: 1.7; margin-bottom: 18px;
+      padding: 16px; background: var(--surface); border-radius: 10px;
+      border-left: 3px solid var(--orange);
+    }
+
+    .current-player-bar {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 12px 16px; margin-bottom: 16px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 8px;
+    }
+    .current-player-bar .player-name-big { font-size: 1.15rem; }
+    .current-player-bar .tribe-badge {
+      font-size: .82rem; color: var(--muted); font-style: italic;
+    }
+    .bonus-hint {
+      font-size: .8rem; background: #1e2e1a; border: 1px solid var(--green);
+      border-radius: 6px; padding: 4px 10px; color: var(--green);
+    }
+
+    .options-grid { display: grid; gap: 10px; margin-bottom: 16px; }
+    .option-btn {
+      background: var(--surface); border: 2px solid var(--border);
+      border-radius: 10px; padding: 14px 18px; cursor: pointer;
+      text-align: left; display: flex; align-items: flex-start; gap: 12px;
+      transition: border-color .15s, background .15s; font-family: inherit;
+      font-size: .97rem; color: var(--text);
+    }
+    .option-btn:hover:not(:disabled) { border-color: var(--orange); background: var(--card); }
+    .option-btn:disabled { cursor: default; }
+    .option-letter {
+      font-weight: bold; color: var(--orange); font-size: 1.05rem;
+      min-width: 22px; line-height: 1.5;
+    }
+
+    .answered-list { display: flex; flex-wrap: wrap; gap: 8px; }
+    .answered-chip {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 99px; padding: 5px 12px; font-size: .82rem;
+    }
+    .answered-chip.waiting { color: var(--muted); border-style: dashed; }
+    .answered-chip.done    { color: var(--green); border-color: var(--green); }
+
+    /* ════════════════════════════════
+       REVEAL SCREEN
+    ════════════════════════════════ */
+    .correct-answer-box {
+      background: #0f2a18; border: 2px solid var(--correct);
+      border-radius: 12px; padding: 16px 20px; margin-bottom: 16px;
+    }
+    .correct-label { font-size: .82rem; color: var(--correct); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+    .correct-text  { font-size: 1.05rem; color: #a0f0c0; }
+
+    .explanation-box {
+      background: var(--surface); border: 1px solid var(--gold);
+      border-radius: 10px; padding: 14px 18px; margin-bottom: 18px;
+      font-size: .95rem; color: var(--text); line-height: 1.7;
+    }
+    .explanation-label {
+      font-size: .8rem; color: var(--gold); text-transform: uppercase;
+      letter-spacing: 1px; margin-bottom: 6px;
+    }
+
+    .results-table { width: 100%; border-collapse: collapse; margin-bottom: 18px; }
+    .results-table th {
+      text-align: left; padding: 8px 12px; color: var(--muted);
+      font-size: .82rem; text-transform: uppercase; letter-spacing: .5px;
+      border-bottom: 1px solid var(--border);
+    }
+    .results-table td { padding: 10px 12px; border-bottom: 1px solid var(--surface); }
+    .result-correct { color: var(--correct); font-weight: bold; }
+    .result-wrong   { color: var(--wrong); }
+    .result-bonus   { color: var(--gold); font-size: .82rem; margin-left: 4px; }
+    .pts-gained     { color: var(--gold); font-weight: bold; }
+
+    /* ════════════════════════════════
+       LEADERBOARD SCREEN
+    ════════════════════════════════ */
+    .lb-entry {
+      display: flex; align-items: center; gap: 14px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 12px 16px; margin-bottom: 10px;
+      transition: background .2s;
+    }
+    .lb-entry.top1 { background: #1e1800; border-color: var(--gold); }
+    .lb-entry.top2 { background: #181818; border-color: #9a9a9a; }
+    .lb-entry.top3 { background: #1a1000; border-color: #cd7f32; }
+
+    .lb-rank  { font-size: 1.5rem; min-width: 36px; text-align: center; }
+    .lb-emoji { font-size: 1.8rem; }
+    .lb-info  { flex: 1; }
+    .lb-name  { font-size: 1.05rem; font-weight: bold; }
+    .lb-tribe { font-size: .82rem; color: var(--muted); }
+    .lb-score { font-size: 1.4rem; font-weight: bold; color: var(--gold); }
+
+    /* ════════════════════════════════
+       END SCREEN
+    ════════════════════════════════ */
+    #screen-end { text-align: center; }
+    .winner-trophy { font-size: 5rem; display: block; margin-bottom: 10px; }
+    .winner-name   { font-size: 2rem; color: var(--gold); margin-bottom: 4px; }
+    .winner-tribe  { font-size: 1.1rem; color: var(--muted); margin-bottom: 24px; }
+
+    /* ════════════════════════════════
+       MISC
+    ════════════════════════════════ */
+    .divider {
+      border: none; border-top: 1px solid var(--border); margin: 20px 0;
+    }
+    .flex-row {
+      display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+    }
+    .text-center { text-align: center; }
+    .mt-8  { margin-top: 8px; }
+    .mt-16 { margin-top: 16px; }
+    .mt-24 { margin-top: 24px; }
+
+    /* mobile */
+    @media (max-width: 540px) {
+      h1 { font-size: 2rem; }
+      h2 { font-size: 1.4rem; }
+      .era-grid { grid-template-columns: 1fr 1fr; }
+      .btn { padding: 10px 20px; font-size: .9rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════
+     SCREEN: WELCOME
+══════════════════════════════════════════════ -->
+<div id="screen-welcome" class="screen active">
+  <span class="title-emoji">🦴</span>
+  <h1>Pré-História</h1>
+  <p class="sub" style="font-size:1.2rem; color:var(--orange); margin-top:4px;">O RPG da Sala</p>
+  <p class="title-subtitle">A Formação das Comunidades Primitivas</p>
+
+  <div class="title-tagline">
+    Até <span>30 jogadores</span> · Turnos alternados · Questões baseadas no livro
+  </div>
+
+  <p class="sub" style="margin-bottom:28px;">
+    Cada jogador escolhe um povo, responde cenários históricos e acumula pontos.<br/>
+    Quem mais sobreviveu à Pré-História?
+  </p>
+
+  <button class="btn btn-gold" onclick="showScreen('screen-setup')" style="font-size:1.1rem; padding:14px 40px;">
+    ⚔️ Começar Aventura
+  </button>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     SCREEN: SETUP
+══════════════════════════════════════════════ -->
+<div id="screen-setup" class="screen">
+  <h2>👥 Registrar Jogadores</h2>
+  <p class="sub" style="text-align:left; margin-bottom:16px; color:var(--muted);">
+    Adicione os nomes um a um (até 30 jogadores).
+  </p>
+
+  <div class="input-row">
+    <input id="player-name-input" type="text" placeholder="Nome do jogador..." maxlength="24"
+      onkeydown="if(event.key==='Enter') addPlayer()" />
+    <button class="btn btn-primary" onclick="addPlayer()">+ Adicionar</button>
+  </div>
+
+  <div id="player-chips" class="player-chips"></div>
+
+  <div class="notice">
+    💡 O jogo tem <strong>10 rodadas</strong>. Cada rodada todos os jogadores respondem
+    ao mesmo cenário em sequência. Após todos responderem, o resultado é revelado.
+  </div>
+
+  <button class="btn btn-gold btn-full" id="btn-start" onclick="startEraSelect()" disabled>
+    Iniciar Jogo →
+  </button>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     SCREEN: ERA SELECTION
+══════════════════════════════════════════════ -->
+<div id="screen-era-select" class="screen">
+  <h2>🗿 Escolha seu Povo</h2>
+  <p id="era-player-name-label" class="sub" style="text-align:left; margin-bottom:4px; font-size:1rem; color:var(--gold);"></p>
+  <p class="sub" style="text-align:left; color:var(--muted); margin-bottom:16px; font-size:.9rem;">
+    Cada povo tem bônus em perguntas específicas do conteúdo.
+  </p>
+
+  <div id="era-grid" class="era-grid"></div>
+
+  <div class="mt-16">
+    <button class="btn btn-gold btn-full" id="btn-confirm-era" onclick="confirmEra()" disabled>
+      Confirmar Escolha →
+    </button>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     SCREEN: GAME
+══════════════════════════════════════════════ -->
+<div id="screen-game" class="screen">
+  <!-- Header -->
+  <div class="game-header">
+    <div class="round-badge">Rodada <strong id="g-round-num">1</strong> / <strong id="g-total-rounds">10</strong></div>
+    <div class="round-badge">Pergunta <strong id="g-player-order">1</strong> / <strong id="g-total-players">?</strong></div>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-fill" id="g-progress"></div>
+  </div>
+
+  <!-- Scenario -->
+  <div class="card" style="margin-bottom:14px;">
+    <div class="scenario-header">
+      <span class="scenario-emoji-big" id="g-scenario-emoji">🦴</span>
+      <span class="scenario-category" id="g-scenario-category">Categoria</span>
+    </div>
+    <div class="scenario-text" id="g-scenario-text">Carregando cenário...</div>
+  </div>
+
+  <!-- Current player -->
+  <div class="current-player-bar">
+    <div>
+      <div class="player-name-big">Vez de: <strong id="g-current-player">—</strong></div>
+      <div class="tribe-badge" id="g-current-tribe">—</div>
+    </div>
+    <div id="g-bonus-hint" class="bonus-hint" style="display:none;"></div>
+  </div>
+
+  <!-- Options -->
+  <div id="g-options" class="options-grid"></div>
+
+  <!-- Answered status -->
+  <div class="card" style="padding:12px 16px;">
+    <p style="font-size:.82rem; color:var(--muted); margin-bottom:8px;">STATUS DOS JOGADORES</p>
+    <div id="g-answered-list" class="answered-list"></div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     SCREEN: REVEAL
+══════════════════════════════════════════════ -->
+<div id="screen-reveal" class="screen">
+  <h2>📜 Resultado da Rodada <span id="r-round-num">1</span></h2>
+
+  <!-- Correct answer -->
+  <div class="correct-answer-box">
+    <div class="correct-label">✅ Resposta Correta</div>
+    <div class="correct-text" id="r-correct-text">—</div>
+  </div>
+
+  <!-- Explanation -->
+  <div class="explanation-box">
+    <div class="explanation-label">📚 Contexto histórico</div>
+    <div id="r-explanation">—</div>
+  </div>
+
+  <!-- Results table -->
+  <h3 style="margin-bottom:10px;">Resultados dos Jogadores</h3>
+  <table class="results-table">
+    <thead>
+      <tr>
+        <th>Jogador</th>
+        <th>Resposta</th>
+        <th>Pts Ganhos</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody id="r-results-body"></tbody>
+  </table>
+
+  <div class="flex-row" style="justify-content:space-between;">
+    <button class="btn btn-outline btn-sm" onclick="showLeaderboard()">Ver Placar</button>
+    <button class="btn btn-gold" id="btn-next-round" onclick="nextRound()">Próxima Rodada →</button>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     SCREEN: LEADERBOARD
+══════════════════════════════════════════════ -->
+<div id="screen-leaderboard" class="screen">
+  <h2>🏆 Placar Atual</h2>
+  <p class="sub" style="text-align:left; margin-bottom:18px; color:var(--muted);">
+    Rodada <span id="lb-round">—</span> / <span id="lb-total">—</span>
+  </p>
+
+  <div id="lb-list"></div>
+
+  <div class="flex-row mt-16" style="justify-content:flex-end;">
+    <button class="btn btn-gold" id="btn-lb-continue" onclick="continueAfterLeaderboard()">Continuar →</button>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     SCREEN: END
+══════════════════════════════════════════════ -->
+<div id="screen-end" class="screen">
+  <span class="winner-trophy">🏆</span>
+  <p style="color:var(--muted); font-size:.9rem; margin-bottom:4px;">VENCEDOR</p>
+  <div class="winner-name" id="e-winner-name">—</div>
+  <div class="winner-tribe" id="e-winner-tribe">—</div>
+
+  <hr class="divider" />
+
+  <h3 style="text-align:center; margin-bottom:16px;">Classificação Final</h3>
+  <div id="e-final-lb"></div>
+
+  <hr class="divider" />
+  <button class="btn btn-primary btn-full mt-8" onclick="restartGame()">🔄 Jogar Novamente</button>
+</div>
+
+
+<script>
+/* ══════════════════════════════════════════
+   DATA
+══════════════════════════════════════════ */
+
+const TRIBES = [
+  {
+    id: 'tupinamba', name: 'Tupinambá', emoji: '🏹',
+    desc: 'Povo indígena do Brasil', bonus: 'mito',
+    bonusDesc: '+50 pts em questões de mitos de fundação'
+  },
+  {
+    id: 'azteca', name: 'Asteca', emoji: '🌞',
+    desc: 'Civilização do México antigo', bonus: 'civilizacao',
+    bonusDesc: '+50 pts em questões de civilizações'
+  },
+  {
+    id: 'nomade', name: 'Caçador Nômade', emoji: '🦣',
+    desc: 'Homo sapiens do Paleolítico', bonus: 'paleolitico',
+    bonusDesc: '+50 pts em questões do Paleolítico'
+  },
+  {
+    id: 'agricultor', name: 'Agricultor', emoji: '🌾',
+    desc: 'Pioneiro do Neolítico', bonus: 'neolitico',
+    bonusDesc: '+50 pts em questões do Neolítico'
+  },
+  {
+    id: 'olmeca', name: 'Olmeca', emoji: '🗿',
+    desc: 'Civilização-mãe mesoamericana', bonus: 'civilizacao',
+    bonusDesc: '+50 pts em questões de civilizações'
+  },
+  {
+    id: 'sambaqui', name: 'Povo do Sambaqui', emoji: '🐚',
+    desc: 'Primeiros habitantes do litoral brasileiro', bonus: 'brasil',
+    bonusDesc: '+50 pts em questões sobre o Brasil'
+  }
+];
+
+const SCENARIOS = [
+  {
+    emoji: '🦴', category: 'Paleolítico', tag: 'paleolitico',
+    text: 'Você e seu grupo vivem no Paleolítico. O inverno chegou e a temperatura caiu muito. Onde vocês vão se abrigar?',
+    options: [
+      'Construímos casas de tijolos cozidos em forno e formamos uma vila permanente.',
+      'Procuramos uma caverna ou abrigo natural nas rochas para passar o frio.',
+      'Plantamos árvores de crescimento rápido para ter sombra e proteção.',
+      'Construímos palafitas de madeira sobre o rio mais próximo.'
+    ],
+    correct: 1,
+    explanation: 'No Paleolítico os humanos eram nômades e viviam em cavernas ou abrigos naturais. Casas e aldeias permanentes só surgem no Neolítico com a Revolução Agrícola, cerca de 10.000 a.C.'
+  },
+  {
+    emoji: '🌊', category: 'Mitos de Fundação', tag: 'mito',
+    text: 'Para os Tupinambás, o deus Monan destruiu o mundo com fogo e criou o dilúvio. Como esse mito chegou até os dias de hoje?',
+    options: [
+      'Por meio de escrita em papiro, guardada nos arquivos tribais.',
+      'Pela transmissão oral, de geração em geração, contada pelos mais velhos.',
+      'Gravado em tábuas de pedra escondidas nas matas.',
+      'Publicado em livros sagrados com hieróglifos.'
+    ],
+    correct: 1,
+    explanation: 'Povos indígenas, como os Tupinambás, não usavam escrita. Seus mitos e conhecimentos eram transmitidos oralmente, de geração em geração. Essa é uma das razões pelas quais a escrita não é o único critério para definir "história" de um povo.'
+  },
+  {
+    emoji: '🌾', category: 'Neolítico', tag: 'neolitico',
+    text: 'Seu grupo descobriu que pode plantar e colher alimentos. Qual a principal mudança que isso causa na vida da sua comunidade?',
+    options: [
+      'Nada muda — vocês continuam nômades e caçando como antes.',
+      'Vocês podem se fixar em um local e ter alimento mais garantido, formando aldeias.',
+      'Passam a construir navios para explorar os oceanos.',
+      'Começam a trabalhar com ferro para fazer armas mais eficientes.'
+    ],
+    correct: 1,
+    explanation: 'A Revolução Agrícola no Neolítico (~10.000 a.C.) permitiu que os humanos se fixassem em um local e produzissem alimentos. Isso possibilitou o surgimento de aldeias permanentes, o armazenamento de excedentes e o início da vida em comunidade organizada.'
+  },
+  {
+    emoji: '🌎', category: 'Primeiros Americanos', tag: 'civilizacao',
+    text: 'Arqueólogos debatem há anos como os primeiros humanos chegaram às Américas. Qual é a teoria mais aceita pela ciência?',
+    options: [
+      'Vieram de barco pelo Oceano Atlântico, partindo da Europa.',
+      'Os humanos surgiram nas Américas de forma independente.',
+      'Cruzaram o Estreito de Bering, então uma ponte terrestre chamada Beríngia, vindo da Sibéria.',
+      'Chegaram pelo continente Antártico em embarcações primitivas.'
+    ],
+    correct: 2,
+    explanation: 'A teoria mais aceita é que os primeiros humanos cruzaram o Estreito de Bering (Beríngia) há cerca de 15.000 a.C., quando era uma ponte de terra que ligava a Sibéria ao Alasca. Grupos de caçadores-coletores foram avançando pelo continente americano em busca de recursos.'
+  },
+  {
+    emoji: '🐚', category: 'Brasil Pré-histórico', tag: 'brasil',
+    text: 'Arqueólogos encontram no litoral brasileiro grandes acúmulos de conchas, ossos e instrumentos de pesca. O que eram esses locais, chamados sambaquis?',
+    options: [
+      'Templos de sacrifício de povos astecas que migraram até o Brasil.',
+      'Depósitos de lixo construídos pelos colonizadores portugueses.',
+      'Locais de habitação, alimentação e sepultamento dos primeiros habitantes do litoral.',
+      'Monumentos construídos em homenagem aos deuses do mar.'
+    ],
+    correct: 2,
+    explanation: 'Os sambaquis eram formados pelo acúmulo de conchas, ossos e restos alimentares deixados pelos grupos humanos que habitavam o litoral. Serviam como local de moradia, alimentação e também enterramento. O Brasil possui milhares desses sítios, alguns com mais de 6.500 anos.'
+  },
+  {
+    emoji: '💀', category: 'Brasil Pré-histórico', tag: 'brasil',
+    text: 'Em 1975, o arqueólogo Peter Lund descobriu em Lagoa Santa (MG) um crânio muito antigo. Por que "Luzia" é tão importante para a história do Brasil?',
+    options: [
+      'Foi a primeira rainha indígena a ser documentada por escrito.',
+      'É um dos fósseis humanos mais antigos das Américas, com cerca de 11.000 anos.',
+      'Criou o primeiro sistema de escrita encontrado no Brasil.',
+      'Construiu os sambaquis mais antigos do litoral sul-americano.'
+    ],
+    correct: 1,
+    explanation: 'Luzia é um dos fósseis humanos mais antigos encontrados nas Américas. Seu crânio foi encontrado na Lapa Vermelha, em Lagoa Santa (MG), e data de cerca de 11.500 anos. Pesquisas posteriores com reconstrução facial sugerem características diferentes dos povos que chegaram via Estreito de Bering, levantando questões sobre as rotas de ocupação da América.'
+  },
+  {
+    emoji: '🦏', category: 'Megafauna', tag: 'brasil',
+    text: 'Há cerca de 11.000 anos, animais gigantes como preguiças enormes e gliptodontes habitavam o Brasil. O que caracteriza esse grupo?',
+    options: [
+      'São os dinossauros que sobreviveram à extinção do Cretáceo no Brasil.',
+      'São peixes gigantes que habitavam os grandes rios amazônicos.',
+      'São grandes mamíferos pré-históricos que viveram no Brasil, chamados megafauna brasileira.',
+      'São répteis do período Mesozoico encontrados nos sambaquis.'
+    ],
+    correct: 2,
+    explanation: 'A megafauna brasileira era formada por grandes mamíferos pré-históricos como a preguiça-gigante (Eremotherium), o gliptodonte e o toxodonte. Esses animais desapareceram há cerca de 11.000 anos, possivelmente por combinação de mudanças climáticas e ação humana.'
+  },
+  {
+    emoji: '⚙️', category: 'Idade dos Metais', tag: 'paleolitico',
+    text: 'Na Idade dos Metais, os humanos aprenderam a trabalhar diferentes materiais ao longo do tempo. Qual foi a ordem correta de uso dos metais?',
+    options: [
+      'Ferro → Bronze → Cobre',
+      'Bronze → Cobre → Ferro',
+      'Cobre → Bronze → Ferro',
+      'Ouro → Prata → Ferro'
+    ],
+    correct: 2,
+    explanation: 'A sequência foi Cobre (o mais fácil de trabalhar, encontrado em estado puro) → Bronze (liga de cobre e estanho, mais resistente) → Ferro (mais duro, exige temperaturas altas para ser fundido). Cada metal trouxe novas possibilidades de ferramentas, armas e organização social.'
+  },
+  {
+    emoji: '📝', category: 'Pré-História', tag: 'paleolitico',
+    text: 'Historiadores criticam o uso do termo "Pré-História". Qual é o principal argumento dessa crítica?',
+    options: [
+      'Porque esse período ocorreu antes da existência dos seres humanos.',
+      'Porque povos sem escrita também faziam história — apenas não a registravam dessa forma, o que não os torna "sem história".',
+      'Porque os fósseis desse período provaram ser falsificações.',
+      'Porque o período foi muito curto para ter importância histórica.'
+    ],
+    correct: 1,
+    explanation: 'O termo "Pré-História" é criticado porque sugere que povos ágrafos (sem escrita) não tinham história. Na verdade, esses povos viviam, criavam culturas, transmitiam conhecimentos e construíam identidades coletivas — faziam história, só não a registravam em texto. O livro aponta que usar esse termo demonstra uma visão eurocêntrica que valoriza a escrita como única forma legítima de história.'
+  },
+  {
+    emoji: '🧬', category: 'Evolução e Mitos', tag: 'mito',
+    text: 'Tanto os mitos de fundação quanto a teoria científica tentam responder à mesma pergunta. Qual é a diferença fundamental entre as duas abordagens?',
+    options: [
+      'Os mitos são mais antigos, portanto mais confiáveis que a ciência moderna.',
+      'A ciência usa apenas matemática, enquanto os mitos usam palavras.',
+      'Os mitos explicam a origem por meio de narrativas sobrenaturais transmitidas culturalmente; a ciência baseia-se em evidências, experimentos e análises verificáveis.',
+      'Não há diferença real — ambos chegam às mesmas conclusões por caminhos diferentes.'
+    ],
+    correct: 2,
+    explanation: 'Os mitos de fundação (como o do Quinto Sol asteca ou o dilúvio tupinambá) explicam a origem do mundo e dos humanos por meio de narrativas sobrenaturais e culturais, transmitidas oralmente. A teoria científica, como o evolucionismo de Darwin, parte de evidências físicas (fósseis, DNA, experimentos) e é constantemente revisada e testada por pesquisadores. Ambas têm valor cultural e explicativo, mas por naturezas diferentes.'
+  }
+];
+
+/* ══════════════════════════════════════════
+   STATE
+══════════════════════════════════════════ */
+const state = {
+  players: [],          // { name, tribe (obj), score, answers: [] }
+  currentRound: 0,      // 0-indexed
+  currentPlayer: 0,     // index within players
+  roundAnswers: [],     // { playerIdx, answerIdx, correct, pointsGained }
+  phase: 'setup',       // setup | era-select | game | reveal | leaderboard | end
+  eraPlayerIdx: 0,      // which player is selecting era
+  selectedTribe: null,  // temp during era select
+  leaderboardFrom: '',  // 'reveal' or 'mid'
+};
+
+/* ══════════════════════════════════════════
+   SCREEN MANAGEMENT
+══════════════════════════════════════════ */
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ══════════════════════════════════════════
+   SETUP
+══════════════════════════════════════════ */
+function addPlayer() {
+  const input = document.getElementById('player-name-input');
+  const name = input.value.trim();
+  if (!name) return;
+  if (state.players.length >= 30) { alert('Máximo de 30 jogadores atingido.'); return; }
+  if (state.players.find(p => p.name.toLowerCase() === name.toLowerCase())) {
+    alert('Já existe um jogador com esse nome.'); return;
+  }
+  state.players.push({ name, tribe: null, score: 0, answers: [] });
+  input.value = '';
+  input.focus();
+  renderChips();
+  updateStartBtn();
+}
+
+function removePlayer(idx) {
+  state.players.splice(idx, 1);
+  renderChips();
+  updateStartBtn();
+}
+
+function renderChips() {
+  const container = document.getElementById('player-chips');
+  container.innerHTML = state.players.map((p, i) => `
+    <div class="chip">
+      ${p.name}
+      <span class="chip-remove" onclick="removePlayer(${i})">×</span>
+    </div>
+  `).join('');
+}
+
+function updateStartBtn() {
+  document.getElementById('btn-start').disabled = state.players.length < 2;
+}
+
+function startEraSelect() {
+  if (state.players.length < 2) return;
+  state.eraPlayerIdx = 0;
+  showEraSelectFor(0);
+  showScreen('screen-era-select');
+}
+
+/* ══════════════════════════════════════════
+   ERA SELECT
+══════════════════════════════════════════ */
+function showEraSelectFor(idx) {
+  state.selectedTribe = null;
+  document.getElementById('era-player-name-label').textContent =
+    `${state.players[idx].name}, é a sua vez de escolher!`;
+
+  const grid = document.getElementById('era-grid');
+  grid.innerHTML = TRIBES.map(t => `
+    <div class="era-card" onclick="selectTribe('${t.id}')" id="era-${t.id}">
+      <span class="era-emoji">${t.emoji}</span>
+      <div class="era-name">${t.name}</div>
+      <div class="era-desc">${t.desc}</div>
+      <div class="era-bonus">⭐ ${t.bonusDesc}</div>
+    </div>
+  `).join('');
+
+  document.getElementById('btn-confirm-era').disabled = true;
+}
+
+function selectTribe(id) {
+  state.selectedTribe = TRIBES.find(t => t.id === id);
+  document.querySelectorAll('.era-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById(`era-${id}`).classList.add('selected');
+  document.getElementById('btn-confirm-era').disabled = false;
+}
+
+function confirmEra() {
+  if (!state.selectedTribe) return;
+  state.players[state.eraPlayerIdx].tribe = state.selectedTribe;
+  state.eraPlayerIdx++;
+
+  if (state.eraPlayerIdx < state.players.length) {
+    showEraSelectFor(state.eraPlayerIdx);
+  } else {
+    startGame();
+  }
+}
+
+/* ══════════════════════════════════════════
+   GAME
+══════════════════════════════════════════ */
+function startGame() {
+  state.currentRound = 0;
+  state.currentPlayer = 0;
+  state.players.forEach(p => { p.score = 0; p.answers = []; });
+  showRound();
+  showScreen('screen-game');
+}
+
+function showRound() {
+  const scenario = SCENARIOS[state.currentRound];
+  state.roundAnswers = [];
+  state.currentPlayer = 0;
+
+  // Header
+  document.getElementById('g-round-num').textContent  = state.currentRound + 1;
+  document.getElementById('g-total-rounds').textContent = SCENARIOS.length;
+  document.getElementById('g-total-players').textContent = state.players.length;
+
+  // Progress
+  const pct = (state.currentRound / SCENARIOS.length) * 100;
+  document.getElementById('g-progress').style.width = pct + '%';
+
+  // Scenario
+  document.getElementById('g-scenario-emoji').textContent    = scenario.emoji;
+  document.getElementById('g-scenario-category').textContent = scenario.category;
+  document.getElementById('g-scenario-text').textContent     = scenario.text;
+
+  // Options
+  renderOptions(scenario);
+
+  // Answered list
+  renderAnsweredList();
+
+  // Current player
+  updateCurrentPlayerUI();
+}
+
+function renderOptions(scenario) {
+  const container = document.getElementById('g-options');
+  const letters = ['A', 'B', 'C', 'D'];
+  container.innerHTML = scenario.options.map((opt, i) => `
+    <button class="option-btn" onclick="chooseAnswer(${i})">
+      <span class="option-letter">${letters[i]}</span>
+      <span>${opt}</span>
+    </button>
+  `).join('');
+}
+
+function updateCurrentPlayerUI() {
+  const player = state.players[state.currentPlayer];
+  document.getElementById('g-player-order').textContent = state.currentPlayer + 1;
+  document.getElementById('g-current-player').textContent = player.name;
+  document.getElementById('g-current-tribe').textContent =
+    `${player.tribe.emoji} ${player.tribe.name}`;
+
+  const scenario = SCENARIOS[state.currentRound];
+  const bonusEl = document.getElementById('g-bonus-hint');
+  if (player.tribe.bonus === scenario.tag) {
+    bonusEl.style.display = 'block';
+    bonusEl.textContent = '⭐ Bônus de povo ativo nessa pergunta!';
+  } else {
+    bonusEl.style.display = 'none';
+  }
+}
+
+function renderAnsweredList() {
+  const container = document.getElementById('g-answered-list');
+  container.innerHTML = state.players.map((p, i) => {
+    const answered = state.roundAnswers.find(r => r.playerIdx === i);
+    const done = !!answered;
+    return `
+      <div class="answered-chip ${done ? 'done' : 'waiting'}">
+        ${done ? '✓' : '○'} ${p.name}
+      </div>
+    `;
+  }).join('');
+}
+
+function chooseAnswer(answerIdx) {
+  const scenario = SCENARIOS[state.currentRound];
+  const player = state.players[state.currentPlayer];
+  const correct = answerIdx === scenario.correct;
+  let pts = 0;
+  if (correct) {
+    pts = 100;
+    if (player.tribe.bonus === scenario.tag) pts += 50;
+  }
+
+  player.score += pts;
+  state.roundAnswers.push({ playerIdx: state.currentPlayer, answerIdx, correct, pointsGained: pts });
+
+  // Disable options
+  document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
+
+  renderAnsweredList();
+
+  // Next player or reveal
+  setTimeout(() => {
+    state.currentPlayer++;
+    if (state.currentPlayer < state.players.length) {
+      updateCurrentPlayerUI();
+      renderOptions(scenario);
+    } else {
+      showReveal();
+    }
+  }, 400);
+}
+
+/* ══════════════════════════════════════════
+   REVEAL
+══════════════════════════════════════════ */
+function showReveal() {
+  const scenario = SCENARIOS[state.currentRound];
+  const letters = ['A', 'B', 'C', 'D'];
+
+  document.getElementById('r-round-num').textContent = state.currentRound + 1;
+  document.getElementById('r-correct-text').textContent =
+    `${letters[scenario.correct]}) ${scenario.options[scenario.correct]}`;
+  document.getElementById('r-explanation').textContent = scenario.explanation;
+
+  const isLast = state.currentRound >= SCENARIOS.length - 1;
+  document.getElementById('btn-next-round').textContent = isLast ? '🏆 Ver Resultado Final' : 'Próxima Rodada →';
+
+  // Results table
+  const tbody = document.getElementById('r-results-body');
+  tbody.innerHTML = state.roundAnswers.map(r => {
+    const player = state.players[r.playerIdx];
+    const bonusGot = r.correct && player.tribe.bonus === scenario.tag;
+    const answerText = `${letters[r.answerIdx]}) ${scenario.options[r.answerIdx]}`;
+    return `
+      <tr>
+        <td>
+          <strong>${player.name}</strong><br/>
+          <span style="font-size:.8rem; color:var(--muted);">${player.tribe.emoji} ${player.tribe.name}</span>
+        </td>
+        <td class="${r.correct ? 'result-correct' : 'result-wrong'}">
+          ${r.correct ? '✅' : '❌'} ${answerText.substring(0, 60)}${answerText.length > 60 ? '…' : ''}
+          ${bonusGot ? '<span class="result-bonus">+bônus ⭐</span>' : ''}
+        </td>
+        <td class="pts-gained">+${r.pointsGained}</td>
+        <td><strong>${player.score}</strong></td>
+      </tr>
+    `;
+  }).join('');
+
+  showScreen('screen-reveal');
+}
+
+function nextRound() {
+  state.currentRound++;
+  if (state.currentRound >= SCENARIOS.length) {
+    showEndScreen();
+  } else {
+    showRound();
+    showScreen('screen-game');
+  }
+}
+
+/* ══════════════════════════════════════════
+   LEADERBOARD
+══════════════════════════════════════════ */
+function showLeaderboard() {
+  state.leaderboardFrom = 'reveal';
+  buildLeaderboard();
+  showScreen('screen-leaderboard');
+}
+
+function buildLeaderboard() {
+  const sorted = [...state.players].sort((a, b) => b.score - a.score);
+  const medals = ['🥇', '🥈', '🥉'];
+  const rankClass = ['top1', 'top2', 'top3'];
+
+  document.getElementById('lb-round').textContent   = state.currentRound + 1;
+  document.getElementById('lb-total').textContent   = SCENARIOS.length;
+
+  document.getElementById('lb-list').innerHTML = sorted.map((p, i) => `
+    <div class="lb-entry ${rankClass[i] || ''}">
+      <div class="lb-rank">${medals[i] || (i + 1)}</div>
+      <div class="lb-emoji">${p.tribe.emoji}</div>
+      <div class="lb-info">
+        <div class="lb-name">${p.name}</div>
+        <div class="lb-tribe">${p.tribe.name}</div>
+      </div>
+      <div class="lb-score">${p.score} pts</div>
+    </div>
+  `).join('');
+
+  const isLast = state.currentRound >= SCENARIOS.length - 1;
+  document.getElementById('btn-lb-continue').textContent = isLast ? '🏆 Ver Resultado Final' : 'Continuar →';
+}
+
+function continueAfterLeaderboard() {
+  if (state.currentRound >= SCENARIOS.length - 1) {
+    showEndScreen();
+  } else {
+    showScreen('screen-reveal');
+  }
+}
+
+/* ══════════════════════════════════════════
+   END SCREEN
+══════════════════════════════════════════ */
+function showEndScreen() {
+  const sorted = [...state.players].sort((a, b) => b.score - a.score);
+  const winner = sorted[0];
+  const medals = ['🥇', '🥈', '🥉'];
+  const rankClass = ['top1', 'top2', 'top3'];
+
+  document.getElementById('e-winner-name').textContent  = winner.name;
+  document.getElementById('e-winner-tribe').textContent = `${winner.tribe.emoji} ${winner.tribe.name} · ${winner.score} pts`;
+
+  document.getElementById('e-final-lb').innerHTML = sorted.map((p, i) => `
+    <div class="lb-entry ${rankClass[i] || ''}">
+      <div class="lb-rank">${medals[i] || (i + 1)}</div>
+      <div class="lb-emoji">${p.tribe.emoji}</div>
+      <div class="lb-info">
+        <div class="lb-name">${p.name}</div>
+        <div class="lb-tribe">${p.tribe.name}</div>
+      </div>
+      <div class="lb-score">${p.score} pts</div>
+    </div>
+  `).join('');
+
+  showScreen('screen-end');
+}
+
+/* ══════════════════════════════════════════
+   RESTART
+══════════════════════════════════════════ */
+function restartGame() {
+  state.players = [];
+  state.currentRound = 0;
+  state.currentPlayer = 0;
+  state.roundAnswers = [];
+  state.eraPlayerIdx = 0;
+  state.selectedTribe = null;
+  document.getElementById('player-chips').innerHTML = '';
+  document.getElementById('player-name-input').value = '';
+  updateStartBtn();
+  showScreen('screen-setup');
+}
+</script>
+</body>
+</html>

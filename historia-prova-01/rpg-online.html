@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pré-História RPG · Online</title>
+
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
+  <style>
+    /* ── Tokens ───────────────── */
+    :root {
+      --bg:      #120b06;
+      --surface: #1d1008;
+      --card:    #291808;
+      --border:  #5a3a1a;
+      --orange:  #d4703a;
+      --gold:    #c9a227;
+      --green:   #4a8c5c;
+      --text:    #f0e6d3;
+      --muted:   #9a7a5a;
+      --ok:      #27ae60;
+      --bad:     #e74c3c;
+      --streak1: #e67e22;
+      --streak2: #e74c3c;
+      --streak3: #9b59b6;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: Georgia, serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── Screens ──────────────── */
+    .screen { display:none; animation: fadeUp .4s ease; }
+    .screen.active { display:block; }
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(14px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    /* ── Centered wrapper (welcome / join / end) ── */
+    .centered-wrap {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 28px 16px 60px;
+    }
+
+    /* ── Typography ─────────── */
+    h1 { font-size: 2.4rem; color: var(--gold); text-align: center; }
+    h2 { font-size: 1.55rem; color: var(--orange); margin-bottom: 12px; }
+    h3 { font-size: 1.05rem; color: var(--gold); }
+    .sub  { color: var(--muted); font-size: .9rem; text-align: center; }
+    .lbl  { font-size: .75rem; color: var(--muted); text-transform: uppercase; letter-spacing: .7px; margin-bottom: 5px; }
+
+    /* ── Buttons ─────────────── */
+    .btn {
+      display: inline-block; cursor: pointer; border: none;
+      border-radius: 8px; padding: 11px 26px;
+      font-size: .95rem; font-family: inherit;
+      transition: filter .15s, transform .1s;
+    }
+    .btn:hover  { filter: brightness(1.15); }
+    .btn:active { transform: scale(.97); }
+    .btn-primary { background: var(--orange); color: #fff; }
+    .btn-gold    { background: var(--gold); color: #1a0e00; font-weight: bold; }
+    .btn-outline { background: transparent; color: var(--orange); border: 2px solid var(--orange); }
+    .btn-ghost   { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+    .btn-full { width: 100%; text-align: center; }
+    .btn-sm   { padding: 7px 14px; font-size: .83rem; }
+    .btn:disabled { opacity: .4; cursor: not-allowed; filter: none; transform: none; }
+
+    /* ── Cards ───────────────── */
+    .card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 18px;
+      margin-bottom: 12px;
+    }
+    .card-title { font-size: .75rem; color: var(--muted); text-transform: uppercase; letter-spacing: .7px; margin-bottom: 8px; }
+    .divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+    .mt-8  { margin-top: 8px; }
+    .mt-14 { margin-top: 14px; }
+    .mt-20 { margin-top: 20px; }
+
+    /* ── Inputs ──────────────── */
+    input, select {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: 10px 14px; color: var(--text);
+      font-size: .95rem; font-family: inherit; width: 100%;
+    }
+    input:focus, select:focus { outline: none; border-color: var(--orange); }
+    input::placeholder { color: var(--muted); }
+
+    /* ── Progress ────────────── */
+    .prog-wrap { background: var(--surface); border-radius: 99px; height: 7px; overflow: hidden; }
+    .prog-fill  { background: linear-gradient(90deg, var(--orange), var(--gold)); height: 100%; border-radius: 99px; transition: width .5s; }
+
+    /* ══════════════════════════════
+       WELCOME
+    ══════════════════════════════ */
+    .big-emoji { font-size: 4rem; display: block; text-align: center; margin-bottom: 10px; }
+    .tagline {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 10px; padding: 11px 20px; display: inline-block;
+      font-size: .9rem; margin: 14px 0 22px;
+    }
+    .tagline span { color: var(--gold); }
+
+    /* ══════════════════════════════
+       JOIN
+    ══════════════════════════════ */
+    .tab-row { display: flex; margin-bottom: 14px; }
+    .tab-btn {
+      flex: 1; padding: 9px; font-size: .88rem; font-family: inherit;
+      cursor: pointer; border: 1px solid var(--border); background: var(--surface);
+      color: var(--muted); transition: background .15s, color .15s;
+    }
+    .tab-btn:first-child { border-radius: 8px 0 0 8px; }
+    .tab-btn:last-child  { border-radius: 0 8px 8px 0; }
+    .tab-btn.active { background: var(--orange); color: #fff; border-color: var(--orange); }
+
+    .tribe-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; margin-top: 10px; }
+    .tribe-card {
+      background: var(--surface); border: 2px solid var(--border);
+      border-radius: 10px; padding: 13px; cursor: pointer; text-align: center;
+      transition: border-color .2s, transform .15s;
+    }
+    .tribe-card:hover   { border-color: var(--orange); transform: translateY(-2px); }
+    .tribe-card.sel     { border-color: var(--gold); background: #2a1e08; }
+    .tribe-emoji { font-size: 2rem; display: block; margin-bottom: 5px; }
+    .tribe-name  { font-size: .95rem; font-weight: bold; color: var(--gold); }
+    .tribe-desc  { font-size: .75rem; color: var(--muted); margin: 3px 0; }
+    .tribe-bonus { font-size: .75rem; color: var(--green); font-style: italic; }
+
+    /* ══════════════════════════════
+       GAME LAYOUT  (2 col)
+    ══════════════════════════════ */
+    #s-game { height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+
+    .game-topbar {
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      padding: 10px 20px; display: flex; align-items: center;
+      gap: 12px; flex-wrap: wrap; flex-shrink: 0;
+    }
+    .badge {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 99px; padding: 4px 13px; font-size: .8rem; color: var(--muted);
+    }
+    .badge strong { color: var(--gold); }
+
+    .streak-badge {
+      display: none; align-items: center; gap: 6px;
+      border-radius: 99px; padding: 4px 13px; font-size: .82rem;
+      font-weight: bold; animation: streakBadgePop .3s ease;
+    }
+    @keyframes streakBadgePop {
+      from { transform: scale(.7); }
+      to   { transform: scale(1); }
+    }
+    .streak-badge.s1 { background: #3a2000; border: 1px solid var(--streak1); color: var(--streak1); display:flex; }
+    .streak-badge.s2 { background: #3a0808; border: 1px solid var(--streak2); color: var(--streak2); display:flex; }
+    .streak-badge.s3 { background: #2a0a3a; border: 1px solid var(--streak3); color: var(--streak3); display:flex; }
+
+    .game-body {
+      flex: 1; overflow: hidden;
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 0;
+    }
+
+    /* ── Question pane ─────────── */
+    .question-pane {
+      overflow-y: auto; padding: 20px;
+      border-right: 1px solid var(--border);
+    }
+    .q-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .q-emoji  { font-size: 1.8rem; }
+    .q-cat    { background: var(--orange); color: #fff; border-radius: 99px; padding: 3px 11px; font-size: .76rem; font-weight: bold; }
+
+    .scenario-text {
+      font-size: 1.04rem; line-height: 1.7; padding: 14px;
+      background: var(--surface); border-radius: 10px;
+      border-left: 3px solid var(--orange); margin-bottom: 14px;
+    }
+
+    .bonus-hint {
+      display: none; background: #182a18; border: 1px solid var(--green);
+      border-radius: 8px; padding: 7px 13px; font-size: .82rem;
+      color: var(--green); margin-bottom: 12px;
+    }
+
+    .options-grid { display: grid; gap: 9px; margin-bottom: 12px; }
+    .opt {
+      background: var(--surface); border: 2px solid var(--border);
+      border-radius: 9px; padding: 12px 15px; cursor: pointer;
+      display: flex; align-items: flex-start; gap: 11px;
+      font-family: inherit; font-size: .93rem; color: var(--text);
+      text-align: left; transition: border-color .15s, background .15s;
+    }
+    .opt:hover:not(:disabled) { border-color: var(--orange); background: var(--card); }
+    .opt:disabled { cursor: default; }
+    .opt.correct { border-color: var(--ok)  !important; background: #0f2a18 !important; }
+    .opt.wrong   { border-color: var(--bad) !important; background: #2a0f0f !important; }
+    .opt-letter  { font-weight: bold; color: var(--orange); min-width: 18px; line-height: 1.5; }
+
+    .feedback-box {
+      display: none; background: var(--surface); border: 1px solid var(--gold);
+      border-radius: 10px; padding: 13px 16px; margin-bottom: 12px;
+      font-size: .9rem; line-height: 1.65;
+    }
+    .feedback-lbl { font-size: .72rem; color: var(--gold); text-transform: uppercase; letter-spacing: .7px; margin-bottom: 5px; }
+
+    /* ── Leaderboard pane ─────── */
+    .lb-pane {
+      overflow-y: auto; padding: 16px;
+      background: var(--surface);
+      display: flex; flex-direction: column;
+    }
+    .lb-pane-title {
+      font-size: .75rem; color: var(--muted); text-transform: uppercase;
+      letter-spacing: .7px; margin-bottom: 12px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .live-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--ok); animation: blink 1.4s infinite;
+    }
+    @keyframes blink {
+      0%,100% { opacity: 1; }
+      50%      { opacity: .2; }
+    }
+
+    .lb-entry {
+      display: flex; align-items: center; gap: 10px;
+      border-radius: 9px; padding: 9px 12px; margin-bottom: 7px;
+      border: 1px solid var(--border); background: var(--card);
+      transition: background .25s;
+    }
+    .lb-entry.me   { border-color: var(--gold) !important; }
+    .lb-entry.r1   { background: #1e1800; border-color: var(--gold); }
+    .lb-entry.r2   { background: #181818; border-color: #9a9a9a; }
+    .lb-entry.r3   { background: #1a1000; border-color: #cd7f32; }
+    .lb-rank  { font-size: 1.1rem; min-width: 26px; text-align: center; }
+    .lb-tribe { font-size: 1.3rem; }
+    .lb-info  { flex: 1; overflow: hidden; }
+    .lb-name  { font-size: .88rem; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .lb-prog  { font-size: .72rem; color: var(--muted); }
+    .lb-score { font-size: 1.1rem; font-weight: bold; color: var(--gold); white-space: nowrap; }
+
+    /* score bump animation */
+    @keyframes scoreBump {
+      0%   { color: var(--gold); transform: scale(1); }
+      30%  { color: #fff8a0; transform: scale(1.25); }
+      100% { color: var(--gold); transform: scale(1); }
+    }
+    .score-bump { animation: scoreBump .5s ease; }
+
+    /* ══════════════════════════════
+       STREAK OVERLAY
+    ══════════════════════════════ */
+    #streak-overlay {
+      position: fixed; inset: 0; display: flex;
+      align-items: center; justify-content: center;
+      pointer-events: none; z-index: 900;
+    }
+    .streak-pop {
+      text-align: center; padding: 28px 44px;
+      border-radius: 20px; border: 2px solid;
+      backdrop-filter: blur(6px);
+      animation: streakPop 1.8s ease forwards;
+    }
+    @keyframes streakPop {
+      0%   { opacity:0; transform: scale(.5) translateY(30px); }
+      18%  { opacity:1; transform: scale(1.08) translateY(0); }
+      70%  { opacity:1; transform: scale(1);  }
+      100% { opacity:0; transform: scale(.9) translateY(-20px); }
+    }
+    .streak-pop.s1 { background: rgba(58,32,0,.92); border-color: var(--streak1); }
+    .streak-pop.s2 { background: rgba(58,8,8,.92);  border-color: var(--streak2); }
+    .streak-pop.s3 { background: rgba(42,10,58,.92); border-color: var(--streak3); }
+    .streak-pop-icon  { font-size: 3rem; display: block; margin-bottom: 6px; }
+    .streak-pop-title { font-size: 1.7rem; font-weight: bold; }
+    .streak-pop.s1 .streak-pop-title { color: var(--streak1); }
+    .streak-pop.s2 .streak-pop-title { color: var(--streak2); }
+    .streak-pop.s3 .streak-pop-title { color: var(--streak3); }
+    .streak-pop-sub { font-size: .9rem; color: var(--muted); margin-top: 4px; }
+
+    /* ══════════════════════════════
+       END SCREEN
+    ══════════════════════════════ */
+    .trophy-big { font-size: 5rem; display: block; text-align: center; }
+
+    /* ══════════════════════════════
+       TOAST
+    ══════════════════════════════ */
+    #toast {
+      position: fixed; bottom: 22px; left: 50%;
+      transform: translateX(-50%) translateY(70px);
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 10px; padding: 10px 20px; font-size: .88rem;
+      transition: transform .3s; z-index: 999; pointer-events: none;
+      white-space: nowrap;
+    }
+    #toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* ══════════════════════════════
+       MOBILE  (<= 700px)
+    ══════════════════════════════ */
+    @media (max-width: 700px) {
+      #s-game { height: auto; overflow: visible; }
+      .game-body {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
+      }
+      .question-pane { border-right: none; border-bottom: 1px solid var(--border); }
+      .lb-pane { max-height: 320px; }
+      h1 { font-size: 1.9rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════
+     SCREEN: JOIN  (tela inicial + entrada)
+════════════════════════════════════ -->
+<div id="s-join" class="screen active">
+  <div class="centered-wrap" style="padding-top:36px;">
+
+    <!-- Header -->
+    <div style="text-align:center; margin-bottom:28px;">
+      <span class="big-emoji">🦴</span>
+      <h1>Pré-História RPG</h1>
+      <p class="sub mt-8" style="font-style:italic; font-size:.95rem;">A Formação das Comunidades Primitivas</p>
+    </div>
+
+    <!-- Aviso Firebase / file:// -->
+    <div id="firebase-warning" style="display:none;" class="card" style="border-color:#e74c3c;">
+      <p style="color:#e74c3c; font-size:.9rem; font-weight:bold; margin-bottom:6px;">⚠️ Sem conexão com o servidor</p>
+      <p style="color:var(--muted); font-size:.85rem; line-height:1.6;">
+        O arquivo está sendo aberto direto do disco (<code>file://</code>), o que bloqueia a conexão com o Firebase.<br/>
+        Para jogar com placar ao vivo, sirva o arquivo via HTTP:<br/>
+        <code style="color:var(--orange);">npx serve .</code> &nbsp;ou&nbsp; <code style="color:var(--orange);">python3 -m http.server 8080</code><br/>
+        Depois acesse <code>http://localhost:8080/rpg-online.html</code>
+      </p>
+    </div>
+
+    <!-- Nome -->
+    <div class="card">
+      <div class="lbl">Seu nome</div>
+      <input id="inp-name" type="text" placeholder="Digite seu nome..." maxlength="24"
+        onkeydown="if(event.key==='Enter') joinRoom()" />
+    </div>
+
+    <!-- Escolha de povo -->
+    <div class="card">
+      <div class="card-title">Escolha seu Povo</div>
+      <div id="tribe-grid" class="tribe-grid"></div>
+    </div>
+
+    <button class="btn btn-gold btn-full" onclick="joinRoom()" style="font-size:1.05rem; padding:13px;">
+      ⚔️ Entrar e Jogar
+    </button>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════
+     SCREEN: GAME  (2-column)
+════════════════════════════════════ -->
+<div id="s-game" class="screen">
+
+  <!-- Top bar -->
+  <div class="game-topbar">
+    <div class="badge">Q <strong id="g-qnum">1</strong>/<strong id="g-qtot">10</strong></div>
+    <div class="badge">Score: <strong id="g-score" style="color:var(--gold);">0</strong></div>
+    <div class="prog-wrap" style="flex:1; min-width:60px;">
+      <div class="prog-fill" id="g-prog"></div>
+    </div>
+    <!-- Streak badge (shown dynamically) -->
+    <div class="streak-badge" id="g-streak-badge"></div>
+  </div>
+
+  <!-- Body: question + leaderboard -->
+  <div class="game-body">
+
+    <!-- LEFT: Question -->
+    <div class="question-pane" id="question-pane">
+      <div class="q-header">
+        <span class="q-emoji" id="g-emoji">🦴</span>
+        <span class="q-cat"  id="g-cat">Categoria</span>
+      </div>
+
+      <div class="scenario-text" id="g-text">...</div>
+
+      <div class="bonus-hint" id="g-bonus">
+        ⭐ Bônus do seu povo ativo nessa questão! (+50 pts se acertar)
+      </div>
+
+      <div class="options-grid" id="g-opts"></div>
+
+      <div class="feedback-box" id="g-feedback">
+        <div class="feedback-lbl">📚 Contexto histórico</div>
+        <div id="g-feedback-txt"></div>
+      </div>
+
+      <button id="g-next" class="btn btn-primary btn-full" onclick="nextQ()" style="display:none;">
+        Próxima questão →
+      </button>
+    </div>
+
+    <!-- RIGHT: Live leaderboard -->
+    <div class="lb-pane" id="lb-pane">
+      <div class="lb-pane-title">
+        <span class="live-dot"></span>
+        Placar ao vivo
+      </div>
+      <div id="lb-entries">
+        <p style="color:var(--muted); font-size:.82rem; text-align:center; margin-top:20px;">
+          Aguardando jogadores...
+        </p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════
+     SCREEN: END
+════════════════════════════════════ -->
+<div id="s-end" class="screen">
+  <div class="centered-wrap" style="text-align:center;">
+    <span class="trophy-big">🏆</span>
+    <p class="sub mt-8">VENCEDOR</p>
+    <div style="font-size:2rem; color:var(--gold); margin-top:4px;" id="e-winner">—</div>
+    <p class="sub mt-8" id="e-winner-info" style="font-size:.95rem;">—</p>
+    <p style="font-size:1.5rem; color:var(--gold); font-weight:bold; margin-top:6px;" id="e-winner-score">—</p>
+
+    <hr class="divider" />
+    <h3 style="text-align:center; margin-bottom:14px;">Classificação Final</h3>
+    <div id="e-lb"></div>
+
+    <hr class="divider" />
+    <button class="btn btn-ghost btn-full" onclick="restart()">🔄 Jogar novamente</button>
+  </div>
+</div>
+
+<!-- Streak overlay -->
+<div id="streak-overlay"></div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+
+<script>
+const FIREBASE_CONFIG = {
+  apiKey:            "AIzaSyDVY4Td_HnqiyZcnJBgtIdSSswEbcoNJ1o",
+  authDomain:        "estudos-prova.firebaseapp.com",
+  databaseURL:       "https://estudos-prova-default-rtdb.firebaseio.com",
+  projectId:         "estudos-prova",
+  storageBucket:     "estudos-prova.firebasestorage.app",
+  messagingSenderId: "744026836516",
+  appId:             "1:744026836516:web:55c8e114a8f594df97d2b1",
+};
+</script>
+
+
+<script>
+/* ══════════════════════════════════════════
+   GAME DATA
+══════════════════════════════════════════ */
+const TRIBES = [
+  { id:'tupinamba', name:'Tupinambá',      emoji:'🏹', desc:'Povo indígena do Brasil',         bonus:'mito',        bonusDesc:'+50 pts em mitos de fundação' },
+  { id:'azteca',    name:'Asteca',          emoji:'🌞', desc:'Civilização do México antigo',    bonus:'civilizacao', bonusDesc:'+50 pts em civilizações' },
+  { id:'nomade',    name:'Caçador Nômade',  emoji:'🦣', desc:'Homo sapiens do Paleolítico',     bonus:'paleolitico', bonusDesc:'+50 pts no Paleolítico' },
+  { id:'agricultor',name:'Agricultor',      emoji:'🌾', desc:'Pioneiro do Neolítico',           bonus:'neolitico',   bonusDesc:'+50 pts no Neolítico' },
+  { id:'olmeca',    name:'Olmeca',          emoji:'🗿', desc:'Civilização-mãe mesoamericana',   bonus:'civilizacao', bonusDesc:'+50 pts em civilizações' },
+  { id:'sambaqui',  name:'Povo do Sambaqui',emoji:'🐚', desc:'Primeiros habitantes do litoral', bonus:'brasil',      bonusDesc:'+50 pts em questões do Brasil' },
+];
+
+// 50 questões — 10 são sorteadas aleatoriamente a cada partida
+const ALL_SCENARIOS = [
+
+  /* ── MITOS DE FUNDAÇÃO ─────────────────────────────── */
+
+  /* 1 */ { emoji:'🌊', cat:'Mitos de Fundação', tag:'mito',
+    text:'O mito tupinambá conta que o deus Monan destruiu o mundo com fogo e depois com um dilúvio. Como essa narrativa chegou até hoje?',
+    opts:['Escrita em papiro guardado nos arquivos tribais.','Pela transmissão oral, de geração em geração, contada pelos mais velhos.','Gravada em tábuas de pedra escondidas nas matas.','Publicada em livros sagrados com hieróglifos.'],
+    ok:1, exp:'Povos indígenas como os Tupinambás não usavam escrita — eram povos ágrafos. Seus mitos e conhecimentos eram transmitidos oralmente de geração em geração, o que não os torna "sem história".' },
+
+  /* 2 */ { emoji:'🌞', cat:'Mitos de Fundação', tag:'mito',
+    text:'No mito asteca do Quinto Sol, como os seres humanos foram criados?',
+    opts:['Foram moldados de barro pelo deus supremo.','Quetzalcóatl foi ao reino dos mortos, recuperou ossos dos antigos seres divinos e os misturou com o sangue dos deuses.','Surgiram espontaneamente da terra no momento em que o Sol brilhou pela primeira vez.','Foram gerados pelo fogo quando Nanahuatzin se sacrificou.'],
+    ok:1, exp:'Segundo o mito asteca, Quetzalcóatl foi a Mictlán (reino dos mortos) buscar ossos dos seres anteriores. Os deuses os cobriram com seu próprio sangue, criando os "Humanos da era do Quinto Sol" — ressaltando o sacrifício divino como base da existência humana.' },
+
+  /* 3 */ { emoji:'☀️', cat:'Mitos de Fundação', tag:'mito',
+    text:'O que o mito asteca do Quinto Sol revela sobre a visão de mundo desse povo?',
+    opts:['Que os humanos são seres independentes que nada devem aos deuses.','Que o mundo foi criado por acidente, sem nenhuma intervenção sobrenatural.','Que a existência humana é resultado do sacrifício e da intervenção dos deuses.','Que os astecas acreditavam que a evolução explicava a origem humana.'],
+    ok:2, exp:'O mito asteca enfatiza que a vida humana só foi possível pelo sacrifício dos deuses — tema central da cosmologia asteca. Isso também justificava os rituais de sacrifício como forma de "devolver" esse débito divino.' },
+
+  /* 4 */ { emoji:'🏹', cat:'Mitos de Fundação', tag:'mito',
+    text:'Qual é a função social dos mitos de fundação nas comunidades indígenas?',
+    opts:['Substituir completamente qualquer explicação racional da realidade.','Servir apenas como entretenimento nas festas tribais.','Transmitir valores culturais, explicar a origem do mundo e fortalecer a identidade coletiva do grupo.','Proibir o questionamento sobre a origem do mundo e da vida.'],
+    ok:2, exp:'Os mitos de fundação cumprem funções essenciais: explicam origens (mundo, humanos, fenômenos naturais), transmitem valores morais e sociais, e fortalecem o sentido de pertencimento. São a "história oficial" oral de um povo.' },
+
+  /* 5 */ { emoji:'🧬', cat:'Mitos de Fundação', tag:'mito',
+    text:'Qual é a diferença fundamental entre os mitos de fundação e a teoria científica sobre a origem dos humanos?',
+    opts:['Mitos são mais antigos, portanto mais confiáveis que a ciência.','A ciência usa só matemática; os mitos usam palavras.','Mitos explicam a origem por narrativas sobrenaturais transmitidas culturalmente; a ciência baseia-se em evidências e experimentos verificáveis.','Não há diferença real — ambos chegam às mesmas conclusões.'],
+    ok:2, exp:'Mitos de fundação (como o Quinto Sol asteca) explicam a origem por narrativas sobrenaturais. A teoria científica (como o evolucionismo de Darwin) parte de fósseis, DNA e experimentos revisados. Ambas têm valor, mas por naturezas distintas.' },
+
+  /* 6 */ { emoji:'🌧️', cat:'Mitos de Fundação', tag:'mito',
+    text:'No mito tupinambá, qual foi o papel do deus Monan na criação do mundo atual?',
+    opts:['Monan criou o mundo do nada e presenteou os humanos com fogo sagrado.','Monan se decepcionou com os humanos, enviou fogo para destruí-los e depois um dilúvio para apagar as chamas, dando origem ao mundo atual.','Monan batalhou contra outros deuses e o mundo nasceu dos restos da batalha.','Monan criou os animais primeiro e só depois os humanos, como servos.'],
+    ok:1, exp:'Segundo o mito tupinambá, Monan (o criador) se decepcionou com os humanos e enviou fogo. Um homem arrependido pediu misericórdia e Monan enviou chuva para apagar o fogo — criando o dilúvio. Esse ciclo de destruição e recriação explica a origem do mundo atual.' },
+
+  /* ── EVOLUÇÃO E HOMINÍDEOS ─────────────────────────── */
+
+  /* 7 */ { emoji:'🐒', cat:'Evolução', tag:'evolucao',
+    text:'Segundo a teoria evolucionista, onde e há quanto tempo surgiu o Homo sapiens (nossa espécie)?',
+    opts:['Há ~2 milhões de anos, na Ásia.','Há ~200.000 anos, no continente africano.','Há ~50.000 anos, na Europa.','Há ~500.000 anos, nas Américas.'],
+    ok:1, exp:'O Homo sapiens surgiu no continente africano há aproximadamente 200.000 anos. Nossa espécie se destacou pelo desenvolvimento do pensamento abstrato, da linguagem complexa e da criação de arte.' },
+
+  /* 8 */ { emoji:'🦴', cat:'Evolução', tag:'evolucao',
+    text:'O que são hominídeos?',
+    opts:['Qualquer animal que vive em grupo, como lobos ou formigas.','O grupo de primatas que inclui os seres humanos e seus ancestrais mais próximos.','Um ser humano que vive de forma isolada da sociedade.','Um fóssil encontrado exclusivamente no continente africano.'],
+    ok:1, exp:'Hominídeos são o grupo de primatas que inclui o Homo sapiens e seus ancestrais diretos (como Homo heidelbergensis, Homo erectus e Australopithecus). O livro usa o termo para explicar a árvore evolutiva humana.' },
+
+  /* 9 */ { emoji:'🌳', cat:'Evolução', tag:'evolucao',
+    text:'Qual foi a sequência correta na evolução dos hominídeos, do mais antigo para o mais recente?',
+    opts:['Homo sapiens → Homo erectus → Australopithecus','Homo habilis → Australopithecus → Homo sapiens → Homo erectus','Australopithecus → Homo habilis → Homo erectus → Homo sapiens','Homo erectus → Homo habilis → Homo sapiens → Australopithecus'],
+    ok:2, exp:'A árvore evolutiva mostra: Australopithecus (bípedes ancestrais) → Homo habilis (primeiros usuários de ferramentas) → Homo erectus (migrações para fora da África) → Homo sapiens (nossa espécie, ~200.000 anos). O Ardipithecus é ainda mais antigo.' },
+
+  /* 10 */ { emoji:'💪', cat:'Evolução', tag:'evolucao',
+    text:'Qual foi uma das primeiras e mais importantes adaptações dos hominídeos que os distinguiu dos outros primatas?',
+    opts:['O desenvolvimento da visão colorida tridimensional.','A capacidade de nadar longas distâncias.','O bipedismo — a capacidade de caminhar ereto sobre dois membros.','O crescimento excessivo dos dentes caninos para caçar.'],
+    ok:2, exp:'O bipedismo foi adaptação fundamental: ao libertar os membros superiores, permitiu o uso das mãos para fabricar ferramentas, carregar alimentos e criar. Fósseis como o Australopithecus já mostram adaptações para a marcha bípede, muito antes do grande cérebro.' },
+
+  /* 11 */ { emoji:'🔬', cat:'Evolução', tag:'evolucao',
+    text:'Qual é o princípio central da teoria da evolução de Charles Darwin?',
+    opts:['Todos os seres vivos foram criados simultaneamente e permanecem imutáveis.','As espécies mais adaptadas ao ambiente têm mais chance de sobreviver e se reproduzir; as não adaptadas tendem a ser extintas.','A evolução ocorre por vontade própria dos organismos, que mudam conforme necessitam.','Os seres humanos evoluíram diretamente dos macacos atuais, sem espécies intermediárias.'],
+    ok:1, exp:'Darwin propôs que a evolução ocorre por seleção natural: variações genéticas surgem aleatoriamente e as mais vantajosas ao ambiente são "selecionadas" ao longo das gerações. Isso explicaria a diversidade e a adaptação de todas as espécies.' },
+
+  /* ── PRÉ-HISTÓRIA / PERÍODOS ───────────────────────── */
+
+  /* 12 */ { emoji:'📝', cat:'Pré-História', tag:'paleolitico',
+    text:'Por que o termo "Pré-História" é criticado por historiadores?',
+    opts:['Porque esse período ocorreu antes da existência dos seres humanos.','Porque povos sem escrita também faziam história — não registrá-la em texto não os torna "sem história".','Porque os fósseis desse período provaram ser falsificações.','Porque o período foi curto demais para ter importância histórica.'],
+    ok:1, exp:'O termo "Pré-História" sugere que povos ágrafos não tinham história — visão eurocêntrica. Esses povos viviam, criavam culturas e transmitiam conhecimentos. O livro aponta que o termo foi cunhado em 1851 por Daniel Wilson.' },
+
+  /* 13 */ { emoji:'🗓️', cat:'Pré-História', tag:'paleolitico',
+    text:'Quem cunhou o termo "Pré-História" e em que ano?',
+    opts:['Charles Darwin, em 1859.','Karl Marx, em 1848.','Daniel Wilson, em 1851.','Peter Lund, em 1835.'],
+    ok:2, exp:'O termo "Pré-História" foi cunhado por Daniel Wilson em 1851 para se referir ao período anterior à invenção da escrita. Hoje é amplamente criticado por excluir a história dos povos ágrafos.' },
+
+  /* 14 */ { emoji:'🪨', cat:'Paleolítico', tag:'paleolitico',
+    text:'Por que o Paleolítico também é chamado de "Idade da Pedra Lascada"?',
+    opts:['Porque os humanos viviam exclusivamente em cavernas de pedra calcária lascada.','Porque a pedra era usada apenas em rituais religiosos.','Porque as ferramentas eram fabricadas lascando (quebrando) pedras para criar bordas cortantes.','Porque nesse período os humanos construíam casas com pedras lascadas.'],
+    ok:2, exp:'No Paleolítico, a principal tecnologia era a pedra lascada — sílex, quartzo e outras rochas eram quebradas para criar ferramentas com bordas afiadas, usadas para cortar, raspar e caçar.' },
+
+  /* 15 */ { emoji:'🔥', cat:'Paleolítico', tag:'paleolitico',
+    text:'Uma das grandes conquistas do Paleolítico foi o domínio do fogo. Qual foi sua principal utilidade?',
+    opts:['Forjar metais para ferramentas avançadas.','Produzir cerâmica para armazenar alimentos.','Criar sinais de fumaça para comunicação com tribos distantes.','Aquecimento, cozimento de alimentos, proteção contra predadores e iluminação em cavernas.'],
+    ok:3, exp:'O domínio do fogo no Paleolítico foi essencial para aquecimento no inverno, cozimento (melhorando digestão e segurança alimentar), afastar predadores e iluminar cavernas — transformando completamente a vida humana.' },
+
+  /* 16 */ { emoji:'🏃', cat:'Paleolítico', tag:'paleolitico',
+    text:'Por que os grupos humanos do Paleolítico eram nômades (não se fixavam em um lugar)?',
+    opts:['Porque ainda não tinham inventado sapatos, tornando longas caminhadas necessárias.','Porque eram expulsos de cada local pelos animais predadores.','Porque dependiam da caça e coleta de alimentos, precisando seguir animais e encontrar plantas conforme as estações.','Porque seguiam os rios que mudavam de curso com frequência.'],
+    ok:2, exp:'No Paleolítico, sem agricultura, os humanos dependiam totalmente do que a natureza oferecia em cada local e estação. Quando os recursos se esgotavam ou os animais migravam, o grupo precisava se mover — o nomadismo era uma estratégia de sobrevivência.' },
+
+  /* 17 */ { emoji:'🖌️', cat:'Paleolítico', tag:'paleolitico',
+    text:'O que as pinturas rupestres encontradas em cavernas revelam sobre os povos do Paleolítico?',
+    opts:['Que os humanos já conheciam a escrita desde essa época.','Que eram apenas decorações sem significado especial.','Que copiavam técnicas de povos mais avançados que visitaram as cavernas.','Que possuíam capacidade artística, pensamento simbólico e vida cultural rica.'],
+    ok:3, exp:'As pinturas rupestres mostram animais, humanos e símbolos — evidência de pensamento simbólico, criatividade e provavelmente rituais. São prova de vida cultural sofisticada muito antes da escrita.' },
+
+  /* 18 */ { emoji:'🌾', cat:'Neolítico', tag:'neolitico',
+    text:'Qual é a principal mudança que a Revolução Agrícola do Neolítico causou no modo de vida humano?',
+    opts:['Nada muda — os humanos continuaram nômades e caçadores como antes.','Os humanos passaram a se fixar em um local e produzir alimentos, dando origem às aldeias permanentes.','Os humanos passaram a construir navios para explorar os oceanos.','Os humanos começaram a fundir ferro para fazer armas melhores.'],
+    ok:1, exp:'A Revolução Agrícola no Neolítico (~10.000 a.C.) permitiu produção regular de alimentos, possibilitando a fixação em um local, armazenamento de excedentes e surgimento de aldeias permanentes e organização social mais complexa.' },
+
+  /* 19 */ { emoji:'🐄', cat:'Neolítico', tag:'neolitico',
+    text:'Qual prática do Neolítico ajudou os humanos a ter uma dieta mais estável e previsível?',
+    opts:['A caça de grandes animais com lanças de ferro.','A pesca com redes em alto mar.','A coleta de minerais preciosos para comércio.','A domesticação de animais e o cultivo de plantas.'],
+    ok:3, exp:'No Neolítico, domesticar animais e cultivar plantas permitiu produção regular de alimentos, reduzindo a total dependência da caça e da coleta nômade — base para o surgimento de civilizações.' },
+
+  /* 20 */ { emoji:'⚱️', cat:'Neolítico', tag:'neolitico',
+    text:'O que a realização de cultos funerários no Neolítico revela sobre esses povos?',
+    opts:['Que eram violentos e celebravam a morte dos inimigos.','Que ainda não tinham desenvolvido nenhuma forma de pensamento abstrato.','Que desenvolveram crenças sobre a morte e a vida após ela, com pensamento simbólico e religioso organizado.','Que os rituais funerários eram proibidos e realizados em segredo.'],
+    ok:2, exp:'Cultos funerários neolíticos (sepultamentos com objetos, rituais) evidenciam crenças espirituais, noção de identidade coletiva e cuidado com os mortos — sinais claros de organização social e pensamento simbólico avançado.' },
+
+  /* 21 */ { emoji:'🏺', cat:'Neolítico', tag:'neolitico',
+    text:'A cerâmica surge como importante tecnologia no Neolítico. Qual era sua principal função?',
+    opts:['Fabricar armas para a guerra entre aldeias.','Criar objetos de arte exclusivamente para rituais religiosos.','Armazenar alimentos e líquidos, permitindo conservação dos excedentes da agricultura.','Servir como moeda de troca entre comunidades distantes.'],
+    ok:2, exp:'A cerâmica neolítica tinha função essencial: armazenar excedentes da produção agrícola (grãos, água, azeite). Isso possibilitou maior segurança alimentar e o surgimento do comércio de excedentes entre grupos.' },
+
+  /* 22 */ { emoji:'🔩', cat:'Neolítico', tag:'neolitico',
+    text:'O que caracteriza a técnica da "pedra polida" usada no Neolítico, em comparação com a pedra lascada do Paleolítico?',
+    opts:['A pedra era aquecida no fogo até derreter e ser moldada.','A pedra polida era exclusivamente usada para fazer joias e ornamentos.','A pedra era alisada e polida por atrito (com areia e água), gerando ferramentas mais eficientes, duráveis e precisas.','A técnica foi importada da Ásia e só chegou ao Brasil na Idade dos Metais.'],
+    ok:2, exp:'No Neolítico, o polimento das pedras por abrasão substituiu gradualmente o lascamento. Ferramentas polidas tinham maior precisão e durabilidade, sendo essenciais para atividades agrícolas como cortar árvores e lavrar a terra.' },
+
+  /* 23 */ { emoji:'⚙️', cat:'Idade dos Metais', tag:'metais',
+    text:'Na Idade dos Metais, qual foi a ordem correta de uso dos metais pela humanidade?',
+    opts:['Ferro → Bronze → Cobre','Bronze → Cobre → Ferro','Ouro → Prata → Ferro','Cobre → Bronze → Ferro'],
+    ok:3, exp:'Cobre (mais fácil de trabalhar, encontrado em estado puro na natureza) → Bronze (liga de cobre e estanho, mais resistente) → Ferro (mais duro, exige altas temperaturas para ser fundido). Cada metal trouxe novas possibilidades tecnológicas e sociais.' },
+
+  /* 24 */ { emoji:'🏙️', cat:'Idade dos Metais', tag:'metais',
+    text:'O que diferenciou a Idade dos Metais das fases anteriores em termos de organização social?',
+    opts:['Os humanos abandonaram completamente a agricultura nesse período.','A organização social tornou-se mais complexa, com divisão de trabalho especializado, comércio e formação de hierarquias mais rígidas.','As populações voltaram a ser nômades por causa das guerras por recursos.','Não houve nenhuma mudança social relevante — só as ferramentas mudaram.'],
+    ok:1, exp:'Com a metalurgia vieram artesãos especializados, excedente de produção, comércio de metais e acesso desigual a recursos — fatores que tornaram a organização social mais hierárquica e criaram as bases para as primeiras cidades.' },
+
+  /* 25 */ { emoji:'📜', cat:'Pré-História', tag:'paleolitico',
+    text:'A invenção da escrita (~3.500 a.C.) é usada como marco para separar a "Pré-História" da "História". Por que essa divisão é problemática?',
+    opts:['Porque a escrita foi inventada muito antes, tornando a divisão imprecisa.','Porque todos os povos inventaram a escrita ao mesmo tempo.','Porque exclui a história dos povos que não usavam escrita, como se eles não tivessem passado ou cultura.','Porque a escrita tornou a história mais difícil de estudar do que os objetos.'],
+    ok:2, exp:'A divisão baseada na escrita é eurocêntrica: privilegia culturas que desenvolveram sistemas escritos (como Mesopotâmia e Egito) e ignora que povos ágrafos também faziam história — só de outras formas (oral, material, visual).' },
+
+  /* ── ORIGEM DOS POVOS AMERICANOS ───────────────────── */
+
+  /* 26 */ { emoji:'🌎', cat:'Primeiros Americanos', tag:'civilizacao',
+    text:'Qual é a teoria mais aceita pela ciência para explicar como os primeiros humanos chegaram às Américas?',
+    opts:['De barco pelo Oceano Atlântico, partindo da Europa.','Os humanos surgiram nas Américas de forma independente.','Chegaram pelo continente Antártico em embarcações primitivas.','Cruzaram o Estreito de Bering (Beríngia), vindo da Sibéria, por volta de 15.000 a.C.'],
+    ok:3, exp:'A teoria mais aceita é que grupos humanos cruzaram a Beríngia (~15.000 a.C.), quando era uma ponte de terra ligando a Sibéria ao Alasca. Há também a teoria da ocupação tardia, com chegada pelo Oceano Pacífico.' },
+
+  /* 27 */ { emoji:'🧊', cat:'Primeiros Americanos', tag:'civilizacao',
+    text:'O que possibilitou a existência da "ponte terrestre" da Beríngia que conectava a Sibéria às Américas?',
+    opts:['Um terremoto que uniu os dois continentes temporariamente.','A construção de pontes por povos asiáticos avançados.','A Era do Gelo, que fez o nível do mar baixar e a plataforma continental do Estreito de Bering ficar exposta.','A América e a Ásia eram o mesmo continente até há apenas 5.000 anos.'],
+    ok:2, exp:'Durante a Era do Gelo, grandes quantidades de água ficaram presas em geleiras, fazendo o nível do mar cair. Isso expôs a plataforma continental do Estreito de Bering, criando a Beríngia — uma faixa de terra por onde grupos humanos e animais cruzaram.' },
+
+  /* 28 */ { emoji:'🛶', cat:'Primeiros Americanos', tag:'civilizacao',
+    text:'O que propõe a "teoria da ocupação tardia" das Américas?',
+    opts:['Que humanos chegaram às Américas há apenas 3.000 anos.','Que grupos chegaram pelo Oceano Pacífico entre 17.000 e 30.000 anos atrás, possivelmente antes mesmo da rota da Beríngia.','Que a América foi o último continente a ser habitado, há 5.000 anos.','Que europeus chegaram às Américas antes da Era das Navegações.'],
+    ok:1, exp:'A teoria da ocupação tardia propõe que os primeiros americanos chegaram pela costa do Pacífico entre 17.000 e 30.000 anos atrás. As datas variam entre diferentes pesquisadores e questionam a teoria da Beríngia como única rota de chegada.' },
+
+  /* 29 */ { emoji:'🗺️', cat:'Primeiros Americanos', tag:'civilizacao',
+    text:'O que propõe a "Teoria Mata-Palmeira" sobre a dispersão dos primeiros americanos pelo continente?',
+    opts:['Que os primeiros americanos chegaram escondidos nas palmeiras trazidas por ventos oceânicos.','Que uma ponte de vegetação conectava a África ao Brasil.','Que os povos andinos migraram da floresta amazônica para as montanhas.','Que os primeiros grupos se espalharam seguindo as margens de rios e o litoral marítimo, onde havia abundância de recursos.'],
+    ok:3, exp:'A Teoria Mata-Palmeira sugere que os primeiros grupos que chegaram às Américas se espalharam seguindo rotas costeiras e fluviais, onde havia abundância de recursos alimentares — explicando a rápida colonização do continente de norte a sul.' },
+
+  /* ── CIVILIZAÇÕES NAS AMÉRICAS ─────────────────────── */
+
+  /* 30 */ { emoji:'🗿', cat:'Civilizações nas Américas', tag:'civilizacao',
+    text:'A civilização Olmeca (México, ~1200–400 a.C.) é conhecida como "civilização-mãe". Por quê?',
+    opts:['Porque criou as pirâmides mais altas das Américas.','Porque colonizou o litoral brasileiro antes dos europeus.','Porque influenciou diversas culturas mesoamericanas posteriores, como os astecas, em arte, religião e organização política.','Porque foi a primeira civilização a inventar a escrita no mundo.'],
+    ok:2, exp:'A Olmeca é chamada de "civilização-mãe" da Mesoamérica por ter influenciado culturas posteriores como os astecas e os maias em elementos de arte, religião, calendário e organização política. São conhecidos pelas cabeças colossais esculpidas em basalto.' },
+
+  /* 31 */ { emoji:'🏺', cat:'Civilizações nas Américas', tag:'civilizacao',
+    text:'A civilização Mochica (Peru, ~100–800 d.C.) destacou-se por qual produção cultural?',
+    opts:['Construção de templos de ouro puro.','Cerâmica altamente detalhada com representações realistas de pessoas, animais e cenas cotidianas.','Desenvolvimento de um sistema de escrita alfabética completo.','Criação das maiores pirâmides das Américas.'],
+    ok:1, exp:'Os Mochica eram famosos por sua cerâmica sofisticada — vasos e figuras com representações realistas de pessoas, animais e cenas cotidianas e rituais. Essa cerâmica é uma importante fonte de informação sobre a cultura desse povo.' },
+
+  /* 32 */ { emoji:'🏹', cat:'Civilizações nas Américas', tag:'civilizacao',
+    text:'A cultura Clovis (EUA, ~10.000–8.000 a.C.) é identificada principalmente por qual evidência arqueológica?',
+    opts:['Pirâmides construídas no deserto norte-americano.','Registros escritos em cavernas do sudoeste dos EUA.','Grandes cerâmicas decoradas com cenas de guerra.','Pontas de projétil características (pontas Clovis) usadas na caça de grandes animais.'],
+    ok:3, exp:'As pontas Clovis são ferramentas de pedra lascada com formato característico encontradas em vários sítios dos EUA. São evidências de caçadores especializados que viveram na América do Norte e são essenciais para identificar os primeiros habitantes bem documentados da região.' },
+
+  /* ── BRASIL PRÉ-HISTÓRICO ──────────────────────────── */
+
+  /* 33 */ { emoji:'🐚', cat:'Brasil Pré-histórico', tag:'brasil',
+    text:'O que eram os sambaquis encontrados no litoral brasileiro?',
+    opts:['Templos de sacrifício de povos astecas que migraram ao Brasil.','Depósitos de lixo construídos pelos colonizadores portugueses.','Monumentos construídos em homenagem aos deuses do mar.','Locais de habitação, alimentação e sepultamento dos primeiros habitantes do litoral, formados por acúmulo de conchas, ossos e restos.'],
+    ok:3, exp:'Os sambaquis eram acúmulos de conchas, ossos de mamíferos e instrumentos de pesca deixados pelos grupos que habitavam o litoral. Serviam para moradia, alimentação e sepultamento. O Brasil possui milhares desses sítios, alguns com mais de 6.500 anos.' },
+
+  /* 34 */ { emoji:'🦶', cat:'Brasil Pré-histórico', tag:'brasil',
+    text:'Por que os sambaquis são chamados de "livros de pedra" pelos arqueólogos?',
+    opts:['Porque contêm inscrições em pedra com a história dos povos.','Porque eram usados como templos onde se escrevia sobre os deuses.','Porque cada camada de conchas e ossos registra informações sobre alimentação, saúde e cultura desses grupos ao longo do tempo.','Porque os europeus os usaram para guardar documentos coloniais.'],
+    ok:2, exp:'Cada camada de um sambaqui preserva restos alimentares, ferramentas, fósseis e sepultamentos — um registro estratigráfico que arqueólogos e paleontólogos analisam para compreender a vida dessas comunidades antigas.' },
+
+  /* 35 */ { emoji:'🔨', cat:'Brasil Pré-histórico', tag:'brasil',
+    text:'Por que no Nordeste brasileiro existem muito poucos vestígios de sambaquis, ao contrário do litoral Sul e Sudeste?',
+    opts:['Porque os povos do Nordeste não consumiam frutos do mar.','Porque o Nordeste foi habitado somente após a chegada dos europeus.','Porque os sambaquis do Nordeste foram amplamente destruídos — suas conchas eram usadas como fonte de cal para construção de casarões até a década de 1900.','Porque a areia do Nordeste preserva os sambaquis de forma invisível.'],
+    ok:2, exp:'Conforme explica a arqueóloga Deisi de Farias (UFSC), no Nordeste os sambaquis foram destruídos porque suas camadas de conchas representavam rica fonte de cal — material amplamente usado na construção civil até meados do século XX.' },
+
+  /* 36 */ { emoji:'⚱️', cat:'Brasil Pré-histórico', tag:'brasil',
+    text:'Quais eram as duas hipóteses levantadas pela ciência para explicar o desaparecimento das comunidades sambaquieiras?',
+    opts:['Foram expulsos por animais selvagens; ou migraram voluntariamente para o interior.','Conflito com outras culturas levando à extinção; ou absorção gradual por outros grupos por meio de casamentos e escravização.','Morreram por epidemia de varíola trazida pelos portugueses; ou pelo aumento do nível do mar.','Emigraram para a América Central; ou foram escravizados pelos povos do Cerrado.'],
+    ok:1, exp:'O livro apresenta duas hipóteses para o desaparecimento dos sambaquieiros: 1) conflito entre culturas levou à extinção (semelhante ao ocorrido com outros grupos após a chegada dos europeus); 2) absorção por outras culturas via casamentos ou escravização, desestabilizando gradualmente a cultura sambaqui.' },
+
+  /* 37 */ { emoji:'🔭', cat:'Brasil Pré-histórico', tag:'brasil',
+    text:'Qual foi a contribuição do naturalista Peter Lund para a pré-história brasileira?',
+    opts:['Fundou o primeiro museu de arqueologia do Brasil no Rio de Janeiro.','Descobriu os sambaquis do litoral catarinense.','Criou a teoria da ocupação tardia das Américas.','Realizou expedições em mais de 30 cavernas em Lagoa Santa (MG) entre 1834–1844, descobrindo fósseis humanos e da megafauna extintos.'],
+    ok:3, exp:'Peter Lund, naturalista dinamarquês, foi o primeiro a fazer pesquisas sistemáticas de paleontologia no Brasil. Suas escavações em Lagoa Santa (MG) revelaram fósseis de humanos e da megafauna extinta, lançando as bases do estudo pré-histórico brasileiro. Ficou conhecido como o "Varão de Lagoa Santa".' },
+
+  /* 38 */ { emoji:'💀', cat:'Brasil Pré-histórico', tag:'brasil',
+    text:'"Luzia", encontrada em Lagoa Santa (MG), é importante para a história das Américas porque…',
+    opts:['Foi a primeira rainha indígena documentada.','Criou o primeiro sistema de escrita encontrado no Brasil.','Construiu os sambaquis mais antigos do litoral sul-americano.','É um dos fósseis humanos mais antigos das Américas (~11.500 anos), com características morfológicas diferentes dos povos mongoloides vindos pela Beríngia.'],
+    ok:3, exp:'Luzia (~11.500 anos) é um dos fósseis humanos mais antigos das Américas. Suas características morfológicas (crânio estreito e alongado) diferem dos povos mongoloides da Beríngia, levantando questões sobre múltiplas rotas de migração para o continente.' },
+
+  /* 39 */ { emoji:'👤', cat:'Brasil Pré-histórico', tag:'brasil',
+    text:'O que é o "Povo de Lagoa Santa" identificado por Walter Neves?',
+    opts:['Uma tribo indígena que ainda vive na região de Lagoa Santa (MG).','O nome dado aos construtores dos sambaquis do litoral mineiro.','Um povo fictício criado por Peter Lund para explicar seus achados.','Um grupo de mais de 30 indivíduos com características morfológicas semelhantes às de Luzia, encontrados na região de Lagoa Santa.'],
+    ok:3, exp:'O pesquisador Walter Neves e colaboradores identificaram mais de 30 indivíduos com características morfológicas semelhantes às de Luzia na região de Lagoa Santa — chamado de "Povo de Lagoa Santa". Isso reforçou a hipótese de múltiplas ondas migratórias para as Américas.' },
+
+  /* 40 */ { emoji:'🦏', cat:'Brasil Pré-histórico', tag:'brasil',
+    text:'O que foi a megafauna brasileira e o que teria causado seu desaparecimento?',
+    opts:['Dinossauros que sobreviveram no Brasil até ~11.000 anos atrás; extinta por vulcões.','Grandes mamíferos pré-históricos (preguiças-gigantes, gliptodontes, toxodontes); possivelmente extintos por combinação de mudanças climáticas e ação humana.','Peixes gigantes dos rios amazônicos; extintos pela seca do período glacial.','Répteis mesozoicos que viveram até a chegada dos europeus.'],
+    ok:1, exp:'A megafauna brasileira era formada por grandes mamíferos como a preguiça-gigante (Eremotherium), o gliptodonte e o toxodonte. Desapareceram há ~11.000 anos — as hipóteses combinam mudanças climáticas do fim da Era do Gelo com o impacto da presença humana.' },
+
+  /* ── ARQUEOLOGIA E PALEONTOLOGIA ───────────────────── */
+
+  /* 41 */ { emoji:'🏛️', cat:'Arqueologia', tag:'brasil',
+    text:'Qual é a diferença entre o trabalho de um arqueólogo e de um paleontólogo na análise da Pré-História?',
+    opts:['O arqueólogo estuda apenas objetos romanos e gregos; o paleontólogo só estuda dinossauros.','Arqueólogos trabalham só em museus; paleontólogos só em campo.','Não há diferença — são nomes diferentes para a mesma profissão.','O arqueólogo analisa vestígios culturais deixados por seres humanos (ferramentas, estruturas); o paleontólogo estuda fósseis de organismos para entender a vida no passado.'],
+    ok:3, exp:'O livro aponta que arqueólogos e paleontólogos desempenham papéis complementares no estudo da Pré-História brasileira: os primeiros analisam artefatos e estruturas culturais; os segundos estudam fósseis biológicos. Ambos contribuem para reconstruir quem foram os primeiros habitantes.' },
+
+  /* 42 */ { emoji:'🔍', cat:'Arqueologia', tag:'brasil',
+    text:'Como os vestígios arqueológicos de povos "pré-históricos" brasileiros auxiliam na compreensão das civilizações do passado?',
+    opts:['Provam que os povos indígenas vieram da Europa.','Mostram apenas onde havia água, sem informações sobre cultura.','À medida que novas descobertas são feitas e as técnicas de pesquisa evoluem, nossa compreensão da história humana nas Américas se aprofunda, revelando novas informações sobre os ancestrais dos povos indígenas.','São irrelevantes pois os povos não tinham escrita.'],
+    ok:2, exp:'Os vestígios arqueológicos (fósseis, ferramentas, sambaquis, sítios) fornecem evidências concretas sobre como viveram os primeiros habitantes do Brasil. O avanço das técnicas de pesquisa (como datação por carbono) permite reconstruir com crescente precisão a história pré-colonial.' },
+
+  /* ── QUESTÕES TRANSVERSAIS ─────────────────────────── */
+
+  /* 43 */ { emoji:'⏳', cat:'Linha do Tempo', tag:'paleolitico',
+    text:'Qual destes eventos ocorreu PRIMEIRO na linha do tempo da Pré-História?',
+    opts:['Revolução Agrícola (Neolítico, ~10.000 a.C.)','Invenção da escrita (~3.500 a.C.)','Surgimento do gênero Homo (Paleolítico, ~0,7 milhão de anos a.C.)','Uso do bronze (Idade dos Metais, ~8.000 a.C.)'],
+    ok:2, exp:'A linha do tempo começa com o Paleolítico (~0,7 mi a.C., surgimento do Homo), seguido do Neolítico (~10.000 a.C.), Idade dos Metais (~8.000 a.C.) e Invenção da Escrita (~3.500 a.C.) — que marca convencionalmente o início da "História".' },
+
+  /* 44 */ { emoji:'🌏', cat:'Linha do Tempo', tag:'evolucao',
+    text:'Em que ordem os eventos abaixo ocorreram, do mais antigo para o mais recente?',
+    opts:['Invenção da escrita → Revolução Agrícola → Surgimento do Homo sapiens','Surgimento do Homo sapiens → Revolução Agrícola → Invenção da escrita','Revolução Agrícola → Surgimento do Homo sapiens → Invenção da escrita','Invenção da escrita → Surgimento do Homo sapiens → Revolução Agrícola'],
+    ok:1, exp:'Homo sapiens surgiu há ~200.000 anos na África → Revolução Agrícola do Neolítico há ~10.000 a.C. → Invenção da escrita (~3.500 a.C.). Essa sequência é fundamental para entender o desenvolvimento humano.' },
+
+  /* 45 */ { emoji:'🤝', cat:'Evolução e Mitos', tag:'mito',
+    text:'Tanto os mitos de fundação quanto a ciência tentam responder à mesma pergunta. Qual é?',
+    opts:['Como construir as melhores ferramentas de caça.','Por que os humanos são diferentes dos outros animais apenas em aparência.','Qual civilização foi a mais poderosa da história.','De onde viemos? Como surgiu o mundo e os seres humanos?'],
+    ok:3, exp:'Mitos de fundação e teorias científicas compartilham o mesmo objetivo: explicar a origem dos humanos e do mundo. A diferença está no método — mitos usam narrativas sobrenaturais transmitidas culturalmente; a ciência usa evidências verificáveis e revisáveis.' },
+
+  /* 46 */ { emoji:'🦣', cat:'Paleolítico', tag:'paleolitico',
+    text:'O que caracteriza o modo de vida dos grupos humanos do Paleolítico?',
+    opts:['Sedentarismo, agricultura, cerâmica e cultos funerários.','Uso do ferro, cidades planejadas e escrita.','Nomadismo, caça, coleta, uso de ferramentas de pedra lascada e domínio do fogo.','Domesticação de animais, aldeias permanentes e pedra polida.'],
+    ok:2, exp:'O Paleolítico é marcado pelo nomadismo (seguindo animais e recursos), caça e coleta de alimentos, fabricação de ferramentas de pedra lascada, uso do fogo, pinturas rupestres e vida em pequenos grupos em cavernas ou abrigos naturais.' },
+
+  /* 47 */ { emoji:'🏘️', cat:'Neolítico', tag:'neolitico',
+    text:'Qual conjunto de características define corretamente o período Neolítico?',
+    opts:['Nomadismo, caça, pedra lascada e pinturas em cavernas.','Revolução agrícola, domesticação de animais, sedentarismo, pedra polida e cerâmica.','Metalurgia, cidades, ferramentas de ferro e hierarquias sociais rígidas.','Invenção da escrita, comércio marítimo e construção de pirâmides.'],
+    ok:1, exp:'O Neolítico (~10.000 a.C.) é definido pela Revolução Agrícola, domesticação de animais, sedentarismo (aldeias permanentes), uso da pedra polida, cerâmica para armazenar alimentos e realização de cultos funerários.' },
+
+  /* 48 */ { emoji:'🪙', cat:'Idade dos Metais', tag:'metais',
+    text:'Por que o cobre foi o primeiro metal a ser usado pelos humanos na Idade dos Metais?',
+    opts:['Porque o cobre é o metal mais resistente e durável.','Porque o cobre era o único metal existente na época.','Porque o cobre é encontrado na natureza em estado puro e é relativamente fácil de trabalhar, mesmo sem fundição avançada.','Porque o cobre era o mais abundante em todas as regiões habitadas.'],
+    ok:2, exp:'O cobre foi o primeiro metal a ser amplamente usado porque ocorre na natureza em estado puro (sem precisar de fundição) e é maleável — pode ser trabalhado com martelos de pedra. Isso permitiu sua adoção antes mesmo de os humanos dominarem a metalurgia com altas temperaturas.' },
+
+  /* 49 */ { emoji:'🌐', cat:'Civilizações nas Américas', tag:'civilizacao',
+    text:'O que a existência de civilizações como Olmeca, Mochica e Clovis em diferentes regiões das Américas demonstra?',
+    opts:['Que todas as civilizações americanas tinham a mesma origem e cultura.','Que os primeiros americanos nunca se espalharam além da América do Norte.','Que os povos americanos se desenvolveram de forma independente na Europa antes de migrar.','Que após a chegada às Américas, os grupos humanos se espalharam e desenvolveram culturas diversas e adaptadas às diferentes regiões do continente.'],
+    ok:3, exp:'A diversidade de civilizações nas Américas (Olmeca no México, Mochica no Peru, Clovis no EUA) mostra que após a chegada pelo Estreito de Bering (ou pelo Pacífico), os grupos humanos se dispersaram por todo o continente, adaptando-se a diferentes ambientes e desenvolvendo culturas distintas.' },
+
+  /* 50 */ { emoji:'🎨', cat:'Arte Rupestre', tag:'paleolitico',
+    text:'As pinturas rupestres são uma forma de escrita segundo os historiadores?',
+    opts:['Sim — qualquer representação visual em pedra é considerada escrita.','Sim — os povos do Paleolítico tinham um alfabeto completo baseado em imagens.','Não — a arte rupestre é uma manifestação artística e simbólica, mas não constitui escrita, que exige sistema de símbolos com convenções para codificar linguagem.','Não — porque arte rupestre só existe na Europa e não pode ser estudada como comunicação.'],
+    ok:2, exp:'Escrita implica um sistema de símbolos com convenções compartilhadas que codificam linguagem (como cuneiforme ou hieróglifos). Arte rupestre, apesar de comunicativa e simbólica, não constitui escrita — por isso os povos paleolíticos são chamados de ágrafos, mesmo tendo intensa vida cultural.' },
+
+  /* ── QUESTÕES ADICIONAIS (51-61) ──────────────────── */
+
+  /* 51 */ { emoji:'🌋', cat:'Mitos de Fundação', tag:'mito',
+    text:'No mito asteca, o deus Nanahuatzin tem um papel central na criação do Sol. O que ele fez?',
+    opts:['Criou o Sol moldando-o com argila e sangue dos deuses.','Roubou o fogo dos humanos e o transformou em Sol.','Jogou-se numa fogueira sagrada em Teotihuacan e se transformou no Sol, iluminando o Quinto Sol.','Batalhou contra a Lua e, ao vencê-la, se tornou o Sol.'],
+    ok:2, exp:'Em Teotihuacan, os deuses se reuniram para criar o Sol do Quinto Mundo. Nanahuatzin, o deus humilde, foi o único corajoso o suficiente para se jogar na fogueira — e se transformou no Sol. Esse sacrifício divino é central na cosmologia asteca, explicando também os rituais de oferenda.' },
+
+  /* 52 */ { emoji:'🏛️', cat:'Mitos de Fundação', tag:'mito',
+    text:'Qual o papel de Teotihuacan no mito asteca do Quinto Sol?',
+    opts:['Era o reino dos mortos (Mictlán) onde Quetzalcóatl buscou os ossos dos ancestrais.','Foi a cidade sagrada onde os deuses se reuniram para criar o Sol e dar origem ao mundo atual.','Era a capital do império asteca onde os reis eram coroados em nome dos deuses.','Foi o local onde os primeiros humanos do Quinto Sol foram criados a partir da terra.'],
+    ok:1, exp:'Teotihuacan ("o lugar onde os deuses foram criados") é a cidade sagrada asteca onde, segundo o mito, os deuses se reuniram após a destruição do Quarto Sol. Ali deliberaram e se sacrificaram para criar o Quinto Sol — o mundo atual — e, em seguida, os seres humanos.' },
+
+  /* 53 */ { emoji:'🪶', cat:'Mitos de Fundação', tag:'mito',
+    text:'No mito tupinambá, além de Monan, há outra divindade chamada Maira. Qual era seu papel na criação?',
+    opts:['Maira era o deus da guerra que protegia os Tupinambás em batalhas.','Maira era o deus do mar responsável pelas chuvas e dilúvios.','Maira foi o criador do céu, da terra, das florestas e das penas dos animais.','Maira era o mensageiro entre os humanos e o deus Monan.'],
+    ok:2, exp:'No mito tupinambá, Maira (também chamado Mair) é a divindade criadora do mundo físico — responsável pelo céu, pela terra, pelas florestas e pelos animais. Já Monan é associado à destruição e renovação do mundo por fogo e dilúvio. São figuras complementares na cosmologia tupinambá.' },
+
+  /* 54 */ { emoji:'🧠', cat:'Evolução', tag:'evolucao',
+    text:'O Homo habilis é considerado um marco na evolução humana. Por quê?',
+    opts:['Foi o primeiro hominídeo a andar ereto sobre dois pés.','Foi o primeiro hominídeo a migrar para fora da África.','Foi o primeiro hominídeo registrado a fabricar e usar ferramentas de pedra de forma sistemática.','Foi o primeiro hominídeo a desenvolver a linguagem falada complexa.'],
+    ok:2, exp:'Homo habilis ("homem habilidoso") é considerado o primeiro fabricante sistemático de ferramentas de pedra lascada. Viveu há ~2,4–1,5 milhões de anos na África. Essa habilidade representa um salto cognitivo importante na linha evolutiva que levaria ao Homo sapiens.' },
+
+  /* 55 */ { emoji:'🌍', cat:'Evolução', tag:'evolucao',
+    text:'Qual foi o papel do Homo heidelbergensis na árvore evolutiva dos hominídeos?',
+    opts:['Foi o último ancestral comum entre chimpanzés e humanos.','É uma espécie intermediária entre o Homo erectus e o Homo sapiens, vivendo há ~700.000–200.000 anos.','Foi o primeiro hominídeo a sair da África e chegar à América.','É outro nome para o Homo sapiens primitivo, sem diferenças significativas.'],
+    ok:1, exp:'O Homo heidelbergensis é uma espécie intermediária que viveu há ~700.000–200.000 anos na África, Europa e Ásia. É considerado o ancestral comum do Homo sapiens (África) e do Homo neanderthalensis (Europa) — um elo importante na árvore evolutiva que o livro apresenta.' },
+
+  /* 56 */ { emoji:'🗣️', cat:'Paleolítico', tag:'paleolitico',
+    text:'O desenvolvimento da linguagem é listado como uma conquista do Paleolítico. Qual foi sua importância para os grupos humanos?',
+    opts:['Permitiu a criação de sistemas de escrita nas paredes das cavernas.','Serviu apenas para coordenar a caça, sem outros usos sociais.','Possibilitou a transmissão de conhecimentos, coordenação social, criação cultural e preservação de memórias coletivas — base da vida em grupo.','Permitiu aos humanos se comunicar com os animais que caçavam.'],
+    ok:2, exp:'O desenvolvimento da linguagem no Paleolítico foi transformador: permitiu transmitir conhecimentos entre gerações, coordenar caças complexas, criar laços sociais, desenvolver rituais e preservar memórias coletivas. Junto com o domínio do fogo e a fabricação de ferramentas, é um dos pilares que distingue o Homo sapiens dos demais hominídeos.' },
+
+  /* 57 */ { emoji:'🧊', cat:'Primeiros Americanos', tag:'civilizacao',
+    text:'O que é a "Era do Gelo", mencionada no contexto da chegada dos humanos às Américas?',
+    opts:['Um período em que toda a água dos oceanos congelou, tornando-os intransponíveis.','Um período geológico em que grande parte do território da Terra ficou coberto por gelo, fazendo o nível do mar baixar.','O nome dado ao Paleolítico na América do Norte por causa do clima frio.','Uma era em que o fogo ainda não havia sido descoberto pelos humanos.'],
+    ok:1, exp:'A Era do Gelo (ou período glacial) é um período geológico em que grandes geleiras cobriam parte do território terrestre. O acúmulo de gelo fez o nível do mar baixar significativamente, expondo plataformas continentais como a Beríngia — a "ponte" que ligou a Sibéria às Américas e possibilitou as primeiras migrações humanas para o continente.' },
+
+  /* 58 */ { emoji:'🦴', cat:'Brasil Pré-histórico', tag:'brasil',
+    text:'Em que local específico, dentro da região de Lagoa Santa (MG), o crânio de Luzia foi encontrado?',
+    opts:['No Sambaqui Piaçaguera, na margem do Rio das Velhas.','Na Caverna do Diabo, na Serra do Cipó.','Na Lapa Vermelha, um sítio arqueológico explorado originalmente por Peter Lund.','No fundo do Lago de Lagoa Santa, durante obras de drenagem.'],
+    ok:2, exp:'Luzia foi encontrada na Lapa Vermelha, sítio arqueológico da região de Lagoa Santa (MG). O crânio estava na coleção de Peter Lund — o naturalista dinamarquês que explorou mais de 30 cavernas nessa região entre 1834 e 1844 — e foi identificado e apelidado de "Luzia" em 1975.' },
+
+  /* 59 */ { emoji:'🔭', cat:'Brasil Pré-histórico', tag:'brasil',
+    text:'Por que Peter Lund ficou conhecido como o "Varão de Lagoa Santa"?',
+    opts:['Porque foi o primeiro prefeito da cidade de Lagoa Santa, em Minas Gerais.','Porque descobriu e deu nome ao Lago de Lagoa Santa durante suas expedições.','Porque foi o naturalista dinamarquês que passou décadas explorando e vivendo na região de Lagoa Santa (MG), tornando-se uma figura lendária local.','Porque "varão" era o título dado a exploradores estrangeiros pela coroa portuguesa.'],
+    ok:2, exp:'Peter Lund, naturalista dinamarquês, chegou ao Brasil em 1825 e se estabeleceu definitivamente em Lagoa Santa (MG), onde viveu até sua morte em 1880. Suas décadas de pesquisa nas cavernas da região, descobrindo fósseis de humanos e da megafauna extinta, lhe renderam o apelido carinhoso de "Varão de Lagoa Santa".' },
+
+  /* 60 */ { emoji:'🐚', cat:'Brasil Pré-histórico', tag:'brasil',
+    text:'O Sambaqui Piaçaguera I, em Itanhaém (SC), é um exemplo de sítio arqueológico brasileiro. O que sua localização no litoral sul revela?',
+    opts:['Que os sambaquis eram exclusivos do litoral sul e sudeste, pois o norte era desabitado.','Que a ocupação do litoral sul-brasileiro é mais recente do que a do litoral norte.','Que os grupos sambaquieiros habitaram principalmente o litoral sul e sudeste brasileiro, onde as condições de preservação foram mais favoráveis do que no Nordeste.','Que o sambaqui foi construído por europeus que chegaram ao Brasil antes dos portugueses.'],
+    ok:2, exp:'O litoral sul e sudeste brasileiro concentra a maior parte dos sambaquis preservados. No Nordeste, esses sítios foram em grande parte destruídos (usados como fonte de cal para construção). A presença de sítios como o Piaçaguera I em Itanhaém evidencia a intensa ocupação pré-histórica do litoral sul-brasileiro.' },
+
+  /* 61 */ { emoji:'🧬', cat:'Evolução', tag:'evolucao',
+    text:'O que diferenciou o Homo sapiens dos demais hominídeos segundo o livro, além do tamanho do cérebro?',
+    opts:['A capacidade de andar ereto, exclusiva do Homo sapiens.','O desenvolvimento do pensamento abstrato, da linguagem complexa e da criação de arte — características que impulsionaram a adaptação a diversos ambientes.','A habilidade de fabricar ferramentas de metal desde o início.','O fato de ter surgido em múltiplos continentes ao mesmo tempo.'],
+    ok:1, exp:'O livro destaca que o Homo sapiens se sobressaiu não apenas pelo cérebro maior, mas pelo desenvolvimento do pensamento abstrato, da linguagem complexa e da criação de arte. Essas capacidades permitiram à espécie se adaptar a condições ambientais muito diversas — do calor africano ao frio ártico — e se espalhar por todos os continentes.' },
+
+];
+
+/* ══════════════════════════════════════════
+   STREAK CONFIG
+══════════════════════════════════════════ */
+const STREAK_EVENTS = [
+  { at:2,  cls:'s1', icon:'🔥',   title:'Sequência de 2!',         sub:'Tá pegando fogo!' },
+  { at:3,  cls:'s1', icon:'🔥🔥', title:'Hat-trick histórico!',    sub:'3 seguidas!' },
+  { at:4,  cls:'s2', icon:'⚡',   title:'Tá dominando!',           sub:'4 questões seguidas!' },
+  { at:5,  cls:'s3', icon:'👻',   title:'FARMANDO AURA!',          sub:'5 seguidas — os outros tremem!' },
+  { at:6,  cls:'s3', icon:'🌟',   title:'LENDÁRIO!',               sub:'Você é o Homo sapiens mais sábio!' },
+  { at:7,  cls:'s3', icon:'💀',   title:'INTOCÁVEL!',              sub:'7 seguidas. Isso é Pré-História!' },
+];
+// acima de 7, mostra a última mensagem de novo
+
+/* ══════════════════════════════════════════
+   STATE
+══════════════════════════════════════════ */
+let db = null;
+let selectedTribe = null;
+let lbListener = null;
+let prevScores = {};
+
+// Sala automática por data (todos do mesmo dia jogam juntos)
+function dailyRoom() {
+  const d = new Date();
+  return `SALA${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
+}
+
+const me = {
+  roomCode:'', name:'', safeKey:'',
+  tribe: null, score:0, currentQ:0,
+  answers:[], completed:false, streak:0,
+};
+
+let sessionScenarios = [];
+
+/* ══════════════════════════════════════════
+   INIT
+══════════════════════════════════════════ */
+(function init() {
+  renderTribeGrid();
+
+  // Init Firebase
+  try {
+    if (firebase.apps.length === 0) firebase.initializeApp(FIREBASE_CONFIG);
+    db = firebase.database();
+  } catch(e) { console.warn('Firebase não inicializado:', e); }
+
+  // Avisa se estiver rodando via file://
+  if (location.protocol === 'file:') {
+    document.getElementById('firebase-warning').style.display = 'block';
+  }
+})();
+
+/* ══════════════════════════════════════════
+   SCREEN
+══════════════════════════════════════════ */
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+
+/* ══════════════════════════════════════════
+   TRIBE GRID
+══════════════════════════════════════════ */
+function renderTribeGrid() {
+  document.getElementById('tribe-grid').innerHTML = TRIBES.map(t => `
+    <div class="tribe-card" id="tc-${t.id}" onclick="pickTribe('${t.id}')">
+      <span class="tribe-emoji">${t.emoji}</span>
+      <div class="tribe-name">${t.name}</div>
+      <div class="tribe-desc">${t.desc}</div>
+      <div class="tribe-bonus">⭐ ${t.bonusDesc}</div>
+    </div>
+  `).join('');
+}
+
+function pickTribe(id) {
+  selectedTribe = TRIBES.find(t => t.id === id);
+  document.querySelectorAll('.tribe-card').forEach(c => c.classList.remove('sel'));
+  document.getElementById(`tc-${id}`).classList.add('sel');
+}
+
+/* ══════════════════════════════════════════
+   JOIN
+══════════════════════════════════════════ */
+async function joinRoom() {
+  const name = document.getElementById('inp-name').value.trim();
+  if (!name)          { toast('Digite seu nome!'); return; }
+  if (!selectedTribe) { toast('Escolha um povo!'); return; }
+
+  const roomCode = dailyRoom(); // sala automática por data
+
+  me.roomCode = roomCode;
+  me.name     = name;
+  me.tribe    = selectedTribe;
+  me.safeKey  = name.replace(/[.#$\[\]/]/g, '_');
+  me.score    = 0; me.currentQ = 0;
+  me.answers  = []; me.completed = false; me.streak = 0;
+
+  if (db) {
+    await db.ref(`rooms/${roomCode}/players/${me.safeKey}`).set({
+      name, tribe: selectedTribe.id, score:0, currentQ:0, completed:false, joinedAt: Date.now()
+    });
+  }
+
+  sessionScenarios = shuffle([...ALL_SCENARIOS]).slice(0, 10);
+  startGame();
+}
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+/* ══════════════════════════════════════════
+   GAME START
+══════════════════════════════════════════ */
+function startGame() {
+  document.getElementById('g-qtot').textContent = sessionScenarios.length;
+
+  // Live leaderboard listener
+  if (db) {
+    lbListener = db.ref(`rooms/${me.roomCode}/players`)
+      .on('value', snap => renderLB(snap.val() || {}));
+  }
+
+  showScreen('s-game');
+  renderQ();
+}
+
+/* ══════════════════════════════════════════
+   RENDER QUESTION
+══════════════════════════════════════════ */
+function renderQ() {
+  const q   = sessionScenarios[me.currentQ];
+  const pct = (me.currentQ / sessionScenarios.length) * 100;
+
+  document.getElementById('g-qnum').textContent   = me.currentQ + 1;
+  document.getElementById('g-score').textContent  = me.score;
+  document.getElementById('g-prog').style.width   = pct + '%';
+  document.getElementById('g-emoji').textContent  = q.emoji;
+  document.getElementById('g-cat').textContent    = q.cat;
+  document.getElementById('g-text').textContent   = q.text;
+
+  // Tribe bonus hint
+  const bonusEl = document.getElementById('g-bonus');
+  bonusEl.style.display = (me.tribe.bonus === q.tag) ? 'block' : 'none';
+
+  // Options
+  const letters = ['A','B','C','D'];
+  document.getElementById('g-opts').innerHTML = q.opts.map((o, i) => `
+    <button class="opt" onclick="answer(${i})">
+      <span class="opt-letter">${letters[i]}</span>
+      <span>${o}</span>
+    </button>
+  `).join('');
+
+  document.getElementById('g-feedback').style.display = 'none';
+  document.getElementById('g-next').style.display     = 'none';
+
+  // Scroll question pane to top
+  document.getElementById('question-pane').scrollTo({ top:0, behavior:'smooth' });
+}
+
+/* ══════════════════════════════════════════
+   ANSWER
+══════════════════════════════════════════ */
+async function answer(idx) {
+  const q       = sessionScenarios[me.currentQ];
+  const correct = idx === q.ok;
+  let pts = 0;
+
+  if (correct) {
+    pts = 100;
+    if (me.tribe.bonus === q.tag) pts += 50;
+    me.streak++;
+  } else {
+    me.streak = 0;
+  }
+
+  me.score += pts;
+  me.answers.push(idx);
+  me.currentQ++;
+  const done = me.currentQ >= sessionScenarios.length;
+  if (done) me.completed = true;
+
+  // Visual feedback on options
+  document.querySelectorAll('.opt').forEach(b => b.disabled = true);
+  document.querySelectorAll('.opt')[idx].classList.add(correct ? 'correct' : 'wrong');
+  if (!correct) document.querySelectorAll('.opt')[q.ok].classList.add('correct');
+
+  // Explanation
+  document.getElementById('g-feedback-txt').textContent = q.exp;
+  document.getElementById('g-feedback').style.display   = 'block';
+
+  // Next button
+  const nextBtn = document.getElementById('g-next');
+  nextBtn.style.display  = 'block';
+  nextBtn.textContent    = done ? '🏆 Ver Resultado Final' : 'Próxima questão →';
+
+  // Streak system
+  updateStreakUI();
+
+  // Persist to Firebase
+  document.getElementById('g-score').textContent = me.score;
+  if (db) {
+    await db.ref(`rooms/${me.roomCode}/players/${me.safeKey}`).update({
+      score: me.score, currentQ: me.currentQ, completed: done
+    });
+  }
+}
+
+/* ══════════════════════════════════════════
+   STREAK UI
+══════════════════════════════════════════ */
+function updateStreakUI() {
+  const streak    = me.streak;
+  const badgeEl   = document.getElementById('g-streak-badge');
+
+  if (streak < 2) {
+    badgeEl.className = 'streak-badge';
+    badgeEl.textContent = '';
+    return;
+  }
+
+  // Find event config
+  const events = STREAK_EVENTS.filter(e => e.at <= streak);
+  const evt    = events.length ? events[events.length - 1] : STREAK_EVENTS[STREAK_EVENTS.length - 1];
+
+  // Top-bar badge
+  badgeEl.className   = `streak-badge ${evt.cls}`;
+  badgeEl.innerHTML   = `${evt.icon} ${streak}x seguidas`;
+
+  // Only pop overlay on streak milestones
+  const milestones = STREAK_EVENTS.map(e => e.at);
+  if (milestones.includes(streak) || streak > STREAK_EVENTS[STREAK_EVENTS.length - 1].at) {
+    fireStreakOverlay(evt);
+  }
+}
+
+function fireStreakOverlay(evt) {
+  const overlay = document.getElementById('streak-overlay');
+  overlay.innerHTML = `
+    <div class="streak-pop ${evt.cls}">
+      <span class="streak-pop-icon">${evt.icon}</span>
+      <div class="streak-pop-title">${evt.title}</div>
+      <div class="streak-pop-sub">${evt.sub}</div>
+    </div>
+  `;
+  // Auto-clear after animation
+  setTimeout(() => { overlay.innerHTML = ''; }, 1900);
+}
+
+/* ══════════════════════════════════════════
+   NEXT QUESTION
+══════════════════════════════════════════ */
+function nextQ() {
+  if (me.currentQ >= sessionScenarios.length) {
+    showEnd();
+  } else {
+    renderQ();
+  }
+}
+
+/* ══════════════════════════════════════════
+   LEADERBOARD RENDER
+══════════════════════════════════════════ */
+function renderLB(data) {
+  const players = Object.values(data).sort((a,b) => b.score - a.score);
+  const medals  = ['🥇','🥈','🥉'];
+  const rnkCls  = ['r1','r2','r3'];
+
+  const html = players.map((p, i) => {
+    const t       = TRIBES.find(t => t.id === p.tribe) || TRIBES[0];
+    const isMe    = p.name === me.name;
+    const prev    = prevScores[p.name] ?? p.score;
+    const bumped  = p.score !== prev;
+    prevScores[p.name] = p.score;
+    const prog = p.completed
+      ? '✅ Terminou'
+      : `Q ${p.currentQ || 0}/10`;
+
+    return `
+      <div class="lb-entry ${rnkCls[i]||''} ${isMe?'me':''}">
+        <div class="lb-rank">${medals[i]||(i+1)}</div>
+        <div class="lb-tribe">${t.emoji}</div>
+        <div class="lb-info">
+          <div class="lb-name">${p.name}${isMe?' 👈':''}</div>
+          <div class="lb-prog">${prog}</div>
+        </div>
+        <div class="lb-score ${bumped?'score-bump':''}">${p.score}</div>
+      </div>
+    `;
+  }).join('');
+
+  document.getElementById('lb-entries').innerHTML = html || '<p style="color:var(--muted);font-size:.82rem;text-align:center;margin-top:20px;">Aguardando jogadores...</p>';
+
+  // Also update end screen lb if visible
+  const eLb = document.getElementById('e-lb');
+  if (eLb) eLb.innerHTML = html;
+}
+
+/* ══════════════════════════════════════════
+   END SCREEN
+══════════════════════════════════════════ */
+function showEnd() {
+  if (db && lbListener) {
+    db.ref(`rooms/${me.roomCode}/players`).off('value', lbListener);
+  }
+
+  const finish = () => {
+    showScreen('s-end');
+  };
+
+  if (db) {
+    db.ref(`rooms/${me.roomCode}/players`).once('value', snap => {
+      const data = snap.val() || {};
+      const top  = Object.values(data).sort((a,b) => b.score - a.score)[0] || { name: me.name, tribe: me.tribe.id, score: me.score };
+      setWinner(top);
+      renderLB(data);
+      finish();
+    });
+  } else {
+    setWinner({ name: me.name, tribe: me.tribe.id, score: me.score });
+    finish();
+  }
+}
+
+function setWinner(top) {
+  const tribe = TRIBES.find(t => t.id === top.tribe) || me.tribe;
+  document.getElementById('e-winner').textContent      = top.name;
+  document.getElementById('e-winner-info').textContent = `${tribe.emoji} ${tribe.name}`;
+  document.getElementById('e-winner-score').textContent = `${top.score} pontos`;
+}
+
+/* ══════════════════════════════════════════
+   RESTART
+══════════════════════════════════════════ */
+function restart() {
+  selectedTribe = null;
+  prevScores    = {};
+  Object.assign(me, { roomCode:'', name:'', safeKey:'', tribe:null, score:0, currentQ:0, answers:[], completed:false, streak:0 });
+  document.getElementById('inp-name').value = '';
+  document.querySelectorAll('.tribe-card').forEach(c => c.classList.remove('sel'));
+  showScreen('s-join');
+}
+
+/* ══════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════ */
+let _tt;
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(_tt);
+  _tt = setTimeout(() => el.classList.remove('show'), 2600);
+}
+</script>
+</body>
+</html>
