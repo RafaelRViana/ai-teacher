@@ -288,6 +288,15 @@
     .streak-pop.s3 .streak-pop-title { color: var(--streak3); }
     .streak-pop-sub { font-size: .9rem; color: var(--muted); margin-top: 4px; }
 
+    /* ── Easter Egg 6/7 ── */
+    .streak-pop.s67 {
+      background: rgba(0,20,40,.95);
+      border-color: #00cfff;
+      box-shadow: 0 0 32px rgba(0,207,255,.45);
+    }
+    .streak-pop.s67 .streak-pop-title { color: #00cfff; font-size: 2.2rem; letter-spacing: 2px; }
+    .streak-pop.s67 .streak-pop-sub   { color: #a0e0ff; font-size: 1rem; }
+
     /* ══════════════════════════════
        END SCREEN
     ══════════════════════════════ */
@@ -818,7 +827,7 @@ const STREAK_EVENTS = [
   { at:4,  cls:'s2', icon:'⚡',   title:'Tá dominando!',           sub:'4 questões seguidas!' },
   { at:5,  cls:'s3', icon:'👻',   title:'FARMANDO AURA!',          sub:'5 seguidas — os outros tremem!' },
   { at:6,  cls:'s3', icon:'🌟',   title:'LENDÁRIO!',               sub:'Você é o Homo sapiens mais sábio!' },
-  { at:7,  cls:'s3', icon:'💀',   title:'INTOCÁVEL!',              sub:'7 seguidas. Isso é Pré-História!' },
+  { at:7,  cls:'s67', icon:'🫱🫲', title:'6/7 !!',                  sub:'pip bip... você só pisou na estrada! 🎤' },
 ];
 // acima de 7, mostra a última mensagem de novo
 
@@ -829,6 +838,17 @@ let db = null;
 let selectedTribe = null;
 let lbListener = null;
 let prevScores = {};
+
+/* ══════════════════════════════════════════
+   NORMALIZAÇÃO DE NOME
+   "maria" | "Maria" | "Mária" → "Maria"
+══════════════════════════════════════════ */
+function normalizeName(raw) {
+  // Remove acentos (NFD → strip combining marks)
+  const noAccent = raw.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  // Capitaliza a primeira letra de cada palavra
+  return noAccent.trim().toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+}
 
 // Sala automática por data (todos do mesmo dia jogam juntos)
 function dailyRoom() {
@@ -892,29 +912,86 @@ function pickTribe(id) {
 }
 
 /* ══════════════════════════════════════════
-   JOIN
+   JOIN  — retoma progresso salvo
 ══════════════════════════════════════════ */
 async function joinRoom() {
-  const name = document.getElementById('inp-name').value.trim();
+  const name = normalizeName(document.getElementById('inp-name').value);
   if (!name)          { toast('Digite seu nome!'); return; }
   if (!selectedTribe) { toast('Escolha um povo!'); return; }
 
-  const roomCode = dailyRoom(); // sala automática por data
+  // Atualiza o campo com o nome normalizado (feedback visual)
+  document.getElementById('inp-name').value = name;
+
+  // Easter egg: nome "67" ou "6 7"
+  if (/^6\s*[\/\-]?\s*7$/.test(document.getElementById('inp-name').value) || name === '67') {
+    setTimeout(() => fire67EasterEgg('pip bip... bem-vindo ao jogo, lendário! 🎤'), 600);
+  }
+
+  const roomCode = dailyRoom();
+  const safeKey  = name.replace(/[.#$\[\]/\s]/g, '_');
 
   me.roomCode = roomCode;
   me.name     = name;
   me.tribe    = selectedTribe;
-  me.safeKey  = name.replace(/[.#$\[\]/]/g, '_');
-  me.score    = 0; me.currentQ = 0;
-  me.answers  = []; me.completed = false; me.streak = 0;
+  me.safeKey  = safeKey;
+  me.streak   = 0;
 
   if (db) {
-    await db.ref(`rooms/${roomCode}/players/${me.safeKey}`).set({
-      name, tribe: selectedTribe.id, score:0, currentQ:0, completed:false, joinedAt: Date.now()
-    });
+    // ── Tenta retomar progresso salvo no Firebase ──
+    const snap    = await db.ref(`rooms/${roomCode}/players/${safeKey}`).once('value');
+    const saved   = snap.val();
+
+    if (saved && Array.isArray(saved.questionIds) && saved.questionIds.length) {
+      // Jogador já existe: restaura estado
+      me.score     = saved.score     ?? 0;
+      me.currentQ  = saved.currentQ  ?? 0;
+      me.completed = saved.completed ?? false;
+      me.answers   = saved.answers   ?? [];
+      sessionScenarios = saved.questionIds.map(i => ALL_SCENARIOS[i]);
+
+      if (me.completed) {
+        toast(`Bem-vindo de volta, ${name}! Placar: ${me.score} pts 🏆`);
+      } else if (me.currentQ > 0) {
+        toast(`Retomando da questão ${me.currentQ + 1}… 🔄`);
+      }
+    } else {
+      // Jogador novo: cria entrada com questões sorteadas
+      me.score = 0; me.currentQ = 0; me.completed = false; me.answers = [];
+      const indices = shuffle(ALL_SCENARIOS.map((_, i) => i)).slice(0, 10);
+      sessionScenarios = indices.map(i => ALL_SCENARIOS[i]);
+      await db.ref(`rooms/${roomCode}/players/${safeKey}`).set({
+        name, tribe: selectedTribe.id,
+        score: 0, currentQ: 0, completed: false, answers: [],
+        questionIds: indices, joinedAt: Date.now()
+      });
+    }
+    // Garante que tribe está atualizado (pode ter trocado de povo)
+    await db.ref(`rooms/${roomCode}/players/${safeKey}/tribe`).set(selectedTribe.id);
+
+  } else {
+    // ── Fallback: localStorage (modo sem Firebase) ──
+    const lsKey = `prehistoria_${roomCode}_${safeKey}`;
+    const saved = JSON.parse(localStorage.getItem(lsKey) || 'null');
+
+    if (saved && Array.isArray(saved.questionIds) && saved.questionIds.length) {
+      me.score     = saved.score     ?? 0;
+      me.currentQ  = saved.currentQ  ?? 0;
+      me.completed = saved.completed ?? false;
+      me.answers   = saved.answers   ?? [];
+      sessionScenarios = saved.questionIds.map(i => ALL_SCENARIOS[i]);
+      if (me.currentQ > 0 && !me.completed) toast(`Retomando da questão ${me.currentQ + 1}… 🔄`);
+    } else {
+      me.score = 0; me.currentQ = 0; me.completed = false; me.answers = [];
+      const indices = shuffle(ALL_SCENARIOS.map((_, i) => i)).slice(0, 10);
+      sessionScenarios = indices.map(i => ALL_SCENARIOS[i]);
+      localStorage.setItem(lsKey, JSON.stringify({
+        name, tribe: selectedTribe.id,
+        score: 0, currentQ: 0, completed: false, answers: [],
+        questionIds: indices
+      }));
+    }
   }
 
-  sessionScenarios = shuffle([...ALL_SCENARIOS]).slice(0, 10);
   startGame();
 }
 
@@ -1015,12 +1092,18 @@ async function answer(idx) {
   // Streak system
   updateStreakUI();
 
-  // Persist to Firebase
+  // Persist
   document.getElementById('g-score').textContent = me.score;
   if (db) {
     await db.ref(`rooms/${me.roomCode}/players/${me.safeKey}`).update({
-      score: me.score, currentQ: me.currentQ, completed: done
+      score: me.score, currentQ: me.currentQ, completed: done, answers: me.answers
     });
+  } else {
+    const lsKey = `prehistoria_${me.roomCode}_${me.safeKey}`;
+    const saved = JSON.parse(localStorage.getItem(lsKey) || '{}');
+    localStorage.setItem(lsKey, JSON.stringify({
+      ...saved, score: me.score, currentQ: me.currentQ, completed: done, answers: me.answers
+    }));
   }
 }
 
@@ -1063,6 +1146,21 @@ function fireStreakOverlay(evt) {
   `;
   // Auto-clear after animation
   setTimeout(() => { overlay.innerHTML = ''; }, 1900);
+}
+
+/* ══════════════════════════════════════════
+   EASTER EGG 6/7
+══════════════════════════════════════════ */
+function fire67EasterEgg(sub) {
+  const overlay = document.getElementById('streak-overlay');
+  overlay.innerHTML = `
+    <div class="streak-pop s67">
+      <span class="streak-pop-icon">🫱🫲</span>
+      <div class="streak-pop-title">6 / 7</div>
+      <div class="streak-pop-sub">${sub}</div>
+    </div>
+  `;
+  setTimeout(() => { overlay.innerHTML = ''; }, 2800);
 }
 
 /* ══════════════════════════════════════════
@@ -1122,6 +1220,14 @@ function showEnd() {
     db.ref(`rooms/${me.roomCode}/players`).off('value', lbListener);
   }
 
+  // Easter egg: exatamente 6 ou 7 questões certas
+  const correctCount = me.answers.filter((ans, i) => ans === sessionScenarios[i].ok).length;
+  if (correctCount === 7) {
+    setTimeout(() => fire67EasterEgg('7 certas! Você É o 6/7! 🫱🫲'), 800);
+  } else if (correctCount === 6) {
+    setTimeout(() => fire67EasterEgg('6 de 10... quase 6/7! pip bip 🫱🫲'), 800);
+  }
+
   const finish = () => {
     showScreen('s-end');
   };
@@ -1151,6 +1257,13 @@ function setWinner(top) {
    RESTART
 ══════════════════════════════════════════ */
 function restart() {
+  // Apaga o progresso salvo para permitir novo jogo
+  if (db && me.safeKey) {
+    db.ref(`rooms/${me.roomCode}/players/${me.safeKey}`).remove();
+  } else if (me.safeKey) {
+    localStorage.removeItem(`prehistoria_${me.roomCode}_${me.safeKey}`);
+  }
+
   selectedTribe = null;
   prevScores    = {};
   Object.assign(me, { roomCode:'', name:'', safeKey:'', tribe:null, score:0, currentQ:0, answers:[], completed:false, streak:0 });
