@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Aventura da Panda — Prova!</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --pink:#ff6b9d;--green:#4ade80;--blue:#60a5fa;--purple:#a78bfa;
+  --yellow:#fbbf24;--red:#f87171;--orange:#fb923c;
+}
+body{
+  font-family:'Nunito',sans-serif;
+  background:linear-gradient(180deg,#fce4ec,#f8bbd0,#f48fb1);
+  min-height:100vh;color:#333;overflow-x:hidden;
+  -webkit-tap-highlight-color:transparent;
+  user-select:none;-webkit-user-select:none;
+}
+
+/* ========== SCREENS ========== */
+.screen{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:20px;animation:fadeIn 0.5s ease}
+.screen.active{display:flex}
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* ========== INTRO ========== */
+#intro{background:linear-gradient(180deg,#e8f5e9,#c8e6c9,#a5d6a7);text-align:center}
+.panda-logo{font-size:120px;animation:bounce 2s infinite}
+@keyframes bounce{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-20px) rotate(5deg)}}
+#intro h1{font-family:'Fredoka One',cursive;font-size:2.2em;color:#2e7d32;margin:10px 0;text-shadow:2px 2px 0 rgba(255,255,255,0.5)}
+#intro p{color:#558b2f;font-size:1.1em;max-width:400px;line-height:1.6;margin-bottom:20px}
+.badge-topics{
+  display:flex;flex-wrap:wrap;gap:8px;justify-content:center;
+  margin-bottom:20px;max-width:380px;
+}
+.badge{
+  font-size:0.85em;font-weight:700;padding:6px 14px;
+  border-radius:20px;background:rgba(255,255,255,0.7);
+  color:#2e7d32;border:2px solid rgba(46,125,50,0.3);
+}
+.btn-play{
+  font-family:'Fredoka One',cursive;font-size:1.4em;padding:16px 50px;
+  background:linear-gradient(135deg,#66bb6a,#43a047);color:#fff;
+  border:none;border-radius:50px;cursor:pointer;
+  box-shadow:0 6px 20px rgba(76,175,80,0.4);transition:all 0.3s;
+}
+.btn-play:hover{transform:scale(1.08)}
+.btn-play:active{transform:scale(0.95)}
+
+/* ========== MAP ========== */
+#map{background:linear-gradient(180deg,#e3f2fd,#bbdefb,#90caf9);text-align:center;gap:20px}
+#map h2{font-family:'Fredoka One',cursive;font-size:1.8em;color:#1565c0}
+.map-container{
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+  max-width:400px;width:100%;position:relative;
+}
+.map-path{width:4px;height:40px;background:rgba(21,101,192,0.3);border-radius:4px}
+.map-path.done{background:var(--green)}
+.phase-card{
+  width:100%;padding:20px;border-radius:20px;
+  display:flex;align-items:center;gap:16px;
+  transition:all 0.3s;cursor:pointer;position:relative;
+}
+.phase-card.locked{background:rgba(255,255,255,0.3);opacity:0.6;cursor:not-allowed}
+.phase-card.available{background:rgba(255,255,255,0.85);box-shadow:0 4px 20px rgba(0,0,0,0.1);animation:pulse 2s infinite}
+.phase-card.completed{background:rgba(255,255,255,0.85);box-shadow:0 4px 20px rgba(0,0,0,0.1)}
+@keyframes pulse{0%,100%{box-shadow:0 4px 20px rgba(0,0,0,0.1)}50%{box-shadow:0 4px 30px rgba(76,175,80,0.3)}}
+.phase-icon{font-size:50px}
+.phase-info{text-align:left;flex:1}
+.phase-info h3{font-family:'Fredoka One',cursive;font-size:1.1em;color:#333}
+.phase-info p{font-size:0.85em;color:#666;margin-top:2px}
+.phase-stars{font-size:22px;letter-spacing:2px}
+.phase-lock{font-size:28px}
+
+/* ========== GAME PHASE ========== */
+#game{background:linear-gradient(180deg,#e8f5e9,#c8e6c9);padding:15px}
+.game-header{
+  display:flex;justify-content:space-between;align-items:center;
+  width:100%;max-width:600px;padding:10px 16px;
+  background:rgba(255,255,255,0.8);border-radius:16px;
+  margin-bottom:15px;flex-wrap:wrap;gap:8px;
+}
+.game-header .phase-title{font-family:'Fredoka One',cursive;font-size:1em;color:#2e7d32}
+.game-header .progress{font-family:'Fredoka One',cursive;font-size:0.9em;color:#666}
+.game-header .score{font-family:'Fredoka One',cursive;font-size:0.9em;color:var(--yellow)}
+
+.progress-bar{width:100%;max-width:600px;height:12px;background:rgba(255,255,255,0.5);border-radius:10px;overflow:hidden;margin-bottom:15px}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--green),#22c55e);border-radius:10px;transition:width 0.5s ease}
+
+.game-scene{
+  width:100%;max-width:600px;min-height:180px;
+  border-radius:20px;padding:20px;margin-bottom:15px;
+  display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+}
+.scene-soma{background:linear-gradient(180deg,#e0f7fa,#80deea,#4dd0e1)}
+.scene-diferenca{background:linear-gradient(180deg,#e8f5e9,#a5d6a7,#66bb6a)}
+.scene-castelo{background:linear-gradient(180deg,#f3e5f5,#ce93d8,#ab47bc)}
+
+.scene-panda{font-size:60px;transition:all 0.5s ease;position:relative;z-index:2}
+.scene-panda.happy{animation:jump 0.5s ease}
+.scene-panda.sad{animation:shake 0.5s ease}
+@keyframes jump{0%{transform:translateY(0)}30%{transform:translateY(-30px) rotate(10deg)}60%{transform:translateY(-15px)}100%{transform:translateY(0)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-10px)}75%{transform:translateX(10px)}}
+
+.scene-items{position:absolute;inset:0;pointer-events:none;font-size:30px;overflow:hidden}
+.scene-item{position:absolute;animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+
+.question-card{
+  width:100%;max-width:600px;background:rgba(255,255,255,0.9);
+  border-radius:20px;padding:24px;text-align:center;
+  box-shadow:0 4px 20px rgba(0,0,0,0.08);
+}
+.question-text{
+  font-size:1.2em;font-weight:700;color:#333;
+  line-height:1.6;margin-bottom:20px;
+}
+.question-highlight{
+  display:inline-block;font-family:'Fredoka One',cursive;
+  font-size:1.8em;color:#1565c0;margin:10px 0;
+  background:rgba(21,101,192,0.1);padding:8px 24px;border-radius:16px;
+}
+.tip-box{
+  font-size:0.85em;color:#888;margin-bottom:12px;
+  background:rgba(0,0,0,0.04);border-radius:10px;padding:6px 12px;
+  display:inline-block;
+}
+.options-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.options-grid.single-col{grid-template-columns:1fr}
+.opt-btn{
+  font-family:'Nunito',sans-serif;font-size:1.05em;font-weight:700;
+  padding:14px 18px;background:#fff;color:#333;
+  border:3px solid #e0e0e0;border-radius:16px;cursor:pointer;
+  transition:all 0.25s;text-align:center;
+}
+.opt-btn:hover:not(:disabled){border-color:var(--blue);background:#e3f2fd;transform:scale(1.03)}
+.opt-btn.correct{background:#e8f5e9;border-color:var(--green);color:#2e7d32;animation:correctPop 0.4s ease}
+.opt-btn.wrong{background:#ffebee;border-color:var(--red);color:#c62828;animation:shake 0.4s ease}
+.opt-btn:disabled{cursor:default;opacity:0.85}
+@keyframes correctPop{0%{transform:scale(1)}50%{transform:scale(1.08)}100%{transform:scale(1)}}
+
+.feedback-box{
+  margin-top:16px;padding:14px 18px;border-radius:14px;
+  font-size:1em;font-weight:700;line-height:1.5;display:none;
+}
+.feedback-box.show{display:block;animation:fadeIn 0.3s ease}
+.feedback-box.correct{background:#e8f5e9;border:2px solid var(--green);color:#2e7d32}
+.feedback-box.wrong{background:#fff3e0;border:2px solid var(--orange);color:#e65100}
+
+.btn-next{
+  display:none;margin:16px auto 0;font-family:'Fredoka One',cursive;
+  font-size:1.05em;padding:12px 36px;
+  background:linear-gradient(135deg,var(--blue),#2196f3);color:#fff;
+  border:none;border-radius:26px;cursor:pointer;transition:all 0.3s;
+}
+.btn-next.show{display:block;animation:fadeIn 0.3s ease}
+.btn-next:hover{transform:scale(1.06)}
+
+/* ========== PHASE COMPLETE ========== */
+#phase-complete{background:linear-gradient(180deg,#fff9c4,#fff176,#ffee58);text-align:center;gap:16px}
+#phase-complete .big-icon{font-size:80px;animation:bounce 1.5s infinite}
+#phase-complete h2{font-family:'Fredoka One',cursive;font-size:1.8em;color:#e65100;text-shadow:1px 1px 0 rgba(255,255,255,0.5)}
+#phase-complete .stars-earned{font-size:50px;letter-spacing:8px;margin:10px 0}
+#phase-complete .score-text{font-size:1.2em;color:#5d4037;font-weight:700}
+.btn-continue{
+  font-family:'Fredoka One',cursive;font-size:1.2em;padding:14px 44px;
+  background:linear-gradient(135deg,var(--orange),#f57c00);color:#fff;
+  border:none;border-radius:50px;cursor:pointer;transition:all 0.3s;
+  box-shadow:0 6px 20px rgba(245,124,0,0.3);
+}
+.btn-continue:hover{transform:scale(1.08)}
+
+/* ========== FINAL ========== */
+#final{background:linear-gradient(180deg,#f3e5f5,#ce93d8,#ab47bc);text-align:center;gap:16px}
+#final .trophy{font-size:100px;animation:bounce 1.5s infinite}
+#final h2{font-family:'Fredoka One',cursive;font-size:2em;color:#fff;text-shadow:2px 2px 0 rgba(0,0,0,0.2)}
+#final .total-stars{font-size:50px;letter-spacing:8px;margin:8px 0}
+#final .final-msg{font-size:1.1em;color:#fff;max-width:400px;line-height:1.6;font-weight:700;text-shadow:1px 1px 0 rgba(0,0,0,0.15)}
+.btn-replay{
+  font-family:'Fredoka One',cursive;font-size:1.2em;padding:14px 44px;
+  background:linear-gradient(135deg,var(--pink),#e91e63);color:#fff;
+  border:none;border-radius:50px;cursor:pointer;transition:all 0.3s;
+  box-shadow:0 6px 20px rgba(233,30,99,0.3);
+}
+.btn-replay:hover{transform:scale(1.08)}
+
+/* ========== CONFETTI ========== */
+.confetti-container{position:fixed;inset:0;pointer-events:none;z-index:999;overflow:hidden}
+.confetti{
+  position:absolute;width:10px;height:10px;top:-10px;
+  animation:confettiFall linear forwards;
+}
+@keyframes confettiFall{
+  0%{transform:translateY(0) rotate(0deg);opacity:1}
+  100%{transform:translateY(100vh) rotate(720deg);opacity:0}
+}
+
+/* ========== RESPONSIVE ========== */
+@media(max-width:500px){
+  .panda-logo{font-size:80px}
+  #intro h1{font-size:1.6em}
+  .question-text{font-size:1.05em}
+  .question-highlight{font-size:1.4em}
+  .options-grid{grid-template-columns:1fr}
+  .phase-card{padding:14px}
+  .phase-icon{font-size:38px}
+}
+</style>
+</head>
+<body>
+
+<!-- INTRO -->
+<div id="intro" class="screen active">
+  <div class="panda-logo">🐼</div>
+  <h1>Aventura da Panda — Prova!</h1>
+  <p>A Panda precisa se preparar para a prova! Treine os 3 conteúdos e ajude ela a chegar ao castelo!</p>
+  <div class="badge-topics">
+    <span class="badge">➕ Adição com Recurso</span>
+    <span class="badge">➖ Subtração com Recurso</span>
+    <span class="badge">🔢 Valor Relativo e Absoluto</span>
+  </div>
+  <button class="btn-play" onclick="startGame()">Vamos Estudar!</button>
+</div>
+
+<!-- MAP -->
+<div id="map" class="screen">
+  <h2>🗺️ Mapa da Prova</h2>
+  <div class="map-container" id="map-container"></div>
+</div>
+
+<!-- GAME -->
+<div id="game" class="screen">
+  <div class="game-header">
+    <span class="phase-title" id="phase-title"></span>
+    <span class="progress" id="progress-text"></span>
+    <span class="score" id="score-text">⭐ 0</span>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+  <div class="game-scene" id="game-scene">
+    <div class="scene-items" id="scene-items"></div>
+    <div class="scene-panda" id="scene-panda">🐼</div>
+  </div>
+  <div class="question-card">
+    <div class="question-text" id="question-text"></div>
+    <div class="options-grid" id="options-grid"></div>
+    <div class="feedback-box" id="feedback-box"></div>
+    <button class="btn-next" id="btn-next" onclick="nextQuestion()">Próxima ➜</button>
+  </div>
+</div>
+
+<!-- PHASE COMPLETE -->
+<div id="phase-complete" class="screen">
+  <div class="big-icon">🎉</div>
+  <h2 id="phase-complete-title"></h2>
+  <div class="stars-earned" id="stars-earned"></div>
+  <p class="score-text" id="phase-score-text"></p>
+  <button class="btn-continue" id="btn-phase-continue" onclick="continueAfterPhase()">Continuar ➜</button>
+</div>
+
+<!-- FINAL -->
+<div id="final" class="screen">
+  <div class="trophy">🏆</div>
+  <h2>Arrasou na Prova!</h2>
+  <div class="total-stars" id="total-stars"></div>
+  <p class="final-msg" id="final-msg"></p>
+  <button class="btn-replay" onclick="resetGame()">Treinar de Novo 🔄</button>
+</div>
+
+<div class="confetti-container" id="confetti-container"></div>
+
+<script>
+// ========== GAME STATE ==========
+const state = {
+  currentPhase: 0,
+  currentQuestion: 0,
+  phaseScores: [0, 0, 0],
+  phaseTotal: [0, 0, 0],
+  phaseStars: [0, 0, 0],
+  questions: [],
+  answered: false,
+};
+
+// ========== PHASE DEFINITIONS ==========
+const phases = [
+  {
+    name: 'Rio das Somas',
+    subtitle: 'Adição com Recurso (reagrupamento)',
+    icon: '🌊',
+    sceneClass: 'scene-soma',
+    sceneItems: ['🪷','🐸','🦆','🐟','🌺','💧','🪻','🦋'],
+    bgGradient: 'linear-gradient(180deg,#e0f7fa,#b2ebf2,#80deea)',
+  },
+  {
+    name: 'Floresta das Diferenças',
+    subtitle: 'Subtração com Recurso (empréstimo)',
+    icon: '🌳',
+    sceneClass: 'scene-diferenca',
+    sceneItems: ['🌿','🍄','🐿️','🦊','🌸','🍃','🐝','🦌'],
+    bgGradient: 'linear-gradient(180deg,#e8f5e9,#c8e6c9,#a5d6a7)',
+  },
+  {
+    name: 'Castelo dos Valores',
+    subtitle: 'Valor Relativo e Absoluto',
+    icon: '🏰',
+    sceneClass: 'scene-castelo',
+    sceneItems: ['⭐','🔮','💎','🗝️','🌟','✨','🪄','🦄'],
+    bgGradient: 'linear-gradient(180deg,#f3e5f5,#e1bee7,#ce93d8)',
+  },
+];
+
+// ========== HELPERS ==========
+function randInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function makeOptions(correct, count, step, max) {
+  const opts = new Set([correct]);
+  let attempts = 0;
+  while (opts.size < count && attempts < 150) {
+    const offset = (Math.floor(Math.random() * 3) + 1) * step * (Math.random() > 0.5 ? 1 : -1);
+    const val = correct + offset;
+    if (val > 0 && val <= (max || 9999) && val !== correct) opts.add(val);
+    attempts++;
+  }
+  let fill = 1;
+  while (opts.size < count) { opts.add(correct + fill * step); fill++; }
+  return shuffle([...opts]);
+}
+
+// Verifica se a adição gera pelo menos um reagrupamento
+function hasCarry(a, b) {
+  const uCarry = (a % 10) + (b % 10) >= 10 ? 1 : 0;
+  const tCarry = (Math.floor(a / 10) % 10) + (Math.floor(b / 10) % 10) + uCarry >= 10 ? 1 : 0;
+  return uCarry === 1 || tCarry === 1;
+}
+
+// Verifica se a subtração gera pelo menos um empréstimo
+function hasBorrow(a, b) {
+  const u1 = a % 10, u2 = b % 10;
+  const borrowU = u1 < u2 ? 1 : 0;
+  const t1 = Math.floor(a / 10) % 10, t2 = Math.floor(b / 10) % 10;
+  const borrowT = (t1 - borrowU) < t2 ? 1 : 0;
+  return borrowU === 1 || borrowT === 1;
+}
+
+// ========== QUESTION GENERATORS ==========
+
+function generateAdicaoComRecurso() {
+  const questions = [];
+
+  const storyTemplates = [
+    (a, b) => ({
+      text: `Uma escola tem ${a} cadeiras no bloco A e ${b} no bloco B. Quantas cadeiras no total?`,
+      fc: `Isso! ${a} + ${b} = ${a+b} cadeiras! Lembra de carregar o recurso! 🪑`,
+      fw: `A conta é ${a} + ${b} = ${a+b}. Quando a soma passa de 9, recarregue 1 para a próxima coluna!`,
+    }),
+    (a, b) => ({
+      text: `A Panda coletou ${a} bambus pela manhã e ${b} à tarde. Quantos bambus ela tem agora?`,
+      fc: `Perfeito! ${a} + ${b} = ${a+b} bambus! 🎋`,
+      fw: `A conta é ${a} + ${b} = ${a+b} bambus!`,
+    }),
+    (a, b) => ({
+      text: `Um feirante vendeu ${a} frutas na segunda e ${b} na terça. Quantas frutas vendeu ao todo?`,
+      fc: `Incrível! ${a} + ${b} = ${a+b} frutas! 🍎`,
+      fw: `Some: ${a} + ${b} = ${a+b} frutas!`,
+    }),
+    (a, b) => ({
+      text: `Numa coleção, há ${a} figurinhas de animais e ${b} de super-heróis. Quantas figurinhas no total?`,
+      fc: `Arrasou! ${a} + ${b} = ${a+b} figurinhas! 🎴`,
+      fw: `A conta é ${a} + ${b} = ${a+b} figurinhas!`,
+    }),
+    (a, b) => ({
+      text: `Uma confeiteira fez ${a} doces de chocolate e ${b} de morango. Quantos doces ela fez?`,
+      fc: `Muito bem! ${a} + ${b} = ${a+b} doces! 🍬`,
+      fw: `A conta é ${a} + ${b} = ${a+b} doces!`,
+    }),
+    (a, b) => ({
+      text: `Num estádio entraram ${a} torcedores no primeiro tempo e ${b} no segundo. Quantas pessoas ao todo?`,
+      fc: `Certíssimo! ${a} + ${b} = ${a+b} torcedores! ⚽`,
+      fw: `A conta é ${a} + ${b} = ${a+b} torcedores!`,
+    }),
+  ];
+
+  const shuffledStories = shuffle([...storyTemplates]);
+
+  // 4 story problems
+  for (let i = 0; i < 4; i++) {
+    let a, b;
+    let tries = 0;
+    do {
+      a = randInt(115, 480);
+      b = randInt(115, 420);
+      tries++;
+    } while ((!hasCarry(a, b) || a + b > 999) && tries < 200);
+    const result = a + b;
+    const story = shuffledStories[i](a, b);
+    const opts = makeOptions(result, 4, 10, 999);
+    questions.push({
+      text: story.text,
+      highlight: null,
+      tip: `💡 Dica: some coluna por coluna da direita para a esquerda, carregando o recurso quando passar de 9!`,
+      options: opts.map(String),
+      correct: opts.indexOf(result),
+      feedbackCorrect: `🐼 ${story.fc}`,
+      feedbackWrong: `🐼 ${story.fw}`,
+      singleCol: true,
+    });
+  }
+
+  // 6 direct calculation questions
+  for (let i = 0; i < 6; i++) {
+    let a, b;
+    let tries = 0;
+    do {
+      a = randInt(120, 500);
+      b = randInt(120, 450);
+      tries++;
+    } while ((!hasCarry(a, b) || a + b > 999) && tries < 200);
+    const result = a + b;
+    const opts = makeOptions(result, 4, 10, 999);
+    questions.push({
+      text: 'Resolva a adição com recurso:',
+      highlight: `${a} + ${b} = ?`,
+      tip: `💡 Some unidade + unidade, dezena + dezena, centena + centena — carregue o recurso quando passar de 9!`,
+      options: opts.map(String),
+      correct: opts.indexOf(result),
+      feedbackCorrect: `🐼 Perfeito! ${a} + ${b} = ${result}! Você usou o recurso corretamente! 🎯`,
+      feedbackWrong: `🐼 ${a} + ${b} = ${result}. Lembre: quando a soma de uma coluna passa de 9, carregue 1 para a próxima!`,
+      singleCol: true,
+    });
+  }
+
+  return shuffle(questions);
+}
+
+function generateSubtracaoComRecurso() {
+  const questions = [];
+
+  const storyTemplates = [
+    (a, b) => ({
+      text: `Um depósito tinha ${a} caixas. Foram retiradas ${b} caixas. Quantas caixas sobraram?`,
+      fc: `Isso! ${a} - ${b} = ${a-b} caixas! Você usou o empréstimo certinho! 📦`,
+      fw: `A conta é ${a} - ${b} = ${a-b}. Quando não dá para subtrair, peça emprestado da coluna ao lado!`,
+    }),
+    (a, b) => ({
+      text: `A Panda tinha ${a} bambus e comeu ${b}. Quantos bambus restaram?`,
+      fc: `Perfeito! ${a} - ${b} = ${a-b} bambus! 🎋`,
+      fw: `A conta é ${a} - ${b} = ${a-b} bambus!`,
+    }),
+    (a, b) => ({
+      text: `Numa biblioteca havia ${a} livros. Foram emprestados ${b}. Quantos ficaram na estante?`,
+      fc: `Arrasou! ${a} - ${b} = ${a-b} livros! 📚`,
+      fw: `A conta é ${a} - ${b} = ${a-b} livros!`,
+    }),
+    (a, b) => ({
+      text: `Um clube tinha ${a} sócios e ${b} cancelaram o plano. Quantos sócios ficaram?`,
+      fc: `Incrível! ${a} - ${b} = ${a-b} sócios! 🏊`,
+      fw: `A conta é ${a} - ${b} = ${a-b} sócios!`,
+    }),
+    (a, b) => ({
+      text: `Numa fazenda nasceram ${a} pintinhos. ${b} foram vendidos. Quantos ficaram na fazenda?`,
+      fc: `Muito bem! ${a} - ${b} = ${a-b} pintinhos! 🐥`,
+      fw: `A conta é ${a} - ${b} = ${a-b} pintinhos!`,
+    }),
+    (a, b) => ({
+      text: `Uma loja tinha ${a} pares de tênis. Vendeu ${b}. Quantos pares sobraram?`,
+      fc: `Certíssimo! ${a} - ${b} = ${a-b} pares! 👟`,
+      fw: `A conta é ${a} - ${b} = ${a-b} pares!`,
+    }),
+  ];
+
+  const shuffledStories = shuffle([...storyTemplates]);
+
+  // 4 story problems
+  for (let i = 0; i < 4; i++) {
+    let a, b;
+    let tries = 0;
+    do {
+      a = randInt(300, 900);
+      b = randInt(100, a - 50);
+      tries++;
+    } while ((!hasBorrow(a, b)) && tries < 200);
+    const result = a - b;
+    const story = shuffledStories[i](a, b);
+    const opts = makeOptions(result, 4, 10, 999);
+    questions.push({
+      text: story.text,
+      highlight: null,
+      tip: `💡 Dica: subtraia coluna por coluna da direita para a esquerda, pedindo emprestado quando não der!`,
+      options: opts.map(String),
+      correct: opts.indexOf(result),
+      feedbackCorrect: `🐼 ${story.fc}`,
+      feedbackWrong: `🐼 ${story.fw}`,
+      singleCol: true,
+    });
+  }
+
+  // 6 direct calculation questions
+  for (let i = 0; i < 6; i++) {
+    let a, b;
+    let tries = 0;
+    do {
+      a = randInt(300, 900);
+      b = randInt(100, a - 50);
+      tries++;
+    } while ((!hasBorrow(a, b)) && tries < 200);
+    const result = a - b;
+    const opts = makeOptions(result, 4, 10, 999);
+    questions.push({
+      text: 'Resolva a subtração com recurso:',
+      highlight: `${a} - ${b} = ?`,
+      tip: `💡 Quando o dígito de cima for menor, peça emprestado 1 da coluna ao lado (o empréstimo)!`,
+      options: opts.map(String),
+      correct: opts.indexOf(result),
+      feedbackCorrect: `🐼 Perfeito! ${a} - ${b} = ${result}! Você usou o empréstimo corretamente! 🎯`,
+      feedbackWrong: `🐼 ${a} - ${b} = ${result}. Quando o dígito de cima é menor, peça emprestado 1 da coluna seguinte!`,
+      singleCol: true,
+    });
+  }
+
+  return shuffle(questions);
+}
+
+function generateValorRelativoAbsoluto() {
+  const questions = [];
+  const used = new Set();
+
+  function getNum() {
+    let num;
+    do { num = randInt(102, 987); }
+    while (used.has(num) || num % 10 === 0 || Math.floor(num / 10) % 10 === 0);
+    used.add(num);
+    return num;
+  }
+
+  // 5 perguntas de VALOR RELATIVO
+  const relSeq = ['centena', 'dezena', 'unidade', 'centena', 'dezena'];
+  for (let i = 0; i < 5; i++) {
+    const num = getNum();
+    const [c, d, u] = String(num).split('').map(Number);
+    const type = relSeq[i];
+    const digit = type === 'centena' ? c : type === 'dezena' ? d : u;
+    const relVal = type === 'centena' ? c * 100 : type === 'dezena' ? d * 10 : u;
+    const typeLabel = type === 'centena' ? 'CENTENA' : type === 'dezena' ? 'DEZENA' : 'UNIDADE';
+    const multiplier = type === 'centena' ? 100 : type === 'dezena' ? 10 : 1;
+
+    // Opções: relVal (certo), digit (erro comum — confundir com absoluto), e outros
+    const optsSet = new Set([relVal, digit]);
+    while (optsSet.size < 4) {
+      const v = randInt(1, 9) * multiplier;
+      if (v !== relVal) optsSet.add(v);
+    }
+    const opts = shuffle([...optsSet]);
+
+    questions.push({
+      text: `Qual é o VALOR RELATIVO do algarismo da ${typeLabel}?`,
+      highlight: `${num}  →  C  D  U`,
+      tip: `💡 Valor relativo = algarismo × posição (centena=×100, dezena=×10, unidade=×1)`,
+      options: opts.map(String),
+      correct: opts.indexOf(relVal),
+      feedbackCorrect: `🐼 Isso! No ${num}, o algarismo ${digit} está na ${typeLabel}, então vale ${relVal}! (${c}×100=${c*100}, ${d}×10=${d*10}, ${u}×1=${u}) 🎯`,
+      feedbackWrong: `🐼 No ${num}: o algarismo ${digit} está na ${typeLabel}, portanto vale ${digit} × ${multiplier} = ${relVal}. Não confunda com valor absoluto (${digit})!`,
+    });
+  }
+
+  // 5 perguntas de VALOR ABSOLUTO
+  const absSeq = ['dezena', 'centena', 'unidade', 'dezena', 'centena'];
+  for (let i = 0; i < 5; i++) {
+    const num = getNum();
+    const [c, d, u] = String(num).split('').map(Number);
+    const type = absSeq[i];
+    const digit = type === 'centena' ? c : type === 'dezena' ? d : u;
+    const relVal = type === 'centena' ? c * 100 : type === 'dezena' ? d * 10 : u;
+    const typeLabel = type === 'centena' ? 'CENTENA' : type === 'dezena' ? 'DEZENA' : 'UNIDADE';
+
+    // Opções: digit (certo), relVal (erro comum), e 2 outros dígitos
+    const optsSet = new Set([digit, relVal]);
+    while (optsSet.size < 4) {
+      const v = randInt(1, 9);
+      if (v !== digit) optsSet.add(v);
+    }
+    const opts = shuffle([...optsSet]);
+
+    questions.push({
+      text: `Qual é o VALOR ABSOLUTO do algarismo da ${typeLabel}?`,
+      highlight: `${num}  →  C  D  U`,
+      tip: `💡 Valor absoluto = o próprio algarismo, sempre! Não depende da posição.`,
+      options: opts.map(String),
+      correct: opts.indexOf(digit),
+      feedbackCorrect: `🐼 Correto! O valor absoluto é sempre o próprio algarismo: ${digit}. Independente da posição! (O valor relativo seria ${relVal}.) ✅`,
+      feedbackWrong: `🐼 O valor absoluto é sempre o próprio algarismo: ${digit}. Não importa a posição! Não confunda com valor relativo (${relVal})!`,
+    });
+  }
+
+  return shuffle(questions);
+}
+
+// ========== SCREEN MANAGEMENT ==========
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ========== SOUND EFFECTS ==========
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let audioCtx;
+function getAudioCtx() {
+  if (!audioCtx) audioCtx = new AudioCtx();
+  return audioCtx;
+}
+
+function playSound(type) {
+  try {
+    const ctx = getAudioCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    gain.gain.value = 0.15;
+
+    if (type === 'correct') {
+      osc.frequency.value = 523;
+      osc.type = 'sine';
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.3);
+      const osc2 = ctx.createOscillator();
+      const gain2 = ctx.createGain();
+      osc2.connect(gain2);
+      gain2.connect(ctx.destination);
+      osc2.frequency.value = 659;
+      osc2.type = 'sine';
+      gain2.gain.value = 0.15;
+      gain2.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+      osc2.start(ctx.currentTime + 0.15);
+      osc2.stop(ctx.currentTime + 0.5);
+    } else if (type === 'wrong') {
+      osc.frequency.value = 200;
+      osc.type = 'triangle';
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.4);
+    } else if (type === 'win') {
+      const notes = [523, 587, 659, 784];
+      notes.forEach((freq, i) => {
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.connect(g);
+        g.connect(ctx.destination);
+        o.frequency.value = freq;
+        o.type = 'sine';
+        g.gain.value = 0.12;
+        g.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + i * 0.2 + 0.3);
+        o.start(ctx.currentTime + i * 0.2);
+        o.stop(ctx.currentTime + i * 0.2 + 0.3);
+      });
+    }
+  } catch (e) {}
+}
+
+// ========== CONFETTI ==========
+function showConfetti() {
+  const container = document.getElementById('confetti-container');
+  container.innerHTML = '';
+  const colors = ['#ff6b9d','#4ade80','#60a5fa','#fbbf24','#a78bfa','#fb923c'];
+  for (let i = 0; i < 60; i++) {
+    const el = document.createElement('div');
+    el.classList.add('confetti');
+    el.style.left = Math.random() * 100 + '%';
+    el.style.background = colors[Math.floor(Math.random() * colors.length)];
+    el.style.width = (Math.random() * 8 + 6) + 'px';
+    el.style.height = (Math.random() * 8 + 6) + 'px';
+    el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    el.style.animationDuration = (Math.random() * 2 + 1.5) + 's';
+    el.style.animationDelay = (Math.random() * 0.8) + 's';
+    container.appendChild(el);
+  }
+  setTimeout(() => container.innerHTML = '', 4000);
+}
+
+// ========== GAME FLOW ==========
+function startGame() {
+  showScreen('map');
+  renderMap();
+}
+
+function renderMap() {
+  const container = document.getElementById('map-container');
+  container.innerHTML = '';
+  phases.forEach((phase, i) => {
+    if (i > 0) {
+      const path = document.createElement('div');
+      path.className = 'map-path' + (state.phaseStars[i - 1] > 0 ? ' done' : '');
+      container.appendChild(path);
+    }
+    const card = document.createElement('div');
+    card.className = 'phase-card';
+
+    let statusHTML = '';
+    if (state.phaseStars[i] > 0) {
+      card.classList.add('completed');
+      statusHTML = `<span class="phase-stars">${'⭐'.repeat(state.phaseStars[i])}${'☆'.repeat(3 - state.phaseStars[i])}</span>`;
+    } else if (i === 0 || state.phaseStars[i - 1] > 0) {
+      card.classList.add('available');
+      statusHTML = `<span class="phase-lock" style="opacity:0.5">🐼</span>`;
+      card.onclick = () => startPhase(i);
+    } else {
+      card.classList.add('locked');
+      statusHTML = `<span class="phase-lock">🔒</span>`;
+    }
+
+    card.innerHTML = `
+      <span class="phase-icon">${phase.icon}</span>
+      <div class="phase-info">
+        <h3>${phase.name}</h3>
+        <p>${phase.subtitle}</p>
+      </div>
+      ${statusHTML}
+    `;
+    container.appendChild(card);
+  });
+}
+
+function startPhase(phaseIndex) {
+  state.currentPhase = phaseIndex;
+  state.currentQuestion = 0;
+  state.phaseScores[phaseIndex] = 0;
+  state.answered = false;
+
+  if (phaseIndex === 0) {
+    state.questions = generateAdicaoComRecurso();
+  } else if (phaseIndex === 1) {
+    state.questions = generateSubtracaoComRecurso();
+  } else {
+    state.questions = generateValorRelativoAbsoluto();
+  }
+
+  state.phaseTotal[phaseIndex] = state.questions.length;
+
+  const phase = phases[phaseIndex];
+  document.getElementById('game').style.background = phase.bgGradient;
+  document.getElementById('phase-title').textContent = `${phase.icon} ${phase.name}`;
+
+  showScreen('game');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = state.questions[state.currentQuestion];
+  const total = state.questions.length;
+  const phase = phases[state.currentPhase];
+
+  document.getElementById('progress-text').textContent = `${state.currentQuestion + 1}/${total}`;
+  document.getElementById('score-text').textContent = `⭐ ${state.phaseScores[state.currentPhase]}`;
+  document.getElementById('progress-fill').style.width = ((state.currentQuestion) / total * 100) + '%';
+
+  const scene = document.getElementById('game-scene');
+  scene.className = 'game-scene ' + phase.sceneClass;
+  const itemsEl = document.getElementById('scene-items');
+  itemsEl.innerHTML = '';
+  phase.sceneItems.forEach((item, i) => {
+    const el = document.createElement('span');
+    el.className = 'scene-item';
+    el.textContent = item;
+    el.style.left = (10 + Math.random() * 75) + '%';
+    el.style.top = (10 + Math.random() * 70) + '%';
+    el.style.animationDelay = (i * 0.3) + 's';
+    itemsEl.appendChild(el);
+  });
+
+  document.getElementById('scene-panda').className = 'scene-panda';
+
+  // Question text + highlight + tip
+  let questionHTML = q.text;
+  if (q.highlight) {
+    questionHTML += `<br><span class="question-highlight">${q.highlight}</span>`;
+  }
+  if (q.tip) {
+    questionHTML += `<br><span class="tip-box">${q.tip}</span>`;
+  }
+  document.getElementById('question-text').innerHTML = questionHTML;
+
+  const grid = document.getElementById('options-grid');
+  grid.className = 'options-grid' + (q.singleCol ? ' single-col' : '');
+  grid.innerHTML = '';
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.textContent = opt;
+    btn.onclick = () => answer(i);
+    grid.appendChild(btn);
+  });
+
+  const fb = document.getElementById('feedback-box');
+  fb.className = 'feedback-box';
+  fb.style.display = 'none';
+  document.getElementById('btn-next').className = 'btn-next';
+  state.answered = false;
+}
+
+function answer(idx) {
+  if (state.answered) return;
+  state.answered = true;
+
+  const q = state.questions[state.currentQuestion];
+  const isCorrect = idx === q.correct;
+  const btns = document.querySelectorAll('#options-grid .opt-btn');
+
+  btns.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.correct) btn.classList.add('correct');
+    if (i === idx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  const panda = document.getElementById('scene-panda');
+  if (isCorrect) {
+    panda.classList.add('happy');
+    state.phaseScores[state.currentPhase]++;
+    document.getElementById('score-text').textContent = `⭐ ${state.phaseScores[state.currentPhase]}`;
+    playSound('correct');
+  } else {
+    panda.classList.add('sad');
+    playSound('wrong');
+  }
+
+  const fb = document.getElementById('feedback-box');
+  fb.className = 'feedback-box show ' + (isCorrect ? 'correct' : 'wrong');
+  fb.textContent = isCorrect ? q.feedbackCorrect : q.feedbackWrong;
+  fb.style.display = 'block';
+
+  document.getElementById('btn-next').className = 'btn-next show';
+}
+
+function nextQuestion() {
+  state.currentQuestion++;
+  if (state.currentQuestion >= state.questions.length) {
+    completePhase();
+  } else {
+    renderQuestion();
+  }
+}
+
+function completePhase() {
+  const phaseIdx = state.currentPhase;
+  const score = state.phaseScores[phaseIdx];
+  const total = state.phaseTotal[phaseIdx];
+  const pct = score / total;
+
+  let stars = 1;
+  if (pct >= 1) stars = 3;
+  else if (pct >= 0.7) stars = 2;
+  state.phaseStars[phaseIdx] = Math.max(state.phaseStars[phaseIdx], stars);
+
+  document.getElementById('progress-fill').style.width = '100%';
+
+  const phase = phases[phaseIdx];
+  document.getElementById('phase-complete-title').textContent = `${phase.name} Completo!`;
+  document.getElementById('stars-earned').textContent = '⭐'.repeat(stars) + '☆'.repeat(3 - stars);
+  document.getElementById('phase-score-text').textContent = `Você acertou ${score} de ${total}!`;
+
+  const btn = document.getElementById('btn-phase-continue');
+  btn.textContent = phaseIdx < phases.length - 1 ? 'Próxima Fase ➜' : 'Ver Resultado Final 🏆';
+
+  showScreen('phase-complete');
+  showConfetti();
+  playSound('win');
+}
+
+function continueAfterPhase() {
+  if (state.currentPhase < phases.length - 1) {
+    showScreen('map');
+    renderMap();
+  } else {
+    showFinal();
+  }
+}
+
+function showFinal() {
+  const totalStars = state.phaseStars.reduce((a, b) => a + b, 0);
+  const maxStars = phases.length * 3;
+  document.getElementById('total-stars').textContent = '⭐'.repeat(totalStars) + '☆'.repeat(maxStars - totalStars);
+
+  let msg = '';
+  if (totalStars >= 8) {
+    msg = 'Nota 10 garantida! A Panda está super orgulhosa de você! Boa prova! 🐼✨';
+  } else if (totalStars >= 5) {
+    msg = 'Muito bem! Você está quase pronto para a prova! Treine mais uma vez! 🐼💪';
+  } else {
+    msg = 'Bom começo! Treine de novo para fixar os conteúdos. Você consegue! 🐼🌟';
+  }
+  document.getElementById('final-msg').textContent = msg;
+
+  showScreen('final');
+  showConfetti();
+  playSound('win');
+}
+
+function resetGame() {
+  state.currentPhase = 0;
+  state.currentQuestion = 0;
+  state.phaseScores = [0, 0, 0];
+  state.phaseTotal = [0, 0, 0];
+  state.phaseStars = [0, 0, 0];
+  state.questions = [];
+  state.answered = false;
+  showScreen('map');
+  renderMap();
+}
+</script>
+</body>
+</html>
