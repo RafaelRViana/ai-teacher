@@ -449,11 +449,15 @@
     <p style="font-size:1.5rem; color:var(--gold); font-weight:bold; margin-top:6px;" id="e-winner-score">—</p>
 
     <hr class="divider" />
-    <h3 style="text-align:center; margin-bottom:14px;">Classificação Final</h3>
+    <h3 style="text-align:center; margin-bottom:14px;">Classificação desta partida</h3>
     <div id="e-lb"></div>
 
     <hr class="divider" />
-    <button class="btn btn-ghost btn-full" onclick="restart()">🔄 Jogar novamente</button>
+    <p id="e-my-total" style="font-size:1.1rem; color:var(--muted); margin-bottom:16px;">—</p>
+    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+      <button class="btn btn-gold" style="flex:1;" onclick="playAgain()">🔄 Jogar novamente</button>
+      <button class="btn btn-ghost" style="flex:1;" onclick="leaveGame()">👤 Trocar jogador</button>
+    </div>
   </div>
 </div>
 
@@ -858,7 +862,7 @@ function dailyRoom() {
 
 const me = {
   roomCode:'', name:'', safeKey:'',
-  tribe: null, score:0, currentQ:0,
+  tribe: null, score:0, totalScore:0, currentQ:0,
   answers:[], completed:false, streak:0,
 };
 
@@ -936,6 +940,15 @@ async function joinRoom() {
   me.safeKey  = safeKey;
   me.streak   = 0;
 
+  // ── Carrega total acumulado (caminho global, fora da sala diária) ──
+  if (db) {
+    const totalSnap = await db.ref(`totals/${safeKey}`).once('value');
+    me.totalScore = totalSnap.val()?.score
+      ?? parseInt(localStorage.getItem(`prehistoria_total_${safeKey}`) || '0', 10);
+  } else {
+    me.totalScore = parseInt(localStorage.getItem(`prehistoria_total_${safeKey}`) || '0', 10);
+  }
+
   if (db) {
     // ── Tenta retomar progresso salvo no Firebase ──
     const snap    = await db.ref(`rooms/${roomCode}/players/${safeKey}`).once('value');
@@ -950,7 +963,7 @@ async function joinRoom() {
       sessionScenarios = saved.questionIds.map(i => ALL_SCENARIOS[i]);
 
       if (me.completed) {
-        toast(`Bem-vindo de volta, ${name}! Placar: ${me.score} pts 🏆`);
+        toast(`Bem-vindo de volta, ${name}! Total acumulado: ${me.totalScore} pts 🏆`);
       } else if (me.currentQ > 0) {
         toast(`Retomando da questão ${me.currentQ + 1}… 🔄`);
       }
@@ -1215,9 +1228,19 @@ function renderLB(data) {
 /* ══════════════════════════════════════════
    END SCREEN
 ══════════════════════════════════════════ */
-function showEnd() {
+async function showEnd() {
   if (db && lbListener) {
     db.ref(`rooms/${me.roomCode}/players`).off('value', lbListener);
+  }
+
+  // ── Acumula o total desta sessão ──
+  me.totalScore += me.score;
+  const lsCumulKey = `prehistoria_total_${me.safeKey}`;
+  localStorage.setItem(lsCumulKey, me.totalScore);
+  if (db) {
+    db.ref(`totals/${me.safeKey}`).set({
+      name: me.name, tribe: me.tribe.id, score: me.totalScore, updatedAt: Date.now()
+    });
   }
 
   // Easter egg: exatamente 6 ou 7 questões certas
@@ -1227,6 +1250,10 @@ function showEnd() {
   } else if (correctCount === 6) {
     setTimeout(() => fire67EasterEgg('6 de 10... quase 6/7! pip bip 🫱🫲'), 800);
   }
+
+  // Mostra total acumulado do jogador na tela final
+  document.getElementById('e-my-total').innerHTML =
+    `Seu total acumulado: <strong style="color:var(--gold)">${me.totalScore} pts</strong>`;
 
   const finish = () => {
     showScreen('s-end');
@@ -1256,8 +1283,36 @@ function setWinner(top) {
 /* ══════════════════════════════════════════
    RESTART
 ══════════════════════════════════════════ */
-function restart() {
-  // Apaga o progresso salvo para permitir novo jogo
+/* ── Jogar novamente com mesmo nome/povo — acumula total ── */
+async function playAgain() {
+  me.score = 0; me.currentQ = 0; me.completed = false; me.answers = []; me.streak = 0;
+
+  const indices = shuffle(ALL_SCENARIOS.map((_, i) => i)).slice(0, 10);
+  sessionScenarios = indices.map(i => ALL_SCENARIOS[i]);
+
+  if (db) {
+    await db.ref(`rooms/${me.roomCode}/players/${me.safeKey}`).update({
+      score: 0, currentQ: 0, completed: false, answers: [], questionIds: indices
+    });
+    // Reinicia listener do placar ao vivo
+    if (lbListener) db.ref(`rooms/${me.roomCode}/players`).off('value', lbListener);
+    lbListener = db.ref(`rooms/${me.roomCode}/players`)
+      .on('value', snap => renderLB(snap.val() || {}));
+  } else {
+    const lsKey = `prehistoria_${me.roomCode}_${me.safeKey}`;
+    const saved = JSON.parse(localStorage.getItem(lsKey) || '{}');
+    localStorage.setItem(lsKey, JSON.stringify({
+      ...saved, score: 0, currentQ: 0, completed: false, answers: [], questionIds: indices
+    }));
+  }
+
+  toast(`${me.name} – total: ${me.totalScore} pts 🏆 Nova rodada!`);
+  showScreen('s-game');
+  renderQ();
+}
+
+/* ── Trocar jogador — volta à tela inicial ── */
+function leaveGame() {
   if (db && me.safeKey) {
     db.ref(`rooms/${me.roomCode}/players/${me.safeKey}`).remove();
   } else if (me.safeKey) {
@@ -1266,11 +1321,14 @@ function restart() {
 
   selectedTribe = null;
   prevScores    = {};
-  Object.assign(me, { roomCode:'', name:'', safeKey:'', tribe:null, score:0, currentQ:0, answers:[], completed:false, streak:0 });
+  Object.assign(me, { roomCode:'', name:'', safeKey:'', tribe:null, score:0, totalScore:0, currentQ:0, answers:[], completed:false, streak:0 });
   document.getElementById('inp-name').value = '';
   document.querySelectorAll('.tribe-card').forEach(c => c.classList.remove('sel'));
   showScreen('s-join');
 }
+
+/* ── restart() mantido por compatibilidade ── */
+function restart() { leaveGame(); }
 
 /* ══════════════════════════════════════════
    TOAST
