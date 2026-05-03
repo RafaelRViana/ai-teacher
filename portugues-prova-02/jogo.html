@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Detetive das Palavras - Prova de Português</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    min-height: 100vh;
+    color: #fff;
+    padding: 20px;
+  }
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  header {
+    text-align: center;
+    padding: 20px 0;
+    margin-bottom: 20px;
+  }
+  h1 {
+    font-size: 2.2em;
+    background: linear-gradient(45deg, #ffd700, #ff6b6b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+  }
+  .subtitle { color: #aaa; font-size: 0.95em; }
+  .stats {
+    display: flex;
+    justify-content: space-around;
+    background: rgba(255,255,255,0.1);
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    backdrop-filter: blur(10px);
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-label { font-size: 0.8em; color: #aaa; }
+  .stat-value { font-size: 1.5em; font-weight: bold; color: #ffd700; }
+  .screen {
+    background: rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 30px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .cases {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+  }
+  .case-card {
+    background: linear-gradient(135deg, rgba(255,107,107,0.2), rgba(255,215,0,0.1));
+    border: 2px solid rgba(255,215,0,0.3);
+    padding: 20px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: center;
+  }
+  .case-card:hover {
+    transform: translateY(-5px);
+    border-color: #ffd700;
+    box-shadow: 0 10px 30px rgba(255,215,0,0.3);
+  }
+  .case-card.completed {
+    background: linear-gradient(135deg, rgba(76,175,80,0.3), rgba(76,175,80,0.1));
+    border-color: #4caf50;
+  }
+  .case-emoji { font-size: 2.5em; margin-bottom: 10px; }
+  .case-title { font-weight: bold; margin-bottom: 5px; }
+  .case-desc { font-size: 0.85em; color: #ccc; }
+  .question {
+    font-size: 1.2em;
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+  .question .highlight {
+    background: rgba(255,215,0,0.3);
+    padding: 2px 8px;
+    border-radius: 4px;
+    color: #ffd700;
+    font-weight: bold;
+  }
+  .options {
+    display: grid;
+    gap: 10px;
+  }
+  .option {
+    background: rgba(255,255,255,0.1);
+    border: 2px solid rgba(255,255,255,0.2);
+    padding: 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+    color: #fff;
+    font-size: 1em;
+    font-family: inherit;
+  }
+  .option:hover:not(:disabled) {
+    background: rgba(255,215,0,0.2);
+    border-color: #ffd700;
+    transform: translateX(5px);
+  }
+  .option.correct {
+    background: rgba(76,175,80,0.4);
+    border-color: #4caf50;
+  }
+  .option.wrong {
+    background: rgba(244,67,54,0.4);
+    border-color: #f44336;
+  }
+  .option:disabled { cursor: not-allowed; }
+  .feedback {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 0.95em;
+    line-height: 1.5;
+  }
+  .feedback.correct {
+    background: rgba(76,175,80,0.2);
+    border-left: 4px solid #4caf50;
+  }
+  .feedback.wrong {
+    background: rgba(244,67,54,0.2);
+    border-left: 4px solid #f44336;
+  }
+  button.next {
+    background: linear-gradient(45deg, #ffd700, #ff6b6b);
+    color: #000;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: transform 0.2s;
+  }
+  button.next:hover { transform: scale(1.05); }
+  .progress {
+    height: 8px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #ffd700, #ff6b6b);
+    transition: width 0.3s;
+  }
+  .case-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .case-header-emoji { font-size: 2em; }
+  .case-header-title { font-size: 1.3em; font-weight: bold; }
+  .lives { color: #ff6b6b; }
+  .end-screen { text-align: center; padding: 40px 20px; }
+  .end-screen .trophy { font-size: 5em; margin-bottom: 20px; }
+  .end-screen h2 { font-size: 2em; margin-bottom: 10px; color: #ffd700; }
+  .end-screen p { color: #ccc; margin-bottom: 20px; font-size: 1.1em; }
+  .badge {
+    display: inline-block;
+    background: linear-gradient(45deg, #ffd700, #ff6b6b);
+    color: #000;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-weight: bold;
+    margin: 10px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>🔍 Detetive das Palavras</h1>
+    <p class="subtitle">Resolva os mistérios da Língua Portuguesa</p>
+  </header>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-label">XP</div>
+      <div class="stat-value" id="xp">0</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Acertos</div>
+      <div class="stat-value" id="correct">0</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Patente</div>
+      <div class="stat-value" id="rank" style="font-size:1em">Aprendiz</div>
+    </div>
+  </div>
+
+  <div id="app" class="screen"></div>
+</div>
+
+<script>
+const QUESTIONS_PER_CASE = 8;
+
+const CASES = [
+  {
+    id: 'substantivos',
+    emoji: '🕵️',
+    title: 'O Caso dos Substantivos',
+    desc: 'Gênero, número, classificação',
+    pool: [
+      // comum/próprio
+      { q: 'A palavra <span class="highlight">cidade</span> é um substantivo:', options: ['Próprio', 'Comum', 'Coletivo', 'Composto'], correctAnswer: 'Comum', explain: 'Cidade é COMUM — nomeia genericamente seres da mesma espécie. Próprio seria "São Paulo".' },
+      { q: 'A palavra <span class="highlight">Brasil</span> é um substantivo:', options: ['Comum', 'Próprio', 'Coletivo', 'Abstrato'], correctAnswer: 'Próprio', explain: 'PRÓPRIO — nomeia um ser específico, escrito com letra maiúscula.' },
+      { q: 'A palavra <span class="highlight">Maria</span> é:', options: ['Comum', 'Próprio', 'Coletivo', 'Derivado'], correctAnswer: 'Próprio', explain: 'PRÓPRIO — nome de pessoa específica, sempre com maiúscula.' },
+      { q: 'A palavra <span class="highlight">menino</span> é um substantivo:', options: ['Próprio', 'Comum', 'Abstrato', 'Composto'], correctAnswer: 'Comum', explain: 'COMUM — nomeia genericamente seres da mesma espécie.' },
+      { q: 'A palavra <span class="highlight">cachorro</span> é:', options: ['Próprio', 'Comum', 'Coletivo', 'Abstrato'], correctAnswer: 'Comum', explain: 'COMUM — qualquer cachorro genérico. "Rex" seria próprio.' },
+
+      // concreto/abstrato
+      { q: 'Classifique a palavra <span class="highlight">amor</span>:', options: ['Concreto', 'Abstrato', 'Próprio', 'Coletivo'], correctAnswer: 'Abstrato', explain: 'ABSTRATO — sentimentos, qualidades e ações são abstratos.' },
+      { q: 'Classifique a palavra <span class="highlight">esperança</span>:', options: ['Concreto', 'Abstrato', 'Próprio', 'Composto'], correctAnswer: 'Abstrato', explain: 'ABSTRATO — sentimento, depende de alguém para existir.' },
+      { q: 'Classifique a palavra <span class="highlight">tristeza</span>:', options: ['Concreto', 'Abstrato', 'Comum/Concreto', 'Próprio'], correctAnswer: 'Abstrato', explain: 'ABSTRATO — sentimento.' },
+      { q: 'Classifique a palavra <span class="highlight">alegria</span>:', options: ['Concreto', 'Abstrato', 'Composto', 'Coletivo'], correctAnswer: 'Abstrato', explain: 'ABSTRATO — sentimentos são sempre abstratos.' },
+      { q: 'Classifique a palavra <span class="highlight">coragem</span>:', options: ['Concreto', 'Abstrato', 'Próprio', 'Derivado'], correctAnswer: 'Abstrato', explain: 'ABSTRATO — qualidade/sentimento.' },
+      { q: 'Classifique a palavra <span class="highlight">paciência</span>:', options: ['Concreto', 'Abstrato', 'Comum', 'Coletivo'], correctAnswer: 'Abstrato', explain: 'ABSTRATO — qualidade.' },
+      { q: 'Classifique a palavra <span class="highlight">museu</span>:', options: ['Concreto', 'Abstrato', 'Próprio', 'Composto'], correctAnswer: 'Concreto', explain: 'CONCRETO — existe por si só, ocupa espaço físico.' },
+      { q: 'Classifique a palavra <span class="highlight">chuva</span>:', options: ['Abstrato', 'Concreto', 'Próprio', 'Coletivo'], correctAnswer: 'Concreto', explain: 'CONCRETO — fenômeno percebido pelos sentidos.' },
+      { q: 'Classifique a palavra <span class="highlight">cadeira</span>:', options: ['Abstrato', 'Concreto', 'Próprio', 'Derivado'], correctAnswer: 'Concreto', explain: 'CONCRETO — objeto físico.' },
+
+      // plurais
+      { q: 'Qual é o plural de <span class="highlight">cidadão</span>?', options: ['Cidadãos', 'Cidadões', 'Cidadães', 'Cidadans'], correctAnswer: 'Cidadãos', explain: 'CIDADÃOS. Palavras em "ão" podem virar -ãos, -ões ou -ães.' },
+      { q: 'Qual é o plural de <span class="highlight">pão</span>?', options: ['Pãos', 'Pães', 'Pões', 'Pans'], correctAnswer: 'Pães', explain: 'PÃES. (cão→cães, alemão→alemães).' },
+      { q: 'Qual é o plural de <span class="highlight">cão</span>?', options: ['Cãos', 'Cões', 'Cães', 'Cans'], correctAnswer: 'Cães', explain: 'CÃES — exceção do "ão" para "ães".' },
+      { q: 'Qual é o plural de <span class="highlight">limão</span>?', options: ['Limãos', 'Limões', 'Limães', 'Limans'], correctAnswer: 'Limões', explain: 'LIMÕES — a maioria dos "ão" vira "ões".' },
+      { q: 'Qual é o plural de <span class="highlight">irmão</span>?', options: ['Irmões', 'Irmãos', 'Irmães', 'Irmans'], correctAnswer: 'Irmãos', explain: 'IRMÃOS — termina em -ãos.' },
+      { q: 'Qual é o plural de <span class="highlight">capitão</span>?', options: ['Capitãos', 'Capitões', 'Capitães', 'Capitans'], correctAnswer: 'Capitães', explain: 'CAPITÃES — exceção em "ães".' },
+      { q: 'Qual é o plural de <span class="highlight">tórax</span>?', options: ['Tóraxes', 'Tórax', 'Tóraxs', 'Tóraques'], correctAnswer: 'Tórax', explain: 'TÓRAX — paroxítonas em -x não mudam no plural.' },
+      { q: 'Qual é o plural de <span class="highlight">barril</span>?', options: ['Barrils', 'Barris', 'Barriles', 'Barrís'], correctAnswer: 'Barris', explain: 'BARRIS — "il" em oxítona vira "is".' },
+      { q: 'Qual é o plural de <span class="highlight">réptil</span>?', options: ['Réptiles', 'Réptis', 'Répteis', 'Répteils'], correctAnswer: 'Répteis', explain: 'RÉPTEIS — "il" em paroxítona vira "eis".' },
+      { q: 'Qual é o plural de <span class="highlight">jovem</span>?', options: ['Jovens', 'Jovems', 'Jóvenes', 'Jovens'], correctAnswer: 'Jovens', explain: 'JOVENS — "m" final vira "ns".' },
+      { q: 'Qual é o plural de <span class="highlight">hífen</span>?', options: ['Hífens', 'Hifens', 'Hífenes', 'Hifés'], correctAnswer: 'Hifens', explain: 'HIFENS — "n" final vira "ns" e perde o acento.' },
+      { q: 'Qual é o plural de <span class="highlight">freguês</span>?', options: ['Fregueses', 'Freguês', 'Fregueis', 'Freguesos'], correctAnswer: 'Fregueses', explain: 'FREGUESES — "ês" oxítona vira "eses".' },
+
+      // simples/composto
+      { q: 'A palavra <span class="highlight">girassol</span> é um substantivo:', options: ['Simples', 'Composto', 'Primitivo', 'Próprio'], correctAnswer: 'Composto', explain: 'COMPOSTO — formado por mais de uma palavra (gira + sol).' },
+      { q: 'A palavra <span class="highlight">guarda-chuva</span> é:', options: ['Simples', 'Composto', 'Primitivo', 'Derivado'], correctAnswer: 'Composto', explain: 'COMPOSTO — duas palavras formando uma só.' },
+      { q: 'A palavra <span class="highlight">passatempo</span> é:', options: ['Simples', 'Composto', 'Primitivo', 'Coletivo'], correctAnswer: 'Composto', explain: 'COMPOSTO — passa + tempo.' },
+      { q: 'A palavra <span class="highlight">flor</span> é:', options: ['Composta', 'Simples', 'Derivada', 'Coletiva'], correctAnswer: 'Simples', explain: 'SIMPLES — formada por um só radical.' },
+      { q: 'A palavra <span class="highlight">beija-flor</span> é:', options: ['Simples', 'Composta', 'Primitiva', 'Coletiva'], correctAnswer: 'Composta', explain: 'COMPOSTA — beija + flor.' },
+      { q: 'A palavra <span class="highlight">livro</span> é:', options: ['Composta', 'Simples', 'Derivada', 'Própria'], correctAnswer: 'Simples', explain: 'SIMPLES — uma só palavra.' },
+
+      // primitivo/derivado
+      { q: 'A palavra <span class="highlight">pedreiro</span> é:', options: ['Primitiva', 'Derivada', 'Composta', 'Coletiva'], correctAnswer: 'Derivada', explain: 'DERIVADA de pedra. Primitiva é a original (pedra).' },
+      { q: 'A palavra <span class="highlight">jornaleiro</span> é:', options: ['Primitiva', 'Derivada', 'Composta', 'Própria'], correctAnswer: 'Derivada', explain: 'DERIVADA de jornal.' },
+      { q: 'A palavra <span class="highlight">livraria</span> é:', options: ['Primitiva', 'Derivada', 'Composta', 'Coletiva'], correctAnswer: 'Derivada', explain: 'DERIVADA de livro.' },
+      { q: 'A palavra <span class="highlight">pedra</span> é:', options: ['Derivada', 'Primitiva', 'Composta', 'Abstrata'], correctAnswer: 'Primitiva', explain: 'PRIMITIVA — não vem de outra palavra; outras derivam dela.' },
+      { q: 'A palavra <span class="highlight">flor</span> em relação a "florista" é:', options: ['Derivada', 'Primitiva', 'Composta', 'Coletiva'], correctAnswer: 'Primitiva', explain: 'PRIMITIVA — florista deriva de flor.' },
+      { q: 'A palavra <span class="highlight">dentista</span> é:', options: ['Primitiva', 'Derivada', 'Composta', 'Própria'], correctAnswer: 'Derivada', explain: 'DERIVADA de dente.' },
+
+      // gênero (epiceno, sobrecomum, comum de dois)
+      { q: 'O feminino de <span class="highlight">jacaré</span> é:', options: ['Jacara', 'Jacaroa', 'Jacaré-fêmea', 'Não existe feminino'], correctAnswer: 'Jacaré-fêmea', explain: 'EPICENO — usa "fêmea"/"macho" para indicar sexo.' },
+      { q: 'O feminino de <span class="highlight">cobra</span> é:', options: ['Cobro', 'Cobra-macho', 'Cobra-fêmea', 'Cobranha'], correctAnswer: 'Cobra-fêmea', explain: 'EPICENO — "cobra" serve pros dois sexos; especifica com macho/fêmea.' },
+      { q: 'A palavra <span class="highlight">estudante</span> é:', options: ['Só masculina', 'Só feminina', 'Comum de dois gêneros', 'Sobrecomum'], correctAnswer: 'Comum de dois gêneros', explain: 'COMUM DE DOIS — muda só o artigo (o/a estudante).' },
+      { q: 'A palavra <span class="highlight">artista</span> é:', options: ['Só masculina', 'Sobrecomum', 'Comum de dois gêneros', 'Epiceno'], correctAnswer: 'Comum de dois gêneros', explain: 'COMUM DE DOIS — o artista / a artista.' },
+      { q: 'A palavra <span class="highlight">criança</span> é:', options: ['Comum de dois', 'Sobrecomum', 'Epiceno', 'Só feminina'], correctAnswer: 'Sobrecomum', explain: 'SOBRECOMUM — uma só forma para ambos os sexos (a criança, seja menino ou menina).' },
+      { q: 'A palavra <span class="highlight">vítima</span> é:', options: ['Comum de dois', 'Sobrecomum', 'Epiceno', 'Coletiva'], correctAnswer: 'Sobrecomum', explain: 'SOBRECOMUM — sempre "a vítima", independente do sexo.' },
+      { q: 'A palavra <span class="highlight">gerente</span> é:', options: ['Sobrecomum', 'Comum de dois gêneros', 'Epiceno', 'Só masculina'], correctAnswer: 'Comum de dois gêneros', explain: 'COMUM DE DOIS — o gerente / a gerente.' },
+
+      // grau
+      { q: 'A palavra <span class="highlight">casinha</span> está no grau:', options: ['Aumentativo', 'Diminutivo', 'Normal', 'Composto'], correctAnswer: 'Diminutivo', explain: 'DIMINUTIVO — sufixo "-inha" indica menor tamanho/afeto.' },
+      { q: 'A palavra <span class="highlight">ossão</span> está no grau:', options: ['Diminutivo', 'Aumentativo', 'Normal', 'Próprio'], correctAnswer: 'Aumentativo', explain: 'AUMENTATIVO — sufixo "-ão" indica maior tamanho.' },
+      { q: 'A palavra <span class="highlight">livrão</span> está no grau:', options: ['Diminutivo', 'Aumentativo', 'Normal', 'Composto'], correctAnswer: 'Aumentativo', explain: 'AUMENTATIVO de livro.' },
+      { q: 'A palavra <span class="highlight">passarinho</span> está no grau:', options: ['Aumentativo', 'Diminutivo', 'Normal', 'Próprio'], correctAnswer: 'Diminutivo', explain: 'DIMINUTIVO de pássaro.' }
+    ]
+  },
+  {
+    id: 'coletivos',
+    emoji: '🐝',
+    title: 'O Mistério dos Coletivos',
+    desc: 'Substantivos coletivos',
+    pool: [
+      { q: 'Conjunto de <span class="highlight">peixes</span>:', options: ['Alcateia', 'Cardume', 'Manada', 'Enxame'], correctAnswer: 'Cardume', explain: 'CARDUME = peixes.' },
+      { q: 'Conjunto de <span class="highlight">lobos</span>:', options: ['Bando', 'Matilha', 'Alcateia', 'Vara'], correctAnswer: 'Alcateia', explain: 'ALCATEIA = lobos.' },
+      { q: 'Conjunto de <span class="highlight">atores</span>:', options: ['Elenco', 'Plateia', 'Caravana', 'Tropa'], correctAnswer: 'Elenco', explain: 'ELENCO = atores. Plateia = espectadores.' },
+      { q: 'Conjunto de <span class="highlight">obras de arte</span>:', options: ['Acervo', 'Pinacoteca', 'Antologia', 'Biblioteca'], correctAnswer: 'Pinacoteca', explain: 'PINACOTECA = quadros/obras de arte.' },
+      { q: 'Conjunto de <span class="highlight">alunos</span>:', options: ['Turma', 'Multidão', 'Tropa', 'Bando'], correctAnswer: 'Turma', explain: 'TURMA = alunos/colegas.' },
+      { q: 'Conjunto de <span class="highlight">estrelas</span>:', options: ['Galáxia', 'Constelação', 'Nuvem', 'Bando'], correctAnswer: 'Constelação', explain: 'CONSTELAÇÃO = estrelas em destaque no céu.' },
+      { q: 'Conjunto de <span class="highlight">ladrões</span>:', options: ['Quadrilha', 'Esquadra', 'Esquadrilha', 'Tropa'], correctAnswer: 'Quadrilha', explain: 'QUADRILHA = ladrões/assaltantes.' },
+      { q: 'Conjunto de <span class="highlight">abelhas</span>:', options: ['Cardume', 'Enxame', 'Alcateia', 'Bando'], correctAnswer: 'Enxame', explain: 'ENXAME = abelhas/insetos voadores.' },
+      { q: 'Conjunto de <span class="highlight">cães</span>:', options: ['Alcateia', 'Matilha', 'Vara', 'Manada'], correctAnswer: 'Matilha', explain: 'MATILHA = cães.' },
+      { q: 'Conjunto de <span class="highlight">elefantes</span>:', options: ['Vara', 'Manada', 'Bando', 'Alcateia'], correctAnswer: 'Manada', explain: 'MANADA = bois, elefantes, búfalos.' },
+      { q: 'Conjunto de <span class="highlight">aves</span> (músicos):', options: ['Bando', 'Cardume', 'Vara', 'Enxame'], correctAnswer: 'Bando', explain: 'BANDO = aves; também usado para grupo de pessoas.' },
+      { q: 'Conjunto de <span class="highlight">livros</span>:', options: ['Acervo', 'Biblioteca', 'Antologia', 'Pinacoteca'], correctAnswer: 'Biblioteca', explain: 'BIBLIOTECA = livros.' },
+      { q: 'Conjunto de <span class="highlight">textos selecionados</span>:', options: ['Antologia', 'Biblioteca', 'Acervo', 'Coleção'], correctAnswer: 'Antologia', explain: 'ANTOLOGIA = textos selecionados.' },
+      { q: 'Conjunto de <span class="highlight">navios</span>:', options: ['Esquadrilha', 'Frota', 'Caravana', 'Tropa'], correctAnswer: 'Frota', explain: 'FROTA = navios; também ESQUADRA.' },
+      { q: 'Conjunto de <span class="highlight">aviões</span>:', options: ['Frota', 'Esquadrilha', 'Caravana', 'Vara'], correctAnswer: 'Esquadrilha', explain: 'ESQUADRILHA = aviões.' },
+      { q: 'Conjunto de <span class="highlight">soldados</span>:', options: ['Tropa', 'Manada', 'Bando', 'Vara'], correctAnswer: 'Tropa', explain: 'TROPA = soldados / legião.' },
+      { q: 'Conjunto de <span class="highlight">ovelhas, cabras</span>:', options: ['Manada', 'Rebanho', 'Vara', 'Matilha'], correctAnswer: 'Rebanho', explain: 'REBANHO = ovelhas, cabras, gado.' },
+      { q: 'Conjunto de <span class="highlight">porcos</span>:', options: ['Vara', 'Manada', 'Matilha', 'Alcateia'], correctAnswer: 'Vara', explain: 'VARA = porcos.' },
+      { q: 'Conjunto de <span class="highlight">três pessoas ou coisas</span>:', options: ['Tríade', 'Trio', 'Tríplice', 'Trilogia'], correctAnswer: 'Tríade', explain: 'TRÍADE = grupo de três.' },
+      { q: 'Conjunto de <span class="highlight">folhas de papel</span>:', options: ['Maço', 'Resma', 'Pilha', 'Caixa'], correctAnswer: 'Resma', explain: 'RESMA = folhas de papel.' },
+      { q: 'Conjunto de <span class="highlight">flores</span>:', options: ['Buquê', 'Ramalhete', 'Jardim', 'Florista'], correctAnswer: 'Ramalhete', explain: 'RAMALHETE = flores; também buquê.' },
+      { q: 'Conjunto de <span class="highlight">ilhas</span>:', options: ['Arquipélago', 'Constelação', 'Acervo', 'Antologia'], correctAnswer: 'Arquipélago', explain: 'ARQUIPÉLAGO = ilhas.' },
+      { q: 'Conjunto de <span class="highlight">espectadores</span>:', options: ['Elenco', 'Plateia', 'Tropa', 'Bando'], correctAnswer: 'Plateia', explain: 'PLATEIA = espectadores/ouvintes.' },
+      { q: 'Conjunto de <span class="highlight">peças de roupa (acessórios)</span>:', options: ['Antologia', 'Enxoval', 'Acervo', 'Coleção'], correctAnswer: 'Enxoval', explain: 'ENXOVAL = roupas e acessórios.' },
+      { q: 'Conjunto de <span class="highlight">pessoas em multidão</span>:', options: ['Plateia', 'Multidão', 'Bando', 'Tropa'], correctAnswer: 'Multidão', explain: 'MULTIDÃO = grande grupo de pessoas.' },
+      { q: 'Conjunto de <span class="highlight">animais de uma região</span>:', options: ['Flora', 'Fauna', 'Manada', 'Bando'], correctAnswer: 'Fauna', explain: 'FAUNA = animais; FLORA = plantas.' },
+      { q: 'Conjunto de <span class="highlight">plantas de uma região</span>:', options: ['Fauna', 'Flora', 'Jardim', 'Floresta'], correctAnswer: 'Flora', explain: 'FLORA = plantas de uma região.' },
+      { q: 'Conjunto de <span class="highlight">tijolos</span>:', options: ['Pilha', 'Fornada', 'Maço', 'Carga'], correctAnswer: 'Fornada', explain: 'FORNADA = pães/tijolos saídos do forno.' }
+    ]
+  },
+  {
+    id: 'generos',
+    emoji: '📜',
+    title: 'A Conspiração dos Gêneros Textuais',
+    desc: 'Identifique o gênero do texto',
+    pool: [
+      { q: '"Ingredientes: 2 xícaras de frutas. Preparo: misture o iogurte..." Qual o gênero?', options: ['Notícia', 'Receita', 'Tutorial', 'Carta'], correctAnswer: 'Receita', explain: 'RECEITA — instrui sobre preparo de alimento.' },
+      { q: '"1. Tenha em mãos uma folha quadrada. 2. Dobre em quatro partes..." Qual o gênero?', options: ['Receita', 'Tutorial', 'Notícia', 'Manual'], correctAnswer: 'Tutorial', explain: 'TUTORIAL — passo a passo para fazer algo (não-alimento).' },
+      { q: '"Manaus, 25 de Abril de 2025. Querida amiga Clara..." Qual o gênero?', options: ['E-mail', 'Mensagem', 'Carta pessoal', 'Bilhete'], correctAnswer: 'Carta pessoal', explain: 'CARTA PESSOAL — local, data, vocativo formal.' },
+      { q: '"Ei, mija, td bem? Vc vai na fst sábado? Bjos!" Qual o gênero?', options: ['Carta', 'E-mail formal', 'Mensagem (WhatsApp)', 'Bilhete'], correctAnswer: 'Mensagem (WhatsApp)', explain: 'MENSAGEM — linguagem informal, abreviações.' },
+      { q: 'Texto que apresenta objetivos e resultados de pesquisa:', options: ['Notícia', 'Relatório', 'Conto', 'Tirinha'], correctAnswer: 'Relatório', explain: 'RELATÓRIO — expõe dados de pesquisa.' },
+      { q: 'Texto curto em quadrinhos, com humor ou crítica:', options: ['Notícia', 'Cartum/Tirinha', 'Verbete', 'Receita'], correctAnswer: 'Cartum/Tirinha', explain: 'CARTUM/TIRINHA — quadrinhos com humor/crítica.' },
+      { q: '"Vacine-se! A gripe é uma doença séria." Qual o gênero?', options: ['Notícia', 'Texto publicitário', 'Receita', 'Carta'], correctAnswer: 'Texto publicitário', explain: 'PUBLICITÁRIO — busca persuadir.' },
+      { q: '"Festival do Hambúrguer — só hoje!" Qual o gênero?', options: ['Notícia', 'Texto publicitário', 'Receita', 'Verbete'], correctAnswer: 'Texto publicitário', explain: 'PUBLICITÁRIO — campanha/anúncio.' },
+      { q: 'Texto de enciclopédia que define algo brevemente:', options: ['Notícia', 'Verbete', 'Conto', 'Tutorial'], correctAnswer: 'Verbete', explain: 'VERBETE — entrada de enciclopédia/dicionário.' },
+      { q: 'Texto que informa sobre um fato recente, com onde/quando/quem:', options: ['Conto', 'Notícia', 'Carta', 'Tirinha'], correctAnswer: 'Notícia', explain: 'NOTÍCIA — fatos atuais (jornalístico).' },
+      { q: 'Texto narrativo curto, ficcional, com poucos personagens:', options: ['Romance', 'Conto', 'Fábula', 'Notícia'], correctAnswer: 'Conto', explain: 'CONTO — narrativa curta, ficcional.' },
+      { q: 'Narrativa curta com animais e lição moral:', options: ['Conto', 'Fábula', 'Romance', 'Crônica'], correctAnswer: 'Fábula', explain: 'FÁBULA — animais como personagens, traz uma moral.' },
+      { q: 'Narrativa longa, em prosa, com história complexa:', options: ['Conto', 'Romance', 'Fábula', 'Notícia'], correctAnswer: 'Romance', explain: 'ROMANCE — narrativa longa com vários personagens.' },
+      { q: 'Texto que defende uma opinião sobre um tema:', options: ['Notícia', 'Artigo de opinião', 'Receita', 'Conto'], correctAnswer: 'Artigo de opinião', explain: 'ARTIGO DE OPINIÃO — argumentativo, defende ideia.' },
+      { q: 'Discussão oral entre pessoas com pontos de vista diferentes:', options: ['Resenha', 'Debate', 'Notícia', 'Tirinha'], correctAnswer: 'Debate', explain: 'DEBATE — gênero oral argumentativo.' },
+      { q: 'Texto que comenta/avalia uma obra (filme, livro, jogo):', options: ['Resenha', 'Notícia', 'Conto', 'Verbete'], correctAnswer: 'Resenha', explain: 'RESENHA — apresenta e avalia uma obra.' },
+      { q: 'Texto instrucional para usar um aparelho ou produto:', options: ['Receita', 'Manual de instrução', 'Notícia', 'Carta'], correctAnswer: 'Manual de instrução', explain: 'MANUAL — orienta uso de equipamento/produto.' },
+      { q: 'Texto curto com aviso ou recado deixado para alguém:', options: ['Bilhete', 'Carta', 'E-mail', 'Notícia'], correctAnswer: 'Bilhete', explain: 'BILHETE — recado curto e informal.' },
+      { q: 'Reportagem amplia uma notícia, com mais...', options: ['Detalhes e contextualização', 'Opinião pessoal', 'Receitas', 'Versos'], correctAnswer: 'Detalhes e contextualização', explain: 'REPORTAGEM = notícia ampliada com aprofundamento.' }
+    ]
+  },
+  {
+    id: 'tipologias',
+    emoji: '🎭',
+    title: 'O Enigma das Tipologias',
+    desc: 'Narrativa, descritiva, expositiva...',
+    pool: [
+      { q: '"A Jade é magra e bem baixinha. É muito inteligente, com unhas pintadas..." Tipologia?', options: ['Narrativa', 'Descritiva', 'Expositiva', 'Argumentativa'], correctAnswer: 'Descritiva', explain: 'DESCRITIVA — apresenta características.' },
+      { q: '"Era uma quinta-feira chuvosa. O Jaime entrou em casa molhado..." Tipologia?', options: ['Narrativa', 'Descritiva', 'Expositiva', 'Instrucional'], correctAnswer: 'Narrativa', explain: 'NARRATIVA — conta fatos com personagens, tempo, espaço.' },
+      { q: '"Mantenha as livreiras tampadas. Guarde as garrafas viradas..." Tipologia?', options: ['Narrativa', 'Descritiva', 'Instrucional', 'Argumentativa'], correctAnswer: 'Instrucional', explain: 'INSTRUCIONAL — verbos no imperativo, ensina/orienta.' },
+      { q: '"A vacinação é fundamental. Quem se vacina protege a si e aos outros." Tipologia?', options: ['Descritiva', 'Narrativa', 'Argumentativa', 'Expositiva'], correctAnswer: 'Argumentativa', explain: 'ARGUMENTATIVA — defende opinião, busca convencer.' },
+      { q: 'Texto que expõe informações sobre tema, sem opinião pessoal:', options: ['Narrativa', 'Expositiva', 'Argumentativa', 'Descritiva'], correctAnswer: 'Expositiva', explain: 'EXPOSITIVA — informa, apresenta dados.' },
+      { q: 'Quem é o personagem PRINCIPAL?', options: ['Aquele que aparece de passagem', 'Aquele que tem papel central', 'Quem conta a história', 'O lugar onde acontece'], correctAnswer: 'Aquele que tem papel central', explain: 'PRINCIPAL = papel central. Quem conta = NARRADOR.' },
+      { q: 'Quem é o NARRADOR?', options: ['Personagem principal', 'Quem conta a história', 'Onde acontece', 'O leitor'], correctAnswer: 'Quem conta a história', explain: 'NARRADOR = quem conta os fatos.' },
+      { q: 'O TEMPO e ESPAÇO em uma narrativa indicam:', options: ['Os personagens', 'Quando e onde acontece', 'A opinião do autor', 'O título'], correctAnswer: 'Quando e onde acontece', explain: 'TEMPO = quando; ESPAÇO = onde.' },
+      { q: '"Sigam as instruções a seguir: 1) abrir o app, 2) clicar em login..." Tipologia?', options: ['Argumentativa', 'Instrucional', 'Narrativa', 'Descritiva'], correctAnswer: 'Instrucional', explain: 'INSTRUCIONAL — passo a passo com imperativos.' },
+      { q: '"Eu acredito que o uso excessivo de celular prejudica os jovens..." Tipologia?', options: ['Expositiva', 'Argumentativa', 'Descritiva', 'Narrativa'], correctAnswer: 'Argumentativa', explain: 'ARGUMENTATIVA — defende opinião pessoal.' },
+      { q: '"O céu estava azul, o mar calmo, e areia branca cobria a praia." Tipologia?', options: ['Narrativa', 'Descritiva', 'Expositiva', 'Instrucional'], correctAnswer: 'Descritiva', explain: 'DESCRITIVA — características de um cenário.' },
+      { q: '"O Sol é a estrela central do nosso Sistema Solar..." Tipologia?', options: ['Narrativa', 'Argumentativa', 'Expositiva', 'Instrucional'], correctAnswer: 'Expositiva', explain: 'EXPOSITIVA — informa fatos sem opinião.' },
+      { q: '"Maria saiu de casa, andou três quarteirões e encontrou o amigo." Tipologia?', options: ['Narrativa', 'Descritiva', 'Expositiva', 'Argumentativa'], correctAnswer: 'Narrativa', explain: 'NARRATIVA — sequência de ações.' },
+      { q: 'Personagens secundários são aqueles que:', options: ['Têm papel central', 'Se relacionam com os principais com pequena participação', 'Contam a história', 'Não aparecem'], correctAnswer: 'Se relacionam com os principais com pequena participação', explain: 'SECUNDÁRIOS = participação pequena, ligados aos principais.' },
+      { q: 'Em "Era uma vez um reino distante...", isso é tipologia:', options: ['Descritiva', 'Narrativa', 'Argumentativa', 'Expositiva'], correctAnswer: 'Narrativa', explain: 'NARRATIVA — abertura clássica de história.' }
+    ]
+  },
+  {
+    id: 'objetiva',
+    emoji: '🔭',
+    title: 'Caso Final: Objetiva ou Subjetiva?',
+    desc: 'Descrição objetiva x subjetiva',
+    pool: [
+      { q: '"A imagem mostra uma praia com mar azul e uma rocha em forma de arco." É:', options: ['Objetiva', 'Subjetiva'], correctAnswer: 'Objetiva', explain: 'OBJETIVA — características perceptíveis pelos sentidos, sem opinião.' },
+      { q: '"A paisagem é bonita, relaxante e tranquila." É:', options: ['Objetiva', 'Subjetiva'], correctAnswer: 'Subjetiva', explain: 'SUBJETIVA — depende da opinião (bonita, relaxante).' },
+      { q: '"O céu rosa é a maior verdade do mundo." É:', options: ['Objetiva', 'Subjetiva'], correctAnswer: 'Subjetiva', explain: 'SUBJETIVA — opinião, juízo de valor.' },
+      { q: '"O homem tem cabelo preto e usa óculos." É:', options: ['Objetiva', 'Subjetiva'], correctAnswer: 'Objetiva', explain: 'OBJETIVA — descreve só o que se vê.' },
+      { q: '"Aquela paisagem é a mais agradável que já vi." É:', options: ['Objetiva', 'Subjetiva'], correctAnswer: 'Subjetiva', explain: 'SUBJETIVA — juízo de valor pessoal.' },
+      { q: '"A casa tem dois andares e três janelas." É:', options: ['Objetiva', 'Subjetiva'], correctAnswer: 'Objetiva', explain: 'OBJETIVA — fato concreto, contável.' },
+      { q: '"O bolo tem cobertura de chocolate e granulado colorido." É:', options: ['Objetiva', 'Subjetiva'], correctAnswer: 'Objetiva', explain: 'OBJETIVA — só descreve o que se vê.' },
+      { q: '"Esse bolo é o mais delicioso que já comi." É:', options: ['Objetiva', 'Subjetiva'], correctAnswer: 'Subjetiva', explain: 'SUBJETIVA — opinião pessoal sobre sabor.' },
+      { q: '"A árvore tem aproximadamente 5 metros de altura." É:', options: ['Objetiva', 'Subjetiva'], correctAnswer: 'Objetiva', explain: 'OBJETIVA — medida verificável.' },
+      { q: '"Esta é a árvore mais imponente do parque." É:', options: ['Objetiva', 'Subjetiva'], correctAnswer: 'Subjetiva', explain: 'SUBJETIVA — "imponente" é juízo subjetivo.' },
+      { q: '"Ele veste camisa branca e calça jeans." É:', options: ['Objetiva', 'Subjetiva'], correctAnswer: 'Objetiva', explain: 'OBJETIVA — fato visível.' },
+      { q: '"Ele se vestiu de forma elegante e charmosa." É:', options: ['Objetiva', 'Subjetiva'], correctAnswer: 'Subjetiva', explain: 'SUBJETIVA — elegante/charmoso é opinião.' },
+      { q: '"A sala mede 4 por 5 metros e tem piso de madeira." É:', options: ['Objetiva', 'Subjetiva'], correctAnswer: 'Objetiva', explain: 'OBJETIVA — dados verificáveis.' },
+      { q: '"A sala é aconchegante e cheia de boas energias." É:', options: ['Objetiva', 'Subjetiva'], correctAnswer: 'Subjetiva', explain: 'SUBJETIVA — sensações pessoais.' },
+      { q: '"O cachorro tem pelo marrom e olhos castanhos." É:', options: ['Objetiva', 'Subjetiva'], correctAnswer: 'Objetiva', explain: 'OBJETIVA — descrição física verificável.' },
+      { q: '"Aquele cachorro é o mais fofo do bairro." É:', options: ['Objetiva', 'Subjetiva'], correctAnswer: 'Subjetiva', explain: 'SUBJETIVA — "fofo" é opinião.' }
+    ]
+  }
+];
+
+let state = {
+  xp: 0,
+  correct: 0,
+  completedCases: [],
+  currentCase: null,
+  currentQ: 0,
+  caseCorrect: 0
+};
+
+const ranks = [
+  { min: 0, name: 'Aprendiz' },
+  { min: 100, name: 'Investigador' },
+  { min: 300, name: 'Detetive' },
+  { min: 600, name: 'Mestre' },
+  { min: 1000, name: 'Lenda' }
+];
+
+function getRank() {
+  return [...ranks].reverse().find(r => state.xp >= r.min).name;
+}
+
+function updateStats() {
+  document.getElementById('xp').textContent = state.xp;
+  document.getElementById('correct').textContent = state.correct;
+  document.getElementById('rank').textContent = getRank();
+}
+
+function renderHome() {
+  const app = document.getElementById('app');
+  const allDone = state.completedCases.length === CASES.length;
+  app.innerHTML = `
+    <h2 style="margin-bottom:10px">📁 Casos para resolver</h2>
+    <p style="color:#aaa;margin-bottom:20px">Escolha um caso para começar a investigação:</p>
+    <div class="cases">
+      ${CASES.map((c, i) => `
+        <div class="case-card ${state.completedCases.includes(c.id) ? 'completed' : ''}" onclick="startCase(${i})">
+          <div class="case-emoji">${c.emoji}</div>
+          <div class="case-title">${c.title}</div>
+          <div class="case-desc">${c.desc}</div>
+          ${state.completedCases.includes(c.id) ? '<div style="margin-top:8px;color:#4caf50">✓ Resolvido</div>' : ''}
+        </div>
+      `).join('')}
+    </div>
+    ${allDone ? `
+      <div class="end-screen" style="margin-top:30px">
+        <div class="trophy">🏆</div>
+        <h2>Parabéns, ${getRank()}!</h2>
+        <p>Você resolveu todos os 5 casos!</p>
+        <p>XP total: <strong>${state.xp}</strong> · Acertos: <strong>${state.correct}</strong></p>
+        <button class="next" onclick="resetAll()">🔄 Jogar novamente</button>
+      </div>
+    ` : ''}
+  `;
+  updateStats();
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function buildRound(caseObj) {
+  const picked = shuffle(caseObj.pool).slice(0, Math.min(QUESTIONS_PER_CASE, caseObj.pool.length));
+  return picked.map(q => {
+    const shuffledOptions = shuffle(q.options);
+    return {
+      q: q.q,
+      options: shuffledOptions,
+      correct: shuffledOptions.indexOf(q.correctAnswer),
+      explain: q.explain
+    };
+  });
+}
+
+function startCase(idx) {
+  state.currentCase = idx;
+  state.currentQ = 0;
+  state.caseCorrect = 0;
+  state.currentQuestions = buildRound(CASES[idx]);
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const c = CASES[state.currentCase];
+  const qs = state.currentQuestions;
+  const q = qs[state.currentQ];
+  const app = document.getElementById('app');
+  const progress = ((state.currentQ) / qs.length) * 100;
+
+  app.innerHTML = `
+    <div class="case-header">
+      <div class="case-header-emoji">${c.emoji}</div>
+      <div>
+        <div class="case-header-title">${c.title}</div>
+        <div style="font-size:0.85em;color:#aaa">Questão ${state.currentQ + 1} de ${qs.length}</div>
+      </div>
+    </div>
+    <div class="progress"><div class="progress-bar" style="width:${progress}%"></div></div>
+    <div class="question">${q.q}</div>
+    <div class="options" id="options">
+      ${q.options.map((o, i) => `<button class="option" onclick="answer(${i})">${o}</button>`).join('')}
+    </div>
+    <div id="feedback"></div>
+  `;
+}
+
+function answer(idx) {
+  const c = CASES[state.currentCase];
+  const q = state.currentQuestions[state.currentQ];
+  const buttons = document.querySelectorAll('#options .option');
+  buttons.forEach((b, i) => {
+    b.disabled = true;
+    if (i === q.correct) b.classList.add('correct');
+    else if (i === idx) b.classList.add('wrong');
+  });
+
+  const isCorrect = idx === q.correct;
+  if (isCorrect) {
+    state.xp += 20;
+    state.correct += 1;
+    state.caseCorrect += 1;
+  } else {
+    state.xp = Math.max(0, state.xp - 5);
+  }
+  updateStats();
+
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback ' + (isCorrect ? 'correct' : 'wrong');
+  fb.innerHTML = `
+    <strong>${isCorrect ? '✅ Correto! +20 XP' : '❌ Quase! -5 XP'}</strong><br>
+    ${q.explain}
+    <br><button class="next" onclick="nextQuestion()">${state.currentQ + 1 < state.currentQuestions.length ? 'Próxima ▶' : 'Finalizar caso 🏁'}</button>
+  `;
+}
+
+function nextQuestion() {
+  const c = CASES[state.currentCase];
+  state.currentQ += 1;
+  if (state.currentQ >= state.currentQuestions.length) {
+    if (!state.completedCases.includes(c.id)) state.completedCases.push(c.id);
+    const total = state.currentQuestions.length;
+    const score = state.caseCorrect;
+    const bonus = score === total ? 50 : 0;
+    state.xp += bonus;
+    const app = document.getElementById('app');
+    app.innerHTML = `
+      <div class="end-screen">
+        <div class="trophy">${score === total ? '🌟' : score >= total*0.7 ? '🎖️' : '📘'}</div>
+        <h2>Caso encerrado!</h2>
+        <p>Você acertou <strong>${score} de ${total}</strong></p>
+        ${bonus ? `<p>🎉 Bônus de 100% de acerto: +${bonus} XP!</p>` : ''}
+        <div class="badge">${getRank()}</div>
+        <br>
+        <button class="next" onclick="renderHome()">📁 Voltar aos casos</button>
+      </div>
+    `;
+    updateStats();
+  } else {
+    renderQuestion();
+  }
+}
+
+function resetAll() {
+  state = { xp: 0, correct: 0, completedCases: [], currentCase: null, currentQ: 0, caseCorrect: 0 };
+  renderHome();
+}
+
+renderHome();
+</script>
+</body>
+</html>
