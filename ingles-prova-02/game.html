@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>🗡️ English Quest: A Saga da Família</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+  body {
+    font-family: 'Trebuchet MS', sans-serif;
+    background: #1a1a2e;
+    background-image:
+      radial-gradient(circle at 20% 30%, #16213e 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, #0f3460 0%, transparent 50%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    color: #fff;
+    overflow-x: hidden;
+  }
+  .game {
+    background: linear-gradient(180deg, #2d1b69 0%, #11052c 100%);
+    border-radius: 20px;
+    box-shadow: 0 0 60px rgba(155, 89, 255, 0.4), inset 0 0 30px rgba(0,0,0,0.5);
+    width: 100%;
+    max-width: 820px;
+    overflow: hidden;
+    border: 3px solid #ffd700;
+    position: relative;
+  }
+  /* HUD */
+  .hud {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    background: rgba(0,0,0,0.5);
+    border-bottom: 2px solid #ffd700;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .hud-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: bold;
+    font-size: 18px;
+  }
+  .hearts { color: #ff4757; font-size: 22px; letter-spacing: 2px; }
+  .coins { color: #ffd700; }
+  .xp { color: #00d2ff; }
+  .level { color: #b388ff; }
+  .streak-fire { color: #ff6b35; }
+
+  /* XP bar */
+  .xp-bar {
+    height: 6px;
+    background: rgba(255,255,255,0.1);
+    width: 100%;
+  }
+  .xp-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+    transition: width 0.4s;
+  }
+
+  /* Screens */
+  .screen { padding: 24px; min-height: 480px; display: none; }
+  .screen.active { display: block; animation: fadeIn 0.4s; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+  /* Title screen */
+  .title-screen { text-align: center; padding: 40px 20px; }
+  .title-screen h1 {
+    font-size: 42px;
+    background: linear-gradient(90deg, #ffd700, #ff6b35, #ffd700);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+    margin-bottom: 8px;
+    animation: shimmer 3s infinite;
+  }
+  @keyframes shimmer { 50% { filter: brightness(1.3); } }
+  .title-screen .subtitle { color: #b388ff; font-size: 18px; margin-bottom: 24px; }
+  .title-screen .story {
+    background: rgba(0,0,0,0.4);
+    padding: 18px;
+    border-radius: 12px;
+    border-left: 4px solid #ffd700;
+    margin: 20px auto;
+    max-width: 560px;
+    text-align: left;
+    line-height: 1.6;
+    font-size: 15px;
+  }
+
+  /* Map */
+  .map { padding: 20px; }
+  .map h2 {
+    text-align: center;
+    color: #ffd700;
+    margin-bottom: 20px;
+    font-size: 26px;
+  }
+  .worlds {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 14px;
+  }
+  .world {
+    background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+    border: 2px solid #444;
+    border-radius: 14px;
+    padding: 16px 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s;
+    position: relative;
+  }
+  .world:not(.locked):hover {
+    transform: translateY(-4px) scale(1.03);
+    border-color: #ffd700;
+    box-shadow: 0 8px 20px rgba(255, 215, 0, 0.3);
+  }
+  .world.locked {
+    opacity: 0.4;
+    cursor: not-allowed;
+    filter: grayscale(0.7);
+  }
+  .world.completed { border-color: #4caf50; }
+  .world .icon { font-size: 48px; display: block; margin-bottom: 6px; }
+  .world .name { font-weight: bold; font-size: 14px; margin-bottom: 4px; }
+  .world .stars { color: #ffd700; font-size: 14px; min-height: 18px; }
+  .world .lock-icon {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: 18px;
+  }
+
+  /* Battle */
+  .battle { padding: 0; }
+  .battle-arena {
+    background: linear-gradient(180deg, #2c1810 0%, #4a1c40 100%);
+    padding: 22px 22px 14px;
+    text-align: center;
+    border-bottom: 2px solid #ffd700;
+    position: relative;
+    overflow: hidden;
+  }
+  .enemy {
+    font-size: 80px;
+    display: inline-block;
+    transition: transform 0.3s;
+    filter: drop-shadow(0 0 20px rgba(255, 100, 100, 0.5));
+  }
+  .enemy.hit { animation: shake 0.4s; }
+  .enemy.defeated { animation: defeat 0.8s forwards; }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px) rotate(-5deg); }
+    75% { transform: translateX(10px) rotate(5deg); }
+  }
+  @keyframes defeat {
+    100% { transform: scale(0) rotate(720deg); opacity: 0; }
+  }
+  .enemy-name {
+    font-size: 16px;
+    color: #ffd700;
+    margin-top: 4px;
+  }
+  .hp-bar {
+    background: rgba(0,0,0,0.5);
+    height: 16px;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 10px auto 4px;
+    max-width: 400px;
+    border: 1px solid #555;
+  }
+  .hp-fill {
+    background: linear-gradient(90deg, #ff4757, #ff6b35);
+    height: 100%;
+    transition: width 0.5s;
+    width: 100%;
+  }
+  .hp-text { font-size: 13px; color: #ccc; }
+
+  /* Question area */
+  .q-area { padding: 20px; }
+  .topic-tag {
+    display: inline-block;
+    background: #b388ff;
+    color: #000;
+    padding: 4px 14px;
+    border-radius: 14px;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 12px;
+  }
+  .question {
+    font-size: 20px;
+    line-height: 1.5;
+    margin-bottom: 18px;
+    background: rgba(0,0,0,0.3);
+    padding: 14px;
+    border-radius: 10px;
+    border-left: 4px solid #ffd700;
+  }
+  .options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .opt {
+    background: linear-gradient(135deg, #3a3a5c, #2a2a4c);
+    color: #fff;
+    border: 2px solid #555;
+    padding: 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    font-family: inherit;
+    transition: all 0.2s;
+    text-align: center;
+    position: relative;
+  }
+  .opt:hover:not(:disabled) {
+    border-color: #ffd700;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+  }
+  .opt.correct {
+    background: linear-gradient(135deg, #4caf50, #2e7d32);
+    border-color: #4caf50;
+    animation: correctPulse 0.5s;
+  }
+  .opt.wrong {
+    background: linear-gradient(135deg, #f44336, #c62828);
+    border-color: #f44336;
+    animation: wrongShake 0.4s;
+  }
+  .opt.hidden-fifty { opacity: 0.2; pointer-events: none; }
+  @keyframes correctPulse {
+    50% { transform: scale(1.05); box-shadow: 0 0 20px #4caf50; }
+  }
+  @keyframes wrongShake {
+    25% { transform: translateX(-8px); }
+    75% { transform: translateX(8px); }
+  }
+
+  /* Power-ups */
+  .powerups {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    padding: 8px 20px 16px;
+    flex-wrap: wrap;
+  }
+  .pwr {
+    background: rgba(0,0,0,0.4);
+    border: 2px solid #555;
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .pwr:hover:not(:disabled) {
+    border-color: #ffd700;
+    background: rgba(255, 215, 0, 0.15);
+  }
+  .pwr:disabled { opacity: 0.4; cursor: not-allowed; }
+  .pwr .cost { color: #ffd700; font-weight: bold; }
+
+  /* Damage / floating numbers */
+  .floater {
+    position: absolute;
+    font-size: 28px;
+    font-weight: bold;
+    pointer-events: none;
+    animation: floatUp 1.2s forwards;
+    z-index: 100;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+  }
+  @keyframes floatUp {
+    0% { opacity: 1; transform: translateY(0) scale(1); }
+    100% { opacity: 0; transform: translateY(-80px) scale(1.5); }
+  }
+
+  /* Buttons */
+  .btn {
+    background: linear-gradient(135deg, #ffd700, #ff6b35);
+    color: #000;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 25px;
+    font-size: 17px;
+    font-weight: bold;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+  }
+  .btn:hover { transform: scale(1.05); box-shadow: 0 6px 18px rgba(255, 215, 0, 0.6); }
+  .btn.secondary {
+    background: linear-gradient(135deg, #3a3a5c, #2a2a4c);
+    color: #fff;
+  }
+
+  /* Modal */
+  .modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+  }
+  .modal.show { display: flex; animation: fadeIn 0.3s; }
+  .modal-content {
+    background: linear-gradient(180deg, #2d1b69 0%, #11052c 100%);
+    border: 3px solid #ffd700;
+    border-radius: 20px;
+    padding: 30px;
+    text-align: center;
+    max-width: 500px;
+    width: 100%;
+    animation: bounceIn 0.5s;
+  }
+  @keyframes bounceIn {
+    0% { transform: scale(0.5); opacity: 0; }
+    60% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .modal h2 { color: #ffd700; font-size: 28px; margin-bottom: 12px; }
+  .modal .reward { font-size: 56px; margin: 10px 0; }
+  .modal .reward-list {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin: 16px 0;
+    flex-wrap: wrap;
+  }
+  .modal .reward-list div { font-size: 18px; }
+
+  /* Achievements toast */
+  .toast {
+    position: fixed;
+    top: 20px;
+    right: -400px;
+    background: linear-gradient(135deg, #ffd700, #ff6b35);
+    color: #000;
+    padding: 14px 20px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    font-weight: bold;
+    z-index: 2000;
+    transition: right 0.5s;
+    max-width: 300px;
+  }
+  .toast.show { right: 20px; }
+  .toast .ach-title { font-size: 16px; }
+  .toast .ach-desc { font-size: 13px; opacity: 0.85; margin-top: 2px; }
+
+  /* Confetti */
+  .confetti-piece {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    pointer-events: none;
+    z-index: 1500;
+    animation: confettiFall 3s linear forwards;
+  }
+  @keyframes confettiFall {
+    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+  }
+
+  /* Game Over */
+  .game-over { text-align: center; padding: 40px 20px; }
+  .game-over .skull { font-size: 80px; animation: float 2s infinite; }
+  @keyframes float { 50% { transform: translateY(-10px); } }
+
+  /* Final victory */
+  .victory { text-align: center; padding: 30px 20px; }
+  .victory .trophy { font-size: 100px; animation: trophy 2s infinite; }
+  @keyframes trophy {
+    50% { transform: scale(1.1) rotate(5deg); filter: drop-shadow(0 0 30px gold); }
+  }
+
+  @media (max-width: 500px) {
+    .options { grid-template-columns: 1fr; }
+    .title-screen h1 { font-size: 32px; }
+    .hud-item { font-size: 15px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast">
+  <div class="ach-title" id="toastTitle"></div>
+  <div class="ach-desc" id="toastDesc"></div>
+</div>
+
+<div class="game">
+  <div class="hud" id="hud" style="display:none">
+    <div class="hud-item hearts" id="hearts">❤️❤️❤️</div>
+    <div class="hud-item level">Lv <span id="lvl">1</span></div>
+    <div class="hud-item xp">⚡ <span id="xpVal">0</span></div>
+    <div class="hud-item coins">🪙 <span id="coins">0</span></div>
+    <div class="hud-item streak-fire">🔥 <span id="streak">0</span></div>
+  </div>
+  <div class="xp-bar" id="xpBar" style="display:none"><div class="xp-fill" id="xpFill" style="width:0%"></div></div>
+
+  <!-- Title Screen -->
+  <div class="screen active" id="titleScreen">
+    <div class="title-screen">
+      <h1>🗡️ English Quest</h1>
+      <div class="subtitle">A Saga da Família Encantada</div>
+      <div class="story">
+        <b>📖 A história:</b> Os monstros do <i>Reino Esquecido</i> roubaram as palavras em inglês da família real! Você é o(a) herói(na) escolhido(a) para enfrentar 5 mundos, derrotar os chefes e devolver as palavras ao reino.
+        <br><br>
+        ⚔️ <b>Como jogar:</b> Responda em inglês para atacar os monstros. Cada acerto causa dano. Erros tiram seu coração ❤️. Use moedas 🪙 para comprar poderes especiais!
+      </div>
+      <button class="btn" onclick="startGame()">⚔️ COMEÇAR AVENTURA</button>
+      <div style="margin-top:14px"><button class="btn secondary" onclick="resetGame()">🔄 Recomeçar do zero</button></div>
+    </div>
+  </div>
+
+  <!-- Map Screen -->
+  <div class="screen" id="mapScreen">
+    <div class="map">
+      <h2>🗺️ Mapa do Reino</h2>
+      <div class="worlds" id="worldsGrid"></div>
+      <div style="text-align:center; margin-top:24px">
+        <button class="btn secondary" onclick="openShop()">🛒 Loja de Poções</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Battle Screen -->
+  <div class="screen" id="battleScreen">
+    <div class="battle">
+      <div class="battle-arena" id="arena">
+        <div id="enemySpot">
+          <div class="enemy" id="enemy">👹</div>
+          <div class="enemy-name" id="enemyName">Goblin</div>
+        </div>
+        <div class="hp-bar"><div class="hp-fill" id="hpFill"></div></div>
+        <div class="hp-text" id="hpText">HP 100/100</div>
+      </div>
+      <div class="q-area">
+        <div class="topic-tag" id="topicTag"></div>
+        <div class="question" id="questionText"></div>
+        <div class="options" id="optionsBox"></div>
+      </div>
+      <div class="powerups">
+        <button class="pwr" id="pwr50" onclick="usePowerup('fifty')">✂️ 50/50 <span class="cost">(15🪙)</span></button>
+        <button class="pwr" id="pwrHint" onclick="usePowerup('hint')">💡 Dica <span class="cost">(10🪙)</span></button>
+        <button class="pwr" id="pwrHeart" onclick="usePowerup('heart')">❤️ Cura <span class="cost">(25🪙)</span></button>
+        <button class="pwr" id="pwrSkip" onclick="usePowerup('skip')">⏭️ Pular <span class="cost">(20🪙)</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Game Over -->
+  <div class="screen" id="gameOverScreen">
+    <div class="game-over">
+      <div class="skull">💀</div>
+      <h2 style="color:#ff4757; font-size:32px; margin-top:14px">Você foi derrotado!</h2>
+      <p style="margin:14px 0; color:#ccc">Mas todo herói tenta de novo. Suas moedas e progresso foram salvos.</p>
+      <button class="btn" onclick="goToMap()">🗺️ Voltar ao Mapa</button>
+    </div>
+  </div>
+
+  <!-- Final Victory -->
+  <div class="screen" id="finalScreen">
+    <div class="victory">
+      <div class="trophy">🏆</div>
+      <h2 style="color:#ffd700; font-size:36px; margin-top:14px">REINO SALVO!</h2>
+      <p style="margin:14px 0; color:#fff; font-size:18px">Você derrotou todos os mestres e dominou o inglês!</p>
+      <div id="finalStats" style="background:rgba(0,0,0,0.4); padding:18px; border-radius:12px; margin:18px auto; max-width:380px;"></div>
+      <button class="btn" onclick="goToMap()">🗺️ Continuar Explorando</button>
+    </div>
+  </div>
+</div>
+
+<!-- Reward Modal -->
+<div class="modal" id="rewardModal">
+  <div class="modal-content">
+    <div class="reward" id="rewardEmoji">🎉</div>
+    <h2 id="rewardTitle">Vitória!</h2>
+    <p id="rewardSubtitle" style="color:#b388ff; margin-bottom:8px"></p>
+    <div class="reward-list" id="rewardList"></div>
+    <p id="rewardStars" style="font-size:32px; color:#ffd700; margin:8px 0"></p>
+    <button class="btn" onclick="closeReward()">Continuar</button>
+  </div>
+</div>
+
+<!-- Shop Modal -->
+<div class="modal" id="shopModal">
+  <div class="modal-content" style="max-width:420px">
+    <h2>🛒 Loja de Poções</h2>
+    <p style="color:#b388ff; margin-bottom:14px">Compre poderes para usar nas batalhas!</p>
+    <div id="shopItems" style="text-align:left"></div>
+    <p style="margin-top:14px">Suas moedas: 🪙 <span id="shopCoins" style="color:#ffd700; font-weight:bold">0</span></p>
+    <button class="btn secondary" onclick="closeShop()" style="margin-top:14px">Fechar</button>
+  </div>
+</div>
+
+<!-- Hint Modal -->
+<div class="modal" id="hintModal">
+  <div class="modal-content" style="max-width:380px">
+    <div style="font-size:54px">💡</div>
+    <h2>Dica</h2>
+    <p id="hintText" style="margin:14px 0; font-size:16px; line-height:1.5"></p>
+    <button class="btn" onclick="closeHint()">Entendi!</button>
+  </div>
+</div>
+
+<script>
+// ============ AUDIO (Web Audio API — no external files) ============
+const Audio = (() => {
+  let ctx;
+  const ensure = () => { if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)(); return ctx; };
+  const tone = (freq, dur = 0.15, type = 'sine', vol = 0.15) => {
+    try {
+      const c = ensure();
+      const o = c.createOscillator();
+      const g = c.createGain();
+      o.type = type; o.frequency.value = freq;
+      g.gain.value = vol;
+      g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + dur);
+      o.connect(g); g.connect(c.destination);
+      o.start(); o.stop(c.currentTime + dur);
+    } catch (e) {}
+  };
+  return {
+    correct: () => { tone(523, 0.1); setTimeout(() => tone(784, 0.18), 100); },
+    wrong:   () => { tone(220, 0.15, 'sawtooth', 0.12); setTimeout(() => tone(165, 0.25, 'sawtooth', 0.12), 120); },
+    hit:     () => tone(150, 0.08, 'square', 0.18),
+    coin:    () => { tone(880, 0.06); setTimeout(() => tone(1175, 0.12), 60); },
+    levelUp: () => { [523, 659, 784, 1047].forEach((f, i) => setTimeout(() => tone(f, 0.18), i * 100)); },
+    victory: () => { [523, 659, 784, 1047, 1319].forEach((f, i) => setTimeout(() => tone(f, 0.25), i * 130)); },
+    defeat:  () => { [400, 300, 200, 150].forEach((f, i) => setTimeout(() => tone(f, 0.3, 'sawtooth', 0.15), i * 150)); },
+    click:   () => tone(660, 0.05, 'square', 0.08),
+    achievement: () => { [659, 784, 988, 1319].forEach((f, i) => setTimeout(() => tone(f, 0.2), i * 80)); },
+  };
+})();
+
+// ============ GAME DATA ============
+const WORLDS = [
+  {
+    id: 'family', name: 'Castelo da Família', icon: '🏰', color: '#ff6b9d',
+    boss: { name: 'Lord Patriarca', emoji: '👑', hp: 200 },
+    enemies: [
+      { name: 'Goblin Tio', emoji: '👹', hp: 80 },
+      { name: 'Slime Sobrinho', emoji: '🟢', hp: 90 },
+      { name: 'Esqueleto Cunhado', emoji: '💀', hp: 100 },
+    ],
+    questions: [
+      { q: "Tradução de <b>Nephew</b>?", opts: ["Sobrinho", "Primo", "Neto", "Cunhado"], a: 0, hint: "Vem de 'irmão' — é o filho do seu irmão." },
+      { q: "O feminino de <b>Uncle</b> é:", opts: ["Sister", "Aunt", "Niece", "Mother"], a: 1, hint: "Tia em inglês." },
+      { q: "Tradução de <b>Sister-in-law</b>:", opts: ["Madrasta", "Sogra", "Cunhada", "Sobrinha"], a: 2, hint: "Irmã 'pela lei' — esposa do seu irmão." },
+      { q: "Tradução de <b>Granddaughter</b>:", opts: ["Avó", "Filha", "Neta", "Sobrinha"], a: 2, hint: "Grand- = avô/avó relação. Daughter = filha." },
+      { q: "O masculino de <b>Niece</b> é:", opts: ["Nephew", "Cousin", "Grandson", "Brother"], a: 0, hint: "Niece é sobrinha. O par masculino..." },
+      { q: "<b>Mother + Father</b> em uma palavra é:", opts: ["Brothers", "Parents", "Children", "Cousins"], a: 1, hint: "São os 'pais' juntos." },
+      { q: "Qual é o feminino de <b>Husband</b>?", opts: ["Sister", "Daughter", "Wife", "Mother"], a: 2, hint: "Esposa em inglês." },
+      { q: "<b>Grandson</b> em português é:", opts: ["Avô", "Bisneto", "Neto", "Padrinho"], a: 2, hint: "Filho do filho." },
+    ]
+  },
+  {
+    id: 'professions', name: 'Vila dos Trabalhadores', icon: '👷', color: '#4ecdc4',
+    boss: { name: 'Capataz Sombrio', emoji: '🦹', hp: 220 },
+    enemies: [
+      { name: 'Robô Mecânico', emoji: '🤖', hp: 90 },
+      { name: 'Fantasma Doutor', emoji: '👻', hp: 100 },
+      { name: 'Bruxa Professora', emoji: '🧙', hp: 110 },
+    ],
+    questions: [
+      { q: "Quem trata pacientes em hospitais é um(a):", opts: ["Mechanic", "Doctor", "Teacher", "Engineer"], a: 1, hint: "Trabalha em hospitais." },
+      { q: "<b>Firefighter</b> em português é:", opts: ["Policial", "Bombeiro", "Mecânico", "Motorista"], a: 1, hint: "Apaga incêndios — fire = fogo." },
+      { q: "Quem cuida da casa, em inglês, é:", opts: ["Homemaker", "Housemaid", "Houseman", "Homeworker"], a: 0, hint: "Home + maker (faz o lar)." },
+      { q: "<b>Police officer</b> em português:", opts: ["Bombeiro", "Soldado", "Policial", "Guarda"], a: 2, hint: "Police = polícia." },
+      { q: "Quem dá aulas é:", opts: ["Teacher", "Doctor", "Lawyer", "Driver"], a: 0, hint: "To teach = ensinar." },
+      { q: "<b>Mechanic</b> conserta:", opts: ["Casas", "Computadores", "Carros", "Roupas"], a: 2, hint: "Trabalha em oficina." },
+      { q: "<b>Lawyer</b> em português:", opts: ["Médico", "Advogado", "Juiz", "Engenheiro"], a: 1, hint: "Trabalha com leis e tribunais." },
+      { q: "<b>Taxi driver</b> é:", opts: ["Mecânico de táxi", "Dono de táxi", "Motorista de táxi", "Passageiro"], a: 2, hint: "Drive = dirigir." },
+    ]
+  },
+  {
+    id: 'possessives', name: 'Floresta dos Possessivos', icon: '🌳', color: '#95e1d3',
+    boss: { name: "Dragão do Apóstrofo", emoji: '🐉', hp: 240 },
+    enemies: [
+      { name: 'Lobo Sombrio', emoji: '🐺', hp: 100 },
+      { name: 'Aranha Gigante', emoji: '🕷️', hp: 110 },
+      { name: 'Coruja Maldita', emoji: '🦉', hp: 120 },
+    ],
+    questions: [
+      { q: "This is Maria. ___ book is new.", opts: ["His", "Her", "Its", "Their"], a: 1, hint: "Maria é mulher → her." },
+      { q: "John and I love ___ school.", opts: ["our", "their", "your", "his"], a: 0, hint: "Eu + alguém = nós (we → our)." },
+      { q: "The dog is playing with ___ ball.", opts: ["his", "her", "its", "their"], a: 2, hint: "Animal/coisa → its." },
+      { q: "Peter and Mary are happy with ___ children.", opts: ["his", "her", "our", "their"], a: 3, hint: "Eles dois (they → their)." },
+      { q: "I love ___ family. (eu)", opts: ["my", "your", "his", "our"], a: 0, hint: "I → my." },
+      { q: "You are with ___ friend. (você)", opts: ["my", "your", "his", "their"], a: 1, hint: "You → your." },
+      { q: "Tom is reading ___ book.", opts: ["her", "its", "his", "their"], a: 2, hint: "Tom é homem → his." },
+      { q: "My brother is ___ uncle. (de Lucy e Sara)", opts: ["our", "your", "their", "his"], a: 2, hint: "Lucy + Sara = they → their." },
+    ]
+  },
+  {
+    id: 'genitive', name: 'Caverna do Apóstrofo', icon: '🗿', color: '#f38181',
+    boss: { name: 'Fênix do Genitivo', emoji: '🔥', hp: 260 },
+    enemies: [
+      { name: "Morcego S", emoji: '🦇', hp: 110 },
+      { name: 'Múmia Bibliotecária', emoji: '🧟', hp: 120 },
+      { name: 'Estátua Viva', emoji: '🗿', hp: 130 },
+    ],
+    questions: [
+      { q: "A bicicleta do Maurice. Como dizer?", opts: ["The Maurice bike", "Maurice's bike", "Bike of Maurice", "Maurice bike's"], a: 1, hint: "Nome + 's + objeto." },
+      { q: "A casa dos meus pais (parents):", opts: ["My parent's house", "My parents's house", "My parents' house", "My parents house"], a: 2, hint: "Plural já tem 's' → só apóstrofo no fim." },
+      { q: "O carro do João é:", opts: ["John car", "Johns car", "John's car", "Cars John"], a: 2, hint: "John + 's + car." },
+      { q: "Os filhos da Mary e do Tom:", opts: ["Mary and Tom children", "Mary and Tom's children", "Mary's and Tom's children", "The children of Mary and Tom"], a: 1, hint: "Posse compartilhada — só o último leva 's." },
+      { q: "Whose cat is this? It's ___.", opts: ["Lisa cat", "Lisas cat", "Lisa's", "Of Lisa"], a: 2, hint: "Lisa + 's (sem repetir cat)." },
+      { q: "A irmã da Camila:", opts: ["Camila sister", "Camila's sister", "Sister Camila", "Camilas sister"], a: 1, hint: "Camila + 's + sister." },
+      { q: "<b>The princess' clothes</b> está correto porque:", opts: ["Princess termina com s", "É plural", "É masculino", "É verbo"], a: 0, hint: "Substantivo terminado em -s leva só apóstrofo." },
+      { q: "A bola dos meninos (boys):", opts: ["Boys's ball", "Boys' ball", "Boy's ball", "The ball boys"], a: 1, hint: "Plural com 's' → só apóstrofo." },
+    ]
+  },
+  {
+    id: 'demonstratives', name: 'Templo Final', icon: '🏛️', color: '#aa96da',
+    boss: { name: 'Mago Supremo', emoji: '🧙‍♂️', hp: 300 },
+    enemies: [
+      { name: 'Golem de Pedra', emoji: '🗿', hp: 130 },
+      { name: 'Espírito Antigo', emoji: '👹', hp: 140 },
+      { name: 'Demônio Final', emoji: '😈', hp: 150 },
+    ],
+    questions: [
+      { q: "Apontando para um livro <b>perto</b>: \"___ is a book.\"", opts: ["This", "That", "These", "Those"], a: 0, hint: "Singular + perto = This." },
+      { q: "Pessoas <b>longe</b>: \"___ are my friends.\"", opts: ["This", "That", "These", "Those"], a: 3, hint: "Plural + longe = Those." },
+      { q: "\"___ is my brother, Peter.\" (perto, singular)", opts: ["This", "That", "These", "Those"], a: 0, hint: "Perto + singular." },
+      { q: "\"___ are my parents.\" (perto, plural)", opts: ["This", "That", "These", "Those"], a: 2, hint: "Perto + plural = These." },
+      { q: "\"Who is ___?\" (longe, singular)", opts: ["this", "that", "these", "those"], a: 1, hint: "Longe + singular = That." },
+      { q: "\"___ man over there is our teacher.\" (longe)", opts: ["This", "That", "These", "Those"], a: 1, hint: "Over there = lá longe + singular." },
+      { q: "\"___ boys are from our class.\" (longe, plural)", opts: ["This", "That", "These", "Those"], a: 3, hint: "Plural + longe = Those." },
+      { q: "Plural de <b>this</b> é:", opts: ["thats", "thoses", "these", "thises"], a: 2, hint: "this → these (perto/plural)." },
+    ]
+  }
+];
+
+const ACHIEVEMENTS = [
+  { id: 'firstBlood', name: 'Primeira Vitória', desc: 'Derrote seu primeiro inimigo', icon: '⚔️' },
+  { id: 'streak5', name: 'Em Chamas!', desc: 'Acerte 5 perguntas seguidas', icon: '🔥' },
+  { id: 'streak10', name: 'Imparável', desc: 'Acerte 10 perguntas seguidas', icon: '💥' },
+  { id: 'firstBoss', name: 'Caçador de Chefes', desc: 'Derrote seu primeiro chefe', icon: '👑' },
+  { id: 'rich', name: 'Tesouro!', desc: 'Acumule 100 moedas', icon: '💰' },
+  { id: 'allWorlds', name: 'Salvador do Reino', desc: 'Complete todos os mundos', icon: '🏆' },
+  { id: 'perfect', name: 'Perfeito!', desc: 'Vença um mundo sem perder vida', icon: '✨' },
+  { id: 'level5', name: 'Veterano', desc: 'Alcance o nível 5', icon: '⭐' },
+];
+
+// ============ GAME STATE ============
+const STORAGE_KEY = 'englishQuestSave_v1';
+let state = {
+  hp: 3, maxHp: 3, coins: 0, xp: 0, level: 1, streak: 0,
+  worldProgress: {}, // { worldId: { stars: 0, completed: false, perfect: false } }
+  achievements: [],
+  totalCorrect: 0, totalWrong: 0,
+  currentWorld: null, currentEnemyIdx: 0, enemyHp: 100, enemyMaxHp: 100,
+  currentQuestion: null, usedQuestions: [], lostHpThisWorld: false,
+  fiftyUsed: false,
+};
+
+function saveState() {
+  const persist = {
+    coins: state.coins, xp: state.xp, level: state.level,
+    worldProgress: state.worldProgress,
+    achievements: state.achievements,
+    totalCorrect: state.totalCorrect, totalWrong: state.totalWrong,
+  };
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(persist)); } catch (e) {}
+}
+function loadState() {
+  try {
+    const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    Object.assign(state, data);
+  } catch (e) {}
+}
+function resetGame() {
+  if (!confirm('Tem certeza? Você perderá todo o progresso!')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  location.reload();
+}
+
+// ============ UI HELPERS ============
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function updateHud() {
+  document.getElementById('hearts').textContent = '❤️'.repeat(state.hp) + '🖤'.repeat(Math.max(0, state.maxHp - state.hp));
+  document.getElementById('coins').textContent = state.coins;
+  document.getElementById('xpVal').textContent = state.xp;
+  document.getElementById('lvl').textContent = state.level;
+  document.getElementById('streak').textContent = state.streak;
+  const xpForNext = state.level * 100;
+  document.getElementById('xpFill').style.width = ((state.xp % xpForNext) / xpForNext * 100) + '%';
+  document.getElementById('hud').style.display = 'flex';
+  document.getElementById('xpBar').style.display = 'block';
+}
+function showToast(title, desc) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastTitle').textContent = title;
+  document.getElementById('toastDesc').textContent = desc;
+  t.classList.add('show');
+  Audio.achievement();
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+function unlockAch(id) {
+  if (state.achievements.includes(id)) return;
+  const ach = ACHIEVEMENTS.find(a => a.id === id);
+  if (!ach) return;
+  state.achievements.push(id);
+  showToast(`${ach.icon} ${ach.name}`, ach.desc);
+  saveState();
+}
+function floater(text, color, x, y) {
+  const f = document.createElement('div');
+  f.className = 'floater';
+  f.textContent = text;
+  f.style.color = color;
+  f.style.left = x + 'px';
+  f.style.top = y + 'px';
+  document.body.appendChild(f);
+  setTimeout(() => f.remove(), 1200);
+}
+function confetti() {
+  const colors = ['#ffd700', '#ff6b35', '#4caf50', '#00d2ff', '#ff4757', '#b388ff'];
+  for (let i = 0; i < 60; i++) {
+    const p = document.createElement('div');
+    p.className = 'confetti-piece';
+    p.style.left = Math.random() * 100 + 'vw';
+    p.style.top = '-20px';
+    p.style.background = colors[i % colors.length];
+    p.style.animationDelay = (Math.random() * 0.5) + 's';
+    p.style.transform = `rotate(${Math.random() * 360}deg)`;
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 3500);
+  }
+}
+
+// ============ FLOW ============
+function startGame() {
+  Audio.click();
+  goToMap();
+}
+function goToMap() {
+  state.hp = state.maxHp;
+  updateHud();
+  renderMap();
+  showScreen('mapScreen');
+}
+function renderMap() {
+  const grid = document.getElementById('worldsGrid');
+  grid.innerHTML = '';
+  WORLDS.forEach((w, i) => {
+    const prog = state.worldProgress[w.id] || { stars: 0, completed: false };
+    const prevDone = i === 0 || (state.worldProgress[WORLDS[i-1].id] || {}).completed;
+    const locked = !prevDone;
+    const div = document.createElement('div');
+    div.className = 'world' + (locked ? ' locked' : '') + (prog.completed ? ' completed' : '');
+    div.innerHTML = `
+      ${locked ? '<div class="lock-icon">🔒</div>' : ''}
+      <span class="icon">${w.icon}</span>
+      <div class="name">${w.name}</div>
+      <div class="stars">${prog.stars ? '⭐'.repeat(prog.stars) + '☆'.repeat(3-prog.stars) : ''}</div>
+    `;
+    if (!locked) div.onclick = () => enterWorld(w.id);
+    grid.appendChild(div);
+  });
+}
+
+function enterWorld(id) {
+  Audio.click();
+  state.currentWorld = WORLDS.find(w => w.id === id);
+  state.currentEnemyIdx = 0;
+  state.usedQuestions = [];
+  state.lostHpThisWorld = false;
+  state.hp = state.maxHp;
+  startBattle();
+}
+
+function startBattle() {
+  const w = state.currentWorld;
+  const isLast = state.currentEnemyIdx >= w.enemies.length;
+  const foe = isLast ? w.boss : w.enemies[state.currentEnemyIdx];
+  state.enemyMaxHp = foe.hp;
+  state.enemyHp = foe.hp;
+  state.fiftyUsed = false;
+
+  document.getElementById('enemy').textContent = foe.emoji;
+  document.getElementById('enemy').className = 'enemy' + (isLast ? ' boss' : '');
+  document.getElementById('enemyName').textContent = (isLast ? '👑 CHEFE: ' : '') + foe.name;
+  updateEnemyHp();
+  updateHud();
+  nextQuestion();
+  showScreen('battleScreen');
+}
+
+function updateEnemyHp() {
+  const pct = (state.enemyHp / state.enemyMaxHp) * 100;
+  document.getElementById('hpFill').style.width = pct + '%';
+  document.getElementById('hpText').textContent = `HP ${state.enemyHp}/${state.enemyMaxHp}`;
+}
+
+function nextQuestion() {
+  const pool = state.currentWorld.questions;
+  let available = pool.map((_, i) => i).filter(i => !state.usedQuestions.includes(i));
+  if (available.length === 0) { state.usedQuestions = []; available = pool.map((_, i) => i); }
+  const idx = available[Math.floor(Math.random() * available.length)];
+  state.usedQuestions.push(idx);
+  state.currentQuestion = pool[idx];
+  state.fiftyUsed = false;
+
+  document.getElementById('topicTag').textContent = state.currentWorld.name;
+  document.getElementById('questionText').innerHTML = state.currentQuestion.q;
+  const optsBox = document.getElementById('optionsBox');
+  optsBox.innerHTML = '';
+  state.currentQuestion.opts.forEach((o, i) => {
+    const b = document.createElement('button');
+    b.className = 'opt';
+    b.innerHTML = o;
+    b.onclick = () => answer(i, b);
+    optsBox.appendChild(b);
+  });
+}
+
+function answer(i, btn) {
+  const q = state.currentQuestion;
+  const buttons = document.querySelectorAll('.opt');
+  buttons.forEach(b => b.disabled = true);
+  const arena = document.getElementById('arena');
+  const rect = arena.getBoundingClientRect();
+
+  if (i === q.a) {
+    btn.classList.add('correct');
+    Audio.correct();
+    state.streak++;
+    state.totalCorrect++;
+
+    // damage based on streak + level
+    const dmg = 25 + state.streak * 3 + state.level * 2;
+    state.enemyHp = Math.max(0, state.enemyHp - dmg);
+    floater(`-${dmg}`, '#ff4757', rect.left + rect.width/2, rect.top + 60);
+    document.getElementById('enemy').classList.add('hit');
+    Audio.hit();
+    setTimeout(() => document.getElementById('enemy').classList.remove('hit'), 400);
+
+    // rewards
+    const coinGain = 3 + state.streak;
+    state.coins += coinGain;
+    state.xp += 15 + state.streak * 2;
+    floater(`+${coinGain}🪙`, '#ffd700', rect.left + rect.width/2 + 60, rect.top + 80);
+
+    // level up
+    const xpForNext = state.level * 100;
+    if (state.xp >= xpForNext) {
+      state.level++;
+      state.maxHp = Math.min(5, 3 + Math.floor(state.level / 3));
+      state.hp = state.maxHp;
+      Audio.levelUp();
+      showToast('⭐ LEVEL UP!', `Você é nível ${state.level}! HP máx: ${state.maxHp}`);
+      if (state.level >= 5) unlockAch('level5');
+    }
+
+    // streak achievements
+    if (state.streak === 5) unlockAch('streak5');
+    if (state.streak === 10) unlockAch('streak10');
+    if (state.coins >= 100) unlockAch('rich');
+
+    updateEnemyHp();
+    updateHud();
+    saveState();
+
+    setTimeout(() => {
+      if (state.enemyHp <= 0) defeatEnemy();
+      else nextQuestion();
+    }, 900);
+  } else {
+    btn.classList.add('wrong');
+    buttons[q.a].classList.add('correct');
+    Audio.wrong();
+    state.streak = 0;
+    state.totalWrong++;
+    state.lostHpThisWorld = true;
+    state.hp--;
+    floater('-1 ❤️', '#ff4757', rect.left + rect.width/2, rect.top + 100);
+    updateHud();
+    saveState();
+
+    setTimeout(() => {
+      if (state.hp <= 0) gameOver();
+      else nextQuestion();
+    }, 1500);
+  }
+}
+
+function defeatEnemy() {
+  const enemy = document.getElementById('enemy');
+  enemy.classList.add('defeated');
+  Audio.coin();
+  unlockAch('firstBlood');
+  setTimeout(() => {
+    state.currentEnemyIdx++;
+    if (state.currentEnemyIdx > state.currentWorld.enemies.length) {
+      // boss defeated → world complete
+      worldComplete();
+    } else if (state.currentEnemyIdx === state.currentWorld.enemies.length) {
+      // boss next
+      Audio.victory();
+      showRewardModal({
+        emoji: '⚠️', title: 'CHEFE APROXIMA!',
+        sub: `Prepare-se para enfrentar ${state.currentWorld.boss.name}!`,
+        rewards: [], stars: 0,
+        onClose: () => { startBattle(); }
+      });
+    } else {
+      const bonusCoin = 10;
+      state.coins += bonusCoin;
+      saveState();
+      showRewardModal({
+        emoji: '🎉', title: 'Inimigo derrotado!',
+        sub: 'Continue avançando.',
+        rewards: [`+${bonusCoin} 🪙`, `Sequência: 🔥${state.streak}`], stars: 0,
+        onClose: () => { startBattle(); }
+      });
+    }
+  }, 700);
+}
+
+function worldComplete() {
+  Audio.victory();
+  confetti();
+  unlockAch('firstBoss');
+  const id = state.currentWorld.id;
+  const stars = state.lostHpThisWorld ? (state.hp >= 1 ? 2 : 1) : 3;
+  const prevStars = (state.worldProgress[id] || {}).stars || 0;
+  state.worldProgress[id] = {
+    stars: Math.max(prevStars, stars),
+    completed: true,
+    perfect: !state.lostHpThisWorld || (state.worldProgress[id] || {}).perfect,
+  };
+  if (!state.lostHpThisWorld) unlockAch('perfect');
+  const bonus = 50 + stars * 25;
+  state.coins += bonus;
+  state.xp += 100;
+  saveState();
+
+  const allDone = WORLDS.every(w => (state.worldProgress[w.id] || {}).completed);
+  if (allDone) unlockAch('allWorlds');
+
+  showRewardModal({
+    emoji: '🏆', title: 'MUNDO CONQUISTADO!',
+    sub: state.currentWorld.name,
+    rewards: [`+${bonus} 🪙`, '+100 ⚡ XP'],
+    stars,
+    onClose: () => {
+      if (allDone && stars === 3 && state.currentWorld.id === WORLDS[WORLDS.length-1].id) {
+        showFinal();
+      } else {
+        goToMap();
+      }
+    }
+  });
+}
+
+function gameOver() {
+  Audio.defeat();
+  saveState();
+  showScreen('gameOverScreen');
+}
+
+function showFinal() {
+  document.getElementById('finalStats').innerHTML = `
+    <div style="margin:6px 0">⭐ Nível: <b>${state.level}</b></div>
+    <div style="margin:6px 0">🪙 Moedas: <b>${state.coins}</b></div>
+    <div style="margin:6px 0">✅ Acertos: <b>${state.totalCorrect}</b></div>
+    <div style="margin:6px 0">❌ Erros: <b>${state.totalWrong}</b></div>
+    <div style="margin:6px 0">🏆 Conquistas: <b>${state.achievements.length}/${ACHIEVEMENTS.length}</b></div>
+  `;
+  confetti();
+  showScreen('finalScreen');
+}
+
+// ============ POWER-UPS ============
+const POWERUP_COSTS = { fifty: 15, hint: 10, heart: 25, skip: 20 };
+
+function usePowerup(type) {
+  const cost = POWERUP_COSTS[type];
+  if (state.coins < cost) {
+    showToast('Moedas insuficientes!', `Você precisa de ${cost} 🪙`);
+    return;
+  }
+  if (type === 'fifty') {
+    if (state.fiftyUsed) { showToast('Já usado!', 'Use só uma vez por pergunta'); return; }
+    const buttons = [...document.querySelectorAll('.opt')];
+    const wrong = buttons.map((b, i) => i).filter(i => i !== state.currentQuestion.a && !buttons[i].classList.contains('hidden-fifty'));
+    wrong.sort(() => Math.random() - 0.5).slice(0, 2).forEach(i => buttons[i].classList.add('hidden-fifty'));
+    state.fiftyUsed = true;
+  } else if (type === 'hint') {
+    document.getElementById('hintText').textContent = state.currentQuestion.hint || 'Sem dica disponível.';
+    document.getElementById('hintModal').classList.add('show');
+  } else if (type === 'heart') {
+    if (state.hp >= state.maxHp) { showToast('HP cheio!', 'Você já está com HP máximo'); return; }
+    state.hp = Math.min(state.maxHp, state.hp + 1);
+  } else if (type === 'skip') {
+    nextQuestion();
+  }
+  state.coins -= cost;
+  Audio.coin();
+  updateHud();
+  saveState();
+}
+function closeHint() { document.getElementById('hintModal').classList.remove('show'); }
+
+// ============ MODALS ============
+function showRewardModal({ emoji, title, sub, rewards, stars, onClose }) {
+  document.getElementById('rewardEmoji').textContent = emoji;
+  document.getElementById('rewardTitle').textContent = title;
+  document.getElementById('rewardSubtitle').textContent = sub || '';
+  document.getElementById('rewardList').innerHTML = (rewards || []).map(r => `<div>${r}</div>`).join('');
+  document.getElementById('rewardStars').textContent = stars ? '⭐'.repeat(stars) + '☆'.repeat(3-stars) : '';
+  document.getElementById('rewardModal').classList.add('show');
+  document.getElementById('rewardModal')._onClose = onClose;
+}
+function closeReward() {
+  Audio.click();
+  const cb = document.getElementById('rewardModal')._onClose;
+  document.getElementById('rewardModal').classList.remove('show');
+  if (cb) cb();
+}
+
+// ============ SHOP ============
+const SHOP_ITEMS = [
+  { key: 'maxHp', name: '❤️ +1 HP máximo', desc: 'Aumenta seu HP máximo permanentemente', cost: 80, max: 5 },
+  { key: 'startCoins', name: '🪙 Bolsa de Moedas', desc: 'Ganhe 30 moedas extras agora', cost: 50, instant: true },
+  { key: 'xpBoost', name: '⚡ XP Boost', desc: 'Ganhe 200 XP imediatos', cost: 60, instant: true },
+];
+
+function openShop() {
+  Audio.click();
+  document.getElementById('shopCoins').textContent = state.coins;
+  const html = SHOP_ITEMS.map(item => {
+    const canBuy = state.coins >= item.cost && (!item.max || state.maxHp < item.max);
+    const reason = item.max && state.maxHp >= item.max ? '(Máx atingido)' : '';
+    return `
+      <div style="background:rgba(0,0,0,0.4); padding:12px; border-radius:10px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; gap:10px;">
+        <div style="text-align:left">
+          <div style="font-weight:bold">${item.name} ${reason}</div>
+          <div style="font-size:12px; color:#b388ff">${item.desc}</div>
+        </div>
+        <button class="btn ${canBuy ? '' : 'secondary'}" ${canBuy ? '' : 'disabled style="opacity:0.5; cursor:not-allowed"'} onclick="buyItem('${item.key}')">${item.cost}🪙</button>
+      </div>
+    `;
+  }).join('');
+  document.getElementById('shopItems').innerHTML = html;
+  document.getElementById('shopModal').classList.add('show');
+}
+function closeShop() { document.getElementById('shopModal').classList.remove('show'); }
+function buyItem(key) {
+  const item = SHOP_ITEMS.find(i => i.key === key);
+  if (state.coins < item.cost) return;
+  if (item.max && state.maxHp >= item.max) return;
+  state.coins -= item.cost;
+  if (key === 'maxHp') { state.maxHp++; state.hp = state.maxHp; }
+  if (key === 'startCoins') state.coins += 30;
+  if (key === 'xpBoost') state.xp += 200;
+  Audio.coin();
+  updateHud();
+  saveState();
+  openShop();
+}
+
+// ============ INIT ============
+loadState();
+updateHud();
+document.getElementById('hud').style.display = 'none';
+document.getElementById('xpBar').style.display = 'none';
+</script>
+</body>
+</html>
