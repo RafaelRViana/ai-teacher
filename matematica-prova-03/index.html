@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Matemática Quest - Geometria e Gráficos</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  :root {
+    --bg1: #0a1f3a;
+    --bg2: #1a3a5c;
+    --accent: #ffd93d;
+    --pink: #ff6b9d;
+    --green: #6bff8e;
+    --red: #ff5e5e;
+    --blue: #5ec8ff;
+    --purple: #a78bfa;
+    --orange: #ff9f43;
+  }
+  html, body {
+    height: 100%;
+    font-family: 'Comic Sans MS', 'Trebuchet MS', system-ui, sans-serif;
+    background: linear-gradient(135deg, var(--bg1), var(--bg2));
+    color: #fff;
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  #app { height: 100vh; width: 100vw; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+  .stars {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background-image:
+      radial-gradient(2px 2px at 20% 30%, #fff, transparent),
+      radial-gradient(1px 1px at 60% 70%, #fff, transparent),
+      radial-gradient(1.5px 1.5px at 80% 20%, #ffd93d, transparent),
+      radial-gradient(1px 1px at 40% 80%, #fff, transparent),
+      radial-gradient(2px 2px at 90% 60%, #5ec8ff, transparent),
+      radial-gradient(1px 1px at 10% 90%, #fff, transparent);
+    animation: twinkle 4s infinite alternate;
+  }
+  @keyframes twinkle { from {opacity:.4} to {opacity:1} }
+
+  header {
+    padding: 10px 14px;
+    display: flex; justify-content: space-between; align-items: center;
+    background: rgba(0,0,0,0.35); backdrop-filter: blur(8px);
+    border-bottom: 2px solid rgba(255,255,255,0.1);
+    z-index: 10; flex-wrap: wrap; gap: 8px;
+  }
+  .stat {
+    background: rgba(255,255,255,0.1);
+    padding: 6px 12px; border-radius: 999px;
+    font-weight: bold; font-size: 14px;
+    display: flex; align-items: center; gap: 6px;
+    border: 2px solid rgba(255,255,255,0.15);
+  }
+  .stat.xp { background: linear-gradient(135deg, #ffd93d, #ff9f43); color:#222; }
+  .stat.coin { background: linear-gradient(135deg, #ffeb70, #ffb627); color:#222; }
+  .stat.streak { background: linear-gradient(135deg, #ff6b9d, #ff3d77); }
+  .stat.heart { background: linear-gradient(135deg, #ff5e5e, #cc0000); }
+  .level-bar { flex: 1; min-width: 100px; height: 10px; background: rgba(0,0,0,0.4); border-radius: 999px; overflow: hidden; border: 2px solid rgba(255,255,255,0.15); }
+  .level-bar > div { height: 100%; background: linear-gradient(90deg, #6bff8e, #00ff88); transition: width .5s; box-shadow: 0 0 10px #6bff8e; }
+
+  main { flex: 1; overflow-y: auto; overflow-x: hidden; position: relative; z-index: 1; padding: 16px; }
+
+  .home { text-align: center; padding: 20px 10px; }
+  .title {
+    font-size: clamp(28px, 8vw, 48px);
+    font-weight: 900;
+    background: linear-gradient(90deg, #ffd93d, #5ec8ff, #a78bfa);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    text-shadow: 0 0 30px rgba(94,200,255,0.3);
+    margin-bottom: 8px; animation: bounce 2s infinite;
+  }
+  @keyframes bounce { 0%,100% {transform: translateY(0)} 50% {transform: translateY(-6px)} }
+  .subtitle { opacity: 0.9; margin-bottom: 20px; font-size: 16px; }
+
+  .levels {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px; max-width: 700px; margin: 0 auto;
+  }
+  .level-card {
+    background: linear-gradient(135deg, rgba(255,255,255,0.12), rgba(255,255,255,0.04));
+    border: 3px solid rgba(255,255,255,0.2);
+    border-radius: 20px; padding: 14px; cursor: pointer;
+    transition: transform .15s, box-shadow .15s, border-color .15s;
+    position: relative; overflow: hidden; min-height: 140px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center;
+  }
+  .level-card:active { transform: scale(0.96); }
+  .level-card.unlocked:hover { border-color: var(--accent); box-shadow: 0 0 20px rgba(255,217,61,.5); }
+  .level-card .emoji { font-size: 44px; margin-bottom: 6px; filter: drop-shadow(0 4px 8px rgba(0,0,0,.4)); }
+  .level-card h3 { font-size: 14px; margin-bottom: 4px; }
+  .level-card p { font-size: 11px; opacity: .8; }
+  .level-card.locked { opacity: 0.4; filter: grayscale(.8); cursor: not-allowed; }
+  .level-card .stars-earned { margin-top: 6px; font-size: 14px; letter-spacing: 2px; }
+  .level-card .best { font-size: 10px; opacity: .7; margin-top: 2px; }
+
+  .badges-row { display: flex; gap: 6px; justify-content: center; margin: 14px 0 6px; flex-wrap: wrap; }
+  .badge {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; opacity: 0.3;
+  }
+  .badge.earned {
+    background: linear-gradient(135deg, #ffd93d, #ff9f43);
+    border-color: #fff; opacity: 1;
+    box-shadow: 0 0 12px rgba(255,217,61,.7);
+    animation: pulseB 2s infinite;
+  }
+  @keyframes pulseB { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+
+  .game { max-width: 700px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+  .back-btn {
+    background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.2);
+    color: #fff; padding: 8px 14px; border-radius: 999px; cursor: pointer;
+    font-weight: bold; font-size: 14px; align-self: flex-start;
+  }
+  .question-box {
+    background: rgba(255,255,255,0.08); border: 3px solid rgba(255,255,255,0.2);
+    border-radius: 20px; padding: 20px; text-align: center;
+    min-height: 100px; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 10px;
+  }
+  .question-box .prompt { font-size: 14px; opacity: .8; }
+  .question-box .word { font-size: clamp(18px, 4.5vw, 26px); font-weight: 900; color: var(--accent); line-height: 1.3; }
+
+  .options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .options.col1 { grid-template-columns: 1fr; }
+  .opt {
+    background: linear-gradient(135deg, rgba(94,200,255,.3), rgba(94,200,255,.1));
+    border: 3px solid rgba(94,200,255,.5);
+    color: #fff; padding: 16px 10px; border-radius: 16px;
+    font-size: 16px; font-weight: bold; cursor: pointer;
+    transition: transform .1s, background .2s, border-color .2s; min-height: 56px;
+  }
+  .opt:active { transform: scale(0.95); }
+  .opt.correct { background: linear-gradient(135deg, #6bff8e, #00cc66); border-color: #fff; animation: shake .4s; }
+  .opt.wrong { background: linear-gradient(135deg, #ff5e5e, #cc0000); border-color: #fff; animation: shake .4s; }
+  .opt:disabled { cursor: not-allowed; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)} }
+
+  .progress { display: flex; gap: 4px; justify-content: center; }
+  .progress span { width: 18px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.2); }
+  .progress span.done { background: var(--green); }
+  .progress span.now { background: var(--accent); }
+  .progress span.fail { background: var(--red); }
+
+  .toast {
+    position: fixed; top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    background: rgba(0,0,0,.9); padding: 20px 30px; border-radius: 20px;
+    border: 3px solid var(--accent); z-index: 100;
+    font-size: 24px; font-weight: 900; text-align: center;
+    pointer-events: none; transition: transform .3s cubic-bezier(.34,1.56,.64,1);
+    min-width: 200px;
+  }
+  .toast.show { transform: translate(-50%, -50%) scale(1); }
+  .toast.good { border-color: var(--green); color: var(--green); }
+  .toast.bad { border-color: var(--red); color: var(--red); }
+
+  .confetti { position: fixed; pointer-events: none; width: 10px; height: 10px; z-index: 90; animation: fall 2s linear forwards; }
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity: 0; } }
+
+  .results {
+    text-align: center; padding: 20px;
+    background: rgba(255,255,255,.08); border-radius: 24px;
+    border: 3px solid var(--accent);
+  }
+  .results h2 { font-size: 28px; margin-bottom: 12px; }
+  .stars-big { font-size: 50px; letter-spacing: 8px; margin: 12px 0; }
+  .rewards { display: flex; gap: 20px; justify-content: center; margin: 16px 0; }
+  .reward { background: rgba(0,0,0,.3); padding: 10px 16px; border-radius: 14px; font-weight: bold; }
+  .btn {
+    background: linear-gradient(135deg, var(--accent), #ff9f43);
+    color: #222; border: none; padding: 14px 28px; border-radius: 999px;
+    font-weight: 900; font-size: 16px; cursor: pointer; margin: 6px;
+    box-shadow: 0 6px 0 rgba(0,0,0,.3);
+  }
+  .btn:active { transform: translateY(3px); box-shadow: 0 3px 0 rgba(0,0,0,.3); }
+
+  .mascot {
+    position: fixed; bottom: 10px; right: 10px; font-size: 50px;
+    z-index: 5; animation: float 3s infinite ease-in-out;
+    pointer-events: none; filter: drop-shadow(0 4px 8px rgba(0,0,0,.5));
+  }
+  @keyframes float { 0%,100%{transform:translateY(0) rotate(-5deg)} 50%{transform:translateY(-10px) rotate(5deg)} }
+  .speech {
+    background: #fff; color: #222; padding: 8px 12px; border-radius: 12px;
+    font-size: 13px; font-weight: bold; max-width: 200px; margin-bottom: 8px;
+  }
+
+  /* Plano cartesiano */
+  .cartesian-wrap {
+    background: rgba(255,255,255,.95); border-radius: 16px; padding: 8px;
+    display: flex; justify-content: center;
+  }
+  .cartesian-wrap svg { display: block; width: 100%; height: auto; max-width: 400px; }
+
+  /* SVG polygons */
+  .poly-wrap {
+    background: rgba(255,255,255,.95); border-radius: 16px;
+    padding: 10px; display: flex; justify-content: center;
+  }
+  .poly-wrap svg { width: 200px; height: 200px; }
+
+  /* Bar/line chart */
+  .chart-wrap {
+    background: rgba(255,255,255,.95); border-radius: 16px;
+    padding: 12px; color: #222;
+  }
+  .chart-wrap svg { width: 100%; height: 220px; display: block; }
+  .chart-wrap .legend { font-size: 13px; text-align: center; margin-top: 4px; font-weight: bold; }
+
+  /* Tabela */
+  .table-wrap { background: rgba(255,255,255,.95); color:#222; border-radius: 14px; padding: 12px; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { padding: 8px; border: 1px solid #888; text-align: center; }
+  th { background: #ff9f43; color: #fff; font-weight: bold; }
+
+  .hidden { display: none !important; }
+
+  /* Numeric keypad */
+  .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; max-width: 260px; margin: 0 auto; }
+  .key {
+    background: linear-gradient(135deg, var(--purple), var(--blue));
+    border: 3px solid rgba(255,255,255,.3); color: #fff;
+    padding: 16px; border-radius: 12px; font-size: 22px; font-weight: 900;
+    cursor: pointer;
+  }
+  .key:active { transform: scale(.92); }
+  .key.action { background: linear-gradient(135deg, var(--orange), #cc5500); }
+  .key.ok { background: linear-gradient(135deg, var(--green), #00cc66); }
+  .answer-display {
+    background: #fff; color: #222; padding: 14px; border-radius: 12px;
+    font-size: 28px; font-weight: 900; text-align: center;
+    margin-bottom: 12px; min-height: 60px;
+    letter-spacing: 2px;
+  }
+</style>
+</head>
+<body>
+<div class="stars"></div>
+<div id="app">
+  <header>
+    <div class="stat heart">❤️ <span id="hearts">5</span></div>
+    <div class="stat xp">⭐ Lv <span id="level">1</span></div>
+    <div class="level-bar"><div id="xpbar" style="width:0%"></div></div>
+    <div class="stat coin">🪙 <span id="coins">0</span></div>
+    <div class="stat streak">🔥 <span id="streak">0</span></div>
+  </header>
+  <main id="screen"></main>
+</div>
+<div class="toast" id="toast"></div>
+<div class="mascot" id="mascot">🦉</div>
+
+<script>
+// ========== DATA ==========
+const POLY_TYPES = [
+  {sides:3, name:'Triângulo'},
+  {sides:4, name:'Quadrilátero'},
+  {sides:5, name:'Pentágono'},
+  {sides:6, name:'Hexágono'},
+  {sides:7, name:'Heptágono'},
+  {sides:8, name:'Octógono'},
+  {sides:9, name:'Eneágono'},
+  {sides:10, name:'Decágono'},
+];
+
+const GEOMETRY_TF = [
+  {s:'Uma <b>reta</b> tem início, mas não tem fim.', a:false, exp:'A reta NÃO tem início nem fim, é infinita.'},
+  {s:'Um <b>segmento de reta</b> tem dois pontos como extremidades.', a:true, exp:'Sim! Tem início E fim.'},
+  {s:'Uma <b>semirreta</b> tem início, mas não tem fim.', a:true, exp:'Exato! Começa num ponto e segue infinitamente.'},
+  {s:'Pontos colineares estão na <b>mesma reta</b>.', a:true, exp:'Sim, "co-lineares" = mesma linha.'},
+  {s:'O ponto tem dimensão (largura e altura).', a:false, exp:'Ponto não tem dimensão — só localização.'},
+  {s:'Duas retas paralelas se cruzam em um ponto.', a:false, exp:'Retas paralelas NUNCA se cruzam.'},
+  {s:'A reta pode ser representada graficamente por uma linha reta com duas extremidades.', a:false, exp:'A linha que representa a reta tem setas (não tem extremidades).'},
+  {s:'O segmento PM está contido na reta r se P e M estão na reta r.', a:true, exp:'Correto.'},
+  {s:'Em "PM", as letras representam pontos extremos do segmento.', a:true, exp:'Sim, são as extremidades.'},
+  {s:'Um polígono convexo pode ter "buracos" para dentro.', a:false, exp:'Convexo = sem reentrâncias. Côncavo é que tem.'},
+];
+
+const POLYGON_QS = [
+  {sides:3, convex:true, name:'Triângulo'},
+  {sides:4, convex:true, name:'Quadrilátero'},
+  {sides:5, convex:true, name:'Pentágono'},
+  {sides:6, convex:true, name:'Hexágono'},
+  {sides:7, convex:true, name:'Heptágono'},
+  {sides:8, convex:true, name:'Octógono'},
+];
+
+const TABLE_DATA = {
+  vendas: {
+    header: ['Mês','Março','Abril','Maio','Junho','Julho'],
+    row: ['Valor (R$)', 2200, 2800, 3000, 2600, 2400],
+  },
+  tenis: {
+    header: ['Dia','Seg','Ter','Qua','Qui','Sex'],
+    row: ['Vendas', 40, 10, 30, 25, 25],
+  },
+};
+
+// ========== LEVELS ==========
+const LEVELS = [
+  {id:'ponto', emoji:'•', name:'Ponto, Reta, Segmento', desc:'Conceitos básicos', game:'tf'},
+  {id:'tipos', emoji:'📏', name:'Identifique', desc:'Reta, semirreta ou segmento', game:'identify'},
+  {id:'polygon', emoji:'⬡', name:'Polígonos', desc:'Nomear por nº de lados', game:'polygon'},
+  {id:'cartesian', emoji:'📍', name:'Plano Cartesiano', desc:'Coordenadas (x,y)', game:'cartesian'},
+  {id:'cartread', emoji:'🗺️', name:'Ler Coordenadas', desc:'Qual é o ponto?', game:'cartread'},
+  {id:'graficos', emoji:'📊', name:'Gráficos', desc:'Ler valores', game:'chart'},
+  {id:'tabelas', emoji:'📋', name:'Tabelas', desc:'Encontrar dados', game:'table'},
+  {id:'boss', emoji:'👑', name:'Boss Final', desc:'Tudo junto!', game:'boss'},
+];
+
+// ========== STATE ==========
+const State = {
+  xp: 0, level: 1, coins: 0, streak: 0, hearts: 5,
+  best: {},
+};
+
+function load() {
+  try {
+    const s = JSON.parse(localStorage.getItem('matematicaQuest') || '{}');
+    Object.assign(State, s);
+  } catch(e) {}
+  if (State.hearts < 1) State.hearts = 5;
+}
+function save() { localStorage.setItem('matematicaQuest', JSON.stringify(State)); }
+function xpNeeded(lv) { return lv * 50; }
+function addXp(n) {
+  State.xp += n;
+  while (State.xp >= xpNeeded(State.level)) {
+    State.xp -= xpNeeded(State.level);
+    State.level++;
+    toast('⬆️ LEVEL UP! Nível ' + State.level, 'good');
+    confettiBurst();
+  }
+}
+function addCoins(n) { State.coins += n; }
+
+function renderHeader() {
+  document.getElementById('hearts').textContent = State.hearts;
+  document.getElementById('level').textContent = State.level;
+  document.getElementById('coins').textContent = State.coins;
+  document.getElementById('streak').textContent = State.streak;
+  document.getElementById('xpbar').style.width = (State.xp / xpNeeded(State.level)) * 100 + '%';
+}
+function setMascot(emoji, msg) {
+  document.getElementById('mascot').innerHTML = (msg ? `<div class="speech">${msg}</div>` : '') + emoji;
+}
+let toastTimer = null;
+function toast(msg, type, dur) {
+  const t = document.getElementById('toast');
+  t.innerHTML = msg;
+  t.className = 'toast show ' + (type || '');
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), dur || 1200);
+}
+function confettiBurst() {
+  const colors = ['#ffd93d','#ff6b9d','#6bff8e','#5ec8ff','#a78bfa'];
+  for (let i=0; i<40; i++) {
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.left = Math.random()*100 + 'vw';
+    c.style.top = '-20px';
+    c.style.background = colors[Math.floor(Math.random()*colors.length)];
+    c.style.animationDuration = (1 + Math.random()*1.5) + 's';
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 2500);
+  }
+}
+
+// Sound
+let audioCtx;
+function beep(freq, dur=0.1, type='sine') {
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.type = type; o.frequency.value = freq;
+    g.gain.setValueAtTime(0.15, audioCtx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+    o.connect(g); g.connect(audioCtx.destination);
+    o.start(); o.stop(audioCtx.currentTime + dur);
+  } catch(e) {}
+}
+function sndGood() { beep(660, 0.1); setTimeout(()=>beep(880, 0.15), 80); }
+function sndBad() { beep(200, 0.2, 'sawtooth'); }
+function sndWin() { [523,659,784,1047].forEach((f,i)=>setTimeout(()=>beep(f, 0.15), i*100)); }
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i=a.length-1; i>0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+// ========== HOME ==========
+function renderHome() {
+  answering = false;
+  const badges = [
+    {id:'first', e:'🌟', cond: () => Object.keys(State.best).length >= 1},
+    {id:'three', e:'🏆', cond: () => Object.keys(State.best).length >= 3},
+    {id:'all', e:'👑', cond: () => Object.keys(State.best).length >= LEVELS.length},
+    {id:'perfect', e:'💎', cond: () => Object.values(State.best).some(b=>b.stars===3)},
+    {id:'streak10', e:'🔥', cond: () => State.streak >= 10},
+    {id:'lv5', e:'⚡', cond: () => State.level >= 5},
+    {id:'coin', e:'💰', cond: () => State.coins >= 100},
+  ];
+  const screen = document.getElementById('screen');
+  screen.innerHTML = `
+    <div class="home">
+      <div class="title">Matemática Quest</div>
+      <div class="subtitle">📐 Geometria, gráficos e tabelas! 📊</div>
+      <div class="badges-row">
+        ${badges.map(b => `<div class="badge ${b.cond()?'earned':''}">${b.e}</div>`).join('')}
+      </div>
+      <div class="levels">
+        ${LEVELS.map((lv, i) => {
+          const unlocked = i === 0 || State.best[LEVELS[i-1].id];
+          const best = State.best[lv.id];
+          const click = unlocked ? `onclick="startGame('${lv.id}')"` : '';
+          return `
+            <div class="level-card ${unlocked?'unlocked':'locked'}" data-id="${lv.id}" ${click}>
+              <div class="emoji">${lv.emoji}</div>
+              <h3>${lv.name}</h3>
+              <p>${lv.desc}</p>
+              ${best ? `<div class="stars-earned">${'⭐'.repeat(best.stars)}${'☆'.repeat(3-best.stars)}</div><div class="best">${best.score} pts</div>` : (unlocked?'<div class="best">Toque para jogar!</div>':'<div class="best">🔒 Bloqueado</div>')}
+            </div>`;
+        }).join('')}
+      </div>
+      <div style="margin-top:24px;">
+        <button class="btn" onclick="resetProgress()">🔄 Reiniciar Progresso</button>
+      </div>
+    </div>
+  `;
+  setMascot('🦉', 'Oi! Vamos resolver?');
+}
+
+function resetProgress() {
+  if (!confirm('Tem certeza? Vai perder todo o progresso!')) return;
+  localStorage.removeItem('matematicaQuest');
+  Object.assign(State, {xp:0, level:1, coins:0, streak:0, hearts:5, best:{}});
+  renderHeader(); renderHome();
+}
+
+// ========== GAME ENGINE ==========
+let currentGame = null;
+
+function startGame(id) {
+  try {
+    answering = false;
+    const lv = LEVELS.find(l => l.id === id);
+    if (!lv) { alert('Fase não encontrada: ' + id); return; }
+    currentGame = {
+      levelId: id, score: 0, correct: 0, total: 8,
+      qIndex: 0, type: lv.game, name: lv.name,
+      questions: buildQuestions(lv.game, 8),
+    };
+    if (!currentGame.questions || !currentGame.questions.length) {
+      alert('Não consegui gerar perguntas para: ' + lv.game);
+      return;
+    }
+    renderQuestion();
+  } catch(e) {
+    alert('Erro ao iniciar fase: ' + e.message);
+    console.error(e);
+  }
+}
+
+function buildQuestions(type, n) {
+  if (type === 'tf') {
+    return shuffle([...GEOMETRY_TF]).slice(0, n).map(it => ({type:'tf', ...it}));
+  }
+  if (type === 'identify') {
+    const concepts = [
+      {kind:'reta', name:'Reta', svg: drawLine},
+      {kind:'semirreta', name:'Semirreta', svg: drawRay},
+      {kind:'segmento', name:'Segmento de reta', svg: drawSegment},
+    ];
+    return Array.from({length:n}, () => {
+      const target = concepts[Math.floor(Math.random()*concepts.length)];
+      return {type:'identify', target, opts: shuffle(concepts.map(c=>c.name))};
+    });
+  }
+  if (type === 'polygon') {
+    return shuffle([...POLYGON_QS]).slice(0, n).map(p => {
+      const wrong = shuffle(POLY_TYPES.filter(t => t.sides !== p.sides)).slice(0,3).map(t=>t.name);
+      return {type:'polygon', p, opts: shuffle([p.name, ...wrong])};
+    });
+  }
+  if (type === 'cartesian') {
+    return Array.from({length:n}, () => {
+      const x = 1 + Math.floor(Math.random()*8);
+      const y = 1 + Math.floor(Math.random()*8);
+      return {type:'cartesian', x, y};
+    });
+  }
+  if (type === 'cartread') {
+    return Array.from({length:n}, () => {
+      const x = 1 + Math.floor(Math.random()*8);
+      const y = 1 + Math.floor(Math.random()*8);
+      const opts = new Set([`(${x},${y})`]);
+      while (opts.size < 4) {
+        const dx = 1 + Math.floor(Math.random()*8);
+        const dy = 1 + Math.floor(Math.random()*8);
+        opts.add(`(${dx},${dy})`);
+      }
+      return {type:'cartread', x, y, opts: shuffle([...opts])};
+    });
+  }
+  if (type === 'chart') {
+    return Array.from({length:n}, () => buildChartQ());
+  }
+  if (type === 'table') {
+    return Array.from({length:n}, () => buildTableQ());
+  }
+  if (type === 'boss') {
+    const types = ['tf','polygon','cartread','chart','table','identify','cartesian'];
+    const qs = [];
+    for (let i=0; i<n; i++) {
+      qs.push(...buildQuestions(types[i % types.length], 1));
+    }
+    return shuffle(qs).slice(0, n);
+  }
+  return [];
+}
+
+function buildChartQ() {
+  const datasets = [
+    {label:'Tênis vendidos na semana', cats:['Seg','Ter','Qua','Qui','Sex'], vals:[40,10,30,25,25]},
+    {label:'Clientes (avaliação)', cats:['Bom','Ruim'], vals:[400,80]},
+    {label:'Carros vendidos no mês', cats:['Jan','Fev','Mar','Abr'], vals:[12,18,9,21]},
+    {label:'Notas dos alunos', cats:['5','6','7','8','9','10'], vals:[2,4,8,12,6,3]},
+  ];
+  const d = datasets[Math.floor(Math.random()*datasets.length)];
+  const types = ['max','min','diff','sum','specific'];
+  const t = types[Math.floor(Math.random()*types.length)];
+  let q, correct;
+  if (t === 'max') {
+    const maxV = Math.max(...d.vals); const maxI = d.vals.indexOf(maxV);
+    q = `Qual o maior valor no gráfico "${d.label}"?`;
+    correct = String(maxV);
+  } else if (t === 'min') {
+    const minV = Math.min(...d.vals); const minI = d.vals.indexOf(minV);
+    q = `Qual o menor valor no gráfico "${d.label}"?`;
+    correct = String(minV);
+  } else if (t === 'diff') {
+    const mx = Math.max(...d.vals); const mn = Math.min(...d.vals);
+    q = `Qual a diferença entre o maior e o menor valor?`;
+    correct = String(mx - mn);
+  } else if (t === 'sum') {
+    q = `Qual a soma total dos valores?`;
+    correct = String(d.vals.reduce((a,b)=>a+b, 0));
+  } else {
+    const i = Math.floor(Math.random()*d.cats.length);
+    q = `Qual o valor de "${d.cats[i]}"?`;
+    correct = String(d.vals[i]);
+  }
+  const wrong = new Set();
+  while (wrong.size < 3) {
+    const v = parseInt(correct) + (Math.floor(Math.random()*20) - 10);
+    if (v !== parseInt(correct) && v >= 0) wrong.add(String(v));
+  }
+  return {type:'chart', data:d, q, correct, opts: shuffle([correct, ...wrong])};
+}
+
+function buildTableQ() {
+  const tables = [
+    {
+      header:['Mês','Março','Abril','Maio','Junho','Julho'],
+      row:['Valor (R$)', 2200, 2800, 3000, 2600, 2400],
+      label:'Recebimentos mensais',
+    },
+    {
+      header:['Dia','Seg','Ter','Qua','Qui','Sex'],
+      row:['Tênis', 40, 10, 30, 25, 25],
+      label:'Tênis vendidos',
+    },
+    {
+      header:['Aluno','Ana','Beto','Caio','Duda','Eva'],
+      row:['Nota', 8, 7, 10, 6, 9],
+      label:'Notas',
+    },
+  ];
+  const t = tables[Math.floor(Math.random()*tables.length)];
+  const vals = t.row.slice(1);
+  const cats = t.header.slice(1);
+  const types = ['specific','max','min','diff','sum'];
+  const kind = types[Math.floor(Math.random()*types.length)];
+  let q, correct;
+  if (kind === 'specific') {
+    const i = Math.floor(Math.random()*cats.length);
+    q = `Qual o valor em <b>${cats[i]}</b>?`;
+    correct = String(vals[i]);
+  } else if (kind === 'max') {
+    q = `Qual o maior valor da tabela?`;
+    correct = String(Math.max(...vals));
+  } else if (kind === 'min') {
+    q = `Qual o menor valor da tabela?`;
+    correct = String(Math.min(...vals));
+  } else if (kind === 'diff') {
+    q = `Qual a diferença entre o maior e o menor?`;
+    correct = String(Math.max(...vals) - Math.min(...vals));
+  } else {
+    q = `Qual a soma total dos valores?`;
+    correct = String(vals.reduce((a,b)=>a+b, 0));
+  }
+  const wrong = new Set();
+  while (wrong.size < 3) {
+    const offset = Math.floor(Math.random()*200) - 100;
+    const v = parseInt(correct) + offset;
+    if (v !== parseInt(correct) && v >= 0) wrong.add(String(v));
+  }
+  return {type:'table', table:t, q, correct, opts: shuffle([correct, ...wrong])};
+}
+
+function gameOver() {
+  sndBad();
+  Object.assign(State, {xp:0, level:1, coins:0, streak:0, hearts:5, best:{}});
+  try { localStorage.removeItem('matematicaQuest'); } catch(e) {}
+  renderHeader();
+  setMascot('💀', 'Acabaram os corações!');
+  document.getElementById('screen').innerHTML = `
+    <div class="game">
+      <div class="results" style="border-color:#ff5e5e;">
+        <div style="font-size:80px;margin-bottom:10px;">💀</div>
+        <h2 style="color:#ff5e5e;">GAME OVER</h2>
+        <div style="font-size:18px;margin:14px 0;">Você ficou sem corações!</div>
+        <div style="font-size:14px;opacity:.8;margin-bottom:14px;">Todo o progresso foi resetado.<br>Bora começar de novo? 💪</div>
+        <button class="btn" onclick="renderHome()">🏠 Voltar ao início</button>
+      </div>
+    </div>
+  `;
+}
+
+function renderQuestion() {
+  const g = currentGame;
+  if (State.hearts <= 0) return gameOver();
+  if (g.qIndex >= g.questions.length) return finishGame();
+  const q = g.questions[g.qIndex];
+  const screen = document.getElementById('screen');
+  screen.innerHTML = `
+    <div class="game">
+      <button class="back-btn" onclick="renderHome()">← Voltar</button>
+      <h2 style="text-align:center;">${g.name}</h2>
+      <div class="progress">
+        ${g.questions.map((_,i) => {
+          let cls = i < g.qIndex ? 'done' : (i === g.qIndex ? 'now' : '');
+          return `<span class="${cls}"></span>`;
+        }).join('')}
+      </div>
+      <div id="qbody"></div>
+    </div>
+  `;
+  const body = document.getElementById('qbody');
+  switch (q.type) {
+    case 'tf': return renderTF(body, q);
+    case 'identify': return renderIdentify(body, q);
+    case 'polygon': return renderPolygon(body, q);
+    case 'cartesian': return renderCartesian(body, q);
+    case 'cartread': return renderCartRead(body, q);
+    case 'chart': return renderChart(body, q);
+    case 'table': return renderTable(body, q);
+  }
+}
+
+let answering = false;
+function handleAnswer(correct, btn, allBtns, correctBtnIdx, expl) {
+  if (answering) return;
+  answering = true;
+  const g = currentGame;
+  if (correct) {
+    sndGood();
+    State.streak++;
+    g.correct++;
+    const pts = 10 + Math.floor(State.streak/3)*2;
+    g.score += pts;
+    addXp(pts); addCoins(2);
+    if (btn) btn.classList.add('correct');
+    toast('✅ +' + pts, 'good', 600);
+    setMascot('🦉', 'Boa!');
+  } else {
+    sndBad();
+    State.streak = 0;
+    State.hearts = Math.max(0, State.hearts - 1);
+    if (btn) btn.classList.add('wrong');
+    if (allBtns && correctBtnIdx != null) allBtns[correctBtnIdx]?.classList.add('correct');
+    toast('❌ Errado!' + (expl ? '<br><span style="font-size:14px;font-weight:normal;color:#fff;">'+expl+'</span>' : ''), 'bad');
+    setMascot('🦉', 'Tente focar!');
+  }
+  renderHeader();
+  try { save(); } catch(e) {}
+  if (allBtns) allBtns.forEach(b => { b.disabled = true; b.style.pointerEvents = 'none'; });
+  setTimeout(() => {
+    answering = false;
+    g.qIndex++;
+    try { renderQuestion(); } catch(e) { console.error(e); renderHome(); }
+  }, correct ? 700 : 2200);
+}
+
+// ----- TF -----
+function renderTF(body, q) {
+  body.innerHTML = `
+    <div class="question-box">
+      <div class="prompt">Verdadeiro ou Falso?</div>
+      <div style="font-size:18px;line-height:1.5;">${q.s}</div>
+    </div>
+    <div class="options">
+      <button class="opt" data-a="true" style="background:linear-gradient(135deg,#6bff8e,#00cc66);border-color:#fff;">✅ Verdadeiro</button>
+      <button class="opt" data-a="false" style="background:linear-gradient(135deg,#ff5e5e,#cc0000);border-color:#fff;">❌ Falso</button>
+    </div>
+  `;
+  const btns = [...body.querySelectorAll('.opt')];
+  btns.forEach(b => {
+    b.onclick = () => handleAnswer(b.dataset.a === 'true' === q.a, b, btns, null, q.exp);
+  });
+}
+
+// ----- SVG helpers -----
+function drawLine() {
+  return `<svg viewBox="0 0 200 80" style="background:#fff;border-radius:8px;">
+    <line x1="10" y1="40" x2="190" y2="40" stroke="#222" stroke-width="3"/>
+    <polygon points="0,40 10,35 10,45" fill="#222"/>
+    <polygon points="200,40 190,35 190,45" fill="#222"/>
+    <text x="100" y="65" text-anchor="middle" font-size="14" fill="#222" font-family="serif" font-style="italic">r</text>
+  </svg>`;
+}
+function drawRay() {
+  return `<svg viewBox="0 0 200 80" style="background:#fff;border-radius:8px;">
+    <line x1="40" y1="40" x2="190" y2="40" stroke="#222" stroke-width="3"/>
+    <circle cx="40" cy="40" r="5" fill="#222"/>
+    <polygon points="200,40 190,35 190,45" fill="#222"/>
+    <text x="36" y="30" text-anchor="end" font-size="14" fill="#222">A</text>
+  </svg>`;
+}
+function drawSegment() {
+  return `<svg viewBox="0 0 200 80" style="background:#fff;border-radius:8px;">
+    <line x1="40" y1="40" x2="160" y2="40" stroke="#222" stroke-width="3"/>
+    <circle cx="40" cy="40" r="5" fill="#222"/>
+    <circle cx="160" cy="40" r="5" fill="#222"/>
+    <text x="36" y="30" text-anchor="end" font-size="14" fill="#222">A</text>
+    <text x="164" y="30" font-size="14" fill="#222">B</text>
+  </svg>`;
+}
+
+function renderIdentify(body, q) {
+  body.innerHTML = `
+    <div class="question-box">
+      <div class="prompt">O que é isto?</div>
+      <div style="width:100%;max-width:300px;">${q.target.svg()}</div>
+    </div>
+    <div class="options col1">
+      ${q.opts.map(o => `<button class="opt">${o}</button>`).join('')}
+    </div>
+  `;
+  const btns = [...body.querySelectorAll('.opt')];
+  btns.forEach(b => {
+    b.onclick = () => {
+      const ok = b.textContent === q.target.name;
+      const ci = q.opts.indexOf(q.target.name);
+      handleAnswer(ok, b, btns, ci);
+    };
+  });
+}
+
+// ----- Polygon -----
+function polygonSVG(sides) {
+  const cx = 100, cy = 100, r = 70;
+  const pts = [];
+  for (let i=0; i<sides; i++) {
+    const angle = -Math.PI/2 + (2*Math.PI*i)/sides;
+    pts.push(`${cx + r*Math.cos(angle)},${cy + r*Math.sin(angle)}`);
+  }
+  return `<svg viewBox="0 0 200 200"><polygon points="${pts.join(' ')}" fill="#5ec8ff" stroke="#222" stroke-width="3"/></svg>`;
+}
+
+function renderPolygon(body, q) {
+  body.innerHTML = `
+    <div class="question-box">
+      <div class="prompt">Qual o nome deste polígono?</div>
+      <div class="poly-wrap">${polygonSVG(q.p.sides)}</div>
+      <div style="font-size:13px;opacity:.7;">${q.p.sides} lados</div>
+    </div>
+    <div class="options">
+      ${q.opts.map(o => `<button class="opt">${o}</button>`).join('')}
+    </div>
+  `;
+  const btns = [...body.querySelectorAll('.opt')];
+  btns.forEach(b => {
+    b.onclick = () => {
+      const ok = b.textContent === q.p.name;
+      const ci = q.opts.indexOf(q.p.name);
+      handleAnswer(ok, b, btns, ci);
+    };
+  });
+}
+
+// ----- Cartesian: click point -----
+function cartesianSVG(highlight) {
+  const size = 360, pad = 30, gridMax = 10;
+  const step = (size - pad*2) / gridMax;
+  let svg = `<svg viewBox="0 0 ${size} ${size+10}">`;
+  // grid
+  for (let i=0; i<=gridMax; i++) {
+    const v = pad + i*step;
+    svg += `<line x1="${pad}" y1="${v}" x2="${size-pad}" y2="${v}" stroke="#ddd" stroke-width="1"/>`;
+    svg += `<line x1="${v}" y1="${pad}" x2="${v}" y2="${size-pad}" stroke="#ddd" stroke-width="1"/>`;
+  }
+  // axes
+  svg += `<line x1="${pad}" y1="${size-pad}" x2="${size-pad+5}" y2="${size-pad}" stroke="#222" stroke-width="2"/>`;
+  svg += `<line x1="${pad}" y1="${size-pad}" x2="${pad}" y2="${pad-5}" stroke="#222" stroke-width="2"/>`;
+  svg += `<polygon points="${size-pad+5},${size-pad} ${size-pad-3},${size-pad-5} ${size-pad-3},${size-pad+5}" fill="#222"/>`;
+  svg += `<polygon points="${pad},${pad-5} ${pad-5},${pad+3} ${pad+5},${pad+3}" fill="#222"/>`;
+  svg += `<text x="${size-pad+5}" y="${size-pad+22}" font-size="12" fill="#222">x</text>`;
+  svg += `<text x="${pad-15}" y="${pad-5}" font-size="12" fill="#222">y</text>`;
+  // labels
+  for (let i=0; i<=gridMax; i++) {
+    const v = pad + i*step;
+    if (i>0) {
+      svg += `<text x="${v}" y="${size-pad+15}" font-size="11" fill="#222" text-anchor="middle">${i}</text>`;
+      svg += `<text x="${pad-8}" y="${size-pad-i*step+4}" font-size="11" fill="#222" text-anchor="end">${i}</text>`;
+    }
+  }
+  svg += `<text x="${pad-10}" y="${size-pad+15}" font-size="11" fill="#222" text-anchor="end">0</text>`;
+  if (highlight) {
+    const px = pad + highlight.x * step;
+    const py = size - pad - highlight.y * step;
+    svg += `<line x1="${pad}" y1="${py}" x2="${px}" y2="${py}" stroke="#ff6b9d" stroke-width="2" stroke-dasharray="4 4"/>`;
+    svg += `<line x1="${px}" y1="${size-pad}" x2="${px}" y2="${py}" stroke="#ff6b9d" stroke-width="2" stroke-dasharray="4 4"/>`;
+    svg += `<circle cx="${px}" cy="${py}" r="7" fill="#ff6b9d" stroke="#fff" stroke-width="2"/>`;
+  }
+  svg += '</svg>';
+  return {svg, pad, step, size};
+}
+
+function renderCartesian(body, q) {
+  const grid = cartesianSVG(null);
+  body.innerHTML = `
+    <div class="question-box">
+      <div class="prompt">Toque no ponto:</div>
+      <div class="word">(${q.x}, ${q.y})</div>
+    </div>
+    <div class="cartesian-wrap" id="cwrap">${grid.svg}</div>
+  `;
+  const wrap = document.getElementById('cwrap');
+  const svg = wrap.querySelector('svg');
+  svg.style.cursor = 'crosshair';
+  svg.addEventListener('click', (e) => {
+    const rect = svg.getBoundingClientRect();
+    const scale = grid.size / rect.width;
+    const cx = (e.clientX - rect.left) * scale;
+    const cy = (e.clientY - rect.top) * scale;
+    const gx = Math.round((cx - grid.pad) / grid.step);
+    const gy = Math.round((grid.size - grid.pad - cy) / grid.step);
+    const ok = gx === q.x && gy === q.y;
+    // mark click
+    const px = grid.pad + gx * grid.step;
+    const py = grid.size - grid.pad - gy * grid.step;
+    const dot = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    dot.setAttribute('cx', px); dot.setAttribute('cy', py); dot.setAttribute('r', 7);
+    dot.setAttribute('fill', ok ? '#6bff8e' : '#ff5e5e');
+    dot.setAttribute('stroke', '#fff'); dot.setAttribute('stroke-width', '2');
+    svg.appendChild(dot);
+    // show correct if wrong
+    if (!ok) {
+      const ax = grid.pad + q.x * grid.step;
+      const ay = grid.size - grid.pad - q.y * grid.step;
+      const cdot = document.createElementNS('http://www.w3.org/2000/svg','circle');
+      cdot.setAttribute('cx', ax); cdot.setAttribute('cy', ay); cdot.setAttribute('r', 9);
+      cdot.setAttribute('fill', 'none'); cdot.setAttribute('stroke', '#6bff8e');
+      cdot.setAttribute('stroke-width', '3');
+      svg.appendChild(cdot);
+    }
+    svg.style.pointerEvents = 'none';
+    handleAnswer(ok, null, []);
+  }, {once:true});
+}
+
+function renderCartRead(body, q) {
+  const grid = cartesianSVG({x:q.x, y:q.y});
+  body.innerHTML = `
+    <div class="question-box">
+      <div class="prompt">Quais são as coordenadas do ponto rosa?</div>
+      <div class="cartesian-wrap">${grid.svg}</div>
+    </div>
+    <div class="options">
+      ${q.opts.map(o => `<button class="opt">${o}</button>`).join('')}
+    </div>
+  `;
+  const correct = `(${q.x},${q.y})`;
+  const btns = [...body.querySelectorAll('.opt')];
+  btns.forEach(b => {
+    b.onclick = () => {
+      const ok = b.textContent === correct;
+      const ci = q.opts.indexOf(correct);
+      handleAnswer(ok, b, btns, ci);
+    };
+  });
+}
+
+// ----- Chart -----
+function barChartSVG(data) {
+  const w = 360, h = 200, pad = 30;
+  const max = Math.max(...data.vals);
+  const bw = (w - pad*2) / data.vals.length;
+  let svg = `<svg viewBox="0 0 ${w} ${h+30}">`;
+  svg += `<line x1="${pad}" y1="${h-pad}" x2="${w-5}" y2="${h-pad}" stroke="#222" stroke-width="2"/>`;
+  svg += `<line x1="${pad}" y1="10" x2="${pad}" y2="${h-pad}" stroke="#222" stroke-width="2"/>`;
+  data.vals.forEach((v, i) => {
+    const x = pad + i*bw + bw*0.15;
+    const bh = (v/max) * (h - pad - 20);
+    const y = h - pad - bh;
+    svg += `<rect x="${x}" y="${y}" width="${bw*0.7}" height="${bh}" fill="#5ec8ff" stroke="#222"/>`;
+    svg += `<text x="${x + bw*0.35}" y="${y-3}" text-anchor="middle" font-size="11" fill="#222" font-weight="bold">${v}</text>`;
+    svg += `<text x="${x + bw*0.35}" y="${h-pad+15}" text-anchor="middle" font-size="11" fill="#222">${data.cats[i]}</text>`;
+  });
+  svg += '</svg>';
+  return svg;
+}
+
+function renderChart(body, q) {
+  body.innerHTML = `
+    <div class="question-box">
+      <div class="prompt">📊 ${q.data.label}</div>
+      <div class="chart-wrap" style="width:100%;">${barChartSVG(q.data)}</div>
+      <div style="font-size:16px;font-weight:bold;margin-top:6px;">${q.q}</div>
+    </div>
+    <div class="options">
+      ${q.opts.map(o => `<button class="opt">${o}</button>`).join('')}
+    </div>
+  `;
+  const btns = [...body.querySelectorAll('.opt')];
+  btns.forEach(b => {
+    b.onclick = () => {
+      const ok = b.textContent === q.correct;
+      const ci = q.opts.indexOf(q.correct);
+      handleAnswer(ok, b, btns, ci);
+    };
+  });
+}
+
+// ----- Table -----
+function renderTable(body, q) {
+  const t = q.table;
+  const isMoney = t.row[0].includes('R$') || t.row[0].includes('Valor');
+  const fmt = v => isMoney ? 'R$ ' + Number(v).toLocaleString('pt-BR', {minimumFractionDigits:2}) : v;
+  body.innerHTML = `
+    <div class="question-box">
+      <div class="prompt">📋 ${t.label}</div>
+      <div class="table-wrap" style="width:100%;">
+        <table>
+          <tr>${t.header.map(h=>`<th>${h}</th>`).join('')}</tr>
+          <tr>${t.row.map((v,i)=>`<td>${i===0?v:fmt(v)}</td>`).join('')}</tr>
+        </table>
+      </div>
+      <div style="font-size:16px;font-weight:bold;margin-top:6px;">${q.q}</div>
+    </div>
+    <div class="options">
+      ${q.opts.map(o => `<button class="opt">${isMoney ? 'R$ '+Number(o).toLocaleString('pt-BR',{minimumFractionDigits:2}) : o}</button>`).join('')}
+    </div>
+  `;
+  const btns = [...body.querySelectorAll('.opt')];
+  btns.forEach((b, i) => {
+    b.onclick = () => {
+      const ok = q.opts[i] === q.correct;
+      const ci = q.opts.indexOf(q.correct);
+      handleAnswer(ok, b, btns, ci);
+    };
+  });
+}
+
+// ========== FINISH ==========
+function finishGame() {
+  const g = currentGame;
+  const pct = g.correct / g.total;
+  const stars = pct >= 0.9 ? 3 : pct >= 0.6 ? 2 : pct >= 0.3 ? 1 : 0;
+  const bonus = stars * 20;
+  g.score += bonus;
+  addCoins(stars * 10);
+  addXp(bonus);
+  const prev = State.best[g.levelId];
+  if (!prev || stars > prev.stars || (stars === prev.stars && g.score > prev.score)) {
+    State.best[g.levelId] = {stars, score: g.score};
+  }
+  save(); renderHeader();
+  if (stars === 3) confettiBurst();
+  if (stars >= 1) sndWin();
+  document.getElementById('screen').innerHTML = `
+    <div class="game">
+      <div class="results">
+        <h2>${stars >= 2 ? '🎉 Mandou bem!' : (stars === 1 ? '😅 Quase lá!' : '😢 Tente de novo')}</h2>
+        <div class="stars-big">${'⭐'.repeat(stars)}${'☆'.repeat(3-stars)}</div>
+        <div>${g.correct} / ${g.total} corretas</div>
+        <div class="rewards">
+          <div class="reward">🪙 +${stars * 10}</div>
+          <div class="reward">⭐ +${g.score} XP</div>
+        </div>
+        <button class="btn" onclick="startGame('${g.levelId}')">🔁 Jogar de novo</button>
+        <button class="btn" onclick="renderHome()" style="background:linear-gradient(135deg,#a78bfa,#5ec8ff);color:#fff;">🏠 Menu</button>
+      </div>
+    </div>
+  `;
+  setMascot('🦉', stars >= 2 ? 'Excelente!' : 'Estuda mais!');
+}
+
+// INIT
+load(); renderHeader(); renderHome();
+document.addEventListener('touchstart', () => { if(!audioCtx){try{audioCtx=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}}}, {once:true});
+document.addEventListener('click', () => { if(!audioCtx){try{audioCtx=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}}}, {once:true});
+</script>
+</body>
+</html>
