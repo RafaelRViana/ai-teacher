@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Aventura Mágica da Luna 🦄</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Luna Mágica">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --pink:#ff6b9d;--purple:#a78bfa;--lavender:#c4b5fd;
+  --gold:#fbbf24;--rose:#fb7185;--teal:#2dd4bf;
+  --green:#4ade80;--blue:#60a5fa;--red:#f87171;--orange:#fb923c;
+}
+body{
+  font-family:'Nunito',sans-serif;
+  background:linear-gradient(180deg,#fdf2f8,#fce7f3,#fbcfe8);
+  min-height:100vh;color:#333;overflow-x:hidden;
+  -webkit-tap-highlight-color:transparent;
+  user-select:none;-webkit-user-select:none;
+}
+
+/* ========== SCREENS ========== */
+.screen{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:20px;animation:fadeIn 0.5s ease}
+.screen.active{display:flex}
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* ========== INTRO ========== */
+#intro{background:linear-gradient(180deg,#fdf4ff,#f5d0fe,#e879f9,#a21caf);text-align:center}
+.luna-logo{font-size:110px;animation:float 2.5s ease-in-out infinite;filter:drop-shadow(0 8px 20px rgba(168,85,247,0.4))}
+@keyframes float{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-18px) rotate(5deg)}}
+#intro h1{font-family:'Fredoka One',cursive;font-size:2.4em;color:#fff;margin:10px 0;text-shadow:2px 3px 0 rgba(126,34,206,0.4)}
+#intro .tagline{font-family:'Fredoka One',cursive;font-size:1em;color:#f5d0fe;margin-bottom:6px;letter-spacing:1px}
+#intro p{color:#fae8ff;font-size:1.1em;max-width:400px;line-height:1.6;margin-bottom:24px}
+.btn-play{
+  font-family:'Fredoka One',cursive;font-size:1.4em;padding:16px 50px;
+  background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#fff;
+  border:none;border-radius:50px;cursor:pointer;
+  box-shadow:0 6px 24px rgba(245,158,11,0.5);transition:all 0.3s;
+  letter-spacing:1px;
+}
+.btn-play:hover{transform:scale(1.08)}
+.btn-play:active{transform:scale(0.95)}
+.stars-deco{font-size:28px;letter-spacing:6px;margin-bottom:8px;animation:twinkle 1.5s infinite alternate}
+@keyframes twinkle{from{opacity:0.6;transform:scale(0.95)}to{opacity:1;transform:scale(1.05)}}
+
+/* ========== MAP ========== */
+#map{background:linear-gradient(180deg,#fdf4ff,#f3e8ff,#ddd6fe);text-align:center;gap:20px}
+#map h2{font-family:'Fredoka One',cursive;font-size:1.8em;color:#7c3aed}
+#map .map-sub{color:#8b5cf6;font-size:0.95em;margin-top:-12px;margin-bottom:4px}
+.map-container{
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+  max-width:420px;width:100%;position:relative;
+}
+.map-path{width:4px;height:40px;background:rgba(139,92,246,0.2);border-radius:4px}
+.map-path.done{background:linear-gradient(180deg,var(--purple),var(--pink))}
+.phase-card{
+  width:100%;padding:20px;border-radius:24px;
+  display:flex;align-items:center;gap:16px;
+  transition:all 0.3s;cursor:pointer;position:relative;
+}
+.phase-card.locked{background:rgba(255,255,255,0.3);opacity:0.6;cursor:not-allowed}
+.phase-card.available{background:rgba(255,255,255,0.9);box-shadow:0 6px 24px rgba(139,92,246,0.2);animation:pulsePurple 2s infinite}
+.phase-card.completed{background:rgba(255,255,255,0.9);box-shadow:0 4px 20px rgba(139,92,246,0.15)}
+@keyframes pulsePurple{0%,100%{box-shadow:0 6px 24px rgba(139,92,246,0.2)}50%{box-shadow:0 6px 36px rgba(139,92,246,0.4)}}
+.phase-icon{font-size:50px}
+.phase-info{text-align:left;flex:1}
+.phase-info h3{font-family:'Fredoka One',cursive;font-size:1.1em;color:#4c1d95}
+.phase-info p{font-size:0.85em;color:#7c3aed;margin-top:2px}
+.phase-stars{font-size:22px;letter-spacing:3px}
+.phase-lock{font-size:28px}
+
+/* ========== GAME ========== */
+#game{padding:15px}
+.game-header{
+  display:flex;justify-content:space-between;align-items:center;
+  width:100%;max-width:600px;padding:10px 16px;
+  background:rgba(255,255,255,0.85);border-radius:16px;
+  margin-bottom:12px;flex-wrap:wrap;gap:8px;
+  box-shadow:0 2px 12px rgba(139,92,246,0.12);
+}
+.game-header .phase-title{font-family:'Fredoka One',cursive;font-size:1em;color:#7c3aed}
+.game-header .progress{font-family:'Fredoka One',cursive;font-size:0.9em;color:#666}
+.game-header .score{font-family:'Fredoka One',cursive;font-size:0.9em;color:var(--gold)}
+
+.progress-bar{width:100%;max-width:600px;height:14px;background:rgba(255,255,255,0.5);border-radius:10px;overflow:hidden;margin-bottom:14px}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--purple),var(--pink));border-radius:10px;transition:width 0.5s ease}
+
+.game-scene{
+  width:100%;max-width:600px;min-height:170px;
+  border-radius:24px;padding:20px;margin-bottom:14px;
+  display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+}
+.scene-garden{background:linear-gradient(180deg,#fdf2f8,#fce7f3,#fbcfe8)}
+.scene-forest{background:linear-gradient(180deg,#f5f3ff,#ede9fe,#ddd6fe)}
+.scene-castle{background:linear-gradient(180deg,#fffbeb,#fef3c7,#fde68a)}
+
+.scene-luna{font-size:64px;transition:all 0.5s ease;position:relative;z-index:2;filter:drop-shadow(0 4px 12px rgba(168,85,247,0.3))}
+.scene-luna.happy{animation:jump 0.5s ease}
+.scene-luna.sad{animation:shake 0.5s ease}
+@keyframes jump{0%{transform:translateY(0)}30%{transform:translateY(-28px) rotate(12deg)}60%{transform:translateY(-12px)}100%{transform:translateY(0)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-10px) rotate(-5deg)}75%{transform:translateX(10px) rotate(5deg)}}
+
+.scene-items{position:absolute;inset:0;pointer-events:none;font-size:28px;overflow:hidden}
+.scene-item{position:absolute;animation:floatItem 3s ease-in-out infinite}
+@keyframes floatItem{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-8px) rotate(5deg)}}
+
+.question-card{
+  width:100%;max-width:600px;background:rgba(255,255,255,0.95);
+  border-radius:24px;padding:24px;text-align:center;
+  box-shadow:0 4px 24px rgba(139,92,246,0.12);
+}
+.question-type{
+  display:inline-block;font-family:'Fredoka One',cursive;font-size:0.75em;
+  color:#7c3aed;background:#f5f3ff;border-radius:20px;
+  padding:4px 14px;margin-bottom:12px;letter-spacing:0.5px;
+}
+.question-text{
+  font-size:1.15em;font-weight:700;color:#1e1b4b;
+  line-height:1.6;margin-bottom:18px;
+}
+.question-highlight{
+  display:inline-block;font-family:'Fredoka One',cursive;
+  font-size:1.6em;color:#7c3aed;margin:8px 0;
+  background:linear-gradient(135deg,#f5f3ff,#ede9fe);
+  padding:8px 24px;border-radius:16px;
+  border:2px solid #ddd6fe;
+}
+.options-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.options-grid.single-col{grid-template-columns:1fr}
+.opt-btn{
+  font-family:'Nunito',sans-serif;font-size:1.05em;font-weight:700;
+  padding:14px 16px;background:#fff;color:#333;
+  border:3px solid #e9d5ff;border-radius:18px;cursor:pointer;
+  transition:all 0.25s;text-align:center;line-height:1.3;
+}
+.opt-btn:hover:not(:disabled){border-color:var(--purple);background:#f5f3ff;transform:scale(1.03)}
+.opt-btn.correct{background:#f0fdf4;border-color:#4ade80;color:#15803d;animation:correctPop 0.4s ease}
+.opt-btn.wrong{background:#fff1f2;border-color:var(--red);color:#be123c;animation:shake 0.4s ease}
+.opt-btn:disabled{cursor:default;opacity:0.9}
+@keyframes correctPop{0%{transform:scale(1)}50%{transform:scale(1.07)}100%{transform:scale(1)}}
+
+.feedback-box{
+  margin-top:14px;padding:14px 18px;border-radius:16px;
+  font-size:1em;font-weight:700;line-height:1.5;display:none;
+  text-align:left;
+}
+.feedback-box.show{display:block;animation:fadeIn 0.3s ease}
+.feedback-box.correct{background:#f0fdf4;border:2px solid #4ade80;color:#166534}
+.feedback-box.wrong{background:#fff7ed;border:2px solid var(--orange);color:#9a3412}
+
+.btn-next{
+  display:none;margin:16px auto 0;font-family:'Fredoka One',cursive;
+  font-size:1.05em;padding:12px 36px;
+  background:linear-gradient(135deg,var(--purple),#7c3aed);color:#fff;
+  border:none;border-radius:26px;cursor:pointer;transition:all 0.3s;
+  box-shadow:0 4px 16px rgba(124,58,237,0.3);
+}
+.btn-next.show{display:block;animation:fadeIn 0.3s ease}
+.btn-next:hover{transform:scale(1.06)}
+
+/* ========== PHASE COMPLETE ========== */
+#phase-complete{background:linear-gradient(180deg,#fdf4ff,#f3e8ff,#a855f7);text-align:center;gap:16px}
+#phase-complete .big-icon{font-size:90px;animation:float 1.5s ease-in-out infinite}
+#phase-complete h2{font-family:'Fredoka One',cursive;font-size:1.8em;color:#fff;text-shadow:2px 2px 0 rgba(126,34,206,0.3)}
+#phase-complete .stars-earned{font-size:52px;letter-spacing:8px;margin:8px 0}
+#phase-complete .score-text{font-size:1.15em;color:#fdf4ff;font-weight:700}
+.btn-continue{
+  font-family:'Fredoka One',cursive;font-size:1.2em;padding:14px 44px;
+  background:linear-gradient(135deg,var(--gold),#f59e0b);color:#fff;
+  border:none;border-radius:50px;cursor:pointer;transition:all 0.3s;
+  box-shadow:0 6px 20px rgba(245,158,11,0.4);letter-spacing:0.5px;
+}
+.btn-continue:hover{transform:scale(1.08)}
+
+/* ========== FINAL ========== */
+#final{background:linear-gradient(180deg,#fdf4ff,#e879f9,#a21caf,#6d28d9);text-align:center;gap:16px}
+#final .trophy{font-size:100px;animation:float 1.5s ease-in-out infinite}
+#final h2{font-family:'Fredoka One',cursive;font-size:2.2em;color:#fff;text-shadow:2px 2px 0 rgba(0,0,0,0.2)}
+#final .total-stars{font-size:48px;letter-spacing:8px;margin:8px 0}
+#final .final-msg{font-size:1.1em;color:#fdf4ff;max-width:400px;line-height:1.6;font-weight:700;text-shadow:1px 1px 0 rgba(0,0,0,0.15)}
+.btn-replay{
+  font-family:'Fredoka One',cursive;font-size:1.2em;padding:14px 44px;
+  background:linear-gradient(135deg,var(--gold),#f59e0b);color:#fff;
+  border:none;border-radius:50px;cursor:pointer;transition:all 0.3s;
+  box-shadow:0 6px 20px rgba(245,158,11,0.35);
+}
+.btn-replay:hover{transform:scale(1.08)}
+
+/* ========== CONFETTI ========== */
+.confetti-container{position:fixed;inset:0;pointer-events:none;z-index:999;overflow:hidden}
+.confetti{position:absolute;width:10px;height:10px;top:-10px;animation:confettiFall linear forwards}
+@keyframes confettiFall{
+  0%{transform:translateY(0) rotate(0deg);opacity:1}
+  100%{transform:translateY(100vh) rotate(720deg);opacity:0}
+}
+
+/* ========== RESPONSIVE ========== */
+@media(max-width:500px){
+  .luna-logo{font-size:80px}
+  #intro h1{font-size:1.8em}
+  .question-text{font-size:1em}
+  .question-highlight{font-size:1.3em}
+  .options-grid{grid-template-columns:1fr}
+  .phase-card{padding:14px}
+  .phase-icon{font-size:40px}
+  .game-scene{min-height:140px}
+}
+</style>
+</head>
+<body>
+
+<!-- INTRO -->
+<div id="intro" class="screen active">
+  <div class="stars-deco">✨ 🌟 ✨</div>
+  <div class="luna-logo">🦄</div>
+  <h1>Aventura Mágica<br>da Luna!</h1>
+  <div class="tagline">🌸 Português com Unicórnios 🌸</div>
+  <p>A unicórnio Luna precisa atravessar 3 reinos encantados! Ajude-a respondendo sobre adjetivos, substantivos e artigos!</p>
+  <button class="btn-play" onclick="startGame()">✨ Vamos Jogar! ✨</button>
+</div>
+
+<!-- MAP -->
+<div id="map" class="screen">
+  <h2>🗺️ Mapa Mágico</h2>
+  <p class="map-sub">Escolha um reino para jogar!</p>
+  <div class="map-container" id="map-container"></div>
+</div>
+
+<!-- GAME -->
+<div id="game" class="screen">
+  <div class="game-header">
+    <span class="phase-title" id="phase-title"></span>
+    <span class="progress" id="progress-text"></span>
+    <span class="score" id="score-text">⭐ 0</span>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+  <div class="game-scene" id="game-scene">
+    <div class="scene-items" id="scene-items"></div>
+    <div class="scene-luna" id="scene-luna">🦄</div>
+  </div>
+  <div class="question-card">
+    <div class="question-type" id="question-type"></div>
+    <div class="question-text" id="question-text"></div>
+    <div class="options-grid" id="options-grid"></div>
+    <div class="feedback-box" id="feedback-box"></div>
+    <button class="btn-next" id="btn-next" onclick="nextQuestion()">Próxima ➜</button>
+  </div>
+</div>
+
+<!-- PHASE COMPLETE -->
+<div id="phase-complete" class="screen">
+  <div class="big-icon">🎉</div>
+  <h2 id="phase-complete-title"></h2>
+  <div class="stars-earned" id="stars-earned"></div>
+  <p class="score-text" id="phase-score-text"></p>
+  <button class="btn-continue" id="btn-phase-continue" onclick="continueAfterPhase()">Continuar ➜</button>
+</div>
+
+<!-- FINAL -->
+<div id="final" class="screen">
+  <div class="trophy">🏆</div>
+  <h2 id="final-title">Parabéns!</h2>
+  <div class="total-stars" id="total-stars"></div>
+  <p class="final-msg" id="final-msg"></p>
+  <button class="btn-replay" onclick="resetGame()">Jogar de Novo 🔄</button>
+</div>
+
+<div class="confetti-container" id="confetti-container"></div>
+
+<script>
+// ========== GAME STATE ==========
+const state = {
+  currentPhase: 0,
+  currentQuestion: 0,
+  phaseScores: [0, 0, 0],
+  phaseTotal: [0, 0, 0],
+  phaseStars: [0, 0, 0],
+  questions: [],
+  answered: false,
+};
+
+// ========== PHASE DEFINITIONS ==========
+const phases = [
+  {
+    name: 'Jardim dos Adjetivos',
+    subtitle: 'Palavras que descrevem!',
+    icon: '🌸',
+    sceneClass: 'scene-garden',
+    sceneItems: ['🌸','🌺','🌼','🦋','🌷','🌻','🌈','🍃'],
+    bgGradient: 'linear-gradient(180deg,#fdf2f8,#fce7f3,#fbcfe8)',
+  },
+  {
+    name: 'Floresta dos Substantivos',
+    subtitle: 'Nomes próprios e comuns!',
+    icon: '🌲',
+    sceneClass: 'scene-forest',
+    sceneItems: ['🌿','🍄','🦋','🌸','🌳','🍃','✨','🌟'],
+    bgGradient: 'linear-gradient(180deg,#f5f3ff,#ede9fe,#ddd6fe)',
+  },
+  {
+    name: 'Castelo dos Artigos',
+    subtitle: 'Definidos e indefinidos!',
+    icon: '🏰',
+    sceneClass: 'scene-castle',
+    sceneItems: ['⭐','✨','🌟','💫','👑','💎','🏰','🌈'],
+    bgGradient: 'linear-gradient(180deg,#fffbeb,#fef3c7,#fde68a)',
+  },
+];
+
+// ========== QUESTÕES ==========
+
+const questoesAdjetivos = [
+  {
+    tipo: '🌸 Adjetivos',
+    texto: 'O que é um ADJETIVO?',
+    destaque: null,
+    opcoes: [
+      'Uma palavra que dá nome a uma pessoa',
+      'Uma palavra que descreve como algo ou alguém é',
+      'Uma palavra que indica uma ação',
+      'Um artigo como "o" ou "a"'
+    ],
+    correta: 1,
+    feedbackCerto: 'Isso mesmo! O adjetivo é a palavra que descreve ou caracteriza algo. Por exemplo: bonito, mágico, feliz, grande! 🌸',
+    feedbackErrado: 'O adjetivo é a palavra que descreve como algo ou alguém é. Ex: o unicórnio MÁGICO — "mágico" é o adjetivo! 🦄',
+  },
+  {
+    tipo: '🌸 Adjetivos',
+    texto: 'Na frase abaixo, qual é o ADJETIVO?',
+    destaque: '"A fada gentil ajudou a princesa."',
+    opcoes: ['fada', 'gentil', 'ajudou', 'princesa'],
+    correta: 1,
+    feedbackCerto: 'Perfeito! "Gentil" é o adjetivo porque descreve como a fada é! 🧚',
+    feedbackErrado: '"Gentil" é o adjetivo — ele descreve como a fada é! "Fada" e "princesa" são substantivos. "Ajudou" é uma ação.',
+  },
+  {
+    tipo: '🌸 Adjetivos',
+    texto: 'Qual dessas palavras é um ADJETIVO?',
+    destaque: null,
+    opcoes: ['correu', 'escola', 'colorida', 'Maria'],
+    correta: 2,
+    feedbackCerto: 'Muito bem! "Colorida" é um adjetivo porque descreve como algo é! 🌈',
+    feedbackErrado: '"Colorida" é o adjetivo! "Correu" é uma ação, "escola" e "Maria" são nomes.',
+  },
+  {
+    tipo: '🌸 Adjetivos',
+    texto: 'Qual palavra é um ADJETIVO?',
+    destaque: null,
+    opcoes: ['borboleta', 'voar', 'delicada', 'jardim'],
+    correta: 2,
+    feedbackCerto: '"Delicada" é um adjetivo! Ela descreve como algo é. 🦋',
+    feedbackErrado: '"Delicada" é o adjetivo! "Borboleta" e "jardim" são nomes; "voar" é uma ação.',
+  },
+  {
+    tipo: '🌸 Adjetivos',
+    texto: 'Na frase abaixo, qual é o ADJETIVO?',
+    destaque: '"O unicórnio mágico apareceu no jardim."',
+    opcoes: ['unicórnio', 'mágico', 'apareceu', 'jardim'],
+    correta: 1,
+    feedbackCerto: 'Isso! "Mágico" descreve como o unicórnio é — então é um adjetivo! 🦄✨',
+    feedbackErrado: '"Mágico" é o adjetivo porque descreve o unicórnio. "Unicórnio" e "jardim" são nomes; "apareceu" é ação.',
+  },
+  {
+    tipo: '🌸 Adjetivos',
+    texto: 'Quantos ADJETIVOS há na frase?',
+    destaque: '"O dragão era enorme e assustador."',
+    opcoes: ['0', '1', '2', '3'],
+    correta: 2,
+    feedbackCerto: 'Exato! "Enorme" e "assustador" são os dois adjetivos da frase! 🐉',
+    feedbackErrado: 'Há 2 adjetivos: "enorme" e "assustador"! Ambos descrevem como o dragão é.',
+  },
+  {
+    tipo: '🌸 Adjetivos',
+    texto: 'Quais são os ADJETIVOS na frase?',
+    destaque: '"A menina feliz ganhou um presente lindo."',
+    opcoes: ['menina e presente', 'feliz e lindo', 'ganhou e lindo', 'menina e feliz'],
+    correta: 1,
+    feedbackCerto: 'Perfeito! "Feliz" descreve a menina e "lindo" descreve o presente! Os dois são adjetivos! 🎁',
+    feedbackErrado: '"Feliz" e "lindo" são os adjetivos! "Menina" e "presente" são nomes (substantivos), e "ganhou" é ação.',
+  },
+  {
+    tipo: '🌸 Adjetivos',
+    texto: 'Qual frase tem um ADJETIVO?',
+    destaque: null,
+    opcoes: [
+      'O gato correu muito.',
+      'A flor é linda.',
+      'Ela pulou e caiu.',
+      'O sol brilhou.'
+    ],
+    correta: 1,
+    feedbackCerto: '"Linda" na frase "A flor é linda" é um adjetivo que descreve a flor! 🌸',
+    feedbackErrado: '"A flor é linda" tem o adjetivo "linda", que descreve como a flor é!',
+  },
+  {
+    tipo: '🌸 Adjetivos',
+    texto: 'Quais são os ADJETIVOS na frase?',
+    destaque: '"Luna é uma unicórnio corajosa e alegre."',
+    opcoes: ['Luna e unicórnio', 'corajosa e alegre', 'uma e corajosa', 'unicórnio e alegre'],
+    correta: 1,
+    feedbackCerto: 'Arrasou! "Corajosa" e "alegre" descrevem a Luna — os dois são adjetivos! 🦄💜',
+    feedbackErrado: '"Corajosa" e "alegre" são os adjetivos! Eles descrevem como a Luna é. "Luna" e "unicórnio" são nomes.',
+  },
+  {
+    tipo: '🌸 Adjetivos',
+    texto: 'Escolha o adjetivo que pode descrever o unicórnio:',
+    destaque: 'O unicórnio é ___.',
+    opcoes: ['correu', 'floresta', 'brilhante', 'saltou'],
+    correta: 2,
+    feedbackCerto: '"Brilhante" descreve como o unicórnio é — portanto é um adjetivo! ✨',
+    feedbackErrado: '"Brilhante" é o adjetivo! "Correu" e "saltou" são ações, "floresta" é um nome.',
+  },
+];
+
+const questoesSubstantivos = [
+  {
+    tipo: '🌲 Substantivos',
+    texto: 'O substantivo PRÓPRIO é:',
+    destaque: null,
+    opcoes: [
+      'O nome de qualquer ser vivo',
+      'O nome específico de uma pessoa, lugar ou animal',
+      'Uma palavra que descreve algo',
+      'O nome de uma ação'
+    ],
+    correta: 1,
+    feedbackCerto: 'Isso! O substantivo próprio é o nome específico, como "Sofia", "Brasil" ou "Bolinha"! 🌟',
+    feedbackErrado: 'O substantivo próprio é o nome específico de alguém ou de um lugar, como "Luna", "Brasil", "Pedro"!',
+  },
+  {
+    tipo: '🌲 Substantivos',
+    texto: 'Qual dessas palavras é um substantivo PRÓPRIO?',
+    destaque: null,
+    opcoes: ['cidade', 'menina', 'Isabela', 'cachorro'],
+    correta: 2,
+    feedbackCerto: '"Isabela" é um substantivo próprio! É o nome específico de uma pessoa, por isso começa com letra maiúscula! 💜',
+    feedbackErrado: '"Isabela" é o substantivo próprio! É um nome específico, com letra maiúscula. "Cidade", "menina" e "cachorro" são comuns.',
+  },
+  {
+    tipo: '🌲 Substantivos',
+    texto: 'Qual dessas palavras é um substantivo COMUM?',
+    destaque: null,
+    opcoes: ['Brasil', 'Maria', 'escola', 'Rio de Janeiro'],
+    correta: 2,
+    feedbackCerto: '"Escola" é um substantivo comum! Dá nome a qualquer escola, não a uma específica. 🏫',
+    feedbackErrado: '"Escola" é substantivo comum! "Brasil", "Maria" e "Rio de Janeiro" são próprios (nomes específicos).',
+  },
+  {
+    tipo: '🌲 Substantivos',
+    texto: 'Os substantivos PRÓPRIOS são escritos com letra:',
+    destaque: null,
+    opcoes: ['minúscula', 'MAIÚSCULA', 'pode ser qualquer uma', 'depende do tamanho'],
+    correta: 1,
+    feedbackCerto: 'Certo! Os substantivos próprios sempre começam com LETRA MAIÚSCULA! Ex: Luna, Ana, Brasil! 🌟',
+    feedbackErrado: 'Os substantivos próprios sempre começam com LETRA MAIÚSCULA! Ex: "Luna", "Pedro", "Amazonas".',
+  },
+  {
+    tipo: '🌲 Substantivos',
+    texto: 'Na frase, quais são os substantivos PRÓPRIOS?',
+    destaque: '"A menina Sofia tem um gato chamado Bolinha."',
+    opcoes: ['menina e gato', 'Sofia e Bolinha', 'Sofia e gato', 'menina e Sofia'],
+    correta: 1,
+    feedbackCerto: '"Sofia" e "Bolinha" são os substantivos próprios — nomes específicos com letra maiúscula! 🐱',
+    feedbackErrado: '"Sofia" e "Bolinha" são os próprios! "Menina" e "gato" são comuns (nomes genéricos).',
+  },
+  {
+    tipo: '🌲 Substantivos',
+    texto: 'Qual opção tem DOIS substantivos COMUNS?',
+    destaque: null,
+    opcoes: ['Pedro e João', 'cachorro e gato', 'Brasil e Portugal', 'Luna e Sol'],
+    correta: 1,
+    feedbackCerto: '"Cachorro" e "gato" são substantivos comuns! São nomes genéricos, escritos com minúscula! 🐾',
+    feedbackErrado: '"Cachorro" e "gato" são comuns! "Pedro", "João", "Brasil", "Portugal", "Luna" e "Sol" são próprios.',
+  },
+  {
+    tipo: '🌲 Substantivos',
+    texto: 'Na frase, qual é o substantivo PRÓPRIO?',
+    destaque: '"Pedro foi ao mercado comprar pão."',
+    opcoes: ['mercado', 'pão', 'Pedro', 'comprar'],
+    correta: 2,
+    feedbackCerto: '"Pedro" é o substantivo próprio! É o nome específico de uma pessoa! 👦',
+    feedbackErrado: '"Pedro" é o substantivo próprio! "Mercado" e "pão" são comuns, e "comprar" é uma ação.',
+  },
+  {
+    tipo: '🌲 Substantivos',
+    texto: 'Quais são os substantivos PRÓPRIOS na frase?',
+    destaque: '"O unicórnio Luna voou sobre o lago Cristal."',
+    opcoes: ['unicórnio e lago', 'Luna e Cristal', 'voou e lago', 'unicórnio e Luna'],
+    correta: 1,
+    feedbackCerto: '"Luna" e "Cristal" são os próprios! São nomes específicos com letra maiúscula! 🦄💎',
+    feedbackErrado: '"Luna" e "Cristal" são os próprios! "Unicórnio" e "lago" são substantivos comuns.',
+  },
+  {
+    tipo: '🌲 Substantivos',
+    texto: 'Qual dessas palavras é um substantivo COMUM?',
+    destaque: null,
+    opcoes: ['Amazônia', 'Vitória', 'floresta', 'Carlos'],
+    correta: 2,
+    feedbackCerto: '"Floresta" é um substantivo comum! Dá nome a qualquer floresta. 🌲',
+    feedbackErrado: '"Floresta" é substantivo comum! "Amazônia", "Vitória" e "Carlos" são próprios (nomes específicos).',
+  },
+  {
+    tipo: '🌲 Substantivos',
+    texto: 'A palavra "cachorro" é um substantivo:',
+    destaque: null,
+    opcoes: ['próprio', 'comum', 'adjetivo', 'artigo'],
+    correta: 1,
+    feedbackCerto: '"Cachorro" é um substantivo COMUM! É o nome genérico do animal, não o nome específico dele! 🐶',
+    feedbackErrado: '"Cachorro" é substantivo COMUM! Se fosse "Rex" ou "Bolinha", aí sim seria próprio!',
+  },
+];
+
+const questoesArtigos = [
+  {
+    tipo: '🏰 Artigos',
+    texto: 'Quais são os artigos DEFINIDOS?',
+    destaque: null,
+    opcoes: ['um, uma, uns, umas', 'o, a, os, as', 'de, da, do, dos', 'em, na, no, nas'],
+    correta: 1,
+    feedbackCerto: 'Certo! Os artigos definidos são: o, a, os, as. Eles indicam algo específico! 🌟',
+    feedbackErrado: 'Os artigos definidos são: "o, a, os, as". Os indefinidos são "um, uma, uns, umas".',
+  },
+  {
+    tipo: '🏰 Artigos',
+    texto: 'Quais são os artigos INDEFINIDOS?',
+    destaque: null,
+    opcoes: ['o, a, os, as', 'em, na, no, nas', 'um, uma, uns, umas', 'de, do, da, dos'],
+    correta: 2,
+    feedbackCerto: 'Perfeito! Os artigos indefinidos são: um, uma, uns, umas! 💜',
+    feedbackErrado: 'Os artigos indefinidos são "um, uma, uns, umas". Os definidos são "o, a, os, as".',
+  },
+  {
+    tipo: '🏰 Artigos',
+    texto: 'Complete com um artigo DEFINIDO:',
+    destaque: '"___ unicórnio é muito mágico."',
+    opcoes: ['Um', 'Uma', 'O', 'A'],
+    correta: 2,
+    feedbackCerto: '"O" é o artigo definido que combina com "unicórnio"! 🦄',
+    feedbackErrado: '"O" é o artigo definido correto! "Um" seria indefinido. "Unicórnio" é masculino, então usamos "O".',
+  },
+  {
+    tipo: '🏰 Artigos',
+    texto: 'Complete com um artigo INDEFINIDO:',
+    destaque: '"Vi ___ fada na floresta."',
+    opcoes: ['a', 'o', 'uma', 'as'],
+    correta: 2,
+    feedbackCerto: '"Uma" é artigo indefinido! Indica que é qualquer fada, não uma específica. 🧚',
+    feedbackErrado: '"Uma" é o artigo indefinido! "A" seria definido (uma fada específica que já conhecemos).',
+  },
+  {
+    tipo: '🏰 Artigos',
+    texto: 'Na frase, quais são os ARTIGOS?',
+    destaque: '"O cavalo voou sobre a floresta."',
+    opcoes: ['cavalo e floresta', 'O e a', 'voou e sobre', 'o cavalo'],
+    correta: 1,
+    feedbackCerto: '"O" e "a" são os artigos da frase! Os dois são definidos! 🐴',
+    feedbackErrado: '"O" e "a" são os artigos! "Cavalo" e "floresta" são substantivos; "voou" é ação.',
+  },
+  {
+    tipo: '🏰 Artigos',
+    texto: 'Qual dessas palavras é um artigo INDEFINIDO?',
+    destaque: null,
+    opcoes: ['o', 'a', 'os', 'uns'],
+    correta: 3,
+    feedbackCerto: '"Uns" é um artigo indefinido! É o plural de "um"! 🌟',
+    feedbackErrado: '"Uns" é o artigo indefinido! "O", "a" e "os" são todos definidos.',
+  },
+  {
+    tipo: '🏰 Artigos',
+    texto: 'Quais são os ARTIGOS na frase?',
+    destaque: '"As crianças viram uns unicórnios."',
+    opcoes: ['crianças e unicórnios', 'As e uns', 'As e viram', 'uns e viram'],
+    correta: 1,
+    feedbackCerto: '"As" (definido) e "uns" (indefinido) são os artigos! 🦄✨',
+    feedbackErrado: '"As" e "uns" são os artigos! "As" é definido e "uns" é indefinido. Os outros são substantivo e ação.',
+  },
+  {
+    tipo: '🏰 Artigos',
+    texto: 'Na frase, o artigo "Uma" é:',
+    destaque: '"Uma borboleta pousou na flor."',
+    opcoes: ['definido', 'indefinido', 'não é artigo', 'é um adjetivo'],
+    correta: 1,
+    feedbackCerto: '"Uma" é um artigo INDEFINIDO! Indica qualquer borboleta, não uma específica! 🦋',
+    feedbackErrado: '"Uma" é INDEFINIDO! Os indefinidos são: um, uma, uns, umas.',
+  },
+  {
+    tipo: '🏰 Artigos',
+    texto: 'Qual dessas palavras é um artigo DEFINIDO?',
+    destaque: null,
+    opcoes: ['um', 'uns', 'uma', 'os'],
+    correta: 3,
+    feedbackCerto: '"Os" é um artigo definido! É o plural masculino de "o"! 🌟',
+    feedbackErrado: '"Os" é o artigo definido! "Um", "uns" e "uma" são todos indefinidos.',
+  },
+  {
+    tipo: '🏰 Artigos',
+    texto: 'Complete com um artigo DEFINIDO:',
+    destaque: '"___ fadas dançaram no jardim."',
+    opcoes: ['Uns', 'Uma', 'Um', 'As'],
+    correta: 3,
+    feedbackCerto: '"As" é o artigo definido feminino plural! Combina com "fadas"! 🧚‍♀️',
+    feedbackErrado: '"As" é o artigo definido correto! "Uns" e "Um" são indefinidos, e "Uma" é singular.',
+  },
+];
+
+// ========== HELPERS ==========
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function getQuestions(phaseIndex) {
+  const banks = [questoesAdjetivos, questoesSubstantivos, questoesArtigos];
+  return shuffle(banks[phaseIndex]);
+}
+
+// ========== SCREEN MANAGEMENT ==========
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ========== SOUND ==========
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let audioCtx;
+function getAudio() {
+  if (!audioCtx) audioCtx = new AudioCtx();
+  return audioCtx;
+}
+
+function playSound(type) {
+  try {
+    const ctx = getAudio();
+    if (type === 'correct') {
+      // Happy little melody
+      const notes = [523, 659, 784];
+      notes.forEach((freq, i) => {
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.connect(g); g.connect(ctx.destination);
+        o.frequency.value = freq;
+        o.type = 'sine';
+        g.gain.value = 0.12;
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.18 + 0.35);
+        o.start(ctx.currentTime + i * 0.15);
+        o.stop(ctx.currentTime + i * 0.15 + 0.35);
+      });
+    } else if (type === 'wrong') {
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.frequency.value = 220;
+      o.type = 'triangle';
+      g.gain.value = 0.1;
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      o.start(ctx.currentTime);
+      o.stop(ctx.currentTime + 0.4);
+    } else if (type === 'win') {
+      const notes = [523, 587, 659, 784, 880];
+      notes.forEach((freq, i) => {
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.connect(g); g.connect(ctx.destination);
+        o.frequency.value = freq;
+        o.type = 'sine';
+        g.gain.value = 0.1;
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.18 + 0.4);
+        o.start(ctx.currentTime + i * 0.16);
+        o.stop(ctx.currentTime + i * 0.16 + 0.4);
+      });
+    }
+  } catch(e) {}
+}
+
+// ========== CONFETTI ==========
+function showConfetti() {
+  const container = document.getElementById('confetti-container');
+  container.innerHTML = '';
+  const colors = ['#ff6b9d','#a78bfa','#c4b5fd','#fbbf24','#4ade80','#60a5fa','#f472b6'];
+  for (let i = 0; i < 70; i++) {
+    const el = document.createElement('div');
+    el.classList.add('confetti');
+    el.style.left = Math.random() * 100 + '%';
+    el.style.background = colors[Math.floor(Math.random() * colors.length)];
+    el.style.width = (Math.random() * 8 + 5) + 'px';
+    el.style.height = (Math.random() * 8 + 5) + 'px';
+    el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    el.style.animationDuration = (Math.random() * 2 + 1.5) + 's';
+    el.style.animationDelay = (Math.random() * 1) + 's';
+    container.appendChild(el);
+  }
+  setTimeout(() => container.innerHTML = '', 4500);
+}
+
+// ========== GAME FLOW ==========
+function startGame() {
+  showScreen('map');
+  renderMap();
+}
+
+function renderMap() {
+  const container = document.getElementById('map-container');
+  container.innerHTML = '';
+  phases.forEach((phase, i) => {
+    if (i > 0) {
+      const path = document.createElement('div');
+      path.className = 'map-path' + (state.phaseStars[i - 1] > 0 ? ' done' : '');
+      container.appendChild(path);
+    }
+    const card = document.createElement('div');
+    card.className = 'phase-card';
+    let statusHTML = '';
+
+    if (state.phaseStars[i] > 0) {
+      card.classList.add('completed');
+      statusHTML = `<span class="phase-stars">${'⭐'.repeat(state.phaseStars[i])}${'☆'.repeat(3 - state.phaseStars[i])}</span>`;
+    } else if (i === 0 || state.phaseStars[i - 1] > 0) {
+      card.classList.add('available');
+      statusHTML = `<span class="phase-lock" style="opacity:0.5">🦄</span>`;
+      card.onclick = () => startPhase(i);
+    } else {
+      card.classList.add('locked');
+      statusHTML = `<span class="phase-lock">🔒</span>`;
+    }
+
+    card.innerHTML = `
+      <span class="phase-icon">${phase.icon}</span>
+      <div class="phase-info">
+        <h3>${phase.name}</h3>
+        <p>${phase.subtitle}</p>
+      </div>
+      ${statusHTML}
+    `;
+    container.appendChild(card);
+  });
+}
+
+function startPhase(phaseIndex) {
+  state.currentPhase = phaseIndex;
+  state.currentQuestion = 0;
+  state.phaseScores[phaseIndex] = 0;
+  state.answered = false;
+
+  state.questions = getQuestions(phaseIndex);
+  state.phaseTotal[phaseIndex] = state.questions.length;
+
+  const phase = phases[phaseIndex];
+  document.getElementById('game').style.background = phase.bgGradient;
+  document.getElementById('phase-title').textContent = `${phase.icon} ${phase.name}`;
+
+  showScreen('game');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = state.questions[state.currentQuestion];
+  const total = state.questions.length;
+  const phase = phases[state.currentPhase];
+
+  // Header
+  document.getElementById('progress-text').textContent = `${state.currentQuestion + 1}/${total}`;
+  document.getElementById('score-text').textContent = `⭐ ${state.phaseScores[state.currentPhase]}`;
+  document.getElementById('progress-fill').style.width = (state.currentQuestion / total * 100) + '%';
+
+  // Scene
+  const scene = document.getElementById('game-scene');
+  scene.className = 'game-scene ' + phase.sceneClass;
+  const itemsEl = document.getElementById('scene-items');
+  itemsEl.innerHTML = '';
+  const shuffledItems = shuffle(phase.sceneItems);
+  shuffledItems.slice(0, 6).forEach((item, i) => {
+    const el = document.createElement('span');
+    el.className = 'scene-item';
+    el.textContent = item;
+    el.style.left = (8 + Math.random() * 78) + '%';
+    el.style.top = (8 + Math.random() * 72) + '%';
+    el.style.animationDelay = (i * 0.4) + 's';
+    itemsEl.appendChild(el);
+  });
+
+  const luna = document.getElementById('scene-luna');
+  luna.className = 'scene-luna';
+
+  // Question type tag
+  document.getElementById('question-type').textContent = q.tipo;
+
+  // Question text
+  let questionHTML = q.texto;
+  if (q.destaque) {
+    questionHTML += `<br><span class="question-highlight">${q.destaque}</span>`;
+  }
+  document.getElementById('question-text').innerHTML = questionHTML;
+
+  // Options
+  const grid = document.getElementById('options-grid');
+  const hasLongOption = q.opcoes.some(o => o.length > 20);
+  grid.className = 'options-grid' + (hasLongOption ? ' single-col' : '');
+  grid.innerHTML = '';
+  q.opcoes.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.textContent = opt;
+    btn.onclick = () => answer(i);
+    grid.appendChild(btn);
+  });
+
+  // Reset
+  const fb = document.getElementById('feedback-box');
+  fb.className = 'feedback-box';
+  fb.style.display = 'none';
+  document.getElementById('btn-next').className = 'btn-next';
+  state.answered = false;
+}
+
+function answer(idx) {
+  if (state.answered) return;
+  state.answered = true;
+
+  const q = state.questions[state.currentQuestion];
+  const isCorrect = idx === q.correta;
+  const btns = document.querySelectorAll('#options-grid .opt-btn');
+
+  btns.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.correta) btn.classList.add('correct');
+    if (i === idx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  const luna = document.getElementById('scene-luna');
+  if (isCorrect) {
+    luna.classList.add('happy');
+    state.phaseScores[state.currentPhase]++;
+    document.getElementById('score-text').textContent = `⭐ ${state.phaseScores[state.currentPhase]}`;
+    playSound('correct');
+  } else {
+    luna.classList.add('sad');
+    playSound('wrong');
+  }
+
+  const fb = document.getElementById('feedback-box');
+  fb.className = 'feedback-box show ' + (isCorrect ? 'correct' : 'wrong');
+  fb.textContent = isCorrect
+    ? `🦄 ${q.feedbackCerto}`
+    : `💜 ${q.feedbackErrado}`;
+  fb.style.display = 'block';
+
+  document.getElementById('btn-next').className = 'btn-next show';
+}
+
+function nextQuestion() {
+  state.currentQuestion++;
+  if (state.currentQuestion >= state.questions.length) {
+    completePhase();
+  } else {
+    renderQuestion();
+  }
+}
+
+function completePhase() {
+  const phaseIdx = state.currentPhase;
+  const score = state.phaseScores[phaseIdx];
+  const total = state.phaseTotal[phaseIdx];
+  const pct = score / total;
+
+  let stars = 1;
+  if (pct >= 1) stars = 3;
+  else if (pct >= 0.7) stars = 2;
+  state.phaseStars[phaseIdx] = Math.max(state.phaseStars[phaseIdx], stars);
+
+  document.getElementById('progress-fill').style.width = '100%';
+
+  const phase = phases[phaseIdx];
+  document.getElementById('phase-complete-title').textContent = `${phase.icon} ${phase.name} Completo!`;
+  document.getElementById('stars-earned').textContent = '⭐'.repeat(stars) + '☆'.repeat(3 - stars);
+
+  let msg = '';
+  if (pct >= 1) msg = `Você acertou TUDO! ${score} de ${total}! Incrível! 🦄✨`;
+  else if (pct >= 0.7) msg = `Você acertou ${score} de ${total}! Muito bem! 💜`;
+  else msg = `Você acertou ${score} de ${total}. Continue praticando! 🌸`;
+  document.getElementById('phase-score-text').textContent = msg;
+
+  const btn = document.getElementById('btn-phase-continue');
+  btn.textContent = phaseIdx < 2 ? 'Próxima Fase ➜' : 'Ver Resultado Final 🏆';
+
+  showScreen('phase-complete');
+  showConfetti();
+  playSound('win');
+}
+
+function continueAfterPhase() {
+  if (state.currentPhase < 2) {
+    showScreen('map');
+    renderMap();
+  } else {
+    showFinal();
+  }
+}
+
+function showFinal() {
+  const totalStars = state.phaseStars.reduce((a, b) => a + b, 0);
+  document.getElementById('total-stars').textContent = '⭐'.repeat(totalStars) + '☆'.repeat(9 - totalStars);
+
+  let title = 'Parabéns!';
+  let msg = '';
+  if (totalStars >= 8) {
+    title = '🌟 Você é incrível! 🌟';
+    msg = 'Você dominou os adjetivos, os substantivos e os artigos! A Luna está muito orgulhosa de você! 🦄💜✨';
+  } else if (totalStars >= 5) {
+    title = '🎉 Muito bem! 🎉';
+    msg = 'Você ajudou a Luna a completar todos os reinos! Continue praticando para arrasar na prova! 🦄🌸';
+  } else {
+    title = '💜 Boa tentativa! 💜';
+    msg = 'Você completou a aventura com a Luna! Que tal jogar de novo para ganhar mais estrelas? 🦄🌟';
+  }
+
+  document.getElementById('final-title').textContent = title;
+  document.getElementById('final-msg').textContent = msg;
+
+  showScreen('final');
+  showConfetti();
+  playSound('win');
+}
+
+function resetGame() {
+  state.currentPhase = 0;
+  state.currentQuestion = 0;
+  state.phaseScores = [0, 0, 0];
+  state.phaseTotal = [0, 0, 0];
+  state.phaseStars = [0, 0, 0];
+  state.questions = [];
+  state.answered = false;
+  showScreen('map');
+  renderMap();
+}
+</script>
+</body>
+</html>
