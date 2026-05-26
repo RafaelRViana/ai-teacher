@@ -23,46 +23,29 @@ body{
   -webkit-tap-highlight-color:transparent;
   user-select:none;-webkit-user-select:none;
 }
-
-/* ========== SCREENS ========== */
 .screen{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:20px;animation:fadeIn 0.5s ease}
 .screen.active{display:flex}
 @keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 
-/* ========== INTRO ========== */
 #intro{background:linear-gradient(180deg,#fdf4ff,#f5d0fe,#e879f9,#a21caf);text-align:center}
 .luna-logo{font-size:110px;animation:float 2.5s ease-in-out infinite;filter:drop-shadow(0 8px 20px rgba(168,85,247,0.4))}
 @keyframes float{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-18px) rotate(5deg)}}
 #intro h1{font-family:'Fredoka One',cursive;font-size:2.4em;color:#fff;margin:10px 0;text-shadow:2px 3px 0 rgba(126,34,206,0.4)}
 #intro .tagline{font-family:'Fredoka One',cursive;font-size:1em;color:#f5d0fe;margin-bottom:6px;letter-spacing:1px}
 #intro p{color:#fae8ff;font-size:1.1em;max-width:400px;line-height:1.6;margin-bottom:24px}
-.btn-play{
-  font-family:'Fredoka One',cursive;font-size:1.4em;padding:16px 50px;
-  background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#fff;
-  border:none;border-radius:50px;cursor:pointer;
-  box-shadow:0 6px 24px rgba(245,158,11,0.5);transition:all 0.3s;
-  letter-spacing:1px;
-}
+.btn-play{font-family:'Fredoka One',cursive;font-size:1.4em;padding:16px 50px;background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#fff;border:none;border-radius:50px;cursor:pointer;box-shadow:0 6px 24px rgba(245,158,11,0.5);transition:all 0.3s;letter-spacing:1px}
 .btn-play:hover{transform:scale(1.08)}
 .btn-play:active{transform:scale(0.95)}
 .stars-deco{font-size:28px;letter-spacing:6px;margin-bottom:8px;animation:twinkle 1.5s infinite alternate}
 @keyframes twinkle{from{opacity:0.6;transform:scale(0.95)}to{opacity:1;transform:scale(1.05)}}
 
-/* ========== MAP ========== */
 #map{background:linear-gradient(180deg,#fdf4ff,#f3e8ff,#ddd6fe);text-align:center;gap:20px}
 #map h2{font-family:'Fredoka One',cursive;font-size:1.8em;color:#7c3aed}
 #map .map-sub{color:#8b5cf6;font-size:0.95em;margin-top:-12px;margin-bottom:4px}
-.map-container{
-  display:flex;flex-direction:column;align-items:center;gap:12px;
-  max-width:420px;width:100%;position:relative;
-}
+.map-container{display:flex;flex-direction:column;align-items:center;gap:12px;max-width:420px;width:100%;position:relative}
 .map-path{width:4px;height:40px;background:rgba(139,92,246,0.2);border-radius:4px}
 .map-path.done{background:linear-gradient(180deg,var(--purple),var(--pink))}
-.phase-card{
-  width:100%;padding:20px;border-radius:24px;
-  display:flex;align-items:center;gap:16px;
-  transition:all 0.3s;cursor:pointer;position:relative;
-}
+.phase-card{width:100%;padding:20px;border-radius:24px;display:flex;align-items:center;gap:16px;transition:all 0.3s;cursor:pointer;position:relative}
 .phase-card.locked{background:rgba(255,255,255,0.3);opacity:0.6;cursor:not-allowed}
 .phase-card.available{background:rgba(255,255,255,0.9);box-shadow:0 6px 24px rgba(139,92,246,0.2);animation:pulsePurple 2s infinite}
 .phase-card.completed{background:rgba(255,255,255,0.9);box-shadow:0 4px 20px rgba(139,92,246,0.15)}
@@ -74,138 +57,70 @@ body{
 .phase-stars{font-size:22px;letter-spacing:3px}
 .phase-lock{font-size:28px}
 
-/* ========== GAME ========== */
 #game{padding:15px}
-.game-header{
-  display:flex;justify-content:space-between;align-items:center;
-  width:100%;max-width:600px;padding:10px 16px;
-  background:rgba(255,255,255,0.85);border-radius:16px;
-  margin-bottom:12px;flex-wrap:wrap;gap:8px;
-  box-shadow:0 2px 12px rgba(139,92,246,0.12);
-}
+.game-header{display:flex;justify-content:space-between;align-items:center;width:100%;max-width:600px;padding:10px 16px;background:rgba(255,255,255,0.85);border-radius:16px;margin-bottom:12px;flex-wrap:wrap;gap:8px;box-shadow:0 2px 12px rgba(139,92,246,0.12)}
 .game-header .phase-title{font-family:'Fredoka One',cursive;font-size:1em;color:#7c3aed}
 .game-header .progress{font-family:'Fredoka One',cursive;font-size:0.9em;color:#666}
 .game-header .score{font-family:'Fredoka One',cursive;font-size:0.9em;color:var(--gold)}
-
 .progress-bar{width:100%;max-width:600px;height:14px;background:rgba(255,255,255,0.5);border-radius:10px;overflow:hidden;margin-bottom:14px}
 .progress-fill{height:100%;background:linear-gradient(90deg,var(--purple),var(--pink));border-radius:10px;transition:width 0.5s ease}
-
-.game-scene{
-  width:100%;max-width:600px;min-height:170px;
-  border-radius:24px;padding:20px;margin-bottom:14px;
-  display:flex;align-items:center;justify-content:center;
-  position:relative;overflow:hidden;
-}
+.game-scene{width:100%;max-width:600px;min-height:170px;border-radius:24px;padding:20px;margin-bottom:14px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
 .scene-garden{background:linear-gradient(180deg,#fdf2f8,#fce7f3,#fbcfe8)}
 .scene-forest{background:linear-gradient(180deg,#f5f3ff,#ede9fe,#ddd6fe)}
 .scene-castle{background:linear-gradient(180deg,#fffbeb,#fef3c7,#fde68a)}
-
 .scene-luna{font-size:64px;transition:all 0.5s ease;position:relative;z-index:2;filter:drop-shadow(0 4px 12px rgba(168,85,247,0.3))}
 .scene-luna.happy{animation:jump 0.5s ease}
 .scene-luna.sad{animation:shake 0.5s ease}
 @keyframes jump{0%{transform:translateY(0)}30%{transform:translateY(-28px) rotate(12deg)}60%{transform:translateY(-12px)}100%{transform:translateY(0)}}
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-10px) rotate(-5deg)}75%{transform:translateX(10px) rotate(5deg)}}
-
 .scene-items{position:absolute;inset:0;pointer-events:none;font-size:28px;overflow:hidden}
 .scene-item{position:absolute;animation:floatItem 3s ease-in-out infinite}
 @keyframes floatItem{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-8px) rotate(5deg)}}
-
-.question-card{
-  width:100%;max-width:600px;background:rgba(255,255,255,0.95);
-  border-radius:24px;padding:24px;text-align:center;
-  box-shadow:0 4px 24px rgba(139,92,246,0.12);
-}
-.question-type{
-  display:inline-block;font-family:'Fredoka One',cursive;font-size:0.75em;
-  color:#7c3aed;background:#f5f3ff;border-radius:20px;
-  padding:4px 14px;margin-bottom:12px;letter-spacing:0.5px;
-}
-.question-text{
-  font-size:1.15em;font-weight:700;color:#1e1b4b;
-  line-height:1.6;margin-bottom:18px;
-}
-.question-highlight{
-  display:inline-block;font-family:'Fredoka One',cursive;
-  font-size:1.6em;color:#7c3aed;margin:8px 0;
-  background:linear-gradient(135deg,#f5f3ff,#ede9fe);
-  padding:8px 24px;border-radius:16px;
-  border:2px solid #ddd6fe;
-}
+.question-card{width:100%;max-width:600px;background:rgba(255,255,255,0.95);border-radius:24px;padding:24px;text-align:center;box-shadow:0 4px 24px rgba(139,92,246,0.12)}
+.question-type{display:inline-block;font-family:'Fredoka One',cursive;font-size:0.75em;color:#7c3aed;background:#f5f3ff;border-radius:20px;padding:4px 14px;margin-bottom:12px;letter-spacing:0.5px}
+.question-text{font-size:1.15em;font-weight:700;color:#1e1b4b;line-height:1.6;margin-bottom:18px}
+.question-highlight{display:inline-block;font-family:'Fredoka One',cursive;font-size:1.5em;color:#7c3aed;margin:8px 0;background:linear-gradient(135deg,#f5f3ff,#ede9fe);padding:8px 24px;border-radius:16px;border:2px solid #ddd6fe}
 .options-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .options-grid.single-col{grid-template-columns:1fr}
-.opt-btn{
-  font-family:'Nunito',sans-serif;font-size:1.05em;font-weight:700;
-  padding:14px 16px;background:#fff;color:#333;
-  border:3px solid #e9d5ff;border-radius:18px;cursor:pointer;
-  transition:all 0.25s;text-align:center;line-height:1.3;
-}
+.opt-btn{font-family:'Nunito',sans-serif;font-size:1.05em;font-weight:700;padding:14px 16px;background:#fff;color:#333;border:3px solid #e9d5ff;border-radius:18px;cursor:pointer;transition:all 0.25s;text-align:center;line-height:1.3}
 .opt-btn:hover:not(:disabled){border-color:var(--purple);background:#f5f3ff;transform:scale(1.03)}
 .opt-btn.correct{background:#f0fdf4;border-color:#4ade80;color:#15803d;animation:correctPop 0.4s ease}
 .opt-btn.wrong{background:#fff1f2;border-color:var(--red);color:#be123c;animation:shake 0.4s ease}
 .opt-btn:disabled{cursor:default;opacity:0.9}
 @keyframes correctPop{0%{transform:scale(1)}50%{transform:scale(1.07)}100%{transform:scale(1)}}
-
-.feedback-box{
-  margin-top:14px;padding:14px 18px;border-radius:16px;
-  font-size:1em;font-weight:700;line-height:1.5;display:none;
-  text-align:left;
-}
+.feedback-box{margin-top:14px;padding:14px 18px;border-radius:16px;font-size:1em;font-weight:700;line-height:1.5;display:none;text-align:left}
 .feedback-box.show{display:block;animation:fadeIn 0.3s ease}
 .feedback-box.correct{background:#f0fdf4;border:2px solid #4ade80;color:#166534}
 .feedback-box.wrong{background:#fff7ed;border:2px solid var(--orange);color:#9a3412}
-
-.btn-next{
-  display:none;margin:16px auto 0;font-family:'Fredoka One',cursive;
-  font-size:1.05em;padding:12px 36px;
-  background:linear-gradient(135deg,var(--purple),#7c3aed);color:#fff;
-  border:none;border-radius:26px;cursor:pointer;transition:all 0.3s;
-  box-shadow:0 4px 16px rgba(124,58,237,0.3);
-}
+.btn-next{display:none;margin:16px auto 0;font-family:'Fredoka One',cursive;font-size:1.05em;padding:12px 36px;background:linear-gradient(135deg,var(--purple),#7c3aed);color:#fff;border:none;border-radius:26px;cursor:pointer;transition:all 0.3s;box-shadow:0 4px 16px rgba(124,58,237,0.3)}
 .btn-next.show{display:block;animation:fadeIn 0.3s ease}
 .btn-next:hover{transform:scale(1.06)}
 
-/* ========== PHASE COMPLETE ========== */
 #phase-complete{background:linear-gradient(180deg,#fdf4ff,#f3e8ff,#a855f7);text-align:center;gap:16px}
 #phase-complete .big-icon{font-size:90px;animation:float 1.5s ease-in-out infinite}
 #phase-complete h2{font-family:'Fredoka One',cursive;font-size:1.8em;color:#fff;text-shadow:2px 2px 0 rgba(126,34,206,0.3)}
 #phase-complete .stars-earned{font-size:52px;letter-spacing:8px;margin:8px 0}
 #phase-complete .score-text{font-size:1.15em;color:#fdf4ff;font-weight:700}
-.btn-continue{
-  font-family:'Fredoka One',cursive;font-size:1.2em;padding:14px 44px;
-  background:linear-gradient(135deg,var(--gold),#f59e0b);color:#fff;
-  border:none;border-radius:50px;cursor:pointer;transition:all 0.3s;
-  box-shadow:0 6px 20px rgba(245,158,11,0.4);letter-spacing:0.5px;
-}
+.btn-continue{font-family:'Fredoka One',cursive;font-size:1.2em;padding:14px 44px;background:linear-gradient(135deg,var(--gold),#f59e0b);color:#fff;border:none;border-radius:50px;cursor:pointer;transition:all 0.3s;box-shadow:0 6px 20px rgba(245,158,11,0.4);letter-spacing:0.5px}
 .btn-continue:hover{transform:scale(1.08)}
 
-/* ========== FINAL ========== */
 #final{background:linear-gradient(180deg,#fdf4ff,#e879f9,#a21caf,#6d28d9);text-align:center;gap:16px}
 #final .trophy{font-size:100px;animation:float 1.5s ease-in-out infinite}
 #final h2{font-family:'Fredoka One',cursive;font-size:2.2em;color:#fff;text-shadow:2px 2px 0 rgba(0,0,0,0.2)}
 #final .total-stars{font-size:48px;letter-spacing:8px;margin:8px 0}
 #final .final-msg{font-size:1.1em;color:#fdf4ff;max-width:400px;line-height:1.6;font-weight:700;text-shadow:1px 1px 0 rgba(0,0,0,0.15)}
-.btn-replay{
-  font-family:'Fredoka One',cursive;font-size:1.2em;padding:14px 44px;
-  background:linear-gradient(135deg,var(--gold),#f59e0b);color:#fff;
-  border:none;border-radius:50px;cursor:pointer;transition:all 0.3s;
-  box-shadow:0 6px 20px rgba(245,158,11,0.35);
-}
+.btn-replay{font-family:'Fredoka One',cursive;font-size:1.2em;padding:14px 44px;background:linear-gradient(135deg,var(--gold),#f59e0b);color:#fff;border:none;border-radius:50px;cursor:pointer;transition:all 0.3s;box-shadow:0 6px 20px rgba(245,158,11,0.35)}
 .btn-replay:hover{transform:scale(1.08)}
 
-/* ========== CONFETTI ========== */
 .confetti-container{position:fixed;inset:0;pointer-events:none;z-index:999;overflow:hidden}
 .confetti{position:absolute;width:10px;height:10px;top:-10px;animation:confettiFall linear forwards}
-@keyframes confettiFall{
-  0%{transform:translateY(0) rotate(0deg);opacity:1}
-  100%{transform:translateY(100vh) rotate(720deg);opacity:0}
-}
+@keyframes confettiFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
 
-/* ========== RESPONSIVE ========== */
 @media(max-width:500px){
   .luna-logo{font-size:80px}
   #intro h1{font-size:1.8em}
   .question-text{font-size:1em}
-  .question-highlight{font-size:1.3em}
+  .question-highlight{font-size:1.2em}
   .options-grid{grid-template-columns:1fr}
   .phase-card{padding:14px}
   .phase-icon{font-size:40px}
@@ -215,7 +130,6 @@ body{
 </head>
 <body>
 
-<!-- INTRO -->
 <div id="intro" class="screen active">
   <div class="stars-deco">✨ 🌟 ✨</div>
   <div class="luna-logo">🦄</div>
@@ -225,14 +139,12 @@ body{
   <button class="btn-play" onclick="startGame()">✨ Vamos Jogar! ✨</button>
 </div>
 
-<!-- MAP -->
 <div id="map" class="screen">
   <h2>🗺️ Mapa Mágico</h2>
   <p class="map-sub">Escolha um reino para jogar!</p>
   <div class="map-container" id="map-container"></div>
 </div>
 
-<!-- GAME -->
 <div id="game" class="screen">
   <div class="game-header">
     <span class="phase-title" id="phase-title"></span>
@@ -253,7 +165,6 @@ body{
   </div>
 </div>
 
-<!-- PHASE COMPLETE -->
 <div id="phase-complete" class="screen">
   <div class="big-icon">🎉</div>
   <h2 id="phase-complete-title"></h2>
@@ -262,7 +173,6 @@ body{
   <button class="btn-continue" id="btn-phase-continue" onclick="continueAfterPhase()">Continuar ➜</button>
 </div>
 
-<!-- FINAL -->
 <div id="final" class="screen">
   <div class="trophy">🏆</div>
   <h2 id="final-title">Parabéns!</h2>
@@ -274,339 +184,653 @@ body{
 <div class="confetti-container" id="confetti-container"></div>
 
 <script>
-// ========== GAME STATE ==========
 const state = {
-  currentPhase: 0,
-  currentQuestion: 0,
-  phaseScores: [0, 0, 0],
-  phaseTotal: [0, 0, 0],
-  phaseStars: [0, 0, 0],
-  questions: [],
-  answered: false,
+  currentPhase: 0, currentQuestion: 0,
+  phaseScores: [0,0,0], phaseTotal: [0,0,0], phaseStars: [0,0,0],
+  questions: [], answered: false,
 };
 
-// ========== PHASE DEFINITIONS ==========
 const phases = [
-  {
-    name: 'Jardim dos Adjetivos',
-    subtitle: 'Palavras que descrevem!',
-    icon: '🌸',
-    sceneClass: 'scene-garden',
-    sceneItems: ['🌸','🌺','🌼','🦋','🌷','🌻','🌈','🍃'],
-    bgGradient: 'linear-gradient(180deg,#fdf2f8,#fce7f3,#fbcfe8)',
-  },
-  {
-    name: 'Floresta dos Substantivos',
-    subtitle: 'Nomes próprios e comuns!',
-    icon: '🌲',
-    sceneClass: 'scene-forest',
-    sceneItems: ['🌿','🍄','🦋','🌸','🌳','🍃','✨','🌟'],
-    bgGradient: 'linear-gradient(180deg,#f5f3ff,#ede9fe,#ddd6fe)',
-  },
-  {
-    name: 'Castelo dos Artigos',
-    subtitle: 'Definidos e indefinidos!',
-    icon: '🏰',
-    sceneClass: 'scene-castle',
-    sceneItems: ['⭐','✨','🌟','💫','👑','💎','🏰','🌈'],
-    bgGradient: 'linear-gradient(180deg,#fffbeb,#fef3c7,#fde68a)',
-  },
+  { name:'Jardim dos Adjetivos', subtitle:'Palavras que descrevem!', icon:'🌸', sceneClass:'scene-garden', sceneItems:['🌸','🌺','🌼','🦋','🌷','🌻','🌈','🍃'], bgGradient:'linear-gradient(180deg,#fdf2f8,#fce7f3,#fbcfe8)' },
+  { name:'Floresta dos Substantivos', subtitle:'Nomes próprios e comuns!', icon:'🌲', sceneClass:'scene-forest', sceneItems:['🌿','🍄','🦋','🌸','🌳','🍃','✨','🌟'], bgGradient:'linear-gradient(180deg,#f5f3ff,#ede9fe,#ddd6fe)' },
+  { name:'Castelo dos Artigos', subtitle:'Definidos e indefinidos!', icon:'🏰', sceneClass:'scene-castle', sceneItems:['⭐','✨','🌟','💫','👑','💎','🏰','🌈'], bgGradient:'linear-gradient(180deg,#fffbeb,#fef3c7,#fde68a)' },
 ];
 
-// ========== QUESTÕES ==========
-
+// ========== BANCO: 50 QUESTÕES DE ADJETIVOS ==========
 const questoesAdjetivos = [
-  {
-    tipo: '🌸 Adjetivos',
-    texto: 'O que é um ADJETIVO?',
-    destaque: null,
-    opcoes: [
-      'Uma palavra que dá nome a uma pessoa',
-      'Uma palavra que descreve como algo ou alguém é',
-      'Uma palavra que indica uma ação',
-      'Um artigo como "o" ou "a"'
-    ],
-    correta: 1,
-    feedbackCerto: 'Isso mesmo! O adjetivo é a palavra que descreve ou caracteriza algo. Por exemplo: bonito, mágico, feliz, grande! 🌸',
-    feedbackErrado: 'O adjetivo é a palavra que descreve como algo ou alguém é. Ex: o unicórnio MÁGICO — "mágico" é o adjetivo! 🦄',
-  },
-  {
-    tipo: '🌸 Adjetivos',
-    texto: 'Na frase abaixo, qual é o ADJETIVO?',
-    destaque: '"A fada gentil ajudou a princesa."',
-    opcoes: ['fada', 'gentil', 'ajudou', 'princesa'],
-    correta: 1,
-    feedbackCerto: 'Perfeito! "Gentil" é o adjetivo porque descreve como a fada é! 🧚',
-    feedbackErrado: '"Gentil" é o adjetivo — ele descreve como a fada é! "Fada" e "princesa" são substantivos. "Ajudou" é uma ação.',
-  },
-  {
-    tipo: '🌸 Adjetivos',
-    texto: 'Qual dessas palavras é um ADJETIVO?',
-    destaque: null,
-    opcoes: ['correu', 'escola', 'colorida', 'Maria'],
-    correta: 2,
-    feedbackCerto: 'Muito bem! "Colorida" é um adjetivo porque descreve como algo é! 🌈',
-    feedbackErrado: '"Colorida" é o adjetivo! "Correu" é uma ação, "escola" e "Maria" são nomes.',
-  },
-  {
-    tipo: '🌸 Adjetivos',
-    texto: 'Qual palavra é um ADJETIVO?',
-    destaque: null,
-    opcoes: ['borboleta', 'voar', 'delicada', 'jardim'],
-    correta: 2,
-    feedbackCerto: '"Delicada" é um adjetivo! Ela descreve como algo é. 🦋',
-    feedbackErrado: '"Delicada" é o adjetivo! "Borboleta" e "jardim" são nomes; "voar" é uma ação.',
-  },
-  {
-    tipo: '🌸 Adjetivos',
-    texto: 'Na frase abaixo, qual é o ADJETIVO?',
-    destaque: '"O unicórnio mágico apareceu no jardim."',
-    opcoes: ['unicórnio', 'mágico', 'apareceu', 'jardim'],
-    correta: 1,
-    feedbackCerto: 'Isso! "Mágico" descreve como o unicórnio é — então é um adjetivo! 🦄✨',
-    feedbackErrado: '"Mágico" é o adjetivo porque descreve o unicórnio. "Unicórnio" e "jardim" são nomes; "apareceu" é ação.',
-  },
-  {
-    tipo: '🌸 Adjetivos',
-    texto: 'Quantos ADJETIVOS há na frase?',
-    destaque: '"O dragão era enorme e assustador."',
-    opcoes: ['0', '1', '2', '3'],
-    correta: 2,
-    feedbackCerto: 'Exato! "Enorme" e "assustador" são os dois adjetivos da frase! 🐉',
-    feedbackErrado: 'Há 2 adjetivos: "enorme" e "assustador"! Ambos descrevem como o dragão é.',
-  },
-  {
-    tipo: '🌸 Adjetivos',
-    texto: 'Quais são os ADJETIVOS na frase?',
-    destaque: '"A menina feliz ganhou um presente lindo."',
-    opcoes: ['menina e presente', 'feliz e lindo', 'ganhou e lindo', 'menina e feliz'],
-    correta: 1,
-    feedbackCerto: 'Perfeito! "Feliz" descreve a menina e "lindo" descreve o presente! Os dois são adjetivos! 🎁',
-    feedbackErrado: '"Feliz" e "lindo" são os adjetivos! "Menina" e "presente" são nomes (substantivos), e "ganhou" é ação.',
-  },
-  {
-    tipo: '🌸 Adjetivos',
-    texto: 'Qual frase tem um ADJETIVO?',
-    destaque: null,
-    opcoes: [
-      'O gato correu muito.',
-      'A flor é linda.',
-      'Ela pulou e caiu.',
-      'O sol brilhou.'
-    ],
-    correta: 1,
-    feedbackCerto: '"Linda" na frase "A flor é linda" é um adjetivo que descreve a flor! 🌸',
-    feedbackErrado: '"A flor é linda" tem o adjetivo "linda", que descreve como a flor é!',
-  },
-  {
-    tipo: '🌸 Adjetivos',
-    texto: 'Quais são os ADJETIVOS na frase?',
-    destaque: '"Luna é uma unicórnio corajosa e alegre."',
-    opcoes: ['Luna e unicórnio', 'corajosa e alegre', 'uma e corajosa', 'unicórnio e alegre'],
-    correta: 1,
-    feedbackCerto: 'Arrasou! "Corajosa" e "alegre" descrevem a Luna — os dois são adjetivos! 🦄💜',
-    feedbackErrado: '"Corajosa" e "alegre" são os adjetivos! Eles descrevem como a Luna é. "Luna" e "unicórnio" são nomes.',
-  },
-  {
-    tipo: '🌸 Adjetivos',
-    texto: 'Escolha o adjetivo que pode descrever o unicórnio:',
-    destaque: 'O unicórnio é ___.',
-    opcoes: ['correu', 'floresta', 'brilhante', 'saltou'],
-    correta: 2,
-    feedbackCerto: '"Brilhante" descreve como o unicórnio é — portanto é um adjetivo! ✨',
-    feedbackErrado: '"Brilhante" é o adjetivo! "Correu" e "saltou" são ações, "floresta" é um nome.',
-  },
+  { tipo:'🌸 Adjetivos', texto:'O que é um ADJETIVO?', destaque:null,
+    opcoes:['Uma palavra que dá nome a uma pessoa','Uma palavra que descreve como algo ou alguém é','Uma palavra que indica uma ação','Um artigo como "o" ou "a"'],
+    correta:1, feedbackCerto:'Isso! O adjetivo descreve ou caracteriza algo. Ex: bonito, mágico, feliz, grande! 🌸', feedbackErrado:'O adjetivo descreve como algo ou alguém é. Ex: o unicórnio MÁGICO — "mágico" é o adjetivo! 🦄' },
+
+  { tipo:'🌸 Adjetivos', texto:'Na frase abaixo, qual é o ADJETIVO?', destaque:'"A fada gentil ajudou a princesa."',
+    opcoes:['fada','gentil','ajudou','princesa'],
+    correta:1, feedbackCerto:'Perfeito! "Gentil" descreve como a fada é — é o adjetivo! 🧚', feedbackErrado:'"Gentil" é o adjetivo! "Fada" e "princesa" são nomes; "ajudou" é uma ação.' },
+
+  { tipo:'🌸 Adjetivos', texto:'Qual dessas palavras é um ADJETIVO?', destaque:null,
+    opcoes:['correu','escola','colorida','Maria'],
+    correta:2, feedbackCerto:'"Colorida" é um adjetivo! Descreve como algo é! 🌈', feedbackErrado:'"Colorida" é o adjetivo! "Correu" é ação; "escola" e "Maria" são nomes.' },
+
+  { tipo:'🌸 Adjetivos', texto:'Qual palavra é um ADJETIVO?', destaque:null,
+    opcoes:['borboleta','voar','delicada','jardim'],
+    correta:2, feedbackCerto:'"Delicada" é um adjetivo! Ela descreve como algo é. 🦋', feedbackErrado:'"Delicada" é o adjetivo! "Borboleta" e "jardim" são nomes; "voar" é ação.' },
+
+  { tipo:'🌸 Adjetivos', texto:'Na frase abaixo, qual é o ADJETIVO?', destaque:'"O unicórnio mágico apareceu no jardim."',
+    opcoes:['unicórnio','mágico','apareceu','jardim'],
+    correta:1, feedbackCerto:'"Mágico" descreve o unicórnio — é o adjetivo! 🦄✨', feedbackErrado:'"Mágico" é o adjetivo! "Unicórnio" e "jardim" são nomes; "apareceu" é ação.' },
+
+  { tipo:'🌸 Adjetivos', texto:'Quantos ADJETIVOS há na frase?', destaque:'"O dragão era enorme e assustador."',
+    opcoes:['0','1','2','3'],
+    correta:2, feedbackCerto:'"Enorme" e "assustador" — dois adjetivos que descrevem o dragão! 🐉', feedbackErrado:'Há 2 adjetivos: "enorme" e "assustador"! Ambos descrevem como o dragão é.' },
+
+  { tipo:'🌸 Adjetivos', texto:'Quais são os ADJETIVOS na frase?', destaque:'"A menina feliz ganhou um presente lindo."',
+    opcoes:['menina e presente','feliz e lindo','ganhou e lindo','menina e feliz'],
+    correta:1, feedbackCerto:'"Feliz" descreve a menina e "lindo" descreve o presente! 🎁', feedbackErrado:'"Feliz" e "lindo" são os adjetivos! "Menina" e "presente" são nomes; "ganhou" é ação.' },
+
+  { tipo:'🌸 Adjetivos', texto:'Qual frase tem um ADJETIVO?', destaque:null,
+    opcoes:['O gato correu muito.','A flor é linda.','Ela pulou e caiu.','O sol brilhou.'],
+    correta:1, feedbackCerto:'"Linda" descreve a flor — é o adjetivo! 🌸', feedbackErrado:'"A flor é linda" tem o adjetivo "linda"! Nas outras frases não há adjetivos.' },
+
+  { tipo:'🌸 Adjetivos', texto:'Quais são os ADJETIVOS na frase?', destaque:'"Luna é uma unicórnio corajosa e alegre."',
+    opcoes:['Luna e unicórnio','corajosa e alegre','uma e corajosa','unicórnio e alegre'],
+    correta:1, feedbackCerto:'"Corajosa" e "alegre" descrevem a Luna — os dois são adjetivos! 🦄💜', feedbackErrado:'"Corajosa" e "alegre" são os adjetivos! "Luna" e "unicórnio" são nomes.' },
+
+  { tipo:'🌸 Adjetivos', texto:'Escolha a palavra que completa a frase com um ADJETIVO:', destaque:'"O unicórnio é ___."',
+    opcoes:['correu','floresta','brilhante','saltou'],
+    correta:2, feedbackCerto:'"Brilhante" descreve como o unicórnio é — é um adjetivo! ✨', feedbackErrado:'"Brilhante" é o adjetivo! "Correu" e "saltou" são ações; "floresta" é um nome.' },
+
+  { tipo:'🌸 Adjetivos', texto:'Quais são os ADJETIVOS na frase?', destaque:'"O céu estava azul e limpo."',
+    opcoes:['céu e limpo','azul e limpo','estava e azul','céu e azul'],
+    correta:1, feedbackCerto:'"Azul" e "limpo" descrevem como o céu estava — são adjetivos! 🌤️', feedbackErrado:'"Azul" e "limpo" são os adjetivos! "Céu" é substantivo; "estava" é ação.' },
+
+  { tipo:'🌸 Adjetivos', texto:'Qual é o CONTRÁRIO do adjetivo "triste"?', destaque:null,
+    opcoes:['bonito','alto','feliz','rápido'],
+    correta:2, feedbackCerto:'Isso! O contrário de "triste" é "feliz"! Os dois são adjetivos de sentimento! 😊', feedbackErrado:'O contrário de "triste" é "feliz"! "Bonito", "alto" e "rápido" são adjetivos, mas descrevem outras coisas.' },
+
+  { tipo:'🌸 Adjetivos', texto:'Quais são os ADJETIVOS na frase?', destaque:'"A princesa tinha cabelos longos e dourados."',
+    opcoes:['princesa e cabelos','longos e dourados','tinha e dourados','cabelos e longos'],
+    correta:1, feedbackCerto:'"Longos" e "dourados" descrevem os cabelos! 👸', feedbackErrado:'"Longos" e "dourados" são os adjetivos! "Princesa" e "cabelos" são nomes; "tinha" é ação.' },
+
+  { tipo:'🌸 Adjetivos', texto:'Qual dessas frases NÃO tem adjetivo?', destaque:null,
+    opcoes:['A gatinha é fofa.','O pássaro voou.','O gato é preto.','A fada é gentil.'],
+    correta:1, feedbackCerto:'"O pássaro voou" não tem adjetivo! "Voou" é uma ação, não descreve como o pássaro é. 🐦', feedbackErrado:'"O pássaro voou" não tem adjetivo! "Fofa", "preto" e "gentil" são adjetivos nas outras frases.' },
+
+  { tipo:'🌸 Adjetivos', texto:'Qual adjetivo descreve um TAMANHO?', destaque:null,
+    opcoes:['feliz','enorme','correu','escola'],
+    correta:1, feedbackCerto:'"Enorme" é um adjetivo de tamanho! Descreve que algo é muito grande! 🐘', feedbackErrado:'"Enorme" é o adjetivo de tamanho! "Feliz" é sentimento; "correu" é ação; "escola" é substantivo.' },
+
+  { tipo:'🌸 Adjetivos', texto:'Quais são os ADJETIVOS na frase?', destaque:'"A borboleta colorida pousou na flor perfumada."',
+    opcoes:['borboleta e flor','colorida e perfumada','pousou e colorida','borboleta e colorida'],
+    correta:1, feedbackCerto:'"Colorida" descreve a borboleta e "perfumada" descreve a flor! 🦋🌺', feedbackErrado:'"Colorida" e "perfumada" são os adjetivos! "Borboleta" e "flor" são nomes; "pousou" é ação.' },
+
+  { tipo:'🌸 Adjetivos', texto:'Que tipo de palavra é "frio" na frase?', destaque:'"O sorvete está frio."',
+    opcoes:['substantivo','verbo','adjetivo','artigo'],
+    correta:2, feedbackCerto:'"Frio" é um adjetivo! Descreve como o sorvete está! 🍦', feedbackErrado:'"Frio" é um adjetivo! "Sorvete" é substantivo; "está" é verbo.' },
+
+  { tipo:'🌸 Adjetivos', texto:'Qual lista tem SOMENTE adjetivos?', destaque:null,
+    opcoes:['casa, gato, flor','correr, pular, voar','bonito, feliz, grande','o, a, um'],
+    correta:2, feedbackCerto:'"Bonito, feliz, grande" — todos descrevem como algo é! São adjetivos! 🌟', feedbackErrado:'"Bonito, feliz, grande" é a lista de adjetivos! As outras têm substantivos, verbos ou artigos.' },
+
+  { tipo:'🌸 Adjetivos', texto:'Quais são os ADJETIVOS na frase?', destaque:'"O unicórnio tinha chifre dourado e juba rosa."',
+    opcoes:['chifre e juba','dourado e rosa','tinha e dourado','unicórnio e juba'],
+    correta:1, feedbackCerto:'"Dourado" descreve o chifre e "rosa" descreve a juba! 🦄🌸', feedbackErrado:'"Dourado" e "rosa" são os adjetivos! "Chifre", "juba" e "unicórnio" são nomes.' },
+
+  { tipo:'🌸 Adjetivos', texto:'Escolha a palavra que completa a frase com um ADJETIVO:', destaque:'"O chocolate é ___."',
+    opcoes:['correu','mesa','gostoso','pulou'],
+    correta:2, feedbackCerto:'"Gostoso" descreve como o chocolate é — é um adjetivo! 🍫', feedbackErrado:'"Gostoso" é o adjetivo! "Correu" e "pulou" são ações; "mesa" é um nome.' },
+
+  { tipo:'🌸 Adjetivos', texto:'Qual é o ADJETIVO na frase?', destaque:'"A fada usou um vestido azul."',
+    opcoes:['fada','usou','vestido','azul'],
+    correta:3, feedbackCerto:'"Azul" descreve a cor do vestido — é o adjetivo! 💙', feedbackErrado:'"Azul" é o adjetivo! "Fada" e "vestido" são nomes; "usou" é ação.' },
+
+  { tipo:'🌸 Adjetivos', texto:'Qual é o ADJETIVO na frase?', destaque:'"O cachorro pequeno dormia na cama."',
+    opcoes:['cachorro','pequeno','dormia','cama'],
+    correta:1, feedbackCerto:'"Pequeno" descreve o tamanho do cachorro — é o adjetivo! 🐶', feedbackErrado:'"Pequeno" é o adjetivo! "Cachorro" e "cama" são nomes; "dormia" é ação.' },
+
+  { tipo:'🌸 Adjetivos', texto:'Quantos ADJETIVOS há na frase?', destaque:'"A fada simpática e bondosa voou pelo céu roxo."',
+    opcoes:['1','2','3','4'],
+    correta:2, feedbackCerto:'Há 3 adjetivos: "simpática", "bondosa" e "roxo"! 🧚‍♀️', feedbackErrado:'"Simpática" (descreve a fada), "bondosa" (descreve a fada) e "roxo" (descreve o céu) = 3 adjetivos!' },
+
+  { tipo:'🌸 Adjetivos', texto:'Qual é o ADJETIVO na frase?', destaque:'"O gatinho preguiçoso dormia no sofá."',
+    opcoes:['gatinho','preguiçoso','dormia','sofá'],
+    correta:1, feedbackCerto:'"Preguiçoso" descreve como o gatinho é — é o adjetivo! 😴', feedbackErrado:'"Preguiçoso" é o adjetivo! "Gatinho" e "sofá" são nomes; "dormia" é ação.' },
+
+  { tipo:'🌸 Adjetivos', texto:'Qual dessas palavras é um ADJETIVO?', destaque:null,
+    opcoes:['pular','caderno','divertida','árvore'],
+    correta:2, feedbackCerto:'"Divertida" é um adjetivo! Descreve como algo ou alguém é! 🎉', feedbackErrado:'"Divertida" é o adjetivo! "Pular" é ação; "caderno" e "árvore" são nomes.' },
+
+  { tipo:'🌸 Adjetivos', texto:'Quais são os ADJETIVOS na frase?', destaque:'"A lua estava cheia e brilhante."',
+    opcoes:['lua e brilhante','cheia e brilhante','estava e cheia','lua e cheia'],
+    correta:1, feedbackCerto:'"Cheia" e "brilhante" descrevem a lua — os dois são adjetivos! 🌕', feedbackErrado:'"Cheia" e "brilhante" são os adjetivos! "Lua" é substantivo; "estava" é ação.' },
+
+  { tipo:'🌸 Adjetivos', texto:'Qual é o CONTRÁRIO do adjetivo "bonito"?', destaque:null,
+    opcoes:['feio','alto','rápido','forte'],
+    correta:0, feedbackCerto:'Isso! O contrário de "bonito" é "feio"! Os dois são adjetivos! 🔄', feedbackErrado:'O contrário de "bonito" é "feio"! "Alto", "rápido" e "forte" são adjetivos, mas com outros significados.' },
+
+  { tipo:'🌸 Adjetivos', texto:'Quantos ADJETIVOS há na frase?', destaque:'"A unicórnio tinha asas grandes e coloridas."',
+    opcoes:['0','1','2','3'],
+    correta:2, feedbackCerto:'"Grandes" e "coloridas" — dois adjetivos que descrevem as asas! 🦄', feedbackErrado:'Há 2 adjetivos: "grandes" (tamanho das asas) e "coloridas" (como são as asas).' },
+
+  { tipo:'🌸 Adjetivos', texto:'Qual dessas palavras NÃO é um adjetivo?', destaque:null,
+    opcoes:['forte','alegre','correr','pequeno'],
+    correta:2, feedbackCerto:'"Correr" não é adjetivo — é uma ação (verbo)! Adjetivos descrevem, verbos indicam ações! 🏃', feedbackErrado:'"Correr" não é adjetivo! "Forte", "alegre" e "pequeno" são adjetivos; "correr" é uma ação.' },
+
+  { tipo:'🌸 Adjetivos', texto:'Escolha a palavra que completa a frase com um ADJETIVO:', destaque:'"A noite estava ___."',
+    opcoes:['correu','jardim','estrelada','pulo'],
+    correta:2, feedbackCerto:'"Estrelada" descreve como a noite estava — é um adjetivo! ⭐', feedbackErrado:'"Estrelada" é o adjetivo! "Correu" e "pulo" são ações; "jardim" é um nome.' },
+
+  { tipo:'🌸 Adjetivos', texto:'Quais são os ADJETIVOS na frase?', destaque:'"O peixe dourado nadava no lago azul."',
+    opcoes:['peixe e lago','dourado e azul','nadava e azul','peixe e dourado'],
+    correta:1, feedbackCerto:'"Dourado" descreve o peixe e "azul" descreve o lago — adjetivos! 🐟', feedbackErrado:'"Dourado" e "azul" são os adjetivos! "Peixe" e "lago" são nomes; "nadava" é ação.' },
+
+  { tipo:'🌸 Adjetivos', texto:'Qual dessas palavras é um ADJETIVO?', destaque:null,
+    opcoes:['cantar','livro','caprichosa','Pedro'],
+    correta:2, feedbackCerto:'"Caprichosa" é um adjetivo! Descreve como alguém é! 🌟', feedbackErrado:'"Caprichosa" é o adjetivo! "Cantar" é ação; "livro" e "Pedro" são nomes.' },
+
+  { tipo:'🌸 Adjetivos', texto:'Quais são os ADJETIVOS na frase?', destaque:'"A bruxa malvada lançou um feitiço terrível."',
+    opcoes:['bruxa e feitiço','malvada e terrível','lançou e terrível','bruxa e malvada'],
+    correta:1, feedbackCerto:'"Malvada" descreve a bruxa e "terrível" descreve o feitiço! 🧙‍♀️', feedbackErrado:'"Malvada" e "terrível" são os adjetivos! "Bruxa" e "feitiço" são nomes; "lançou" é ação.' },
+
+  { tipo:'🌸 Adjetivos', texto:'Qual é o CONTRÁRIO do adjetivo "frio"?', destaque:null,
+    opcoes:['bonito','molhado','quente','verde'],
+    correta:2, feedbackCerto:'Isso! O contrário de "frio" é "quente"! Os dois descrevem temperatura! 🌡️', feedbackErrado:'O contrário de "frio" é "quente"! "Bonito", "molhado" e "verde" são adjetivos com outros significados.' },
+
+  { tipo:'🌸 Adjetivos', texto:'O adjetivo pode descrever:', destaque:null,
+    opcoes:['Somente pessoas','Somente animais','Pessoas, animais e coisas','Somente ações'],
+    correta:2, feedbackCerto:'Isso! O adjetivo pode descrever qualquer coisa: pessoas, animais e objetos! 🌍', feedbackErrado:'O adjetivo descreve pessoas, animais E coisas! Ex: menino feliz, gato preto, casa grande.' },
+
+  { tipo:'🌸 Adjetivos', texto:'Qual lista tem SOMENTE adjetivos?', destaque:null,
+    opcoes:['triste, alegre, bonito','casa, mesa, porta','correr, pular, voar','o, a, um'],
+    correta:0, feedbackCerto:'"Triste, alegre, bonito" — todos descrevem como algo é! São adjetivos! 🌈', feedbackErrado:'"Triste, alegre, bonito" é a lista de adjetivos! Cada um descreve um sentimento ou característica.' },
+
+  { tipo:'🌸 Adjetivos', texto:'Quantos ADJETIVOS há na frase?', destaque:'"A flor pequena era perfumada e delicada."',
+    opcoes:['0','1','2','3'],
+    correta:3, feedbackCerto:'Há 3 adjetivos: "pequena", "perfumada" e "delicada"! Todos descrevem a flor! 🌺', feedbackErrado:'"Pequena" (tamanho), "perfumada" (cheiro) e "delicada" (como é) = 3 adjetivos!' },
+
+  { tipo:'🌸 Adjetivos', texto:'Qual é o CONTRÁRIO do adjetivo "grande"?', destaque:null,
+    opcoes:['bonito','rápido','pequeno','alegre'],
+    correta:2, feedbackCerto:'Isso! O contrário de "grande" é "pequeno"! Os dois descrevem tamanho! 📏', feedbackErrado:'O contrário de "grande" é "pequeno"! "Bonito", "rápido" e "alegre" são adjetivos com outros significados.' },
+
+  { tipo:'🌸 Adjetivos', texto:'Quais são os ADJETIVOS na frase?', destaque:'"O menino tímido e estudioso ganhou o prêmio."',
+    opcoes:['menino e prêmio','tímido e estudioso','ganhou e estudioso','menino e tímido'],
+    correta:1, feedbackCerto:'"Tímido" e "estudioso" descrevem o menino — são adjetivos! 🏅', feedbackErrado:'"Tímido" e "estudioso" são os adjetivos! "Menino" e "prêmio" são nomes; "ganhou" é ação.' },
+
+  { tipo:'🌸 Adjetivos', texto:'Qual dessas palavras é um ADJETIVO?', destaque:null,
+    opcoes:['borracha','voar','floresta','assustador'],
+    correta:3, feedbackCerto:'"Assustador" é um adjetivo! Descreve como algo é! 😱', feedbackErrado:'"Assustador" é o adjetivo! "Borracha" e "floresta" são nomes; "voar" é ação.' },
+
+  { tipo:'🌸 Adjetivos', texto:'Quais são os ADJETIVOS na frase?', destaque:'"A princesa usava um manto vermelho e lindo."',
+    opcoes:['princesa e manto','vermelho e lindo','usava e vermelho','manto e vermelho'],
+    correta:1, feedbackCerto:'"Vermelho" e "lindo" descrevem o manto — são adjetivos! 👸', feedbackErrado:'"Vermelho" e "lindo" são os adjetivos! "Princesa" e "manto" são nomes; "usava" é ação.' },
+
+  { tipo:'🌸 Adjetivos', texto:'Qual é o CONTRÁRIO do adjetivo "velho"?', destaque:null,
+    opcoes:['alto','novo','gordo','forte'],
+    correta:1, feedbackCerto:'Isso! O contrário de "velho" é "novo"! Os dois descrevem a idade ou estado de algo! 🔄', feedbackErrado:'O contrário de "velho" é "novo"! "Alto", "gordo" e "forte" são adjetivos com outros significados.' },
+
+  { tipo:'🌸 Adjetivos', texto:'Quais são os ADJETIVOS na frase?', destaque:'"O coelho fofo e branco pulou por cima da cerca."',
+    opcoes:['coelho e cerca','fofo e branco','pulou e fofo','coelho e fofo'],
+    correta:1, feedbackCerto:'"Fofo" e "branco" descrevem o coelho — são adjetivos! 🐰', feedbackErrado:'"Fofo" e "branco" são os adjetivos! "Coelho" e "cerca" são nomes; "pulou" é ação.' },
+
+  { tipo:'🌸 Adjetivos', texto:'Qual dessas palavras é um ADJETIVO?', destaque:null,
+    opcoes:['janela','voar','nadar','úmido'],
+    correta:3, feedbackCerto:'"Úmido" é um adjetivo! Descreve como algo é (molhado, com água)! 💧', feedbackErrado:'"Úmido" é o adjetivo! "Janela" é nome; "voar" e "nadar" são ações.' },
+
+  { tipo:'🌸 Adjetivos', texto:'Quais são os ADJETIVOS na frase?', destaque:'"A história era longa e emocionante."',
+    opcoes:['história e emocionante','longa e emocionante','era e longa','história e longa'],
+    correta:1, feedbackCerto:'"Longa" e "emocionante" descrevem a história — são adjetivos! 📖', feedbackErrado:'"Longa" e "emocionante" são os adjetivos! "História" é substantivo; "era" é ação.' },
+
+  { tipo:'🌸 Adjetivos', texto:'O adjetivo sempre descreve um:', destaque:null,
+    opcoes:['Verbo (ação)','Substantivo (nome)','Artigo','Outro adjetivo'],
+    correta:1, feedbackCerto:'Isso! O adjetivo sempre descreve um substantivo (nome)! Ex: flor LINDA, gato PRETO! 🌸', feedbackErrado:'O adjetivo descreve um SUBSTANTIVO (nome)! Ex: unicórnio MÁGICO — "mágico" descreve "unicórnio".' },
+
+  { tipo:'🌸 Adjetivos', texto:'Qual frase tem DOIS adjetivos?', destaque:null,
+    opcoes:['O gato dormiu.','A flor amarela é linda.','Ela pulou alto.','O vento soprou.'],
+    correta:1, feedbackCerto:'"A flor amarela é linda" tem dois adjetivos: "amarela" e "linda"! 🌼', feedbackErrado:'"A flor amarela é linda" tem dois adjetivos: "amarela" (cor da flor) e "linda" (como a flor é).' },
+
+  { tipo:'🌸 Adjetivos', texto:'Quais são os ADJETIVOS na frase?', destaque:'"O unicórnio veloz cruzou a montanha nevada."',
+    opcoes:['unicórnio e montanha','veloz e nevada','cruzou e nevada','unicórnio e veloz'],
+    correta:1, feedbackCerto:'"Veloz" descreve o unicórnio e "nevada" descreve a montanha! 🦄🏔️', feedbackErrado:'"Veloz" e "nevada" são os adjetivos! "Unicórnio" e "montanha" são nomes; "cruzou" é ação.' },
+
+  { tipo:'🌸 Adjetivos', texto:'Qual é o CONTRÁRIO do adjetivo "alto"?', destaque:null,
+    opcoes:['gordo','baixo','feio','lento'],
+    correta:1, feedbackCerto:'Isso! O contrário de "alto" é "baixo"! Os dois descrevem altura! 📐', feedbackErrado:'O contrário de "alto" é "baixo"! "Gordo", "feio" e "lento" são adjetivos com outros significados.' },
+
+  { tipo:'🌸 Adjetivos', texto:'Qual é o ADJETIVO na frase?', destaque:'"O cavalinho branco correu pela floresta."',
+    opcoes:['cavalinho','branco','correu','floresta'],
+    correta:1, feedbackCerto:'"Branco" descreve a cor do cavalinho — é o adjetivo! 🐴', feedbackErrado:'"Branco" é o adjetivo! "Cavalinho" e "floresta" são nomes; "correu" é ação.' },
+
+  { tipo:'🌸 Adjetivos', texto:'Quais são os ADJETIVOS na frase?', destaque:'"O jardim estava florido e perfumado."',
+    opcoes:['jardim e perfumado','florido e perfumado','estava e florido','jardim e florido'],
+    correta:1, feedbackCerto:'"Florido" e "perfumado" descrevem o jardim — são adjetivos! 🌷', feedbackErrado:'"Florido" e "perfumado" são os adjetivos! "Jardim" é substantivo; "estava" é ação.' },
+
+  { tipo:'🌸 Adjetivos', texto:'Qual dessas palavras é um ADJETIVO?', destaque:null,
+    opcoes:['piscina','sonhar','guloso','caminho'],
+    correta:2, feedbackCerto:'"Guloso" é um adjetivo! Descreve alguém que gosta muito de comer! 🍰', feedbackErrado:'"Guloso" é o adjetivo! "Piscina" e "caminho" são nomes; "sonhar" é ação.' },
+
+  { tipo:'🌸 Adjetivos', texto:'Na frase, qual é o ADJETIVO?', destaque:'"A maçã estava doce e saborosa."',
+    opcoes:['doce e saborosa','maçã e doce','estava e saborosa','maçã e saborosa'],
+    correta:0, feedbackCerto:'"Doce" e "saborosa" descrevem a maçã — são os dois adjetivos! 🍎', feedbackErrado:'"Doce" e "saborosa" são os adjetivos! Ambos descrevem como a maçã é. "Maçã" é substantivo.' },
+
+  { tipo:'🌸 Adjetivos', texto:'Quantos ADJETIVOS há na frase?', destaque:'"O castelo era alto, antigo e misterioso."',
+    opcoes:['1','2','3','4'],
+    correta:2, feedbackCerto:'Há 3 adjetivos: "alto", "antigo" e "misterioso"! Todos descrevem o castelo! 🏰', feedbackErrado:'"Alto" (tamanho), "antigo" (idade) e "misterioso" (como é) = 3 adjetivos!' },
 ];
 
+// ========== BANCO: 50 QUESTÕES DE SUBSTANTIVOS ==========
 const questoesSubstantivos = [
-  {
-    tipo: '🌲 Substantivos',
-    texto: 'O substantivo PRÓPRIO é:',
-    destaque: null,
-    opcoes: [
-      'O nome de qualquer ser vivo',
-      'O nome específico de uma pessoa, lugar ou animal',
-      'Uma palavra que descreve algo',
-      'O nome de uma ação'
-    ],
-    correta: 1,
-    feedbackCerto: 'Isso! O substantivo próprio é o nome específico, como "Sofia", "Brasil" ou "Bolinha"! 🌟',
-    feedbackErrado: 'O substantivo próprio é o nome específico de alguém ou de um lugar, como "Luna", "Brasil", "Pedro"!',
-  },
-  {
-    tipo: '🌲 Substantivos',
-    texto: 'Qual dessas palavras é um substantivo PRÓPRIO?',
-    destaque: null,
-    opcoes: ['cidade', 'menina', 'Isabela', 'cachorro'],
-    correta: 2,
-    feedbackCerto: '"Isabela" é um substantivo próprio! É o nome específico de uma pessoa, por isso começa com letra maiúscula! 💜',
-    feedbackErrado: '"Isabela" é o substantivo próprio! É um nome específico, com letra maiúscula. "Cidade", "menina" e "cachorro" são comuns.',
-  },
-  {
-    tipo: '🌲 Substantivos',
-    texto: 'Qual dessas palavras é um substantivo COMUM?',
-    destaque: null,
-    opcoes: ['Brasil', 'Maria', 'escola', 'Rio de Janeiro'],
-    correta: 2,
-    feedbackCerto: '"Escola" é um substantivo comum! Dá nome a qualquer escola, não a uma específica. 🏫',
-    feedbackErrado: '"Escola" é substantivo comum! "Brasil", "Maria" e "Rio de Janeiro" são próprios (nomes específicos).',
-  },
-  {
-    tipo: '🌲 Substantivos',
-    texto: 'Os substantivos PRÓPRIOS são escritos com letra:',
-    destaque: null,
-    opcoes: ['minúscula', 'MAIÚSCULA', 'pode ser qualquer uma', 'depende do tamanho'],
-    correta: 1,
-    feedbackCerto: 'Certo! Os substantivos próprios sempre começam com LETRA MAIÚSCULA! Ex: Luna, Ana, Brasil! 🌟',
-    feedbackErrado: 'Os substantivos próprios sempre começam com LETRA MAIÚSCULA! Ex: "Luna", "Pedro", "Amazonas".',
-  },
-  {
-    tipo: '🌲 Substantivos',
-    texto: 'Na frase, quais são os substantivos PRÓPRIOS?',
-    destaque: '"A menina Sofia tem um gato chamado Bolinha."',
-    opcoes: ['menina e gato', 'Sofia e Bolinha', 'Sofia e gato', 'menina e Sofia'],
-    correta: 1,
-    feedbackCerto: '"Sofia" e "Bolinha" são os substantivos próprios — nomes específicos com letra maiúscula! 🐱',
-    feedbackErrado: '"Sofia" e "Bolinha" são os próprios! "Menina" e "gato" são comuns (nomes genéricos).',
-  },
-  {
-    tipo: '🌲 Substantivos',
-    texto: 'Qual opção tem DOIS substantivos COMUNS?',
-    destaque: null,
-    opcoes: ['Pedro e João', 'cachorro e gato', 'Brasil e Portugal', 'Luna e Sol'],
-    correta: 1,
-    feedbackCerto: '"Cachorro" e "gato" são substantivos comuns! São nomes genéricos, escritos com minúscula! 🐾',
-    feedbackErrado: '"Cachorro" e "gato" são comuns! "Pedro", "João", "Brasil", "Portugal", "Luna" e "Sol" são próprios.',
-  },
-  {
-    tipo: '🌲 Substantivos',
-    texto: 'Na frase, qual é o substantivo PRÓPRIO?',
-    destaque: '"Pedro foi ao mercado comprar pão."',
-    opcoes: ['mercado', 'pão', 'Pedro', 'comprar'],
-    correta: 2,
-    feedbackCerto: '"Pedro" é o substantivo próprio! É o nome específico de uma pessoa! 👦',
-    feedbackErrado: '"Pedro" é o substantivo próprio! "Mercado" e "pão" são comuns, e "comprar" é uma ação.',
-  },
-  {
-    tipo: '🌲 Substantivos',
-    texto: 'Quais são os substantivos PRÓPRIOS na frase?',
-    destaque: '"O unicórnio Luna voou sobre o lago Cristal."',
-    opcoes: ['unicórnio e lago', 'Luna e Cristal', 'voou e lago', 'unicórnio e Luna'],
-    correta: 1,
-    feedbackCerto: '"Luna" e "Cristal" são os próprios! São nomes específicos com letra maiúscula! 🦄💎',
-    feedbackErrado: '"Luna" e "Cristal" são os próprios! "Unicórnio" e "lago" são substantivos comuns.',
-  },
-  {
-    tipo: '🌲 Substantivos',
-    texto: 'Qual dessas palavras é um substantivo COMUM?',
-    destaque: null,
-    opcoes: ['Amazônia', 'Vitória', 'floresta', 'Carlos'],
-    correta: 2,
-    feedbackCerto: '"Floresta" é um substantivo comum! Dá nome a qualquer floresta. 🌲',
-    feedbackErrado: '"Floresta" é substantivo comum! "Amazônia", "Vitória" e "Carlos" são próprios (nomes específicos).',
-  },
-  {
-    tipo: '🌲 Substantivos',
-    texto: 'A palavra "cachorro" é um substantivo:',
-    destaque: null,
-    opcoes: ['próprio', 'comum', 'adjetivo', 'artigo'],
-    correta: 1,
-    feedbackCerto: '"Cachorro" é um substantivo COMUM! É o nome genérico do animal, não o nome específico dele! 🐶',
-    feedbackErrado: '"Cachorro" é substantivo COMUM! Se fosse "Rex" ou "Bolinha", aí sim seria próprio!',
-  },
+  { tipo:'🌲 Substantivos', texto:'O substantivo PRÓPRIO é:', destaque:null,
+    opcoes:['O nome de qualquer ser vivo','O nome específico de uma pessoa, lugar ou animal','Uma palavra que descreve algo','O nome de uma ação'],
+    correta:1, feedbackCerto:'Isso! O substantivo próprio é o nome específico, como "Sofia", "Brasil" ou "Bolinha"! 🌟', feedbackErrado:'O substantivo próprio é o nome específico de alguém ou de um lugar, como "Luna", "Brasil", "Pedro"!' },
+
+  { tipo:'🌲 Substantivos', texto:'Qual dessas palavras é um substantivo PRÓPRIO?', destaque:null,
+    opcoes:['cidade','menina','Isabela','cachorro'],
+    correta:2, feedbackCerto:'"Isabela" é um substantivo próprio! É o nome específico de uma pessoa, com letra maiúscula! 💜', feedbackErrado:'"Isabela" é o substantivo próprio! "Cidade", "menina" e "cachorro" são nomes comuns.' },
+
+  { tipo:'🌲 Substantivos', texto:'Qual dessas palavras é um substantivo COMUM?', destaque:null,
+    opcoes:['Brasil','Maria','escola','Rio de Janeiro'],
+    correta:2, feedbackCerto:'"Escola" é um substantivo comum! Dá nome a qualquer escola, não a uma específica. 🏫', feedbackErrado:'"Escola" é substantivo comum! "Brasil", "Maria" e "Rio de Janeiro" são próprios.' },
+
+  { tipo:'🌲 Substantivos', texto:'Os substantivos PRÓPRIOS são escritos com letra:', destaque:null,
+    opcoes:['minúscula','MAIÚSCULA','pode ser qualquer uma','depende do tamanho'],
+    correta:1, feedbackCerto:'Certo! Os substantivos próprios sempre começam com LETRA MAIÚSCULA! 🌟', feedbackErrado:'Os substantivos próprios sempre começam com LETRA MAIÚSCULA! Ex: "Luna", "Pedro", "Amazonas".' },
+
+  { tipo:'🌲 Substantivos', texto:'Quais são os substantivos PRÓPRIOS na frase?', destaque:'"A menina Sofia tem um gato chamado Bolinha."',
+    opcoes:['menina e gato','Sofia e Bolinha','Sofia e gato','menina e Sofia'],
+    correta:1, feedbackCerto:'"Sofia" e "Bolinha" são os substantivos próprios — nomes específicos! 🐱', feedbackErrado:'"Sofia" e "Bolinha" são os próprios! "Menina" e "gato" são comuns.' },
+
+  { tipo:'🌲 Substantivos', texto:'Qual opção tem DOIS substantivos COMUNS?', destaque:null,
+    opcoes:['Pedro e João','cachorro e gato','Brasil e Portugal','Luna e Sol'],
+    correta:1, feedbackCerto:'"Cachorro" e "gato" são substantivos comuns! Nomes genéricos de animais! 🐾', feedbackErrado:'"Cachorro" e "gato" são comuns! "Pedro", "João", "Brasil", "Portugal", "Luna" e "Sol" são próprios.' },
+
+  { tipo:'🌲 Substantivos', texto:'Qual é o substantivo PRÓPRIO na frase?', destaque:'"Pedro foi ao mercado comprar pão."',
+    opcoes:['mercado','pão','Pedro','comprar'],
+    correta:2, feedbackCerto:'"Pedro" é o substantivo próprio! É o nome específico de uma pessoa! 👦', feedbackErrado:'"Pedro" é o substantivo próprio! "Mercado" e "pão" são comuns; "comprar" é ação.' },
+
+  { tipo:'🌲 Substantivos', texto:'Quais são os substantivos PRÓPRIOS na frase?', destaque:'"O unicórnio Luna voou sobre o lago Cristal."',
+    opcoes:['unicórnio e lago','Luna e Cristal','voou e lago','unicórnio e Luna'],
+    correta:1, feedbackCerto:'"Luna" e "Cristal" são os próprios! Nomes específicos com letra maiúscula! 🦄💎', feedbackErrado:'"Luna" e "Cristal" são os próprios! "Unicórnio" e "lago" são comuns.' },
+
+  { tipo:'🌲 Substantivos', texto:'Qual dessas palavras é um substantivo COMUM?', destaque:null,
+    opcoes:['Amazônia','Vitória','floresta','Carlos'],
+    correta:2, feedbackCerto:'"Floresta" é um substantivo comum! Dá nome a qualquer floresta. 🌲', feedbackErrado:'"Floresta" é substantivo comum! "Amazônia", "Vitória" e "Carlos" são próprios.' },
+
+  { tipo:'🌲 Substantivos', texto:'A palavra "cachorro" é um substantivo:', destaque:null,
+    opcoes:['próprio','comum','adjetivo','artigo'],
+    correta:1, feedbackCerto:'"Cachorro" é um substantivo COMUM! Nome genérico do animal! 🐶', feedbackErrado:'"Cachorro" é substantivo COMUM! Se fosse "Rex" ou "Bolinha", aí seria próprio!' },
+
+  { tipo:'🌲 Substantivos', texto:'Qual dessas palavras é um substantivo PRÓPRIO?', destaque:null,
+    opcoes:['cidade','menino','cachorro','Amazonas'],
+    correta:3, feedbackCerto:'"Amazonas" é um substantivo próprio! É o nome específico de um estado! 🌿', feedbackErrado:'"Amazonas" é o substantivo próprio! "Cidade", "menino" e "cachorro" são comuns.' },
+
+  { tipo:'🌲 Substantivos', texto:'Quais são os substantivos PRÓPRIOS na frase?', destaque:'"O rio Amazonas é o maior rio do Brasil."',
+    opcoes:['rio e maior','Amazonas e Brasil','maior e Brasil','rio e Brasil'],
+    correta:1, feedbackCerto:'"Amazonas" e "Brasil" são os próprios! Nomes específicos com letra maiúscula! 🗺️', feedbackErrado:'"Amazonas" e "Brasil" são os substantivos próprios! "Rio" e "maior" são palavras comuns.' },
+
+  { tipo:'🌲 Substantivos', texto:'Qual palavra é um substantivo COMUM?', destaque:null,
+    opcoes:['João','Recife','livro','Mariana'],
+    correta:2, feedbackCerto:'"Livro" é um substantivo comum! Dá nome a qualquer livro. 📚', feedbackErrado:'"Livro" é o substantivo comum! "João", "Recife" e "Mariana" são próprios.' },
+
+  { tipo:'🌲 Substantivos', texto:'A palavra "cidade" é um substantivo:', destaque:null,
+    opcoes:['próprio','comum','adjetivo','artigo'],
+    correta:1, feedbackCerto:'"Cidade" é um substantivo COMUM! É o nome genérico de qualquer cidade! 🏙️', feedbackErrado:'"Cidade" é substantivo COMUM! "Curitiba" ou "Salvador" seriam próprios.' },
+
+  { tipo:'🌲 Substantivos', texto:'Quais são os substantivos PRÓPRIOS na frase?', destaque:'"A professora Adriana ensina em São Paulo."',
+    opcoes:['professora e ensina','Adriana e São Paulo','ensina e Paulo','professora e Adriana'],
+    correta:1, feedbackCerto:'"Adriana" e "São Paulo" são os próprios! Nomes específicos de pessoa e cidade! 🍎', feedbackErrado:'"Adriana" e "São Paulo" são os substantivos próprios! "Professora" é comum; "ensina" é ação.' },
+
+  { tipo:'🌲 Substantivos', texto:'Qual opção tem DOIS substantivos PRÓPRIOS?', destaque:null,
+    opcoes:['menino e menina','pato e galinha','Lucas e Sofia','livro e caneta'],
+    correta:2, feedbackCerto:'"Lucas" e "Sofia" são dois substantivos próprios! Nomes específicos de pessoas! 🧒👧', feedbackErrado:'"Lucas" e "Sofia" são os próprios! Os outros ("menino", "pato", "livro") são comuns.' },
+
+  { tipo:'🌲 Substantivos', texto:'Qual é o substantivo PRÓPRIO na frase?', destaque:'"Minha gatinha se chama Mel."',
+    opcoes:['gatinha','minha','chama','Mel'],
+    correta:3, feedbackCerto:'"Mel" é o substantivo próprio! É o nome específico da gatinha! 🐱', feedbackErrado:'"Mel" é o substantivo próprio — é o nome da gatinha! "Gatinha" é comum; "chama" é ação.' },
+
+  { tipo:'🌲 Substantivos', texto:'Qual é o substantivo PRÓPRIO na frase?', destaque:'"Beatriz foi ao parque com seu cachorro."',
+    opcoes:['parque','cachorro','Beatriz','foi'],
+    correta:2, feedbackCerto:'"Beatriz" é o substantivo próprio! Nome específico de uma menina! 👧', feedbackErrado:'"Beatriz" é o substantivo próprio! "Parque" e "cachorro" são comuns; "foi" é ação.' },
+
+  { tipo:'🌲 Substantivos', texto:'Qual lista tem SOMENTE substantivos PRÓPRIOS?', destaque:null,
+    opcoes:['cachorro, gato, peixe','Ana, Pedro, Brasil','casa, rua, escola','bonito, feliz, grande'],
+    correta:1, feedbackCerto:'"Ana", "Pedro" e "Brasil" são todos substantivos próprios! Nomes específicos! 🌟', feedbackErrado:'"Ana, Pedro, Brasil" é a lista correta! São todos nomes específicos com letra maiúscula.' },
+
+  { tipo:'🌲 Substantivos', texto:'O substantivo COMUM dá nome:', destaque:null,
+    opcoes:['Ao nome específico de uma pessoa','A qualquer ser, coisa ou lugar de forma geral','A uma ação ou movimento','A uma qualidade ou característica'],
+    correta:1, feedbackCerto:'Isso! O substantivo comum dá nome de forma geral — "menino", "cidade", "animal"! 🌍', feedbackErrado:'O substantivo COMUM dá nome de forma geral! Ex: menino, cidade, animal, flor.' },
+
+  { tipo:'🌲 Substantivos', texto:'Qual é o substantivo PRÓPRIO na frase?', destaque:'"O menino Gabriel leu um livro sobre unicórnios."',
+    opcoes:['menino','livro','unicórnios','Gabriel'],
+    correta:3, feedbackCerto:'"Gabriel" é o substantivo próprio! Nome específico do menino! 📖', feedbackErrado:'"Gabriel" é o substantivo próprio! "Menino", "livro" e "unicórnios" são comuns.' },
+
+  { tipo:'🌲 Substantivos', texto:'Qual lista tem SOMENTE substantivos COMUNS?', destaque:null,
+    opcoes:['Ana, Pedro, Luna','flor, árvore, pedra','Brasil, Europa, Curitiba','Bolinha, Rex, Mel'],
+    correta:1, feedbackCerto:'"Flor", "árvore" e "pedra" são todos substantivos comuns! Nomes genéricos! 🌺🌳', feedbackErrado:'"Flor, árvore, pedra" é a lista correta! São nomes genéricos escritos com letra minúscula.' },
+
+  { tipo:'🌲 Substantivos', texto:'Qual é o substantivo PRÓPRIO na frase?', destaque:'"Minha irmã Valentina adora sorvete de chocolate."',
+    opcoes:['irmã','Valentina','sorvete','chocolate'],
+    correta:1, feedbackCerto:'"Valentina" é o substantivo próprio! Nome específico de uma pessoa! 👩', feedbackErrado:'"Valentina" é o substantivo próprio! "Irmã", "sorvete" e "chocolate" são comuns.' },
+
+  { tipo:'🌲 Substantivos', texto:'Qual dessas palavras é um substantivo PRÓPRIO?', destaque:null,
+    opcoes:['planeta','estrela','Saturno','nuvem'],
+    correta:2, feedbackCerto:'"Saturno" é um substantivo próprio! É o nome específico de um planeta! 🪐', feedbackErrado:'"Saturno" é o substantivo próprio! "Planeta", "estrela" e "nuvem" são comuns.' },
+
+  { tipo:'🌲 Substantivos', texto:'Quais são os substantivos PRÓPRIOS na frase?', destaque:'"O gato Bigodes vive na rua Flores."',
+    opcoes:['gato e rua','Bigodes e Flores','vive e Flores','gato e Bigodes'],
+    correta:1, feedbackCerto:'"Bigodes" e "Flores" são os próprios! Nomes específicos do gato e da rua! 🐱', feedbackErrado:'"Bigodes" e "Flores" são os próprios! "Gato" e "rua" são comuns.' },
+
+  { tipo:'🌲 Substantivos', texto:'Qual opção tem SOMENTE substantivos COMUNS?', destaque:null,
+    opcoes:['Rio e Mar','Pedro e Ana','rio e mar','Sol e Lua'],
+    correta:2, feedbackCerto:'"Rio" e "mar" (com letra minúscula) são substantivos comuns! Nomes genéricos! 🌊', feedbackErrado:'"rio e mar" (com minúscula) são os comuns! "Rio de Janeiro" seria próprio; "Pedro", "Ana", "Sol" e "Lua" são próprios.' },
+
+  { tipo:'🌲 Substantivos', texto:'A palavra "menino" é um substantivo:', destaque:null,
+    opcoes:['próprio','comum','adjetivo','artigo'],
+    correta:1, feedbackCerto:'"Menino" é substantivo COMUM! É o nome genérico — qualquer menino! 👦', feedbackErrado:'"Menino" é substantivo COMUM! "Gabriel" ou "Pedro" seriam próprios.' },
+
+  { tipo:'🌲 Substantivos', texto:'Quais são os substantivos PRÓPRIOS na frase?', destaque:'"Lucas e Beatriz foram à praia de Santos."',
+    opcoes:['praia e Santos','Lucas, Beatriz e Santos','Lucas e praia','Lucas e Beatriz'],
+    correta:1, feedbackCerto:'"Lucas", "Beatriz" e "Santos" são os próprios! Nomes de pessoas e de cidade! 🏖️', feedbackErrado:'"Lucas", "Beatriz" e "Santos" são os três substantivos próprios! "Praia" é comum.' },
+
+  { tipo:'🌲 Substantivos', texto:'Qual palavra é um substantivo COMUM?', destaque:null,
+    opcoes:['Europa','Marte','continente','Brasília'],
+    correta:2, feedbackCerto:'"Continente" é um substantivo comum! Dá nome a qualquer continente. 🌍', feedbackErrado:'"Continente" é substantivo comum! "Europa", "Marte" e "Brasília" são próprios.' },
+
+  { tipo:'🌲 Substantivos', texto:'Quais são os substantivos PRÓPRIOS na frase?', destaque:'"A cachorra Belinha nasceu em Curitiba."',
+    opcoes:['cachorra e nasceu','Belinha e Curitiba','cachorra e Curitiba','Belinha e cachorra'],
+    correta:1, feedbackCerto:'"Belinha" e "Curitiba" são os próprios! Nomes específicos da cachorra e da cidade! 🐕', feedbackErrado:'"Belinha" e "Curitiba" são os próprios! "Cachorra" é comum; "nasceu" é ação.' },
+
+  { tipo:'🌲 Substantivos', texto:'Qual opção tem DOIS substantivos PRÓPRIOS?', destaque:null,
+    opcoes:['mesa e cadeira','flor e planta','Nina e Duda','cidade e país'],
+    correta:2, feedbackCerto:'"Nina" e "Duda" são dois substantivos próprios! Nomes específicos! 👧👧', feedbackErrado:'"Nina" e "Duda" são os próprios! "Mesa", "cadeira", "flor", "planta", "cidade" e "país" são comuns.' },
+
+  { tipo:'🌲 Substantivos', texto:'A palavra "país" é um substantivo:', destaque:null,
+    opcoes:['próprio','comum','adjetivo','verbo'],
+    correta:1, feedbackCerto:'"País" é substantivo COMUM! "Brasil" ou "Argentina" seriam próprios! 🌎', feedbackErrado:'"País" é substantivo COMUM! É o nome genérico. "Brasil" ou "Chile" seriam próprios.' },
+
+  { tipo:'🌲 Substantivos', texto:'Quais são os substantivos PRÓPRIOS na frase?', destaque:'"O professor Carlos ensina na escola Estrela."',
+    opcoes:['professor e escola','Carlos e Estrela','matemática e Carlos','escola e matemática'],
+    correta:1, feedbackCerto:'"Carlos" e "Estrela" são os próprios! Nome do professor e nome da escola! 👨‍🏫', feedbackErrado:'"Carlos" e "Estrela" são os substantivos próprios! "Professor" e "escola" são comuns.' },
+
+  { tipo:'🌲 Substantivos', texto:'Qual dessas palavras é um substantivo PRÓPRIO?', destaque:null,
+    opcoes:['cidade','rio','oceano','Atlântico'],
+    correta:3, feedbackCerto:'"Atlântico" é um substantivo próprio! É o nome específico de um oceano! 🌊', feedbackErrado:'"Atlântico" é o substantivo próprio! "Cidade", "rio" e "oceano" são comuns.' },
+
+  { tipo:'🌲 Substantivos', texto:'Quantos substantivos PRÓPRIOS há na frase?', destaque:'"João e Maria foram ao Parque Ibirapuera."',
+    opcoes:['1','2','3','4'],
+    correta:2, feedbackCerto:'Há 3 próprios: "João", "Maria" e "Ibirapuera"! Todos nomes específicos! 🌳', feedbackErrado:'"João" (pessoa), "Maria" (pessoa) e "Ibirapuera" (nome do parque) = 3 substantivos próprios!' },
+
+  { tipo:'🌲 Substantivos', texto:'Qual lista tem SOMENTE substantivos COMUNS?', destaque:null,
+    opcoes:['Brasil e Portugal','Sofia e Lucas','cadeira, mesa e porta','feliz, bonita e grande'],
+    correta:2, feedbackCerto:'"Cadeira", "mesa" e "porta" são todos comuns! Nomes genéricos! 🪑', feedbackErrado:'"Cadeira, mesa e porta" é a lista correta! São nomes genéricos. As outras têm nomes próprios ou adjetivos.' },
+
+  { tipo:'🌲 Substantivos', texto:'A palavra "unicórnio" é um substantivo:', destaque:null,
+    opcoes:['próprio','comum','adjetivo','artigo'],
+    correta:1, feedbackCerto:'"Unicórnio" é substantivo COMUM! "Luna" seria o substantivo próprio! 🦄', feedbackErrado:'"Unicórnio" é substantivo COMUM! Se fosse "Luna" ou "Stardust", aí seria próprio.' },
+
+  { tipo:'🌲 Substantivos', texto:'Quais são os substantivos PRÓPRIOS na frase?', destaque:'"A família de Ana mora em Recife."',
+    opcoes:['família e mora','Ana e Recife','família e Recife','mora e Ana'],
+    correta:1, feedbackCerto:'"Ana" e "Recife" são os próprios! Nome de pessoa e de cidade! 🏙️', feedbackErrado:'"Ana" e "Recife" são os substantivos próprios! "Família" é comum; "mora" é ação.' },
+
+  { tipo:'🌲 Substantivos', texto:'Qual palavra é um substantivo COMUM?', destaque:null,
+    opcoes:['Cupido','Diana','arco-íris','Apolo'],
+    correta:2, feedbackCerto:'"Arco-íris" é um substantivo comum! É um fenômeno da natureza sem nome específico. 🌈', feedbackErrado:'"Arco-íris" é substantivo comum! "Cupido", "Diana" e "Apolo" são nomes próprios (de personagens).' },
+
+  { tipo:'🌲 Substantivos', texto:'O substantivo PRÓPRIO identifica:', destaque:null,
+    opcoes:['Qualquer ser de forma geral','Um ser específico e único','Uma ação','Uma qualidade'],
+    correta:1, feedbackCerto:'Isso! O substantivo próprio identifica um ser específico e único! 🌟', feedbackErrado:'O substantivo próprio identifica um ser ESPECÍFICO e único! Ex: "Brasil" — só existe um!' },
+
+  { tipo:'🌲 Substantivos', texto:'Quais são os substantivos PRÓPRIOS na frase?', destaque:'"O rio Nilo passa pelo Egito."',
+    opcoes:['rio e passa','Nilo e Egito','passa e Egito','rio e Egito'],
+    correta:1, feedbackCerto:'"Nilo" e "Egito" são os próprios! Nomes específicos do rio e do país! 🐪', feedbackErrado:'"Nilo" e "Egito" são os substantivos próprios! "Rio" é comum; "passa" é ação.' },
+
+  { tipo:'🌲 Substantivos', texto:'Qual dessas palavras é um substantivo PRÓPRIO?', destaque:null,
+    opcoes:['cidade','rua','praça','Brasília'],
+    correta:3, feedbackCerto:'"Brasília" é um substantivo próprio! É o nome específico da capital do Brasil! 🏛️', feedbackErrado:'"Brasília" é o substantivo próprio! "Cidade", "rua" e "praça" são comuns.' },
+
+  { tipo:'🌲 Substantivos', texto:'Qual é o substantivo PRÓPRIO na frase?', destaque:'"O menino foi à padaria com a avó Cecília."',
+    opcoes:['menino','padaria','avó','Cecília'],
+    correta:3, feedbackCerto:'"Cecília" é o substantivo próprio! Nome específico da avó! 👵', feedbackErrado:'"Cecília" é o substantivo próprio! "Menino", "padaria" e "avó" são comuns.' },
+
+  { tipo:'🌲 Substantivos', texto:'Qual opção mistura substantivos PRÓPRIOS e COMUNS?', destaque:null,
+    opcoes:['Pedro e João','menino e menina','Pedro e menino','escola e rua'],
+    correta:2, feedbackCerto:'"Pedro" (próprio) e "menino" (comum) — uma de cada tipo! 🧒', feedbackErrado:'"Pedro e menino" mistura: "Pedro" é próprio (nome específico) e "menino" é comum (nome genérico).' },
+
+  { tipo:'🌲 Substantivos', texto:'A palavra "escola" é um substantivo:', destaque:null,
+    opcoes:['próprio (porque é um lugar)','comum','adjetivo','artigo'],
+    correta:1, feedbackCerto:'"Escola" é substantivo COMUM! É o nome genérico — qualquer escola! 🏫', feedbackErrado:'"Escola" é substantivo COMUM! "Escola Estrela" ou "Escola Brasil" teria o nome próprio.' },
+
+  { tipo:'🌲 Substantivos', texto:'Qual lista tem SOMENTE substantivos PRÓPRIOS?', destaque:null,
+    opcoes:['cachorro, gato, peixe','Ana, Pedro, Brasil','casa, rua, escola','bonito, feliz, grande'],
+    correta:1, feedbackCerto:'"Ana", "Pedro" e "Brasil" são todos próprios! Nomes específicos! 🌟', feedbackErrado:'"Ana, Pedro, Brasil" é a lista de próprios! São nomes específicos, com letra maiúscula.' },
+
+  { tipo:'🌲 Substantivos', texto:'A palavra "rua" é um substantivo:', destaque:null,
+    opcoes:['próprio','comum','adjetivo','verbo'],
+    correta:1, feedbackCerto:'"Rua" é substantivo COMUM! "Rua das Flores" teria o nome próprio! 🛣️', feedbackErrado:'"Rua" é substantivo COMUM! É o nome genérico. "Rua Amazonas" teria um nome próprio.' },
+
+  { tipo:'🌲 Substantivos', texto:'Qual é o substantivo PRÓPRIO na frase?', destaque:'"Meu cachorro Pipoca comeu toda a ração."',
+    opcoes:['cachorro','Pipoca','ração','comeu'],
+    correta:1, feedbackCerto:'"Pipoca" é o substantivo próprio! É o nome específico do cachorro! 🐕', feedbackErrado:'"Pipoca" é o substantivo próprio! "Cachorro" e "ração" são comuns; "comeu" é ação.' },
+
+  { tipo:'🌲 Substantivos', texto:'Quantos substantivos PRÓPRIOS há na frase?', destaque:'"Luna e Stardust voaram sobre o Vale Encantado."',
+    opcoes:['1','2','3','4'],
+    correta:2, feedbackCerto:'Há 3 próprios: "Luna", "Stardust" e "Vale Encantado"! 🦄✨', feedbackErrado:'"Luna" (unicórnio), "Stardust" (unicórnio) e "Vale Encantado" (lugar) = 3 próprios!' },
+
+  { tipo:'🌲 Substantivos', texto:'A palavra "livro" é um substantivo:', destaque:null,
+    opcoes:['próprio','comum','adjetivo','artigo'],
+    correta:1, feedbackCerto:'"Livro" é substantivo COMUM! É o nome genérico de qualquer livro! 📚', feedbackErrado:'"Livro" é substantivo COMUM! Um título específico como "Cinderela" seria próprio.' },
+
+  { tipo:'🌲 Substantivos', texto:'Qual é o substantivo PRÓPRIO na frase?', destaque:'"A turma da professora visitou o Museu do Amanhã."',
+    opcoes:['turma','professora','Museu do Amanhã','visitou'],
+    correta:2, feedbackCerto:'"Museu do Amanhã" é o substantivo próprio! É o nome específico do museu! 🏛️', feedbackErrado:'"Museu do Amanhã" é o substantivo próprio! "Turma" e "professora" são comuns; "visitou" é ação.' },
 ];
 
+// ========== BANCO: 50 QUESTÕES DE ARTIGOS ==========
 const questoesArtigos = [
-  {
-    tipo: '🏰 Artigos',
-    texto: 'Quais são os artigos DEFINIDOS?',
-    destaque: null,
-    opcoes: ['um, uma, uns, umas', 'o, a, os, as', 'de, da, do, dos', 'em, na, no, nas'],
-    correta: 1,
-    feedbackCerto: 'Certo! Os artigos definidos são: o, a, os, as. Eles indicam algo específico! 🌟',
-    feedbackErrado: 'Os artigos definidos são: "o, a, os, as". Os indefinidos são "um, uma, uns, umas".',
-  },
-  {
-    tipo: '🏰 Artigos',
-    texto: 'Quais são os artigos INDEFINIDOS?',
-    destaque: null,
-    opcoes: ['o, a, os, as', 'em, na, no, nas', 'um, uma, uns, umas', 'de, do, da, dos'],
-    correta: 2,
-    feedbackCerto: 'Perfeito! Os artigos indefinidos são: um, uma, uns, umas! 💜',
-    feedbackErrado: 'Os artigos indefinidos são "um, uma, uns, umas". Os definidos são "o, a, os, as".',
-  },
-  {
-    tipo: '🏰 Artigos',
-    texto: 'Complete com um artigo DEFINIDO:',
-    destaque: '"___ unicórnio é muito mágico."',
-    opcoes: ['Um', 'Uma', 'O', 'A'],
-    correta: 2,
-    feedbackCerto: '"O" é o artigo definido que combina com "unicórnio"! 🦄',
-    feedbackErrado: '"O" é o artigo definido correto! "Um" seria indefinido. "Unicórnio" é masculino, então usamos "O".',
-  },
-  {
-    tipo: '🏰 Artigos',
-    texto: 'Complete com um artigo INDEFINIDO:',
-    destaque: '"Vi ___ fada na floresta."',
-    opcoes: ['a', 'o', 'uma', 'as'],
-    correta: 2,
-    feedbackCerto: '"Uma" é artigo indefinido! Indica que é qualquer fada, não uma específica. 🧚',
-    feedbackErrado: '"Uma" é o artigo indefinido! "A" seria definido (uma fada específica que já conhecemos).',
-  },
-  {
-    tipo: '🏰 Artigos',
-    texto: 'Na frase, quais são os ARTIGOS?',
-    destaque: '"O cavalo voou sobre a floresta."',
-    opcoes: ['cavalo e floresta', 'O e a', 'voou e sobre', 'o cavalo'],
-    correta: 1,
-    feedbackCerto: '"O" e "a" são os artigos da frase! Os dois são definidos! 🐴',
-    feedbackErrado: '"O" e "a" são os artigos! "Cavalo" e "floresta" são substantivos; "voou" é ação.',
-  },
-  {
-    tipo: '🏰 Artigos',
-    texto: 'Qual dessas palavras é um artigo INDEFINIDO?',
-    destaque: null,
-    opcoes: ['o', 'a', 'os', 'uns'],
-    correta: 3,
-    feedbackCerto: '"Uns" é um artigo indefinido! É o plural de "um"! 🌟',
-    feedbackErrado: '"Uns" é o artigo indefinido! "O", "a" e "os" são todos definidos.',
-  },
-  {
-    tipo: '🏰 Artigos',
-    texto: 'Quais são os ARTIGOS na frase?',
-    destaque: '"As crianças viram uns unicórnios."',
-    opcoes: ['crianças e unicórnios', 'As e uns', 'As e viram', 'uns e viram'],
-    correta: 1,
-    feedbackCerto: '"As" (definido) e "uns" (indefinido) são os artigos! 🦄✨',
-    feedbackErrado: '"As" e "uns" são os artigos! "As" é definido e "uns" é indefinido. Os outros são substantivo e ação.',
-  },
-  {
-    tipo: '🏰 Artigos',
-    texto: 'Na frase, o artigo "Uma" é:',
-    destaque: '"Uma borboleta pousou na flor."',
-    opcoes: ['definido', 'indefinido', 'não é artigo', 'é um adjetivo'],
-    correta: 1,
-    feedbackCerto: '"Uma" é um artigo INDEFINIDO! Indica qualquer borboleta, não uma específica! 🦋',
-    feedbackErrado: '"Uma" é INDEFINIDO! Os indefinidos são: um, uma, uns, umas.',
-  },
-  {
-    tipo: '🏰 Artigos',
-    texto: 'Qual dessas palavras é um artigo DEFINIDO?',
-    destaque: null,
-    opcoes: ['um', 'uns', 'uma', 'os'],
-    correta: 3,
-    feedbackCerto: '"Os" é um artigo definido! É o plural masculino de "o"! 🌟',
-    feedbackErrado: '"Os" é o artigo definido! "Um", "uns" e "uma" são todos indefinidos.',
-  },
-  {
-    tipo: '🏰 Artigos',
-    texto: 'Complete com um artigo DEFINIDO:',
-    destaque: '"___ fadas dançaram no jardim."',
-    opcoes: ['Uns', 'Uma', 'Um', 'As'],
-    correta: 3,
-    feedbackCerto: '"As" é o artigo definido feminino plural! Combina com "fadas"! 🧚‍♀️',
-    feedbackErrado: '"As" é o artigo definido correto! "Uns" e "Um" são indefinidos, e "Uma" é singular.',
-  },
+  { tipo:'🏰 Artigos', texto:'Quais são os artigos DEFINIDOS?', destaque:null,
+    opcoes:['um, uma, uns, umas','o, a, os, as','de, da, do, dos','em, na, no, nas'],
+    correta:1, feedbackCerto:'Os artigos definidos são: o, a, os, as. Indicam algo específico! 🌟', feedbackErrado:'Os artigos definidos são "o, a, os, as". Os indefinidos são "um, uma, uns, umas".' },
+
+  { tipo:'🏰 Artigos', texto:'Quais são os artigos INDEFINIDOS?', destaque:null,
+    opcoes:['o, a, os, as','em, na, no, nas','um, uma, uns, umas','de, do, da, dos'],
+    correta:2, feedbackCerto:'Os artigos indefinidos são: um, uma, uns, umas! 💜', feedbackErrado:'Os artigos indefinidos são "um, uma, uns, umas". Os definidos são "o, a, os, as".' },
+
+  { tipo:'🏰 Artigos', texto:'Complete com um artigo DEFINIDO:', destaque:'"___ unicórnio é muito mágico."',
+    opcoes:['Um','Uma','O','A'],
+    correta:2, feedbackCerto:'"O" é o artigo definido masculino! Combina com "unicórnio"! 🦄', feedbackErrado:'"O" é o artigo definido correto! "Um" seria indefinido. "Unicórnio" é masculino, então "O".' },
+
+  { tipo:'🏰 Artigos', texto:'Complete com um artigo INDEFINIDO:', destaque:'"Vi ___ fada na floresta."',
+    opcoes:['a','o','uma','as'],
+    correta:2, feedbackCerto:'"Uma" é artigo indefinido feminino! Indica qualquer fada. 🧚', feedbackErrado:'"Uma" é o artigo indefinido! "A" seria definido (uma fada específica que já conhecemos).' },
+
+  { tipo:'🏰 Artigos', texto:'Na frase, quais são os ARTIGOS?', destaque:'"O cavalo voou sobre a floresta."',
+    opcoes:['cavalo e floresta','O e a','voou e sobre','o cavalo'],
+    correta:1, feedbackCerto:'"O" e "a" são os artigos definidos! 🐴', feedbackErrado:'"O" e "a" são os artigos! "Cavalo" e "floresta" são substantivos; "voou" é ação.' },
+
+  { tipo:'🏰 Artigos', texto:'Qual dessas palavras é um artigo INDEFINIDO?', destaque:null,
+    opcoes:['o','a','os','uns'],
+    correta:3, feedbackCerto:'"Uns" é artigo indefinido! É o plural masculino de "um"! 🌟', feedbackErrado:'"Uns" é o artigo indefinido! "O", "a" e "os" são todos definidos.' },
+
+  { tipo:'🏰 Artigos', texto:'Na frase, quais são os ARTIGOS?', destaque:'"As crianças viram uns unicórnios."',
+    opcoes:['crianças e unicórnios','As e uns','As e viram','uns e viram'],
+    correta:1, feedbackCerto:'"As" (definido) e "uns" (indefinido) são os artigos! 🦄✨', feedbackErrado:'"As" e "uns" são os artigos! "As" é definido; "uns" é indefinido.' },
+
+  { tipo:'🏰 Artigos', texto:'Na frase, o artigo "Uma" é:', destaque:'"Uma borboleta pousou na flor."',
+    opcoes:['definido','indefinido','não é artigo','é um adjetivo'],
+    correta:1, feedbackCerto:'"Uma" é um artigo INDEFINIDO! Indica qualquer borboleta. 🦋', feedbackErrado:'"Uma" é INDEFINIDO! Os indefinidos são: um, uma, uns, umas.' },
+
+  { tipo:'🏰 Artigos', texto:'Qual dessas palavras é um artigo DEFINIDO?', destaque:null,
+    opcoes:['um','uns','uma','os'],
+    correta:3, feedbackCerto:'"Os" é artigo definido masculino plural! 🌟', feedbackErrado:'"Os" é o artigo definido! "Um", "uns" e "uma" são todos indefinidos.' },
+
+  { tipo:'🏰 Artigos', texto:'Complete com um artigo DEFINIDO:', destaque:'"___ fadas dançaram no jardim."',
+    opcoes:['Uns','Uma','Um','As'],
+    correta:3, feedbackCerto:'"As" é o artigo definido feminino plural! Combina com "fadas"! 🧚‍♀️', feedbackErrado:'"As" é o artigo definido correto! "Uns" e "Um" são indefinidos; "Uma" é singular.' },
+
+  { tipo:'🏰 Artigos', texto:'Qual dessas palavras é um artigo DEFINIDO?', destaque:null,
+    opcoes:['um','uma','uns','a'],
+    correta:3, feedbackCerto:'"A" é artigo definido feminino singular! 💜', feedbackErrado:'"A" é o artigo definido! "Um", "uma" e "uns" são todos indefinidos.' },
+
+  { tipo:'🏰 Artigos', texto:'Complete com um artigo DEFINIDO:', destaque:'"___ meninas brincaram no parque."',
+    opcoes:['Uns','Um','Uma','As'],
+    correta:3, feedbackCerto:'"As" é o artigo definido feminino plural! Combina com "meninas"! 👧', feedbackErrado:'"As" é o artigo definido correto! Feminino (meninas) e plural. "Uns" e "Um" são indefinidos.' },
+
+  { tipo:'🏰 Artigos', texto:'Complete com um artigo INDEFINIDO:', destaque:'"Havia ___ dragão na montanha."',
+    opcoes:['o','a','um','os'],
+    correta:2, feedbackCerto:'"Um" é artigo indefinido masculino! Indica qualquer dragão. 🐉', feedbackErrado:'"Um" é o artigo indefinido! "O" e "os" são definidos; "a" é definido feminino.' },
+
+  { tipo:'🏰 Artigos', texto:'Na frase, o artigo "Um" é:', destaque:'"Um pássaro pousou na árvore."',
+    opcoes:['definido','indefinido','não é artigo','é um adjetivo'],
+    correta:1, feedbackCerto:'"Um" é artigo INDEFINIDO! Indica qualquer pássaro. 🐦', feedbackErrado:'"Um" é INDEFINIDO! Os indefinidos são: um, uma, uns, umas.' },
+
+  { tipo:'🏰 Artigos', texto:'Qual artigo DEFINIDO combina com "fadas" (feminino plural)?', destaque:null,
+    opcoes:['o','um','as','uns'],
+    correta:2, feedbackCerto:'"As" é o artigo definido feminino plural! ✨', feedbackErrado:'"As" é o artigo definido correto! "O" é masculino singular; "um" e "uns" são indefinidos.' },
+
+  { tipo:'🏰 Artigos', texto:'Qual artigo INDEFINIDO combina com "cavalo" (masculino singular)?', destaque:null,
+    opcoes:['umas','uns','uma','um'],
+    correta:3, feedbackCerto:'"Um" é o artigo indefinido masculino singular! 🐴', feedbackErrado:'"Um" combina com palavras masculinas no singular! "Uma" é feminino; "uns" e "umas" são plural.' },
+
+  { tipo:'🏰 Artigos', texto:'Na frase, quais são os ARTIGOS?', destaque:'"A Luna e o Stardust voaram juntos."',
+    opcoes:['Luna e Stardust','A e o','voaram e juntos','A e voaram'],
+    correta:1, feedbackCerto:'"A" e "o" são os artigos definidos! 🦄', feedbackErrado:'"A" e "o" são os artigos! "Luna" e "Stardust" são substantivos; "voaram" é ação.' },
+
+  { tipo:'🏰 Artigos', texto:'Complete com um artigo INDEFINIDO:', destaque:'"Encontrei ___ flores no jardim."',
+    opcoes:['os','as','umas','uns'],
+    correta:2, feedbackCerto:'"Umas" é o artigo indefinido feminino plural! Combina com "flores"! 🌸', feedbackErrado:'"Umas" é o artigo indefinido correto! Feminino (flores) e plural. "Os" e "as" são definidos.' },
+
+  { tipo:'🏰 Artigos', texto:'Quantos ARTIGOS há na frase?', destaque:'"O menino viu uma borboleta e um pássaro."',
+    opcoes:['1','2','3','4'],
+    correta:2, feedbackCerto:'Há 3 artigos: "O" (definido), "uma" (indefinido) e "um" (indefinido)! 🦋🐦', feedbackErrado:'"O" + "uma" + "um" = 3 artigos! "O" é definido; "uma" e "um" são indefinidos.' },
+
+  { tipo:'🏰 Artigos', texto:'O artigo DEFINIDO indica:', destaque:null,
+    opcoes:['Algo que não conhecemos ainda','Um ser qualquer, sem especificar','Algo ou alguém específico que já conhecemos','Uma ação ou movimento'],
+    correta:2, feedbackCerto:'O artigo DEFINIDO indica algo específico! Ex: "o unicórnio" — aquele específico que conhecemos! 🦄', feedbackErrado:'O artigo DEFINIDO indica algo específico! Ex: "A Luna" — sabemos qual é. Os indefinidos indicam algo genérico.' },
+
+  { tipo:'🏰 Artigos', texto:'Complete com um artigo DEFINIDO:', destaque:'"___ unicórnios são criaturas mágicas."',
+    opcoes:['Uns','Um','Uma','Os'],
+    correta:3, feedbackCerto:'"Os" é o artigo definido masculino plural! Combina com "unicórnios"! 🦄🦄', feedbackErrado:'"Os" é o artigo definido correto! Masculino (unicórnios) e plural. "Uns" é indefinido.' },
+
+  { tipo:'🏰 Artigos', texto:'Na frase, quais são os ARTIGOS e como são classificados?', destaque:'"Umas fadas trouxeram um presente."',
+    opcoes:['fadas e presente — comuns','Umas e um — indefinidos','trouxeram e um — mistos','Umas e trouxeram — definidos'],
+    correta:1, feedbackCerto:'"Umas" e "um" são os dois artigos — e os dois são INDEFINIDOS! 🧚‍♀️🎁', feedbackErrado:'"Umas" e "um" são os artigos e ambos são indefinidos! "Fadas" e "presente" são substantivos.' },
+
+  { tipo:'🏰 Artigos', texto:'Qual artigo INDEFINIDO combina com "flores" (feminino plural)?', destaque:null,
+    opcoes:['uns','um','umas','uma'],
+    correta:2, feedbackCerto:'"Umas" é artigo indefinido feminino plural! Combina com "flores"! 🌸', feedbackErrado:'"Umas" é o artigo indefinido correto! É feminino (flores) e plural.' },
+
+  { tipo:'🏰 Artigos', texto:'Complete com um artigo DEFINIDO:', destaque:'"___ menino foi à escola."',
+    opcoes:['Um','Uma','O','A'],
+    correta:2, feedbackCerto:'"O" é o artigo definido masculino singular! Combina com "menino"! 👦', feedbackErrado:'"O" é o artigo definido correto! "Um" seria indefinido. "Menino" é masculino, então "O".' },
+
+  { tipo:'🏰 Artigos', texto:'O artigo INDEFINIDO indica:', destaque:null,
+    opcoes:['Algo específico que já conhecemos','Qualquer ser, sem especificar','Uma ação','Uma qualidade'],
+    correta:1, feedbackCerto:'O artigo INDEFINIDO indica algo genérico! Ex: "Uma fada apareceu" — qualquer fada! 🧚', feedbackErrado:'O artigo INDEFINIDO indica algo genérico! "Uma fada" pode ser qualquer fada, não uma específica.' },
+
+  { tipo:'🏰 Artigos', texto:'Na frase, o artigo é definido ou indefinido?', destaque:'"Um gato dormia na cadeira."',
+    opcoes:['definido','indefinido','não tem artigo','é adjetivo'],
+    correta:1, feedbackCerto:'"Um" é artigo INDEFINIDO! Indica qualquer gato. 🐱', feedbackErrado:'"Um" é INDEFINIDO! Os indefinidos são: um, uma, uns, umas.' },
+
+  { tipo:'🏰 Artigos', texto:'Qual artigo DEFINIDO combina com "livros" (masculino plural)?', destaque:null,
+    opcoes:['a','as','um','os'],
+    correta:3, feedbackCerto:'"Os" é o artigo definido masculino plural! Combina com "livros"! 📚', feedbackErrado:'"Os" é o artigo definido correto! Masculino (livros) e plural.' },
+
+  { tipo:'🏰 Artigos', texto:'Complete com um artigo INDEFINIDO:', destaque:'"Havia ___ estrela brilhando no céu."',
+    opcoes:['a','o','uma','as'],
+    correta:2, feedbackCerto:'"Uma" é artigo indefinido feminino singular! Combina com "estrela"! ⭐', feedbackErrado:'"Uma" é o artigo indefinido correto! "A" seria definido. "Estrela" é feminino, então "uma".' },
+
+  { tipo:'🏰 Artigos', texto:'Na frase, quais são os ARTIGOS?', destaque:'"A menina encontrou um tesouro."',
+    opcoes:['menina e tesouro','A e um','encontrou e um','A e encontrou'],
+    correta:1, feedbackCerto:'"A" (definido) e "um" (indefinido) são os artigos! 💎', feedbackErrado:'"A" e "um" são os artigos! "Menina" e "tesouro" são substantivos; "encontrou" é ação.' },
+
+  { tipo:'🏰 Artigos', texto:'Qual é o artigo DEFINIDO feminino singular?', destaque:null,
+    opcoes:['o','os','a','as'],
+    correta:2, feedbackCerto:'"A" é o artigo definido feminino singular! Ex: "a fada", "a flor"! 🌸', feedbackErrado:'"A" é o artigo definido feminino singular! "O" é masculino; "os" e "as" são plural.' },
+
+  { tipo:'🏰 Artigos', texto:'Complete com um artigo DEFINIDO:', destaque:'"___ flores do jardim são lindas."',
+    opcoes:['Uns','Um','Uma','As'],
+    correta:3, feedbackCerto:'"As" é o artigo definido feminino plural! Combina com "flores"! 🌺', feedbackErrado:'"As" é o artigo definido correto! Feminino (flores) e plural.' },
+
+  { tipo:'🏰 Artigos', texto:'Na frase, o artigo "Os" é:', destaque:'"Os cavalos correram pela planície."',
+    opcoes:['definido','indefinido','não é artigo','é adjetivo'],
+    correta:0, feedbackCerto:'"Os" é artigo DEFINIDO! Indica aqueles cavalos específicos. 🐴', feedbackErrado:'"Os" é DEFINIDO! Os definidos são: o, a, os, as.' },
+
+  { tipo:'🏰 Artigos', texto:'Qual artigo INDEFINIDO combina com "borboleta" (feminino singular)?', destaque:null,
+    opcoes:['uma','umas','uns','um'],
+    correta:0, feedbackCerto:'"Uma" é o artigo indefinido feminino singular! Combina com "borboleta"! 🦋', feedbackErrado:'"Uma" combina com palavras femininas no singular! "Um" é masculino; "umas" é plural.' },
+
+  { tipo:'🏰 Artigos', texto:'Complete com um artigo INDEFINIDO:', destaque:'"Vi ___ pássaro azul na janela."',
+    opcoes:['o','a','um','os'],
+    correta:2, feedbackCerto:'"Um" é artigo indefinido masculino singular! Combina com "pássaro"! 🐦', feedbackErrado:'"Um" é o artigo indefinido correto! "O" seria definido. "Pássaro" é masculino, então "um".' },
+
+  { tipo:'🏰 Artigos', texto:'Na frase, quais são os ARTIGOS?', destaque:'"A fada e o gnomo são amigos."',
+    opcoes:['fada e gnomo','A e o','são e amigos','A e são'],
+    correta:1, feedbackCerto:'"A" e "o" são os artigos definidos! 🧚', feedbackErrado:'"A" e "o" são os artigos! "Fada" e "gnomo" são substantivos; "são" é ação.' },
+
+  { tipo:'🏰 Artigos', texto:'Qual é o artigo DEFINIDO masculino plural?', destaque:null,
+    opcoes:['o','a','as','os'],
+    correta:3, feedbackCerto:'"Os" é o artigo definido masculino plural! Ex: "os unicórnios", "os meninos"! 🦄', feedbackErrado:'"Os" é o artigo definido masculino plural! "O" é singular; "a" e "as" são femininos.' },
+
+  { tipo:'🏰 Artigos', texto:'Complete com um artigo DEFINIDO:', destaque:'"___ sol brilhou muito hoje."',
+    opcoes:['Uma','Uns','Um','O'],
+    correta:3, feedbackCerto:'"O" é o artigo definido masculino singular! Combina com "sol"! ☀️', feedbackErrado:'"O" é o artigo definido correto! "Uma" e "Um" são indefinidos; "Uns" é indefinido plural.' },
+
+  { tipo:'🏰 Artigos', texto:'Quantos ARTIGOS há na frase?', destaque:'"As princesas e os príncipes dançaram no baile."',
+    opcoes:['1','2','3','4'],
+    correta:1, feedbackCerto:'Há 2 artigos: "As" e "os"! Os dois são definidos! 👑', feedbackErrado:'"As" + "os" = 2 artigos definidos! "Princesas" e "príncipes" são substantivos.' },
+
+  { tipo:'🏰 Artigos', texto:'Qual artigo INDEFINIDO combina com "menino" (masculino singular)?', destaque:null,
+    opcoes:['uma','umas','uns','um'],
+    correta:3, feedbackCerto:'"Um" é o artigo indefinido masculino singular! Combina com "menino"! 👦', feedbackErrado:'"Um" combina com palavras masculinas no singular! "Uma" é feminino; "uns" e "umas" são plural.' },
+
+  { tipo:'🏰 Artigos', texto:'Na frase, quais são os ARTIGOS?', destaque:'"Uma estrela cadente cruzou o céu."',
+    opcoes:['estrela e céu','Uma e o','cruzou e o','Uma e cruzou'],
+    correta:1, feedbackCerto:'"Uma" (indefinido) e "o" (definido) são os artigos! ⭐', feedbackErrado:'"Uma" e "o" são os artigos! "Estrela" e "céu" são substantivos; "cruzou" é ação.' },
+
+  { tipo:'🏰 Artigos', texto:'Qual é o artigo INDEFINIDO feminino plural?', destaque:null,
+    opcoes:['um','uma','uns','umas'],
+    correta:3, feedbackCerto:'"Umas" é o artigo indefinido feminino plural! Ex: "umas fadas", "umas flores"! 🌸', feedbackErrado:'"Umas" é o artigo indefinido feminino plural! "Um" e "uns" são masculinos; "uma" é singular.' },
+
+  { tipo:'🏰 Artigos', texto:'Complete com um artigo DEFINIDO:', destaque:'"___ história que li era incrível."',
+    opcoes:['Um','Uma','Uns','A'],
+    correta:3, feedbackCerto:'"A" é o artigo definido feminino singular! Combina com "história"! 📖', feedbackErrado:'"A" é o artigo definido correto! "Um" e "Uns" são indefinidos; "Uma" é indefinido.' },
+
+  { tipo:'🏰 Artigos', texto:'Na frase, quais são os ARTIGOS?', destaque:'"Uns pássaros voaram sobre as flores."',
+    opcoes:['pássaros e flores','Uns e as','voaram e as','Uns e voaram'],
+    correta:1, feedbackCerto:'"Uns" (indefinido) e "as" (definido) são os artigos! 🐦🌸', feedbackErrado:'"Uns" e "as" são os artigos! "Pássaros" e "flores" são substantivos; "voaram" é ação.' },
+
+  { tipo:'🏰 Artigos', texto:'Qual é a diferença entre os artigos "o" e "um"?', destaque:null,
+    opcoes:['São iguais, não há diferença','"o" é definido e "um" é indefinido','"o" é indefinido e "um" é definido','Nenhuma diferença prática'],
+    correta:1, feedbackCerto:'"O" é definido (algo específico) e "um" é indefinido (qualquer um)! 💡', feedbackErrado:'"O" é DEFINIDO (indica algo específico) e "um" é INDEFINIDO (indica qualquer um).' },
+
+  { tipo:'🏰 Artigos', texto:'Complete com um artigo INDEFINIDO:', destaque:'"Ela ganhou ___ livro de presente."',
+    opcoes:['o','a','os','um'],
+    correta:3, feedbackCerto:'"Um" é artigo indefinido masculino singular! Combina com "livro"! 🎁', feedbackErrado:'"Um" é o artigo indefinido correto! "O" seria definido. "Livro" é masculino, então "um".' },
+
+  { tipo:'🏰 Artigos', texto:'Na frase, quais são os ARTIGOS?', destaque:'"O unicórnio comeu umas flores mágicas."',
+    opcoes:['unicórnio e flores','O e umas','comeu e umas','O e comeu'],
+    correta:1, feedbackCerto:'"O" (definido) e "umas" (indefinido) são os artigos! 🦄🌺', feedbackErrado:'"O" e "umas" são os artigos! "Unicórnio" e "flores" são substantivos; "comeu" é ação.' },
+
+  { tipo:'🏰 Artigos', texto:'Qual artigo DEFINIDO combina com "fada" (feminino singular)?', destaque:null,
+    opcoes:['o','os','um','a'],
+    correta:3, feedbackCerto:'"A" é o artigo definido feminino singular! Combina com "fada"! 🧚', feedbackErrado:'"A" combina com palavras femininas no singular! "O" é masculino; "os" é plural.' },
+
+  { tipo:'🏰 Artigos', texto:'Complete com um artigo INDEFINIDO:', destaque:'"Encontrei ___ amigos no parque."',
+    opcoes:['os','as','uns','umas'],
+    correta:2, feedbackCerto:'"Uns" é artigo indefinido masculino plural! Combina com "amigos"! 👫', feedbackErrado:'"Uns" é o artigo indefinido correto! "Os" seria definido. "Amigos" é masculino plural, então "uns".' },
+
+  { tipo:'🏰 Artigos', texto:'Quantos ARTIGOS há na frase?', destaque:'"A Luna e os outros unicórnios brincavam."',
+    opcoes:['1','2','3','4'],
+    correta:1, feedbackCerto:'Há 2 artigos: "A" e "os"! Os dois são definidos! 🦄', feedbackErrado:'"A" + "os" = 2 artigos definidos! "Luna" e "unicórnios" são substantivos.' },
+
+  { tipo:'🏰 Artigos', texto:'Qual lista tem SOMENTE artigos DEFINIDOS?', destaque:null,
+    opcoes:['um, uma, uns, umas','o, a, os, as','o, a, um, uma','os, as, uns, umas'],
+    correta:1, feedbackCerto:'"O, a, os, as" — todos definidos! Indicam algo específico! 🌟', feedbackErrado:'"O, a, os, as" é a lista de artigos definidos! "Um, uma, uns, umas" são os indefinidos.' },
+
+  { tipo:'🏰 Artigos', texto:'Complete com um artigo DEFINIDO:', destaque:'"___ estrelas brilham no céu."',
+    opcoes:['Umas','Um','Uma','As'],
+    correta:3, feedbackCerto:'"As" é o artigo definido feminino plural! Combina com "estrelas"! ⭐', feedbackErrado:'"As" é o artigo definido correto! Feminino (estrelas) e plural. "Umas" é indefinido.' },
+
+  { tipo:'🏰 Artigos', texto:'Na frase, o artigo é definido ou indefinido?', destaque:'"Os meninos correram no parque."',
+    opcoes:['definido','indefinido','não tem artigo','é adjetivo'],
+    correta:0, feedbackCerto:'"Os" é artigo DEFINIDO! Indica aqueles meninos específicos. 🏃', feedbackErrado:'"Os" é DEFINIDO! Os definidos são: o, a, os, as.' },
 ];
 
 // ========== HELPERS ==========
@@ -621,10 +845,9 @@ function shuffle(arr) {
 
 function getQuestions(phaseIndex) {
   const banks = [questoesAdjetivos, questoesSubstantivos, questoesArtigos];
-  return shuffle(banks[phaseIndex]);
+  return shuffle(banks[phaseIndex]).slice(0, 10);
 }
 
-// ========== SCREEN MANAGEMENT ==========
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
@@ -638,46 +861,33 @@ function getAudio() {
   if (!audioCtx) audioCtx = new AudioCtx();
   return audioCtx;
 }
-
 function playSound(type) {
   try {
     const ctx = getAudio();
     if (type === 'correct') {
-      // Happy little melody
-      const notes = [523, 659, 784];
-      notes.forEach((freq, i) => {
-        const o = ctx.createOscillator();
-        const g = ctx.createGain();
+      [523, 659, 784].forEach((freq, i) => {
+        const o = ctx.createOscillator(), g = ctx.createGain();
         o.connect(g); g.connect(ctx.destination);
-        o.frequency.value = freq;
-        o.type = 'sine';
+        o.frequency.value = freq; o.type = 'sine';
         g.gain.value = 0.12;
-        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.18 + 0.35);
-        o.start(ctx.currentTime + i * 0.15);
-        o.stop(ctx.currentTime + i * 0.15 + 0.35);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i*0.18 + 0.35);
+        o.start(ctx.currentTime + i*0.15); o.stop(ctx.currentTime + i*0.15 + 0.35);
       });
     } else if (type === 'wrong') {
-      const o = ctx.createOscillator();
-      const g = ctx.createGain();
+      const o = ctx.createOscillator(), g = ctx.createGain();
       o.connect(g); g.connect(ctx.destination);
-      o.frequency.value = 220;
-      o.type = 'triangle';
+      o.frequency.value = 220; o.type = 'triangle';
       g.gain.value = 0.1;
       g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
-      o.start(ctx.currentTime);
-      o.stop(ctx.currentTime + 0.4);
+      o.start(ctx.currentTime); o.stop(ctx.currentTime + 0.4);
     } else if (type === 'win') {
-      const notes = [523, 587, 659, 784, 880];
-      notes.forEach((freq, i) => {
-        const o = ctx.createOscillator();
-        const g = ctx.createGain();
+      [523,587,659,784,880].forEach((freq, i) => {
+        const o = ctx.createOscillator(), g = ctx.createGain();
         o.connect(g); g.connect(ctx.destination);
-        o.frequency.value = freq;
-        o.type = 'sine';
+        o.frequency.value = freq; o.type = 'sine';
         g.gain.value = 0.1;
-        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.18 + 0.4);
-        o.start(ctx.currentTime + i * 0.16);
-        o.stop(ctx.currentTime + i * 0.16 + 0.4);
+        g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i*0.18 + 0.4);
+        o.start(ctx.currentTime + i*0.16); o.stop(ctx.currentTime + i*0.16 + 0.4);
       });
     }
   } catch(e) {}
@@ -691,23 +901,20 @@ function showConfetti() {
   for (let i = 0; i < 70; i++) {
     const el = document.createElement('div');
     el.classList.add('confetti');
-    el.style.left = Math.random() * 100 + '%';
-    el.style.background = colors[Math.floor(Math.random() * colors.length)];
-    el.style.width = (Math.random() * 8 + 5) + 'px';
-    el.style.height = (Math.random() * 8 + 5) + 'px';
+    el.style.left = Math.random()*100 + '%';
+    el.style.background = colors[Math.floor(Math.random()*colors.length)];
+    el.style.width = (Math.random()*8+5) + 'px';
+    el.style.height = (Math.random()*8+5) + 'px';
     el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
-    el.style.animationDuration = (Math.random() * 2 + 1.5) + 's';
-    el.style.animationDelay = (Math.random() * 1) + 's';
+    el.style.animationDuration = (Math.random()*2+1.5) + 's';
+    el.style.animationDelay = (Math.random()*1) + 's';
     container.appendChild(el);
   }
   setTimeout(() => container.innerHTML = '', 4500);
 }
 
 // ========== GAME FLOW ==========
-function startGame() {
-  showScreen('map');
-  renderMap();
-}
+function startGame() { showScreen('map'); renderMap(); }
 
 function renderMap() {
   const container = document.getElementById('map-container');
@@ -715,17 +922,16 @@ function renderMap() {
   phases.forEach((phase, i) => {
     if (i > 0) {
       const path = document.createElement('div');
-      path.className = 'map-path' + (state.phaseStars[i - 1] > 0 ? ' done' : '');
+      path.className = 'map-path' + (state.phaseStars[i-1] > 0 ? ' done' : '');
       container.appendChild(path);
     }
     const card = document.createElement('div');
     card.className = 'phase-card';
     let statusHTML = '';
-
     if (state.phaseStars[i] > 0) {
       card.classList.add('completed');
-      statusHTML = `<span class="phase-stars">${'⭐'.repeat(state.phaseStars[i])}${'☆'.repeat(3 - state.phaseStars[i])}</span>`;
-    } else if (i === 0 || state.phaseStars[i - 1] > 0) {
+      statusHTML = `<span class="phase-stars">${'⭐'.repeat(state.phaseStars[i])}${'☆'.repeat(3-state.phaseStars[i])}</span>`;
+    } else if (i === 0 || state.phaseStars[i-1] > 0) {
       card.classList.add('available');
       statusHTML = `<span class="phase-lock" style="opacity:0.5">🦄</span>`;
       card.onclick = () => startPhase(i);
@@ -733,15 +939,7 @@ function renderMap() {
       card.classList.add('locked');
       statusHTML = `<span class="phase-lock">🔒</span>`;
     }
-
-    card.innerHTML = `
-      <span class="phase-icon">${phase.icon}</span>
-      <div class="phase-info">
-        <h3>${phase.name}</h3>
-        <p>${phase.subtitle}</p>
-      </div>
-      ${statusHTML}
-    `;
+    card.innerHTML = `<span class="phase-icon">${phase.icon}</span><div class="phase-info"><h3>${phase.name}</h3><p>${phase.subtitle}</p></div>${statusHTML}`;
     container.appendChild(card);
   });
 }
@@ -751,14 +949,11 @@ function startPhase(phaseIndex) {
   state.currentQuestion = 0;
   state.phaseScores[phaseIndex] = 0;
   state.answered = false;
-
   state.questions = getQuestions(phaseIndex);
   state.phaseTotal[phaseIndex] = state.questions.length;
-
   const phase = phases[phaseIndex];
   document.getElementById('game').style.background = phase.bgGradient;
   document.getElementById('phase-title').textContent = `${phase.icon} ${phase.name}`;
-
   showScreen('game');
   renderQuestion();
 }
@@ -768,44 +963,33 @@ function renderQuestion() {
   const total = state.questions.length;
   const phase = phases[state.currentPhase];
 
-  // Header
-  document.getElementById('progress-text').textContent = `${state.currentQuestion + 1}/${total}`;
+  document.getElementById('progress-text').textContent = `${state.currentQuestion+1}/${total}`;
   document.getElementById('score-text').textContent = `⭐ ${state.phaseScores[state.currentPhase]}`;
-  document.getElementById('progress-fill').style.width = (state.currentQuestion / total * 100) + '%';
+  document.getElementById('progress-fill').style.width = (state.currentQuestion/total*100) + '%';
 
-  // Scene
   const scene = document.getElementById('game-scene');
   scene.className = 'game-scene ' + phase.sceneClass;
   const itemsEl = document.getElementById('scene-items');
   itemsEl.innerHTML = '';
-  const shuffledItems = shuffle(phase.sceneItems);
-  shuffledItems.slice(0, 6).forEach((item, i) => {
+  shuffle(phase.sceneItems).slice(0,6).forEach((item, i) => {
     const el = document.createElement('span');
     el.className = 'scene-item';
     el.textContent = item;
-    el.style.left = (8 + Math.random() * 78) + '%';
-    el.style.top = (8 + Math.random() * 72) + '%';
-    el.style.animationDelay = (i * 0.4) + 's';
+    el.style.left = (8 + Math.random()*78) + '%';
+    el.style.top = (8 + Math.random()*72) + '%';
+    el.style.animationDelay = (i*0.4) + 's';
     itemsEl.appendChild(el);
   });
+  document.getElementById('scene-luna').className = 'scene-luna';
 
-  const luna = document.getElementById('scene-luna');
-  luna.className = 'scene-luna';
-
-  // Question type tag
   document.getElementById('question-type').textContent = q.tipo;
-
-  // Question text
   let questionHTML = q.texto;
-  if (q.destaque) {
-    questionHTML += `<br><span class="question-highlight">${q.destaque}</span>`;
-  }
+  if (q.destaque) questionHTML += `<br><span class="question-highlight">${q.destaque}</span>`;
   document.getElementById('question-text').innerHTML = questionHTML;
 
-  // Options
   const grid = document.getElementById('options-grid');
-  const hasLongOption = q.opcoes.some(o => o.length > 20);
-  grid.className = 'options-grid' + (hasLongOption ? ' single-col' : '');
+  const hasLong = q.opcoes.some(o => o.length > 22);
+  grid.className = 'options-grid' + (hasLong ? ' single-col' : '');
   grid.innerHTML = '';
   q.opcoes.forEach((opt, i) => {
     const btn = document.createElement('button');
@@ -815,7 +999,6 @@ function renderQuestion() {
     grid.appendChild(btn);
   });
 
-  // Reset
   const fb = document.getElementById('feedback-box');
   fb.className = 'feedback-box';
   fb.style.display = 'none';
@@ -826,17 +1009,14 @@ function renderQuestion() {
 function answer(idx) {
   if (state.answered) return;
   state.answered = true;
-
   const q = state.questions[state.currentQuestion];
   const isCorrect = idx === q.correta;
   const btns = document.querySelectorAll('#options-grid .opt-btn');
-
   btns.forEach((btn, i) => {
     btn.disabled = true;
     if (i === q.correta) btn.classList.add('correct');
     if (i === idx && !isCorrect) btn.classList.add('wrong');
   });
-
   const luna = document.getElementById('scene-luna');
   if (isCorrect) {
     luna.classList.add('happy');
@@ -847,14 +1027,10 @@ function answer(idx) {
     luna.classList.add('sad');
     playSound('wrong');
   }
-
   const fb = document.getElementById('feedback-box');
   fb.className = 'feedback-box show ' + (isCorrect ? 'correct' : 'wrong');
-  fb.textContent = isCorrect
-    ? `🦄 ${q.feedbackCerto}`
-    : `💜 ${q.feedbackErrado}`;
+  fb.textContent = isCorrect ? `🦄 ${q.feedbackCerto}` : `💜 ${q.feedbackErrado}`;
   fb.style.display = 'block';
-
   document.getElementById('btn-next').className = 'btn-next show';
 }
 
@@ -872,47 +1048,33 @@ function completePhase() {
   const score = state.phaseScores[phaseIdx];
   const total = state.phaseTotal[phaseIdx];
   const pct = score / total;
-
   let stars = 1;
   if (pct >= 1) stars = 3;
   else if (pct >= 0.7) stars = 2;
   state.phaseStars[phaseIdx] = Math.max(state.phaseStars[phaseIdx], stars);
-
   document.getElementById('progress-fill').style.width = '100%';
-
   const phase = phases[phaseIdx];
   document.getElementById('phase-complete-title').textContent = `${phase.icon} ${phase.name} Completo!`;
-  document.getElementById('stars-earned').textContent = '⭐'.repeat(stars) + '☆'.repeat(3 - stars);
-
-  let msg = '';
-  if (pct >= 1) msg = `Você acertou TUDO! ${score} de ${total}! Incrível! 🦄✨`;
-  else if (pct >= 0.7) msg = `Você acertou ${score} de ${total}! Muito bem! 💜`;
-  else msg = `Você acertou ${score} de ${total}. Continue praticando! 🌸`;
+  document.getElementById('stars-earned').textContent = '⭐'.repeat(stars) + '☆'.repeat(3-stars);
+  let msg = pct >= 1 ? `Você acertou TUDO! ${score} de ${total}! Incrível! 🦄✨`
+    : pct >= 0.7 ? `Você acertou ${score} de ${total}! Muito bem! 💜`
+    : `Você acertou ${score} de ${total}. Continue praticando! 🌸`;
   document.getElementById('phase-score-text').textContent = msg;
-
-  const btn = document.getElementById('btn-phase-continue');
-  btn.textContent = phaseIdx < 2 ? 'Próxima Fase ➜' : 'Ver Resultado Final 🏆';
-
+  document.getElementById('btn-phase-continue').textContent = phaseIdx < 2 ? 'Próxima Fase ➜' : 'Ver Resultado Final 🏆';
   showScreen('phase-complete');
   showConfetti();
   playSound('win');
 }
 
 function continueAfterPhase() {
-  if (state.currentPhase < 2) {
-    showScreen('map');
-    renderMap();
-  } else {
-    showFinal();
-  }
+  if (state.currentPhase < 2) { showScreen('map'); renderMap(); }
+  else { showFinal(); }
 }
 
 function showFinal() {
-  const totalStars = state.phaseStars.reduce((a, b) => a + b, 0);
-  document.getElementById('total-stars').textContent = '⭐'.repeat(totalStars) + '☆'.repeat(9 - totalStars);
-
-  let title = 'Parabéns!';
-  let msg = '';
+  const totalStars = state.phaseStars.reduce((a,b) => a+b, 0);
+  document.getElementById('total-stars').textContent = '⭐'.repeat(totalStars) + '☆'.repeat(9-totalStars);
+  let title = 'Parabéns!', msg = '';
   if (totalStars >= 8) {
     title = '🌟 Você é incrível! 🌟';
     msg = 'Você dominou os adjetivos, os substantivos e os artigos! A Luna está muito orgulhosa de você! 🦄💜✨';
@@ -923,25 +1085,18 @@ function showFinal() {
     title = '💜 Boa tentativa! 💜';
     msg = 'Você completou a aventura com a Luna! Que tal jogar de novo para ganhar mais estrelas? 🦄🌟';
   }
-
   document.getElementById('final-title').textContent = title;
   document.getElementById('final-msg').textContent = msg;
-
   showScreen('final');
   showConfetti();
   playSound('win');
 }
 
 function resetGame() {
-  state.currentPhase = 0;
-  state.currentQuestion = 0;
-  state.phaseScores = [0, 0, 0];
-  state.phaseTotal = [0, 0, 0];
-  state.phaseStars = [0, 0, 0];
-  state.questions = [];
-  state.answered = false;
-  showScreen('map');
-  renderMap();
+  state.currentPhase = 0; state.currentQuestion = 0;
+  state.phaseScores = [0,0,0]; state.phaseTotal = [0,0,0];
+  state.phaseStars = [0,0,0]; state.questions = []; state.answered = false;
+  showScreen('map'); renderMap();
 }
 </script>
 </body>
