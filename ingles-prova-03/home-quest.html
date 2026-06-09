@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Home Quest — A Mansão dos Desafios</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Home Quest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg1:#1e1b4b;--bg2:#312e81;--card:#ffffff;
+  --pink:#ff6b9d;--green:#22c55e;--blue:#3b82f6;--purple:#8b5cf6;
+  --yellow:#facc15;--red:#ef4444;--orange:#fb923c;--teal:#14b8a6;
+  --ink:#1e293b;--mut:#64748b;
+}
+html,body{height:100%}
+body{
+  font-family:'Nunito',sans-serif;
+  background:radial-gradient(1200px 600px at 50% -10%,#4338ca,var(--bg1)) fixed;
+  color:var(--ink);overflow-x:hidden;
+  -webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;
+}
+.wrap{max-width:560px;margin:0 auto;min-height:100%;position:relative}
+.screen{display:none;flex-direction:column;min-height:100vh;padding:18px 16px calc(24px + env(safe-area-inset-bottom));animation:fade .35s ease}
+.screen.active{display:flex}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+h1,h2,h3,.fred{font-family:'Fredoka',sans-serif}
+
+/* generic buttons */
+.btn{font-family:'Fredoka',sans-serif;font-weight:600;font-size:1.15em;padding:15px 22px;border:none;border-radius:18px;color:#fff;cursor:pointer;width:100%;transition:transform .12s,filter .2s;box-shadow:0 6px 0 rgba(0,0,0,.18)}
+.btn:active{transform:translateY(4px);box-shadow:0 2px 0 rgba(0,0,0,.18)}
+.btn.green{background:linear-gradient(180deg,#34d399,#16a34a)}
+.btn.blue{background:linear-gradient(180deg,#60a5fa,#2563eb)}
+.btn.purple{background:linear-gradient(180deg,#a78bfa,#7c3aed)}
+.btn.orange{background:linear-gradient(180deg,#fdba74,#ea580c)}
+.btn.pink{background:linear-gradient(180deg,#fb7185,#e11d48)}
+.btn.ghost{background:rgba(255,255,255,.14);box-shadow:none;font-size:1em;padding:12px}
+.btn:disabled{filter:grayscale(.7) brightness(.8);cursor:not-allowed}
+
+/* ============ INTRO ============ */
+#intro{align-items:center;justify-content:center;text-align:center;gap:6px}
+.logo{font-size:84px;filter:drop-shadow(0 8px 14px rgba(0,0,0,.4));animation:bob 3s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-14px) rotate(3deg)}}
+#intro h1{color:#fff;font-size:2.4em;line-height:1;text-shadow:0 4px 0 rgba(0,0,0,.25);margin-top:6px}
+#intro h1 .a{color:var(--yellow)}
+.sub{color:#c7d2fe;font-size:1.05em;max-width:330px;margin:8px 0 18px}
+.namebox{width:100%;max-width:320px;display:flex;flex-direction:column;gap:10px}
+.namebox input{font-family:'Fredoka',sans-serif;font-size:1.2em;text-align:center;padding:14px;border-radius:16px;border:3px solid #c7d2fe;outline:none;background:#fff}
+.namebox input:focus{border-color:var(--yellow)}
+.avatars{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:4px 0 6px}
+.av{font-size:30px;width:50px;height:50px;display:flex;align-items:center;justify-content:center;border-radius:14px;background:rgba(255,255,255,.12);cursor:pointer;transition:.15s}
+.av.sel{background:var(--yellow);transform:scale(1.12)}
+.credit{color:#818cf8;font-size:.8em;margin-top:14px}
+
+/* ============ HOME ============ */
+.topbar{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.1);border-radius:18px;padding:10px 14px;color:#fff}
+.topbar .who{font-family:'Fredoka',sans-serif;font-size:1.05em;display:flex;align-items:center;gap:8px}
+.topbar .who .lvl{background:var(--yellow);color:#1e293b;border-radius:10px;font-size:.7em;padding:2px 8px;font-weight:700}
+.spacer{flex:1}
+.coinpill{display:flex;align-items:center;gap:5px;background:rgba(250,204,21,.2);color:var(--yellow);font-family:'Fredoka',sans-serif;padding:6px 12px;border-radius:14px;font-size:1.05em}
+.menu{display:flex;flex-direction:column;gap:14px;margin-top:18px}
+.tile{display:flex;align-items:center;gap:16px;background:var(--card);border-radius:22px;padding:18px;cursor:pointer;transition:transform .12s;box-shadow:0 6px 0 rgba(0,0,0,.14)}
+.tile:active{transform:translateY(4px);box-shadow:0 2px 0 rgba(0,0,0,.14)}
+.tile .ic{font-size:42px;width:60px;text-align:center}
+.tile .tx h3{font-size:1.25em}
+.tile .tx p{color:var(--mut);font-size:.92em;font-weight:700}
+.tile .go{margin-left:auto;font-size:24px;color:var(--mut)}
+.tile.adv{background:linear-gradient(120deg,#fde68a,#fbbf24)}
+.tile.duel{background:linear-gradient(120deg,#fca5a5,#f87171)}
+.tile.arc{background:linear-gradient(120deg,#a5b4fc,#818cf8);color:#fff}
+.tile.arc p{color:#e0e7ff}
+.tile.build{background:linear-gradient(120deg,#6ee7b7,#34d399)}
+.tile.trophy{background:linear-gradient(120deg,#c4b5fd,#a78bfa);color:#fff}
+.tile.trophy p{color:#ede9fe}
+
+/* ============ section headers ============ */
+.shead{display:flex;align-items:center;gap:10px;color:#fff;margin:4px 0 14px}
+.shead .back{background:rgba(255,255,255,.15);border:none;color:#fff;font-size:1.4em;width:42px;height:42px;border-radius:14px;cursor:pointer;flex-shrink:0}
+.shead h2{font-size:1.4em}
+.shead p{color:#c7d2fe;font-size:.85em;font-weight:700}
+
+/* ============ MAP ============ */
+.maplist{display:flex;flex-direction:column;gap:12px}
+.world{display:flex;align-items:center;gap:14px;background:var(--card);border-radius:20px;padding:14px 16px;cursor:pointer;transition:transform .12s;box-shadow:0 5px 0 rgba(0,0,0,.13);position:relative}
+.world:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.13)}
+.world.locked{opacity:.55;filter:grayscale(.5);cursor:not-allowed}
+.world.boss{background:linear-gradient(120deg,#1e293b,#334155);color:#fff}
+.world .num{font-family:'Fredoka',sans-serif;font-size:1.1em;width:34px;height:34px;border-radius:12px;background:#eef2ff;color:#4338ca;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.world.boss .num{background:var(--yellow);color:#1e293b}
+.world .wic{font-size:34px}
+.world .wt{flex:1}
+.world .wt h3{font-size:1.08em}
+.world .wt p{color:var(--mut);font-size:.82em;font-weight:700}
+.world.boss .wt p{color:#cbd5e1}
+.world .stars{font-size:.95em;letter-spacing:1px;color:var(--yellow)}
+.world .lk{font-size:22px}
+
+/* ============ GAME ============ */
+#game{padding-top:14px}
+.ghud{display:flex;align-items:center;gap:8px;color:#fff;font-family:'Fredoka',sans-serif}
+.ghud .x{background:rgba(255,255,255,.14);border:none;color:#fff;width:38px;height:38px;border-radius:12px;font-size:1.1em;cursor:pointer}
+.ghud .qn{font-size:.95em}
+.lives{font-size:1.1em;letter-spacing:1px}
+.ghud .sc{margin-left:auto;background:rgba(250,204,21,.2);color:var(--yellow);padding:5px 12px;border-radius:12px}
+.timewrap{height:12px;background:rgba(255,255,255,.18);border-radius:8px;overflow:hidden;margin:12px 0 6px}
+.timebar{height:100%;width:100%;background:linear-gradient(90deg,#4ade80,#22c55e);border-radius:8px;transition:width .12s linear}
+.timebar.warn{background:linear-gradient(90deg,#fbbf24,#f59e0b)}
+.timebar.danger{background:linear-gradient(90deg,#f87171,#ef4444)}
+.combo{text-align:center;height:26px;color:var(--yellow);font-family:'Fredoka',sans-serif;font-size:1.1em;font-weight:700;transition:.2s}
+.combo.pop{animation:cpop .4s ease}
+@keyframes cpop{0%{transform:scale(.6);opacity:0}50%{transform:scale(1.25)}100%{transform:scale(1)}}
+
+.qcard{background:var(--card);border-radius:24px;padding:22px 18px;box-shadow:0 8px 0 rgba(0,0,0,.12);margin-bottom:14px}
+.qtopic{display:inline-block;background:#eef2ff;color:#4338ca;font-family:'Fredoka',sans-serif;font-size:.78em;padding:4px 12px;border-radius:10px;margin-bottom:12px}
+.qtext{font-size:1.3em;font-weight:800;line-height:1.4;text-align:center;color:var(--ink)}
+.qtext .blank{color:var(--purple);border-bottom:3px dotted var(--purple);padding:0 14px}
+.qtext em{font-style:normal;color:var(--blue);font-weight:900}
+.bigswatch{width:84px;height:84px;border-radius:20px;margin:6px auto 14px;box-shadow:inset 0 0 0 3px rgba(0,0,0,.08),0 6px 14px rgba(0,0,0,.15)}
+.bigflag{font-size:72px;text-align:center;margin:0 auto 8px;line-height:1}
+.qhint{text-align:center;color:var(--mut);font-size:.86em;font-weight:700;margin-top:10px}
+
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.choices.one{grid-template-columns:1fr}
+.choice{font-family:'Fredoka',sans-serif;font-size:1.15em;padding:16px 10px;border-radius:18px;background:var(--card);border:3px solid #e2e8f0;color:var(--ink);cursor:pointer;transition:.12s;min-height:60px;display:flex;align-items:center;justify-content:center;gap:8px;text-align:center;box-shadow:0 4px 0 rgba(0,0,0,.1)}
+.choice:active{transform:translateY(2px)}
+.choice .sw{width:30px;height:30px;border-radius:9px;box-shadow:inset 0 0 0 2px rgba(0,0,0,.1)}
+.choice .fl{font-size:1.5em}
+.choice.correct{background:var(--green);border-color:#15803d;color:#fff;animation:cpop .3s}
+.choice.wrong{background:var(--red);border-color:#b91c1c;color:#fff;animation:shake .4s}
+.choice.dim{opacity:.45}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
+.typein{font-family:'Fredoka',sans-serif;font-size:1.3em;text-align:center;padding:16px;border-radius:18px;border:3px solid #c7d2fe;outline:none;width:100%;box-shadow:0 4px 0 rgba(0,0,0,.1)}
+.typein:focus{border-color:var(--purple)}
+.typein:disabled{opacity:.75}
+.reveal{text-align:center;font-family:'Fredoka',sans-serif;margin-top:12px;font-size:1.05em;animation:cpop .3s}
+.reveal.ok{color:var(--green)}
+.reveal.no{color:var(--red)}
+
+.fx{position:fixed;inset:0;pointer-events:none;z-index:50;overflow:hidden}
+.confetti{position:absolute;width:11px;height:11px;border-radius:2px;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(640deg);opacity:.9}}
+.flash{position:fixed;inset:0;z-index:40;pointer-events:none;opacity:0}
+.flash.show{animation:fl .5s ease}
+@keyframes fl{0%{opacity:.35}100%{opacity:0}}
+
+/* ============ RESULT ============ */
+#result{align-items:center;justify-content:center;text-align:center;gap:8px}
+.rcard{background:var(--card);border-radius:26px;padding:26px 22px;width:100%;box-shadow:0 8px 0 rgba(0,0,0,.14)}
+.rcard .em{font-size:74px}
+.rcard h2{font-size:1.7em;margin:4px 0}
+.starsbig{font-size:2.4em;letter-spacing:6px;margin:6px 0;color:#cbd5e1}
+.starsbig .on{color:var(--yellow);text-shadow:0 3px 6px rgba(250,204,21,.5)}
+.rrow{display:flex;justify-content:space-around;margin:14px 0;gap:8px}
+.rstat{background:#f1f5f9;border-radius:16px;padding:12px;flex:1}
+.rstat .v{font-family:'Fredoka',sans-serif;font-size:1.5em;color:var(--blue)}
+.rstat .l{font-size:.78em;color:var(--mut);font-weight:800;text-transform:uppercase}
+.newbadge{background:linear-gradient(90deg,#fbbf24,#f59e0b);color:#fff;border-radius:14px;padding:10px;margin:8px 0;font-family:'Fredoka',sans-serif;animation:cpop .5s}
+
+/* ============ BUILD ============ */
+.house{background:linear-gradient(180deg,#bae6fd,#7dd3fc);border-radius:22px;padding:14px;min-height:120px;box-shadow:0 6px 0 rgba(0,0,0,.12)}
+.houseroof{text-align:center;font-size:40px;margin-bottom:-6px}
+.rooms{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;background:#fcd9b6;padding:10px;border-radius:14px;border:4px solid #b45309}
+.room{aspect-ratio:1;background:#fff7ed;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:30px;border:2px dashed #d6b48a;position:relative}
+.room.empty{opacity:.5}
+.room .rn{font-size:.5em;font-family:'Fredoka',sans-serif;color:#78350f;margin-top:2px}
+.shoplist{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.shopitem{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:16px;padding:12px 14px;box-shadow:0 4px 0 rgba(0,0,0,.1)}
+.shopitem .si{font-size:30px}
+.shopitem .st{flex:1}
+.shopitem .st h4{font-family:'Fredoka',sans-serif;font-size:1.02em}
+.shopitem .st p{color:var(--mut);font-size:.8em;font-weight:700}
+.buybtn{font-family:'Fredoka',sans-serif;border:none;background:linear-gradient(180deg,#fbbf24,#f59e0b);color:#fff;padding:9px 14px;border-radius:12px;font-size:.95em;cursor:pointer;box-shadow:0 3px 0 rgba(0,0,0,.15)}
+.buybtn:disabled{filter:grayscale(.6) brightness(.85)}
+.buybtn.owned{background:#cbd5e1;color:#475569;box-shadow:none}
+
+/* ============ DUEL ============ */
+.duelcard{background:var(--card);border-radius:22px;padding:20px;margin-bottom:14px;box-shadow:0 6px 0 rgba(0,0,0,.12)}
+.duelcard h3{font-size:1.2em;margin-bottom:6px}
+.duelcard p{color:var(--mut);font-weight:700;font-size:.92em;margin-bottom:12px}
+.codebox{font-family:monospace;background:#0f172a;color:#7dd3fc;padding:14px;border-radius:14px;font-size:.82em;word-break:break-all;line-height:1.5;border:2px dashed #334155}
+.codein{width:100%;font-family:monospace;font-size:.9em;padding:12px;border-radius:12px;border:3px solid #c7d2fe;outline:none;resize:none;min-height:80px}
+.vs{display:flex;align-items:center;justify-content:space-around;gap:8px;margin:10px 0}
+.vsp{flex:1;text-align:center;background:#f1f5f9;border-radius:16px;padding:14px 6px}
+.vsp.win{background:linear-gradient(180deg,#bbf7d0,#86efac);box-shadow:0 0 0 3px var(--green)}
+.vsp .nm{font-family:'Fredoka',sans-serif;font-size:1em}
+.vsp .sc{font-family:'Fredoka',sans-serif;font-size:1.8em;color:var(--blue)}
+.vsmid{font-family:'Fredoka',sans-serif;font-size:1.3em;color:var(--mut)}
+
+/* ============ LEADERBOARD / TROPHIES ============ */
+.lb{display:flex;flex-direction:column;gap:8px}
+.lbrow{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:14px;padding:11px 14px;box-shadow:0 3px 0 rgba(0,0,0,.08)}
+.lbrow .rk{font-family:'Fredoka',sans-serif;font-size:1.1em;width:34px;color:var(--mut)}
+.lbrow .nm{flex:1;font-weight:800}
+.lbrow .sc{font-family:'Fredoka',sans-serif;color:var(--blue)}
+.lbrow.me{outline:3px solid var(--yellow)}
+.tgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.troph{background:var(--card);border-radius:16px;padding:14px;text-align:center;box-shadow:0 4px 0 rgba(0,0,0,.1);opacity:.45;filter:grayscale(1)}
+.troph.got{opacity:1;filter:none}
+.troph .te{font-size:34px}
+.troph .tn{font-family:'Fredoka',sans-serif;font-size:.92em;margin-top:4px}
+.troph .td{font-size:.74em;color:var(--mut);font-weight:700}
+.empty{color:#c7d2fe;text-align:center;padding:30px;font-weight:700}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(80px);background:#1e293b;color:#fff;padding:12px 20px;border-radius:16px;font-family:'Fredoka',sans-serif;z-index:60;opacity:0;transition:.3s;box-shadow:0 8px 24px rgba(0,0,0,.4);max-width:90%;text-align:center}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.note{color:#c7d2fe;font-size:.82em;text-align:center;margin-top:10px;font-weight:700;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===== INTRO ===== -->
+  <section id="intro" class="screen active">
+    <div class="logo">🏰</div>
+    <h1>HOME <span class="a">QUEST</span></h1>
+    <div class="sub">A Mansão dos Desafios de Inglês! Responda, ganhe moedas e construa a mansão dos seus sonhos. 🏠✨</div>
+    <div class="namebox">
+      <input id="nameInput" maxlength="12" placeholder="Seu nome de herói" autocomplete="off">
+      <div class="avatars" id="avatars"></div>
+      <button class="btn green" onclick="startGameFromIntro()">JOGAR ▶</button>
+    </div>
+    <div class="credit">Conteúdo: There's no place like home · 6º ano</div>
+  </section>
+
+  <!-- ===== HOME ===== -->
+  <section id="home" class="screen">
+    <div class="topbar">
+      <div class="who"><span id="homeAv">🦸</span><span id="homeName">Herói</span><span class="lvl" id="homeLvl">Nv 1</span></div>
+      <div class="spacer"></div>
+      <div class="coinpill">🪙 <span id="homeCoins">0</span></div>
+    </div>
+    <div class="menu">
+      <div class="tile adv" onclick="openMap()">
+        <div class="ic">🗺️</div><div class="tx"><h3>Aventura</h3><p>Desbloqueie as 9 salas da mansão</p></div><div class="go">›</div>
+      </div>
+      <div class="tile duel" onclick="show('duel')">
+        <div class="ic">⚔️</div><div class="tx"><h3>Duelo de Amigos</h3><p>Desafie um colega com um código</p></div><div class="go">›</div>
+      </div>
+      <div class="tile arc" onclick="startArcade()">
+        <div class="ic">🔥</div><div class="tx"><h3>Modo Arcade</h3><p>Sem fim! Quantos você acerta?</p></div><div class="go">›</div>
+      </div>
+      <div class="tile build" onclick="openBuild()">
+        <div class="ic">🔨</div><div class="tx"><h3>Construir Mansão</h3><p>Gaste moedas e decore</p></div><div class="go">›</div>
+      </div>
+      <div class="tile trophy" onclick="openTrophies()">
+        <div class="ic">🏆</div><div class="tx"><h3>Troféus & Recordes</h3><p>Conquistas e placar</p></div><div class="go">›</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MAP ===== -->
+  <section id="map" class="screen">
+    <div class="shead">
+      <button class="back" onclick="show('home')">‹</button>
+      <div><h2>🗺️ Aventura</h2><p>Acerte para ganhar estrelas e abrir a próxima sala</p></div>
+    </div>
+    <div class="maplist" id="mapList"></div>
+  </section>
+
+  <!-- ===== GAME ===== -->
+  <section id="game" class="screen">
+    <div class="ghud">
+      <button class="x" onclick="quitGame()">✕</button>
+      <span class="qn" id="qn">1/10</span>
+      <span class="lives" id="lives"></span>
+      <span class="sc">🪙 <span id="gScore">0</span></span>
+    </div>
+    <div class="timewrap"><div class="timebar" id="timebar"></div></div>
+    <div class="combo" id="combo"></div>
+    <div class="qcard" id="qcard"></div>
+    <div class="choices" id="choices"></div>
+  </section>
+
+  <!-- ===== RESULT ===== -->
+  <section id="result" class="screen">
+    <div class="rcard">
+      <div class="em" id="rEmoji">🎉</div>
+      <h2 id="rTitle">Mandou bem!</h2>
+      <div class="starsbig" id="rStars"></div>
+      <div class="rrow">
+        <div class="rstat"><div class="v" id="rCorrect">0</div><div class="l">Acertos</div></div>
+        <div class="rstat"><div class="v" id="rCoins">0</div><div class="l">Moedas</div></div>
+        <div class="rstat"><div class="v" id="rCombo">0</div><div class="l">Combo máx</div></div>
+      </div>
+      <div id="rExtra"></div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px">
+        <button class="btn green" id="rNext" onclick="resultNext()">Continuar ▶</button>
+        <button class="btn ghost" onclick="show('home')">Menu</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== BUILD ===== -->
+  <section id="build" class="screen">
+    <div class="shead">
+      <button class="back" onclick="show('home')">‹</button>
+      <div><h2>🔨 Sua Mansão</h2><p id="buildProg">0 / 9 salas construídas</p></div>
+      <div class="spacer"></div>
+      <div class="coinpill">🪙 <span id="buildCoins">0</span></div>
+    </div>
+    <div class="house">
+      <div class="houseroof">🏠</div>
+      <div class="rooms" id="rooms"></div>
+    </div>
+    <div class="shoplist" id="shop"></div>
+  </section>
+
+  <!-- ===== DUEL ===== -->
+  <section id="duel" class="screen">
+    <div class="shead">
+      <button class="back" onclick="show('home')">‹</button>
+      <div><h2>⚔️ Duelo de Amigos</h2><p>Mesmas 15 perguntas. Quem acerta mais vence!</p></div>
+    </div>
+    <div class="duelcard">
+      <h3>🚀 Criar um desafio</h3>
+      <p>Você joga primeiro. Depois manda o código pro colega tentar bater seu placar.</p>
+      <button class="btn pink" onclick="startDuelCreate()">Começar meu duelo</button>
+    </div>
+    <div class="duelcard">
+      <h3>🎯 Aceitar um desafio</h3>
+      <p>Cole o código que seu amigo te mandou e enfrente as mesmas perguntas.</p>
+      <textarea class="codein" id="duelCodeIn" placeholder="Cole o código do desafio aqui..."></textarea>
+      <button class="btn blue" style="margin-top:10px" onclick="acceptDuel()">Aceitar desafio ⚔️</button>
+    </div>
+    <div class="note">Dica: dá pra mandar o código pelo WhatsApp! 📲</div>
+  </section>
+
+  <!-- ===== DUEL SHARE ===== -->
+  <section id="duelShare" class="screen">
+    <div class="shead">
+      <button class="back" onclick="show('home')">‹</button>
+      <div><h2>⚔️ Desafio criado!</h2><p>Mande este código pro seu colega</p></div>
+    </div>
+    <div class="duelcard">
+      <h3 id="dsTitle">Você fez 0 pontos!</h3>
+      <p>Seu amigo vai jogar as MESMAS perguntas. Copie e envie:</p>
+      <div class="codebox" id="dsCode"></div>
+      <button class="btn green" style="margin-top:12px" onclick="copyDuelCode()">📋 Copiar código</button>
+      <button class="btn blue" style="margin-top:10px" onclick="shareWhats()">📲 Enviar no WhatsApp</button>
+    </div>
+    <button class="btn ghost" onclick="show('home')">Voltar ao menu</button>
+  </section>
+
+  <!-- ===== DUEL RESULT ===== -->
+  <section id="duelResult" class="screen">
+    <div class="rcard">
+      <div class="em" id="drEmoji">⚔️</div>
+      <h2 id="drTitle">Resultado do Duelo</h2>
+      <div class="vs" id="drVs"></div>
+      <div id="drMsg" class="fred" style="font-size:1.1em;margin:6px 0;color:var(--mut)"></div>
+      <button class="btn green" style="margin-top:8px" onclick="show('home')">Menu</button>
+    </div>
+  </section>
+
+  <!-- ===== TROPHIES ===== -->
+  <section id="trophies" class="screen">
+    <div class="shead">
+      <button class="back" onclick="show('home')">‹</button>
+      <div><h2>🏆 Troféus & Recordes</h2><p>Recorde Arcade: <span id="bestArcade">0</span></p></div>
+    </div>
+    <h3 style="color:#fff;margin:4px 0 10px">🥇 Placar Arcade</h3>
+    <div class="lb" id="leaderboard"></div>
+    <h3 style="color:#fff;margin:18px 0 10px">🎖️ Conquistas</h3>
+    <div class="tgrid" id="trophyGrid"></div>
+  </section>
+
+</div>
+
+<div class="fx" id="fx"></div>
+<div class="flash" id="flash"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================
+   HOME QUEST — engine
+   ========================================================= */
+const AVATARS=['🦸','🧙','🦊','🐯','🐼','🦄','🐲','🤖','👾','🐱'];
+const $=id=>document.getElementById(id);
+
+/* ---------- persistent state ---------- */
+const DEF={name:'',avatar:'🦸',coins:0,xp:0,stars:{},built:[],bestArcade:0,leaderboard:[],trophies:[]};
+let S=load();
+function load(){try{return Object.assign({},DEF,JSON.parse(localStorage.getItem('homequest')||'{}'))}catch(e){return Object.assign({},DEF)}}
+function save(){localStorage.setItem('homequest',JSON.stringify(S))}
+
+/* ---------- screen nav ---------- */
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$(id).classList.add('active');window.scrollTo(0,0)}
+
+/* ---------- seeded RNG (for duels) ---------- */
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function shuffleSeeded(arr,seed){const r=mulberry32(seed),a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+/* =========================================================
+   QUESTION BANK
+   type fields: q(prompt html), choices[], answer(index)
+   optional: swatch(hex shown big), flag(emoji big), hint, sw/fl on choices
+   ========================================================= */
+const C=(t,sw,fl)=>({t,sw,fl}); // choice helper
+const BANK={
+rooms:[
+ {q:"Where do you <em>cook</em> your food?",ch:["Kitchen","Bedroom","Garage","Bathroom"],a:0,diff:1},
+ {q:"Where do you <em>park your car</em>?",ch:["Garden","Garage","Hallway","Closet"],a:1,diff:1},
+ {q:"Where do you <em>sleep</em>?",ch:["Bathroom","Bedroom","Kitchen","Pool"],a:1,diff:1},
+ {q:"Where do you <em>take a shower</em>?",ch:["Kitchen","Garage","Bathroom","Garden"],a:2,diff:1},
+ {q:"Where children <em>play with toys</em>.",ch:["Office","Playroom","Pantry","Closet"],a:1,diff:1},
+ {q:"Where does the family <em>watch TV</em> together?",ch:["Laundry room","Living room","Closet","Hallway"],a:1,diff:2},
+ {q:"The narrow passage that <em>connects the rooms</em>.",ch:["Closet","Backyard","Hallway","Ceiling"],a:2,diff:2},
+ {q:"A small space inside the bedroom to keep your <em>clothes</em>.",ch:["Closet","Garage","Pantry","Attic"],a:0,diff:2},
+ {q:"The open area <em>behind</em> the house, often with a pool.",ch:["Front yard","Backyard","Balcony","Hallway"],a:1,diff:2},
+ {q:"Where you <em>work or study</em> at home.",ch:["Home office","Laundry room","Playroom","Pantry"],a:0,diff:2},
+ {q:"Where do you <em>wash and dry the clothes</em>?",ch:["Kitchen","Bathroom","Laundry room","Closet"],a:2,diff:2},
+ {q:"\"Sala de jantar\" em inglês é...",ch:["Living room","Dining room","Lunch room","Eating room"],a:1,diff:2},
+ {q:"Read: <em>\"I cook here, then we eat at the big table in the next room.\"</em> The next room is the...",ch:["Bathroom","Dining room","Garage","Backyard"],a:1,diff:3},
+ {q:"Complete: <em>\"I park the car in the <span class='blank'></span> and grow flowers in the <span class='blank'></span>.\"</em>",ch:["garage / garden","garden / garage","kitchen / garden","garage / garage"],a:0,diff:3},
+ {q:"Which sentence is <em>correct</em>?",ch:["I sleep in the kitchen.","I cook in the bathroom.","I park the car in the garage.","I shower in the garden."],a:2,diff:3},
+ {q:"In \"<em>There is a hall that takes you to three bedrooms</em>\", a <em>hall</em> is a...",ch:["bathroom","passage / hallway","kitchen","garden"],a:1,diff:3},
+ {q:"Type the room where you <em>cook</em> (in English):",typ:1,acc:["kitchen","the kitchen"],diff:3,hint:"em inglês"},
+ {q:"Type the room where you keep the <em>car</em>:",typ:1,acc:["garage","the garage"],diff:3},
+],
+colors:[
+ {q:"What color is this?",sw:"#2563eb",ch:["Green","Blue","Purple","Black"],a:1,diff:1},
+ {q:"What color is this?",sw:"#7c3aed",ch:["Pink","Purple","Brown","Blue"],a:1,diff:1},
+ {q:"What color is this?",sw:"#6b7280",ch:["Black","Brown","Grey","White"],a:2,diff:1},
+ {q:"What color is this?",sw:"#ec4899",ch:["Purple","Pink","Red","Orange"],a:1,diff:1},
+ {q:"Pick the color <em>PURPLE</em>:",ch:[C("",("#2563eb")),C("",("#7c3aed")),C("",("#16a34a")),C("",("#ea580c"))],a:1,sws:1,diff:1},
+ {q:"What color is this?",sw:"#16a34a",ch:["Teal","Green","Blue","Grey"],a:1,diff:2},
+ {q:"What color is this?",sw:"#92400e",ch:["Brown","Orange","Black","Red"],a:0,diff:2},
+ {q:"Pick the color <em>GREY</em>:",ch:[C("",("#6b7280")),C("",("#000")),C("",("#92400e")),C("",("#2563eb"))],a:0,sws:1,diff:2},
+ {q:"<em>Blue</em> and <em>yellow</em> make...",ch:["purple","green","orange","grey"],a:1,diff:2},
+ {q:"<em>Red</em> and <em>white</em> make...",ch:["pink","brown","purple","grey"],a:0,diff:2},
+ {q:"The German flag has black, red and...",ch:["green","gold / yellow","blue","white"],a:1,diff:2},
+ {q:"Which is the correct spelling for \"cinza\"?",ch:["graye","grei","grey / gray","greey"],a:2,diff:2},
+ {q:"<span class='blank'></span> red flowers in my garden.",ch:["There is","There are","Is there","It's"],a:1,diff:3,hint:"flowers = plural"},
+ {q:"Which sentence is <em>correct</em>?",ch:["The walls is white.","The wall are white.","The walls are white.","The walls are whites."],a:2,diff:3},
+ {q:"\"My new shoes are great. <span class='blank'></span> orange.\"",ch:["It's","They're","Its","There"],a:1,diff:3,hint:"shoes = plural"},
+ {q:"Read: <em>\"My room is purple, the rug is brown, the curtains are grey.\"</em> Which color is NOT there?",ch:["purple","green","brown","grey"],a:1,diff:3},
+ {q:"Type in English the color of the sky on a sunny day:",typ:1,acc:["blue"],diff:3},
+ {q:"Type in English: \"roxo\"",typ:1,acc:["purple"],diff:3},
+],
+flags:[
+ {q:"Which country is this flag?",fl:"🇧🇷",ch:["Argentina","Brazil","Germany","Portugal"],a:1,diff:1},
+ {q:"Which country is this flag?",fl:"🇩🇪",ch:["Germany","Belgium","Spain","France"],a:0,diff:1},
+ {q:"Which country is this flag?",fl:"🇺🇸",ch:["England","The United States","Canada","Chile"],a:1,diff:1},
+ {q:"Which country is this flag?",fl:"🇦🇷",ch:["Uruguay","Argentina","Brazil","Italy"],a:1,diff:1},
+ {q:"Which country is this flag?",fl:"🇿🇦",ch:["South Africa","Nigeria","Kenya","Egypt"],a:0,diff:1},
+ {q:"Which flag is <em>Brazil</em>?",ch:[C("",0,"🇦🇷"),C("",0,"🇧🇷"),C("",0,"🇩🇪"),C("",0,"🇺🇸")],a:1,fls:1,diff:2},
+ {q:"Which flag is <em>South Africa</em>?",ch:[C("",0,"🇺🇸"),C("",0,"🇦🇷"),C("",0,"🇿🇦"),C("",0,"🇩🇪")],a:2,fls:1,diff:2},
+ {q:"The flag with <em>black, red and gold</em> stripes is from...",ch:["Brazil","Germany","South Africa","The United States"],a:1,diff:2},
+ {q:"The flag with <em>stars and stripes</em> is from...",ch:["The United States","Argentina","Germany","Brazil"],a:0,diff:2},
+ {q:"A bandeira azul e branca com um <em>sol</em> é da...",ch:["Brazil","Argentina","Germany","South Africa"],a:1,diff:2},
+ {q:"\"Germany\" em português é...",ch:["Alemanha","Holanda","Áustria","Dinamarca"],a:0,diff:3},
+ {q:"\"South Africa\" em português é...",ch:["Sul da América","África do Sul","Sudão","Austrália"],a:1,diff:3},
+ {q:"Which sentence is <em>correct</em>?",ch:["I am from the Brazil.","She is from Germany.","He is from the Argentina.","We are from United States."],a:1,diff:3,hint:"\"the\" só em \"the United States\""},
+],
+thereis:[
+ {q:"<span class='blank'></span> a garage in my house.",ch:["There is","There are","Is there","Are there"],a:0,diff:1},
+ {q:"<span class='blank'></span> three bedrooms upstairs.",ch:["There is","There are","Is there","There be"],a:1,diff:1},
+ {q:"There <span class='blank'></span> a pool in the backyard.",ch:["is","are","am","be"],a:0,diff:1},
+ {q:"There <span class='blank'></span> two bathrooms.",ch:["is","are","be","am"],a:1,diff:1},
+ {q:"<em>(negativo)</em> There <span class='blank'></span> a living room.",ch:["isn't","aren't","not is","don't"],a:0,diff:2},
+ {q:"<em>(negativo)</em> There <span class='blank'></span> flowers in the vase.",ch:["isn't","aren't","not are","doesn't"],a:1,diff:2},
+ {q:"<em>(pergunta)</em> <span class='blank'></span> a TV in your room?",ch:["Is there","Are there","There is","There are"],a:0,diff:2},
+ {q:"<em>(pergunta)</em> <span class='blank'></span> four chairs here?",ch:["Is there","Are there","There are","There is"],a:1,diff:2},
+ {q:"\"Is there a garage?\" → \"Yes, <span class='blank'></span>.\"",ch:["there is","there are","it is","there's"],a:0,diff:2},
+ {q:"\"Are there gardens?\" → \"No, <span class='blank'></span>.\"",ch:["there isn't","there aren't","there not","it isn't"],a:1,diff:2},
+ {q:"There <span class='blank'></span> some milk in the fridge.",ch:["is","are","am","be"],a:0,diff:2},
+ {q:"Turn into a <em>question</em>: \"There are two beds.\"",ch:["Are there two beds?","Is there two beds?","There are two beds?","Are two beds there?"],a:0,diff:3},
+ {q:"Turn into a <em>question</em>: \"There is a closet.\"",ch:["Are there a closet?","Is there a closet?","There is a closet?","Is a closet there?"],a:1,diff:3},
+ {q:"Make it <em>negative</em>: \"There are flowers in the garden.\"",ch:["There isn't flowers...","There aren't flowers...","There not are flowers...","There don't flowers..."],a:1,diff:3},
+ {q:"Which sentence is <em>correct</em>?",ch:["There are a kitchen.","There is two bedrooms.","There is a small kitchen.","There be a garage."],a:2,diff:3},
+ {q:"Which sentence is <em>wrong</em>?",ch:["There are five rooms.","There is a pool.","There are a garden.","There isn't a garage."],a:2,diff:3},
+ {q:"Complete: \"<span class='blank'></span> a sofa and two armchairs in the living room.\"",ch:["There is","There are","Are there","Is there"],a:0,diff:3,hint:"o 1º substantivo (a sofa) é singular!"},
+ {q:"Type ONE word: \"There <span class='blank'></span> 775 rooms at the palace.\"",typ:1,acc:["are"],diff:3},
+ {q:"Type ONE word: \"There <span class='blank'></span> a beautiful garden.\"",typ:1,acc:["is"],diff:3},
+],
+articles:[
+ {q:"It's <span class='blank'></span> house.",ch:["a","an"],a:0,one:1,diff:1},
+ {q:"There's <span class='blank'></span> bed in the room.",ch:["a","an"],a:0,one:1,diff:1},
+ {q:"I see <span class='blank'></span> dog.",ch:["a","an"],a:0,one:1,diff:1},
+ {q:"I have <span class='blank'></span> apple.",ch:["a","an"],a:1,one:1,diff:2,hint:"som de vogal → an"},
+ {q:"There is <span class='blank'></span> umbrella here.",ch:["a","an"],a:1,one:1,diff:2},
+ {q:"There is <span class='blank'></span> alarm clock.",ch:["a","an"],a:1,one:1,diff:2},
+ {q:"That's <span class='blank'></span> old house.",ch:["a","an"],a:1,one:1,diff:2},
+ {q:"I have <span class='blank'></span> great idea!",ch:["a","an"],a:1,one:1,diff:2},
+ {q:"He's <span class='blank'></span> engineer.",ch:["a","an"],a:1,one:1,diff:2},
+ {q:"She's <span class='blank'></span> doctor.",ch:["a","an"],a:0,one:1,diff:2},
+ {q:"It's <span class='blank'></span> orange.",ch:["a","an"],a:1,one:1,diff:2},
+ {q:"Wait <span class='blank'></span> hour, please.",ch:["a","an"],a:1,one:1,diff:3,hint:"\"h\" mudo → som de vogal"},
+ {q:"She studies at <span class='blank'></span> university.",ch:["a","an"],a:0,one:1,diff:3,hint:"\"u\" com som de 'you'"},
+ {q:"He is <span class='blank'></span> honest man.",ch:["a","an"],a:1,one:1,diff:3,hint:"\"honest\" tem h mudo"},
+ {q:"It's <span class='blank'></span> European city.",ch:["a","an"],a:0,one:1,diff:3,hint:"som de 'you'"},
+ {q:"I saw <span class='blank'></span> unicorn in the game!",ch:["a","an"],a:0,one:1,diff:3,hint:"\"u\" com som de 'you'"},
+ {q:"It takes <span class='blank'></span> hour and <span class='blank'></span> half.",ch:["a / a","an / a","an / an","a / an"],a:1,diff:3,hint:"hour→an, half→a"},
+ {q:"Which one is <em>correct</em>?",ch:["an university","a honest boy","an hour","a apple"],a:2,diff:3},
+ {q:"Which one is <em>wrong</em>?",ch:["an honest man","a European","an university","an umbrella"],a:2,diff:3,hint:"university = a"},
+ {q:"Type <em>a</em> or <em>an</em>: \"___ honest answer\"",typ:1,acc:["an"],diff:3},
+ {q:"Type <em>a</em> or <em>an</em>: \"___ university\"",typ:1,acc:["a"],diff:3},
+],
+plurals:[
+ {q:"Plural of <em>child</em>:",ch:["childs","children","childrens","childes"],a:1,diff:1},
+ {q:"Plural of <em>foot</em>:",ch:["foots","feets","feet","footes"],a:2,diff:1},
+ {q:"Plural of <em>man</em>:",ch:["mans","mens","men","manes"],a:2,diff:1},
+ {q:"Plural of <em>mouse</em>:",ch:["mouses","mice","mouse","mices"],a:1,diff:2},
+ {q:"Plural of <em>tooth</em>:",ch:["tooths","teeth","toothes","teeths"],a:1,diff:2},
+ {q:"Plural of <em>woman</em>:",ch:["womans","womens","women","womenes"],a:2,diff:2},
+ {q:"Plural of <em>fish</em>:",ch:["fishs","fishes","fish","fies"],a:2,diff:2,hint:"não muda!"},
+ {q:"Plural of <em>sheep</em>:",ch:["sheep","sheeps","shoop","sheepes"],a:0,diff:2,hint:"não muda!"},
+ {q:"Plural of <em>knife</em>:",ch:["knifes","knives","knifs","knifves"],a:1,diff:2,hint:"-fe → -ves"},
+ {q:"Plural of <em>leaf</em>:",ch:["leafs","leafes","leaves","leves"],a:2,diff:2},
+ {q:"Plural of <em>baby</em>:",ch:["babys","babies","babyes","babes"],a:1,diff:2,hint:"consoante+y → ies"},
+ {q:"Plural of <em>box</em>:",ch:["boxs","boxes","boxies","box"],a:1,diff:2,hint:"-x → -es"},
+ {q:"Plural of <em>potato</em>:",ch:["potatos","potatoes","potatos","potati"],a:1,diff:2},
+ {q:"Plural of <em>city</em>:",ch:["citys","cities","cityes","citis"],a:1,diff:2},
+ {q:"Plural of <em>boy</em>:",ch:["boies","boys","boyes","boi"],a:1,diff:3,hint:"vogal+y → só -s"},
+ {q:"Plural of <em>person</em>:",ch:["persons","people","peoples","persones"],a:1,diff:3},
+ {q:"\"There are five ___ in the playroom.\" (child)",ch:["childs","childrens","children","childes"],a:2,diff:3},
+ {q:"Which plural is <em>wrong</em>?",ch:["children","mice","foots","women"],a:2,diff:3},
+ {q:"Which plural is <em>correct</em>?",ch:["tomatos","babys","knifes","leaves"],a:3,diff:3},
+ {q:"Complete: \"Two ___ and three ___.\" (man / woman)",ch:["mans / womans","men / women","mens / womens","men / womans"],a:1,diff:3},
+ {q:"Type the plural of <em>mouse</em>:",typ:1,acc:["mice"],diff:3},
+ {q:"Type the plural of <em>child</em>:",typ:1,acc:["children"],diff:3},
+ {q:"Type the plural of <em>knife</em>:",typ:1,acc:["knives"],diff:3},
+ {q:"Type the plural of <em>foot</em>:",typ:1,acc:["feet"],diff:3},
+],
+bedroom:[
+ {q:"You <em>sleep</em> on it.",ch:["Desk","Bed","Rug","Lamp"],a:1,diff:1},
+ {q:"You look <em>outside</em> through it.",ch:["Window","Wardrobe","Curtains","Picture"],a:0,diff:1},
+ {q:"It gives <em>light</em>, usually on the desk.",ch:["Lamp","Rug","Picture","Window"],a:0,diff:1},
+ {q:"Big furniture where you keep <em>clothes</em>.",ch:["Wardrobe","Bookshelf","Nightstand","Curtains"],a:0,diff:2},
+ {q:"Small table <em>next to the bed</em>.",ch:["Desk","Wardrobe","Nightstand","Shelf"],a:2,diff:2},
+ {q:"It's <em>on the floor</em>, soft to step on.",ch:["Ceiling","Rug","Curtains","Picture"],a:1,diff:2},
+ {q:"You put your <em>books</em> on it.",ch:["Bookshelf","Wardrobe","Nightstand","Desk"],a:0,diff:2},
+ {q:"It <em>wakes you up</em> in the morning.",ch:["Lamp","Alarm clock","Window","Rug"],a:1,diff:2},
+ {q:"They <em>cover the window</em>.",ch:["Curtains","Ceilings","Pictures","Rugs"],a:0,diff:2},
+ {q:"It <em>hangs on the wall</em> (a piece of art).",ch:["Curtains","Picture","Window","Rug"],a:1,diff:2},
+ {q:"\"Guarda-roupa\" em inglês é...",ch:["Wardrobe","Cupboard","Drawer","Closet"],a:0,diff:2},
+ {q:"\"Tapete\" em inglês é...",ch:["Rag","Rug","Roof","Rope"],a:1,diff:2},
+ {q:"\"There <span class='blank'></span> curtains on the window.\"",ch:["is","are","am","be"],a:1,diff:3,hint:"curtains = plural"},
+ {q:"\"My books are nice. <span class='blank'></span> on the bookshelf.\"",ch:["It's","They're","Its","There"],a:1,diff:3},
+ {q:"Which sentence is <em>correct</em>?",ch:["There is two curtains.","The rug are red.","There is a nightstand.","The lamp are on."],a:2,diff:3},
+ {q:"Read: <em>\"I read in bed with a small light beside me.\"</em> The light is on the...",ch:["ceiling","nightstand","window","floor"],a:1,diff:3},
+ {q:"Type the object you <em>sleep</em> on:",typ:1,acc:["bed","a bed"],diff:3},
+ {q:"Type the object that <em>wakes you up</em> (2 words):",typ:1,acc:["alarm clock","an alarm clock"],diff:3},
+],
+pronouns:[
+ {q:"I like my <em>bike</em>. <span class='blank'></span> blue.",ch:["It's","They're","Its","Their"],a:0,diff:1},
+ {q:"This is my <em>room</em>. <span class='blank'></span> big.",ch:["They're","It's","Its","There"],a:1,diff:1},
+ {q:"\"It's\" significa...",ch:["Isso é (singular)","Eles são","O dele","Lá está"],a:0,diff:1},
+ {q:"I like my <em>shoes</em>. <span class='blank'></span> new.",ch:["It's","They're","Its","Theirs"],a:1,diff:2},
+ {q:"I have a <em>dog</em>. <span class='blank'></span> brown.",ch:["They're","It's","Its","There"],a:1,diff:2},
+ {q:"I love this <em>poster</em>. <span class='blank'></span> from Barcelona.",ch:["It's","They're","Its","There"],a:0,diff:2},
+ {q:"\"They're\" significa...",ch:["Isso é","Eles/Elas são","O deles","Lá"],a:1,diff:2},
+ {q:"Look at the <em>scissors</em>! <span class='blank'></span> red.",ch:["It's","They're","Its","There"],a:1,diff:3,hint:"scissors é sempre plural"},
+ {q:"My <em>pajamas</em> are warm. <span class='blank'></span> very soft.",ch:["It's","They're","Its","There"],a:1,diff:3,hint:"pajamas é plural"},
+ {q:"These <em>pants</em> are nice. <span class='blank'></span> blue.",ch:["It's","They're","Its","There"],a:1,diff:3,hint:"pants é plural"},
+ {q:"My <em>glasses</em> are here. <span class='blank'></span> on the desk.",ch:["It's","They're","Its","There"],a:1,diff:3,hint:"glasses é plural"},
+ {q:"There are <em>stickers</em> on the wall. <span class='blank'></span> fluorescent.",ch:["It's","They're","Its","There"],a:1,diff:3},
+ {q:"Which sentence is <em>correct</em>?",ch:["My jeans is blue.","My jeans are blue.","My jean are blue.","The jeans is blue."],a:1,diff:3,hint:"jeans = plural"},
+ {q:"Type (It's / They're): \"I have a cat. ___ black.\"",typ:1,acc:["it's","its"],diff:3},
+ {q:"Type (It's / They're): \"My socks are old. ___ grey.\"",typ:1,acc:["they're","theyre"],diff:3},
+],
+};
+
+/* world (level) definitions */
+const WORLDS=[
+ {key:'rooms',ic:'🚪',name:'As Salas da Casa',topic:'Rooms of the house',n:12},
+ {key:'colors',ic:'🎨',name:'Mundo das Cores',topic:'Colors',n:12},
+ {key:'flags',ic:'🏳️',name:'Bandeiras & Países',topic:'Flags & countries',n:12},
+ {key:'thereis',ic:'🔑',name:'There is / There are',topic:'There is/are',n:14},
+ {key:'articles',ic:'✨',name:'A ou An?',topic:'Articles a/an',n:14},
+ {key:'plurals',ic:'🔢',name:'Plurais Mágicos',topic:'Plural forms',n:14},
+ {key:'bedroom',ic:'🛏️',name:'Objetos do Quarto',topic:'Bedroom objects',n:12},
+ {key:'pronouns',ic:"🪞",name:"It's / They're",topic:"It's / They're",n:12},
+ {key:'boss',ic:'👑',name:'BOSS: Mansion Master',topic:'Só nível difícil!',n:15,boss:1},
+];
+
+/* trophies */
+const TROPHIES=[
+ {id:'first',e:'🌟',n:'Primeira Vitória',d:'Complete uma sala'},
+ {id:'combo10',e:'🔥',n:'Em Chamas',d:'Combo de 10'},
+ {id:'perfect',e:'💯',n:'Perfeição',d:'Acerte tudo numa sala'},
+ {id:'boss',e:'👑',n:'Mansion Master',d:'Vença o Boss'},
+ {id:'duelwin',e:'⚔️',n:'Duelista',d:'Vença um duelo'},
+ {id:'arcade50',e:'🚀',n:'Imparável',d:'50 pts no Arcade'},
+ {id:'builder',e:'🏠',n:'Arquiteto',d:'Construa 9 salas'},
+ {id:'allstars',e:'🏆',n:'Lenda',d:'3 estrelas em tudo'},
+];
+
+/* build shop — 9 rooms */
+const SHOP=[
+ {id:'kitchen',e:'🍳',n:'Kitchen',cost:30},
+ {id:'bedroom',e:'🛏️',n:'Bedroom',cost:30},
+ {id:'bathroom',e:'🛁',n:'Bathroom',cost:40},
+ {id:'living',e:'🛋️',n:'Living room',cost:50},
+ {id:'garage',e:'🚗',n:'Garage',cost:60},
+ {id:'garden',e:'🌳',n:'Garden',cost:70},
+ {id:'pool',e:'🏊',n:'Pool',cost:90},
+ {id:'office',e:'💻',n:'Home office',cost:90},
+ {id:'cinema',e:'🎬',n:'Cinema room',cost:120},
+];
+
+/* =========================================================
+   INTRO
+   ========================================================= */
+function initIntro(){
+  const wrap=$('avatars');wrap.innerHTML='';
+  AVATARS.forEach(a=>{const d=document.createElement('div');d.className='av'+(a===S.avatar?' sel':'');d.textContent=a;d.onclick=()=>{S.avatar=a;document.querySelectorAll('.av').forEach(x=>x.classList.remove('sel'));d.classList.add('sel')};wrap.appendChild(d)});
+  if(S.name){$('nameInput').value=S.name}
+}
+function startGameFromIntro(){
+  const n=$('nameInput').value.trim();
+  S.name=n||'Herói';save();
+  refreshHome();show('home');
+}
+
+/* =========================================================
+   HOME
+   ========================================================= */
+function refreshHome(){
+  $('homeAv').textContent=S.avatar;
+  $('homeName').textContent=S.name;
+  $('homeLvl').textContent='Nv '+(1+Math.floor(S.xp/100));
+  $('homeCoins').textContent=S.coins;
+}
+
+/* =========================================================
+   MAP
+   ========================================================= */
+function worldUnlocked(i){return i===0|| (S.stars[WORLDS[i-1].key]||0)>0}
+function openMap(){
+  const list=$('mapList');list.innerHTML='';
+  WORLDS.forEach((w,i)=>{
+    const unlocked=worldUnlocked(i);
+    const st=S.stars[w.key]||0;
+    const d=document.createElement('div');
+    d.className='world'+(w.boss?' boss':'')+(unlocked?'':' locked');
+    const stars=unlocked?('★★★'.slice(0,st)+'☆☆☆'.slice(0,3-st)):'';
+    d.innerHTML=`<div class="num">${i+1}</div><div class="wic">${w.ic}</div>
+      <div class="wt"><h3>${w.name}</h3><p>${w.topic}</p></div>
+      <div class="${unlocked?'stars':'lk'}">${unlocked?stars:'🔒'}</div>`;
+    if(unlocked)d.onclick=()=>startWorld(i);
+    list.appendChild(d);
+  });
+  show('map');
+}
+
+/* =========================================================
+   GAME ENGINE
+   ========================================================= */
+let G=null; // current game session
+
+const ALLKEYS=['rooms','colors','flags','thereis','articles','plurals','bedroom','pronouns'];
+function shuffleArr(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function topicLabel(k){const w=WORLDS.find(x=>x.key===k);return w?w.topic:k}
+function dlevel(q){return q.diff||1}
+function gatherPool(keys){let p=[];keys.forEach(k=>BANK[k].forEach(q=>p.push(Object.assign({topic:topicLabel(k)},q))));return p}
+
+// CAMPAIGN: progressive — guarantees a mix that ramps easy → hard
+function campaignQs(key,n){
+  const pool=gatherPool([key]);
+  const t1=shuffleArr(pool.filter(q=>dlevel(q)===1));
+  const t2=shuffleArr(pool.filter(q=>dlevel(q)===2));
+  const t3=shuffleArr(pool.filter(q=>dlevel(q)===3));
+  let e=Math.round(n*0.3),m=Math.round(n*0.4),h=n-e-m;
+  let chosen=[...t1.slice(0,e),...t2.slice(0,m),...t3.slice(0,h)];
+  if(chosen.length<n){const used=new Set(chosen);const rest=shuffleArr(pool.filter(q=>!used.has(q)));chosen=chosen.concat(rest.slice(0,n-chosen.length));}
+  chosen.sort((a,b)=>dlevel(a)-dlevel(b)); // ramp order
+  return chosen.slice(0,n);
+}
+// BOSS: only medium + hard, mixed topics
+function bossQs(n){return shuffleArr(gatherPool(ALLKEYS).filter(q=>dlevel(q)>=2)).slice(0,n)}
+// DUEL: seeded so both players get identical questions
+function duelQs(seed,n){return shuffleSeeded(gatherPool(ALLKEYS),seed).slice(0,n)}
+
+function startWorld(i){
+  const w=WORLDS[i];
+  const qs=w.boss?bossQs(w.n):campaignQs(w.key,w.n);
+  G={mode:'campaign',world:i,key:w.key,boss:!!w.boss,qs,idx:0,score:0,correct:0,combo:0,maxCombo:0,lives:w.boss?3:0,baseTime:w.boss?8:12};
+  startGameSession();
+}
+function startArcade(){
+  G={mode:'arcade',qs:[],idx:0,score:0,correct:0,combo:0,maxCombo:0,lives:3,baseTime:10};
+  startGameSession();
+}
+function startGameSession(){
+  show('game');
+  nextQuestion();
+}
+
+function arcadeQuestion(){
+  // ramp difficulty as the player gets more correct answers
+  const pool=gatherPool(ALLKEYS);
+  const maxd=G.correct<5?1:G.correct<12?2:3;
+  const sub=pool.filter(q=>dlevel(q)<=maxd);
+  return Object.assign({},sub[Math.floor(Math.random()*sub.length)]);
+}
+
+let timerId=null,qStart=0,qDur=0,answered=false;
+function nextQuestion(){
+  answered=false;
+  let q;
+  if(G.mode==='arcade'){q=arcadeQuestion();G.qs.push(q)}
+  else{
+    if(G.idx>=G.qs.length){return endGame()}
+    q=G.qs[G.idx];
+  }
+  G.current=q;
+  renderHud();
+  renderQuestion(q);
+  // timer
+  let dur=G.baseTime;
+  if(G.mode==='arcade'){dur=Math.max(5,10-Math.floor(G.correct/5))}
+  if(q.typ)dur+=6; // typing takes longer than tapping
+  qDur=dur*1000;qStart=performance.now();
+  runTimer();
+}
+function renderHud(){
+  if(G.mode==='arcade'){$('qn').textContent='Q '+(G.idx+1);}
+  else{$('qn').textContent=(G.idx+1)+'/'+G.qs.length;}
+  $('gScore').textContent=G.score;
+  $('lives').textContent=G.lives>0?'❤️'.repeat(G.lives):'';
+  const cb=$('combo');
+  if(G.combo>=2){cb.textContent='🔥 Combo x'+comboMult()+' ('+G.combo+')';}else{cb.textContent='';}
+}
+function comboMult(){return G.combo>=15?5:G.combo>=10?4:G.combo>=6?3:G.combo>=3?2:1}
+
+function renderQuestion(q){
+  const card=$('qcard');
+  let media='';
+  if(q.sw)media=`<div class="bigswatch" style="background:${q.sw}"></div>`;
+  if(q.fl)media=`<div class="bigflag">${q.fl}</div>`;
+  card.innerHTML=`<span class="qtopic">${q.topic}${q.typ?' ✍️':''}</span>${media}<div class="qtext">${q.q}</div>${q.hint?`<div class="qhint">💡 ${q.hint}</div>`:''}`;
+  const box=$('choices');box.innerHTML='';
+  // ----- TYPING question -----
+  if(q.typ){
+    box.className='choices one';
+    const inp=document.createElement('input');
+    inp.className='typein';inp.id='typein';inp.autocomplete='off';inp.spellcheck=false;
+    inp.setAttribute('autocapitalize','off');inp.setAttribute('autocorrect','off');
+    inp.placeholder='Digite a resposta...';
+    inp.addEventListener('keydown',e=>{if(e.key==='Enter')submitTyped()});
+    const ok=document.createElement('button');
+    ok.className='choice';ok.id='typeok';ok.textContent='Responder ✓';
+    ok.style.cssText='background:linear-gradient(180deg,#a78bfa,#7c3aed);color:#fff;border-color:#6d28d9';
+    ok.onclick=submitTyped;
+    box.appendChild(inp);box.appendChild(ok);
+    setTimeout(()=>inp.focus(),60);
+    return;
+  }
+  // ----- MULTIPLE CHOICE -----
+  box.className='choices'+(q.one?' one':'');
+  q.ch.forEach((c,i)=>{
+    const b=document.createElement('button');b.className='choice';
+    if(typeof c==='string'){b.textContent=c}
+    else{
+      if(c.sw){b.innerHTML=`<span class="sw" style="background:${c.sw};width:46px;height:46px"></span>`}
+      else if(c.fl){b.innerHTML=`<span class="fl" style="font-size:2em">${c.fl}</span>`}
+      else b.textContent=c.t;
+    }
+    b.onclick=()=>answer(i,b);
+    box.appendChild(b);
+  });
+}
+function norm(s){return (s||'').toLowerCase().trim().replace(/['’.!?]/g,'').replace(/\s+/g,' ')}
+function submitTyped(){
+  if(answered)return;
+  const inp=$('typein');if(!inp)return;
+  const val=norm(inp.value);
+  if(!val)return; // ignore empty submits
+  answered=true;cancelAnimationFrame(timerId);
+  inp.disabled=true;
+  const ok=G.current.acc.some(a=>norm(a)===val);
+  const btn=$('typeok');btn.disabled=true;
+  const rev=document.createElement('div');rev.className='reveal '+(ok?'ok':'no');
+  if(ok){btn.style.background='var(--green)';btn.textContent='Correto! ✓';rev.textContent='✓ '+inp.value.trim();scoreCorrect();}
+  else{btn.style.background='var(--red)';btn.textContent='Errou ✗';rev.innerHTML='✗ Resposta certa: <b>'+G.current.acc[0]+'</b>';scoreWrong();}
+  $('qcard').appendChild(rev);
+  renderHud();
+  setTimeout(advance,ok?850:1600);
+}
+function runTimer(){
+  cancelAnimationFrame(timerId);
+  const bar=$('timebar');
+  function tick(){
+    const el=performance.now()-qStart;
+    const left=Math.max(0,1-el/qDur);
+    bar.style.width=(left*100)+'%';
+    bar.className='timebar'+(left<.25?' danger':left<.5?' warn':'');
+    if(left<=0){timeUp();return}
+    timerId=requestAnimationFrame(tick);
+  }
+  tick();
+}
+function scoreCorrect(){
+  const el=performance.now()-qStart;
+  const speed=Math.max(0,1-el/qDur);
+  G.combo++;G.maxCombo=Math.max(G.maxCombo,G.combo);
+  const pts=Math.round((10+Math.round(speed*10))*comboMult());
+  G.score+=pts;G.correct++;
+  const cb=$('combo');cb.classList.remove('pop');void cb.offsetWidth;cb.classList.add('pop');
+  confetti(14);
+  if(G.combo===10)grantTrophy('combo10');
+}
+function scoreWrong(){
+  G.combo=0;
+  flash('rgba(239,68,68,.45)');
+  loseLifeMaybe();
+}
+function timeUp(){
+  if(answered)return;answered=true;cancelAnimationFrame(timerId);
+  if(G.current.typ){
+    const inp=$('typein');if(inp)inp.disabled=true;
+    const rev=document.createElement('div');rev.className='reveal no';
+    rev.innerHTML='⏰ Tempo! Resposta: <b>'+G.current.acc[0]+'</b>';
+    $('qcard').appendChild(rev);
+  }else{
+    const btns=$('choices').children;
+    if(btns[G.current.a])btns[G.current.a].classList.add('correct');
+  }
+  scoreWrong();
+  setTimeout(advance,1200);
+}
+function answer(i,btn){
+  if(answered)return;answered=true;cancelAnimationFrame(timerId);
+  const q=G.current,btns=$('choices').children;
+  const correct=i===q.a;
+  Array.from(btns).forEach((b,j)=>{if(j!==i&&j!==q.a)b.classList.add('dim')});
+  if(correct){btn.classList.add('correct');scoreCorrect();}
+  else{btn.classList.add('wrong');if(btns[q.a])btns[q.a].classList.add('correct');scoreWrong();}
+  renderHud();
+  setTimeout(advance,correct?750:1150);
+}
+function loseLifeMaybe(){
+  if(G.lives>0){G.lives--;if(G.lives<=0){renderHud();setTimeout(endGame,300);answered=true;G._dead=true;}}
+}
+function advance(){
+  if(G._dead)return;
+  G.idx++;
+  nextQuestion();
+}
+function quitGame(){cancelAnimationFrame(timerId);show(G&&G.mode==='campaign'?'map':'home');if(G&&G.mode==='campaign')openMap();}
+
+/* ---------- end of game ---------- */
+function endGame(){
+  cancelAnimationFrame(timerId);
+  if(G.mode==='arcade')return endArcade();
+  if(G.mode==='duel')return endDuel();
+  // campaign
+  const total=G.qs.length;
+  const acc=G.correct/total;
+  let stars=acc>=1?3:acc>=.8?2:acc>=.5?1:0;
+  if(G.boss&&G.lives<=0&&acc<.8)stars=Math.min(stars,1);
+  const coins=G.score; // coins == score earned
+  S.coins+=coins;
+  S.xp+=G.correct*8;
+  const prev=S.stars[G.key]||0;
+  const improved=stars>prev;
+  if(stars>prev)S.stars[G.key]=stars;
+  // trophies
+  let newT=[];
+  if(grantTrophy('first',true))newT.push('first');
+  if(stars===3&&grantTrophy('perfect',true))newT.push('perfect');
+  if(G.boss&&stars>0&&grantTrophy('boss',true))newT.push('boss');
+  if(WORLDS.every(w=>(S.stars[w.key]||0)===3)&&grantTrophy('allstars',true))newT.push('allstars');
+  save();refreshHome();
+  showResult({stars,coins,improved,newT});
+}
+function showResult({stars,coins,improved,newT}){
+  const w=WORLDS[G.world];
+  $('rEmoji').textContent=stars===3?'🏆':stars===2?'🎉':stars===1?'👍':'😅';
+  $('rTitle').textContent=stars===0?'Quase lá!':stars===3?'PERFEITO!':(G.boss?'Boss derrotado!':'Mandou bem!');
+  $('rStars').innerHTML=[0,1,2].map(i=>`<span class="${i<stars?'on':''}">★</span>`).join('');
+  $('rCorrect').textContent=G.correct+'/'+G.qs.length;
+  $('rCoins').textContent='+'+coins;
+  $('rCombo').textContent='x'+G.maxCombo;
+  let extra='';
+  if(improved&&stars>0)extra+=`<div class="newbadge">⭐ Novo recorde de estrelas!</div>`;
+  newT.forEach(t=>{const tr=TROPHIES.find(x=>x.id===t);extra+=`<div class="newbadge">${tr.e} Troféu: ${tr.n}</div>`});
+  $('rExtra').innerHTML=extra;
+  const nextBtn=$('rNext');
+  const isLast=G.world>=WORLDS.length-1;
+  if(stars>0&&!isLast){nextBtn.textContent='Próxima sala ▶';nextBtn.onclick=()=>{startWorld(G.world+1)}}
+  else{nextBtn.textContent='Mapa de Aventura ▶';nextBtn.onclick=()=>{openMap()}}
+  if(stars>0)confetti(60);
+  show('result');
+}
+function resultNext(){} // handled by dynamic onclick
+
+/* ---------- arcade end ---------- */
+function endArcade(){
+  S.coins+=G.score;S.xp+=G.correct*5;
+  if(G.score>S.bestArcade)S.bestArcade=G.score;
+  // leaderboard
+  S.leaderboard.push({n:S.name,a:S.avatar,s:G.score});
+  S.leaderboard.sort((a,b)=>b.s-a.s);S.leaderboard=S.leaderboard.slice(0,8);
+  if(G.correct>=50)grantTrophy('arcade50');
+  save();refreshHome();
+  $('rEmoji').textContent='🔥';
+  $('rTitle').textContent='Fim do Arcade!';
+  $('rStars').innerHTML=`<span class="fred" style="font-size:.6em;color:var(--blue)">${G.score} pontos</span>`;
+  $('rCorrect').textContent=G.correct;
+  $('rCoins').textContent='+'+G.score;
+  $('rCombo').textContent='x'+G.maxCombo;
+  $('rExtra').innerHTML = G.score>=S.bestArcade?`<div class="newbadge">🚀 NOVO RECORDE!</div>`:`<div class="newbadge" style="background:#64748b">Recorde: ${S.bestArcade}</div>`;
+  $('rNext').textContent='Jogar de novo 🔥';$('rNext').onclick=startArcade;
+  show('result');
+}
+
+/* =========================================================
+   DUEL
+   ========================================================= */
+let duelCtx=null;
+function startDuelCreate(){
+  const seed=(Math.floor(Math.random()*900000)+100000);
+  const qs=duelQs(seed,15);
+  duelCtx={role:'create',seed};
+  G={mode:'duel',qs,idx:0,score:0,correct:0,combo:0,maxCombo:0,lives:0,baseTime:9,seed};
+  startGameSession();
+}
+function acceptDuel(){
+  const raw=$('duelCodeIn').value.trim();
+  let data;
+  try{data=JSON.parse(decodeURIComponent(escape(atob(raw.replace(/\s/g,'')))))}catch(e){toast('Código inválido 😕');return}
+  if(!data||data.sd==null){toast('Código inválido 😕');return}
+  duelCtx={role:'accept',seed:data.sd,oppName:data.n,oppScore:data.s,oppCorrect:data.c};
+  const qs=duelQs(data.sd,15);
+  G={mode:'duel',qs,idx:0,score:0,correct:0,combo:0,maxCombo:0,lives:0,baseTime:9,seed:data.sd};
+  startGameSession();
+}
+function endDuel(){
+  S.coins+=Math.round(G.score/2);S.xp+=G.correct*5;save();refreshHome();
+  if(duelCtx.role==='create'){
+    const payload={n:S.name,s:G.score,c:G.correct,sd:duelCtx.seed};
+    const code=btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+    duelCtx.code=code;
+    $('dsTitle').textContent=`Você fez ${G.score} pontos (${G.correct}/15 acertos)!`;
+    $('dsCode').textContent=code;
+    show('duelShare');
+  }else{
+    // compare
+    const meWin=G.score>duelCtx.oppScore;
+    const tie=G.score===duelCtx.oppScore;
+    $('drEmoji').textContent=tie?'🤝':meWin?'🏆':'😤';
+    $('drTitle').textContent=tie?'Empate!':meWin?'VOCÊ VENCEU!':'Você perdeu...';
+    $('drVs').innerHTML=`
+      <div class="vsp ${meWin&&!tie?'win':''}"><div class="nm">${S.avatar} ${S.name}</div><div class="sc">${G.score}</div><div class="l">${G.correct}/15</div></div>
+      <div class="vsmid">VS</div>
+      <div class="vsp ${!meWin&&!tie?'win':''}"><div class="nm">🎮 ${duelCtx.oppName}</div><div class="sc">${duelCtx.oppScore}</div><div class="l">${duelCtx.oppCorrect}/15</div></div>`;
+    $('drMsg').textContent=tie?'Joguem de novo pra desempatar!':meWin?'Mandou muito bem! 🎉':'Revanche? Crie um novo duelo!';
+    if(meWin&&!tie)grantTrophy('duelwin');
+    if(meWin&&!tie)confetti(70);
+    show('duelResult');
+  }
+}
+function copyDuelCode(){
+  const t=duelCtx.code;
+  navigator.clipboard?.writeText(t).then(()=>toast('Código copiado! 📋'),()=>fallbackCopy(t));
+}
+function fallbackCopy(t){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');toast('Código copiado! 📋')}catch(e){toast('Copie manualmente')}ta.remove();}
+function shareWhats(){
+  const msg=`🏰 HOME QUEST — te desafio pra um duelo de inglês!\nEu fiz ${G.score} pontos. Cole este código no jogo e tente me vencer:\n\n${duelCtx.code}`;
+  window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
+}
+
+/* =========================================================
+   BUILD
+   ========================================================= */
+function openBuild(){renderBuild();show('build')}
+function renderBuild(){
+  $('buildCoins').textContent=S.coins;
+  $('buildProg').textContent=S.built.length+' / 9 salas construídas';
+  const rooms=$('rooms');rooms.innerHTML='';
+  SHOP.forEach(it=>{
+    const owned=S.built.includes(it.id);
+    const d=document.createElement('div');d.className='room'+(owned?'':' empty');
+    d.innerHTML=owned?`${it.e}<span class="rn">${it.n}</span>`:'🧱';
+    rooms.appendChild(d);
+  });
+  const shop=$('shop');shop.innerHTML='';
+  SHOP.forEach(it=>{
+    const owned=S.built.includes(it.id);
+    const d=document.createElement('div');d.className='shopitem';
+    d.innerHTML=`<div class="si">${it.e}</div><div class="st"><h4>${it.n}</h4><p>${owned?'Construído ✓':'🪙 '+it.cost+' moedas'}</p></div>`;
+    const b=document.createElement('button');
+    b.className='buybtn'+(owned?' owned':'');
+    b.textContent=owned?'✓':'Construir';
+    b.disabled=owned||S.coins<it.cost;
+    b.onclick=()=>buyRoom(it);
+    d.appendChild(b);
+    shop.appendChild(d);
+  });
+}
+function buyRoom(it){
+  if(S.coins<it.cost||S.built.includes(it.id))return;
+  S.coins-=it.cost;S.built.push(it.id);
+  if(S.built.length>=9)grantTrophy('builder');
+  save();refreshHome();renderBuild();confetti(40);toast(it.e+' '+it.n+' construído!');
+}
+
+/* =========================================================
+   TROPHIES + LEADERBOARD
+   ========================================================= */
+function openTrophies(){
+  $('bestArcade').textContent=S.bestArcade;
+  const lb=$('leaderboard');lb.innerHTML='';
+  if(!S.leaderboard.length){lb.innerHTML='<div class="empty">Jogue o Arcade pra entrar no placar! 🔥</div>'}
+  else S.leaderboard.forEach((r,i)=>{
+    const d=document.createElement('div');d.className='lbrow'+(r.n===S.name?' me':'');
+    d.innerHTML=`<span class="rk">${['🥇','🥈','🥉'][i]||('#'+(i+1))}</span><span class="nm">${r.a||'🎮'} ${r.n}</span><span class="sc">${r.s}</span>`;
+    lb.appendChild(d);
+  });
+  const grid=$('trophyGrid');grid.innerHTML='';
+  TROPHIES.forEach(t=>{
+    const got=S.trophies.includes(t.id);
+    const d=document.createElement('div');d.className='troph'+(got?' got':'');
+    d.innerHTML=`<div class="te">${got?t.e:'🔒'}</div><div class="tn">${t.n}</div><div class="td">${t.d}</div>`;
+    grid.appendChild(d);
+  });
+  show('trophies');
+}
+function grantTrophy(id,silent){
+  if(S.trophies.includes(id))return false;
+  S.trophies.push(id);save();
+  const t=TROPHIES.find(x=>x.id===id);
+  if(!silent&&t)toast(t.e+' Troféu: '+t.n+'!');
+  return true;
+}
+
+/* =========================================================
+   FX
+   ========================================================= */
+function confetti(n){
+  const fx=$('fx');const cols=['#ff6b9d','#facc15','#22c55e','#3b82f6','#8b5cf6','#fb923c'];
+  for(let i=0;i<n;i++){
+    const c=document.createElement('div');c.className='confetti';
+    c.style.left=Math.random()*100+'vw';c.style.top='-20px';
+    c.style.background=cols[i%cols.length];
+    c.style.animationDuration=(1+Math.random()*1.2)+'s';
+    c.style.animationDelay=(Math.random()*.3)+'s';
+    fx.appendChild(c);setTimeout(()=>c.remove(),2600);
+  }
+}
+function flash(color){const f=$('flash');f.style.background=color;f.classList.remove('show');void f.offsetWidth;f.classList.add('show')}
+let toastTimer=null;
+function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2200)}
+
+/* =========================================================
+   BOOT
+   ========================================================= */
+initIntro();
+if(S.name){refreshHome();show('home')}
+// allow Enter on name field
+$('nameInput').addEventListener('keydown',e=>{if(e.key==='Enter')startGameFromIntro()});
+</script>
+</body>
+</html>
