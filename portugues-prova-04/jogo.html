@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Caçadores de Palavras 📜 — Numeral & Adjetivo</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Caçadores de Palavras">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --ink:#1e1b4b;--paper:#fdf6e3;--gold:#f59e0b;--gold2:#fbbf24;
+  --teal:#0d9488;--teal2:#14b8a6;--purple:#7c3aed;--purple2:#a78bfa;
+  --green:#16a34a;--green2:#4ade80;--red:#dc2626;--red2:#f87171;
+  --blue:#2563eb;--blue2:#60a5fa;--orange:#ea580c;--brown:#78350f;
+}
+html,body{height:100%}
+body{
+  font-family:'Nunito',sans-serif;
+  background:linear-gradient(160deg,#1e1b4b,#312e81,#4c1d95);
+  background-attachment:fixed;
+  min-height:100vh;color:var(--ink);overflow-x:hidden;
+  -webkit-tap-highlight-color:transparent;
+  user-select:none;-webkit-user-select:none;
+}
+.screen{display:none;flex-direction:column;align-items:center;min-height:100vh;padding:18px;animation:fadeIn .45s ease}
+.screen.active{display:flex}
+@keyframes fadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.07)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}60%{transform:translateX(8px)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes glow{0%,100%{filter:drop-shadow(0 0 6px var(--gold2))}50%{filter:drop-shadow(0 0 22px var(--gold2))}}
+
+/* ===== INTRO ===== */
+#intro{justify-content:center;text-align:center}
+.logo{font-size:96px;animation:float 3s ease-in-out infinite;filter:drop-shadow(0 10px 24px rgba(0,0,0,.4))}
+#intro h1{font-family:'Fredoka One',cursive;font-size:2.3em;color:#fff;margin:6px 0;text-shadow:2px 3px 0 rgba(0,0,0,.35);line-height:1.1}
+#intro .tag{font-family:'Fredoka One',cursive;color:var(--gold2);letter-spacing:1px;font-size:1em;margin-bottom:18px}
+#intro p{color:#e9d5ff;max-width:430px;line-height:1.6;margin-bottom:22px;font-size:1.05em}
+.btn{font-family:'Fredoka One',cursive;cursor:pointer;border:none;transition:transform .2s,box-shadow .2s}
+.btn:active{transform:scale(.95)}
+.btn-play{font-size:1.3em;padding:16px 46px;background:linear-gradient(135deg,var(--gold2),var(--gold));color:#3b2200;border-radius:50px;box-shadow:0 6px 22px rgba(245,158,11,.5)}
+.btn-play:hover{transform:scale(1.06)}
+.intro-modes{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:6px;max-width:440px}
+.mini-stat{background:rgba(255,255,255,.12);border-radius:14px;padding:8px 14px;color:#fff;font-size:.82em}
+.mini-stat b{color:var(--gold2);font-family:'Fredoka One',cursive}
+
+/* ===== HUB / MENU ===== */
+#hub{gap:16px}
+.hub-top{width:100%;max-width:640px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.hub-title{font-family:'Fredoka One',cursive;color:#fff;font-size:1.5em;text-shadow:1px 2px 0 rgba(0,0,0,.3)}
+.profile-chip{background:rgba(255,255,255,.14);border-radius:16px;padding:8px 14px;color:#fff;text-align:right;font-size:.8em;line-height:1.3}
+.profile-chip b{color:var(--gold2);font-family:'Fredoka One',cursive;font-size:1.15em}
+.xp-wrap{width:100%;max-width:640px}
+.xp-bar{height:14px;background:rgba(0,0,0,.3);border-radius:10px;overflow:hidden}
+.xp-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:10px;transition:width .6s ease;width:0%}
+.xp-label{color:#e9d5ff;font-size:.78em;margin-top:4px;text-align:center}
+.mode-grid{width:100%;max-width:640px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.mode-card{border-radius:22px;padding:18px;cursor:pointer;transition:transform .2s,box-shadow .2s;position:relative;overflow:hidden;color:#fff;min-height:130px;display:flex;flex-direction:column;justify-content:space-between}
+.mode-card:hover{transform:translateY(-4px)}
+.mode-card:active{transform:scale(.97)}
+.mode-card.journey{background:linear-gradient(145deg,#0d9488,#0f766e)}
+.mode-card.arena{background:linear-gradient(145deg,#dc2626,#991b1b)}
+.mode-card.study{background:linear-gradient(145deg,#7c3aed,#5b21b6)}
+.mode-card.boss{background:linear-gradient(145deg,#ea580c,#9a3412)}
+.mode-card .mi{font-size:42px}
+.mode-card h3{font-family:'Fredoka One',cursive;font-size:1.15em;margin-top:6px}
+.mode-card p{font-size:.8em;opacity:.92;line-height:1.35;margin-top:2px}
+.mode-card .badge{position:absolute;top:10px;right:12px;background:rgba(0,0,0,.3);border-radius:20px;padding:3px 10px;font-size:.72em;font-family:'Fredoka One',cursive}
+.btn-ghost{background:rgba(255,255,255,.14);color:#fff;font-family:'Fredoka One',cursive;border:none;border-radius:14px;padding:10px 18px;cursor:pointer;font-size:.9em}
+.btn-ghost:active{transform:scale(.95)}
+
+/* ===== MAP (journey) ===== */
+#map{gap:12px}
+.map-head{width:100%;max-width:640px;display:flex;align-items:center;gap:12px}
+.map-head h2{font-family:'Fredoka One',cursive;color:#fff;font-size:1.3em;flex:1;text-align:center}
+.map-list{width:100%;max-width:480px;display:flex;flex-direction:column;gap:10px;padding-bottom:20px}
+.zone{display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.95);border-radius:20px;padding:16px;transition:transform .2s;cursor:pointer;position:relative}
+.zone:active{transform:scale(.98)}
+.zone.locked{opacity:.55;cursor:not-allowed;background:rgba(255,255,255,.4)}
+.zone.available{animation:glow 2.2s infinite;box-shadow:0 6px 24px rgba(245,158,11,.35)}
+.zone .zicon{font-size:44px}
+.zone .zinfo{flex:1}
+.zone .zinfo h3{font-family:'Fredoka One',cursive;color:var(--ink);font-size:1.05em}
+.zone .zinfo p{font-size:.8em;color:#6b21a8;margin-top:2px}
+.zone .zstars{font-size:18px;letter-spacing:2px;margin-top:3px}
+.zone .zlock{font-size:30px}
+
+/* ===== GAME ===== */
+#game{padding:14px;gap:0;justify-content:flex-start}
+.g-header{width:100%;max-width:640px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.g-header .h-pill{background:rgba(255,255,255,.92);border-radius:14px;padding:7px 12px;font-family:'Fredoka One',cursive;font-size:.82em;color:var(--ink)}
+.h-pill.lives{color:var(--red)}
+.h-pill.score{color:var(--gold)}
+.h-pill.combo{color:var(--purple);transition:transform .2s}
+.h-pill.combo.bump{transform:scale(1.25)}
+.h-back{margin-left:auto;background:rgba(255,255,255,.2);color:#fff;border:none;border-radius:12px;padding:7px 12px;cursor:pointer;font-family:'Fredoka One',cursive;font-size:.82em}
+.pbar{width:100%;max-width:640px;height:12px;background:rgba(0,0,0,.28);border-radius:8px;overflow:hidden;margin-bottom:6px}
+.pfill{height:100%;background:linear-gradient(90deg,var(--teal2),var(--teal));transition:width .4s;width:0%}
+.timer-bar{width:100%;max-width:640px;height:7px;background:rgba(0,0,0,.25);border-radius:6px;overflow:hidden;margin-bottom:12px;display:none}
+.timer-bar.show{display:block}
+.timer-fill{height:100%;background:linear-gradient(90deg,var(--green2),var(--gold2),var(--red2));width:100%;transition:width .15s linear}
+.q-card{width:100%;max-width:640px;background:var(--paper);border-radius:22px;padding:22px;box-shadow:0 8px 30px rgba(0,0,0,.3);margin-bottom:14px}
+.q-type{display:inline-block;font-family:'Fredoka One',cursive;font-size:.72em;color:#fff;background:var(--purple);border-radius:20px;padding:4px 14px;margin-bottom:12px;letter-spacing:.5px}
+.q-type.t-num{background:var(--teal)}
+.q-type.t-adj{background:var(--orange)}
+.q-type.t-mix{background:var(--purple)}
+.q-text{font-size:1.18em;font-weight:800;color:var(--ink);line-height:1.55;margin-bottom:6px}
+.q-context{font-size:.95em;color:var(--brown);font-style:italic;background:rgba(120,53,15,.07);border-left:4px solid var(--gold);padding:10px 14px;border-radius:0 12px 12px 0;margin:10px 0;line-height:1.5}
+.q-context b,.q-text b{color:var(--purple);background:rgba(124,58,237,.12);padding:1px 6px;border-radius:6px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.opts.col1{grid-template-columns:1fr}
+.opt{font-family:'Nunito',sans-serif;font-size:1.02em;font-weight:700;padding:14px 14px;background:#fff;color:var(--ink);border:3px solid #e5d5b8;border-radius:16px;cursor:pointer;transition:all .2s;text-align:center;line-height:1.35}
+.opt:hover:not(:disabled){border-color:var(--purple);background:#faf5ff;transform:translateY(-2px)}
+.opt:disabled{cursor:default}
+.opt.correct{background:#dcfce7;border-color:var(--green);color:#14532d;animation:pop .4s ease}
+.opt.wrong{background:#fee2e2;border-color:var(--red);color:#7f1d1d;animation:shake .4s ease}
+.opt.dim{opacity:.45}
+.opt .tag{display:block;font-size:.72em;opacity:.7;font-weight:700;margin-top:2px}
+/* typed answer */
+.typed-wrap{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap}
+.typed-input{flex:1;min-width:160px;font-family:'Nunito';font-size:1.1em;font-weight:700;padding:13px 16px;border:3px solid #e5d5b8;border-radius:16px;outline:none;color:var(--ink);background:#fff}
+.typed-input:focus{border-color:var(--purple)}
+.btn-check{font-family:'Fredoka One',cursive;background:linear-gradient(135deg,var(--purple),#5b21b6);color:#fff;border:none;border-radius:16px;padding:13px 24px;cursor:pointer;font-size:1em}
+.btn-check:active{transform:scale(.95)}
+/* feedback */
+.fb{margin-top:14px;padding:14px 16px;border-radius:16px;font-weight:700;line-height:1.55;display:none;font-size:.98em}
+.fb.show{display:block;animation:fadeIn .3s ease}
+.fb.ok{background:#dcfce7;border:2px solid var(--green);color:#14532d}
+.fb.no{background:#fef3c7;border:2px solid var(--gold);color:#78350f}
+.fb .fb-head{font-family:'Fredoka One',cursive;font-size:1.05em;display:block;margin-bottom:4px}
+.btn-next{display:none;margin:14px auto 0;font-family:'Fredoka One',cursive;font-size:1.05em;padding:13px 40px;background:linear-gradient(135deg,var(--teal2),var(--teal));color:#fff;border:none;border-radius:30px;cursor:pointer;box-shadow:0 4px 16px rgba(13,148,136,.4)}
+.btn-next.show{display:block;animation:fadeIn .3s ease}
+.btn-next:active{transform:scale(.95)}
+.combo-flash{position:fixed;top:18%;left:50%;transform:translateX(-50%);font-family:'Fredoka One',cursive;font-size:2em;color:var(--gold2);text-shadow:0 3px 12px rgba(0,0,0,.5);pointer-events:none;opacity:0;z-index:50}
+.combo-flash.go{animation:comboAnim 1s ease}
+@keyframes comboAnim{0%{opacity:0;transform:translateX(-50%) scale(.4)}30%{opacity:1;transform:translateX(-50%) scale(1.1)}100%{opacity:0;transform:translateX(-50%) scale(1.3) translateY(-30px)}}
+
+/* ===== RESULT ===== */
+#result,#gameover{justify-content:center;text-align:center;gap:14px}
+.res-icon{font-size:90px;animation:float 2s ease-in-out infinite}
+#result h2,#gameover h2{font-family:'Fredoka One',cursive;color:#fff;font-size:1.9em;text-shadow:1px 2px 0 rgba(0,0,0,.3)}
+.res-stars{font-size:46px;letter-spacing:6px}
+.res-box{background:rgba(255,255,255,.95);border-radius:20px;padding:20px 26px;max-width:420px;width:100%}
+.res-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed #ddd;font-weight:700;color:var(--ink)}
+.res-row:last-child{border:none}
+.res-row b{font-family:'Fredoka One',cursive;color:var(--purple)}
+.res-msg{color:#e9d5ff;max-width:420px;line-height:1.5}
+.res-btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+
+/* ===== STUDY ===== */
+#study{gap:12px;justify-content:flex-start}
+.study-head{width:100%;max-width:680px;display:flex;align-items:center;gap:10px}
+.study-head h2{font-family:'Fredoka One',cursive;color:#fff;font-size:1.3em;flex:1;text-align:center}
+.study-tabs{width:100%;max-width:680px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.s-tab{font-family:'Fredoka One',cursive;font-size:.82em;padding:8px 16px;border-radius:30px;border:2px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1);color:#fff;cursor:pointer}
+.s-tab.active{background:var(--gold2);color:#3b2200;border-color:var(--gold2)}
+.study-content{width:100%;max-width:680px;display:flex;flex-direction:column;gap:12px;padding-bottom:24px}
+.card{background:var(--paper);border-radius:18px;padding:18px 20px;box-shadow:0 4px 18px rgba(0,0,0,.2)}
+.card h3{font-family:'Fredoka One',cursive;color:var(--purple);font-size:1.15em;margin-bottom:8px}
+.card h4{font-family:'Fredoka One',cursive;color:var(--teal);font-size:.98em;margin:10px 0 4px}
+.card p{color:var(--ink);line-height:1.6;margin-bottom:6px;font-size:.96em}
+.card ul{margin:4px 0 8px 18px}
+.card li{color:var(--ink);line-height:1.6;margin-bottom:4px;font-size:.95em}
+.card .ex{background:rgba(124,58,237,.08);border-radius:10px;padding:8px 12px;font-style:italic;color:var(--brown);margin:4px 0;font-size:.92em}
+.card b{color:var(--purple)}
+.card .hl{background:var(--gold2);color:#3b2200;padding:1px 6px;border-radius:5px;font-weight:800;font-style:normal}
+.tbl{width:100%;border-collapse:collapse;margin:6px 0;font-size:.88em}
+.tbl th{background:var(--teal);color:#fff;padding:7px;text-align:left;font-family:'Fredoka One',cursive;font-weight:400}
+.tbl td{padding:7px;border-bottom:1px solid #e5d5b8;color:var(--ink)}
+.tbl tr:nth-child(even) td{background:rgba(0,0,0,.03)}
+
+@media(max-width:480px){
+  .mode-grid{grid-template-columns:1fr}
+  #intro h1{font-size:1.9em}
+  .opts{grid-template-columns:1fr}
+  .q-text{font-size:1.08em}
+}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<!-- INTRO -->
+<div class="screen active" id="intro">
+  <div class="logo">📜</div>
+  <h1>Caçadores<br>de Palavras</h1>
+  <div class="tag">⚔️ NUMERAL &amp; ADJETIVO ⚔️</div>
+  <p>Domine os <b style="color:#fff">numerais</b> e os <b style="color:#fff">adjetivos</b> em desafios que ficam cada vez mais difíceis. Suba de nível, mantenha combos e enfrente o Chefão da Gramática!</p>
+  <button class="btn btn-play" onclick="goHub()">COMEÇAR ▶</button>
+  <div class="intro-modes" id="introStats"></div>
+</div>
+
+<!-- HUB -->
+<div class="screen" id="hub">
+  <div class="hub-top">
+    <div class="hub-title">🏰 Quartel-General</div>
+    <div class="profile-chip">
+      <span id="rankName">Aprendiz</span><br><b id="lvlNum">Nv. 1</b>
+    </div>
+  </div>
+  <div class="xp-wrap">
+    <div class="xp-bar"><div class="xp-fill" id="xpFill"></div></div>
+    <div class="xp-label" id="xpLabel">0 / 100 XP</div>
+  </div>
+  <div class="mode-grid">
+    <div class="mode-card journey" onclick="openMap()">
+      <div><div class="mi">🗺️</div><h3>Jornada</h3><p>10 zonas progressivas. Conquiste estrelas!</p></div>
+      <div class="badge" id="journeyBadge">0/10 ⭐</div>
+    </div>
+    <div class="mode-card arena" onclick="startArena()">
+      <div><div class="mi">🔥</div><h3>Arena</h3><p>Tempo + 3 vidas. Quantas você acerta?</p></div>
+      <div class="badge" id="arenaBadge">Rec: 0</div>
+    </div>
+    <div class="mode-card boss" onclick="startBoss()">
+      <div><div class="mi">🐉</div><h3>Chefão</h3><p>20 questões traiçoeiras. Sem erros fáceis!</p></div>
+      <div class="badge" id="bossBadge">🔒</div>
+    </div>
+    <div class="mode-card study" onclick="openStudy()">
+      <div><div class="mi">📚</div><h3>Estudar</h3><p>Resumo completo da matéria.</p></div>
+    </div>
+  </div>
+  <button class="btn-ghost" onclick="resetProgress()" style="margin-top:4px">↺ Zerar progresso</button>
+</div>
+
+<!-- MAP -->
+<div class="screen" id="map">
+  <div class="map-head">
+    <button class="btn-ghost" onclick="show('hub')">←</button>
+    <h2>🗺️ Mapa da Jornada</h2>
+    <span style="width:42px"></span>
+  </div>
+  <div class="map-list" id="mapList"></div>
+</div>
+
+<!-- GAME -->
+<div class="screen" id="game">
+  <div class="g-header">
+    <span class="h-pill" id="hMode">Zona 1</span>
+    <span class="h-pill score" id="hScore">⭐ 0</span>
+    <span class="h-pill combo" id="hCombo">🔥 x1</span>
+    <span class="h-pill lives" id="hLives">❤️❤️❤️</span>
+    <button class="h-back" onclick="quitGame()">Sair</button>
+  </div>
+  <div class="pbar"><div class="pfill" id="pFill"></div></div>
+  <div class="timer-bar" id="timerBar"><div class="timer-fill" id="timerFill"></div></div>
+  <div class="q-card" id="qCard"></div>
+</div>
+
+<!-- RESULT -->
+<div class="screen" id="result">
+  <div class="res-icon" id="resIcon">🏆</div>
+  <h2 id="resTitle">Zona Concluída!</h2>
+  <div class="res-stars" id="resStars">⭐⭐⭐</div>
+  <div class="res-box" id="resBox"></div>
+  <p class="res-msg" id="resMsg"></p>
+  <div class="res-btns">
+    <button class="btn btn-play" id="resNext" style="font-size:1.05em;padding:13px 30px">Continuar ▶</button>
+    <button class="btn-ghost" onclick="show('hub')">🏰 Menu</button>
+  </div>
+</div>
+
+<!-- GAME OVER (arena/boss) -->
+<div class="screen" id="gameover">
+  <div class="res-icon" id="goIcon">💀</div>
+  <h2 id="goTitle">Fim de Jogo!</h2>
+  <div class="res-box" id="goBox"></div>
+  <p class="res-msg" id="goMsg"></p>
+  <div class="res-btns">
+    <button class="btn btn-play" id="goRetry" style="font-size:1.05em;padding:13px 30px">Tentar de novo 🔄</button>
+    <button class="btn-ghost" onclick="show('hub')">🏰 Menu</button>
+  </div>
+</div>
+
+<!-- STUDY -->
+<div class="screen" id="study">
+  <div class="study-head">
+    <button class="btn-ghost" onclick="show('hub')">←</button>
+    <h2>📚 Sala de Estudos</h2>
+    <span style="width:42px"></span>
+  </div>
+  <div class="study-tabs">
+    <button class="s-tab active" onclick="studyTab(0,this)">🔢 Numeral</button>
+    <button class="s-tab" onclick="studyTab(1,this)">✨ Adjetivo</button>
+  </div>
+  <div class="study-content" id="studyContent"></div>
+</div>
+
+<div class="combo-flash" id="comboFlash"></div>
+
+<script>
+/* ============================================================
+   BANCO DE QUESTÕES — Numeral & Adjetivo
+   tipos: mc (múltipla escolha), type (resposta digitada)
+   topic: 'num' | 'adj' | 'mix'
+   diff: 1 (fácil) 2 (médio) 3 (difícil)
+   ============================================================ */
+</script>
+<script src="banco.js"></script>
+<script src="motor.js"></script>
+</body>
+</html>
