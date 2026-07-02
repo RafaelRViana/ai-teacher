@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Potência Quest — Aventura da Matemática</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Potência Quest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --pink:#ff6b9d;--green:#4ade80;--blue:#60a5fa;--purple:#a78bfa;
+  --yellow:#fbbf24;--red:#f87171;--orange:#fb923c;
+}
+body{
+  font-family:'Nunito',sans-serif;
+  background:linear-gradient(180deg,#1e1b4b,#312e81,#4338ca);
+  min-height:100vh;color:#fff;overflow-x:hidden;
+  -webkit-tap-highlight-color:transparent;
+  user-select:none;-webkit-user-select:none;
+}
+.screen{display:none;flex-direction:column;align-items:center;justify-content:flex-start;min-height:100vh;padding:20px;animation:fadeIn .4s ease}
+.screen.active{display:flex}
+@keyframes fadeIn{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+
+/* INTRO */
+#intro{justify-content:center;text-align:center}
+.logo{font-size:110px;animation:float 2.5s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}
+h1{font-family:'Fredoka One',cursive;font-size:2.1em;margin:8px 0;color:#fbbf24;text-shadow:2px 2px 0 rgba(0,0,0,.3)}
+#intro p{max-width:420px;line-height:1.6;margin-bottom:22px;color:#c7d2fe}
+.btn{
+  font-family:'Fredoka One',cursive;font-size:1.3em;padding:15px 46px;
+  background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#3b2500;
+  border:none;border-radius:50px;cursor:pointer;
+  box-shadow:0 6px 20px rgba(251,191,36,.4);transition:transform .2s;
+}
+.btn:hover{transform:scale(1.06)}
+.btn:active{transform:scale(.95)}
+
+/* MAP */
+#map{gap:14px}
+#map h2{font-family:'Fredoka One',cursive;font-size:1.5em;color:#fbbf24;margin-bottom:4px}
+.map-container{display:flex;flex-direction:column;gap:12px;max-width:440px;width:100%}
+.phase-card{
+  width:100%;padding:16px;border-radius:18px;display:flex;align-items:center;gap:14px;
+  transition:all .25s;cursor:pointer;background:rgba(255,255,255,.1);border:2px solid transparent;
+}
+.phase-card.locked{opacity:.45;cursor:not-allowed}
+.phase-card.available{background:rgba(255,255,255,.16);border-color:#fbbf24;animation:pulse 2s infinite}
+.phase-card.completed{background:rgba(74,222,128,.18);border-color:#4ade80}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 rgba(251,191,36,0)}50%{box-shadow:0 0 22px rgba(251,191,36,.5)}}
+.phase-icon{font-size:42px}
+.phase-info{text-align:left;flex:1}
+.phase-info h3{font-family:'Fredoka One',cursive;font-size:1.05em}
+.phase-info p{font-size:.82em;color:#c7d2fe;margin-top:2px}
+.phase-stars{font-size:18px}
+
+/* GAME */
+#game{gap:14px}
+.hud{display:flex;justify-content:space-between;align-items:center;width:100%;max-width:560px;
+  background:rgba(255,255,255,.1);border-radius:14px;padding:10px 16px;flex-wrap:wrap;gap:8px}
+.hud .title{font-family:'Fredoka One',cursive;color:#fbbf24;font-size:.95em}
+.hud .lives{font-size:1.1em}
+.progress{width:100%;max-width:560px;height:10px;background:rgba(255,255,255,.15);border-radius:6px;overflow:hidden}
+.progress-fill{height:100%;width:0;background:linear-gradient(90deg,#4ade80,#22c55e);transition:width .3s}
+.card{width:100%;max-width:560px;background:rgba(255,255,255,.95);color:#1e1b4b;border-radius:20px;padding:24px 20px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.3)}
+.q-hint{font-size:.85em;color:#6366f1;font-weight:700;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px}
+.q-text{font-size:1.5em;font-weight:900;margin-bottom:6px;line-height:1.35}
+.q-sub{font-size:.9em;color:#555;margin-bottom:18px}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.opt{
+  font-family:'Nunito',sans-serif;font-size:1.25em;font-weight:800;padding:18px 10px;
+  background:#eef2ff;color:#3730a3;border:2px solid #c7d2fe;border-radius:14px;cursor:pointer;transition:transform .12s,background .2s}
+.opt:hover{transform:translateY(-2px)}
+.opt.correct{background:var(--green);color:#053b16;border-color:#22c55e}
+.opt.wrong{background:var(--red);color:#4c0519;border-color:#ef4444}
+.opt:disabled{cursor:default}
+.feedback{margin-top:16px;font-weight:800;font-size:1.05em;min-height:24px}
+.feedback.ok{color:#16a34a}
+.feedback.no{color:#dc2626}
+.explain{margin-top:6px;font-size:.9em;color:#444;font-weight:600}
+.next-btn{margin-top:16px;display:none}
+.next-btn.show{display:inline-block}
+
+/* RESULT */
+#result{justify-content:center;text-align:center;gap:12px}
+.result-emoji{font-size:100px}
+#result h2{font-family:'Fredoka One',cursive;font-size:1.8em;color:#fbbf24}
+.result-score{font-size:1.3em;font-weight:900}
+.star-row{font-size:44px;letter-spacing:4px}
+</style>
+</head>
+<body>
+
+<div id="intro" class="screen active">
+  <div class="logo">🚀</div>
+  <h1>Potência Quest</h1>
+  <p>Ajude o foguete a atravessar a galáxia dos números! Cada planeta é um desafio: potências, cubos, divisores e muito mais. Preparado para a AV1?</p>
+  <button class="btn" onclick="showMap()">Começar 🌟</button>
+</div>
+
+<div id="map" class="screen">
+  <div class="logo" style="font-size:60px">🪐</div>
+  <h2>Escolha um planeta</h2>
+  <div class="map-container" id="mapContainer"></div>
+  <button class="btn" style="font-size:1em;padding:12px 30px;margin-top:8px" onclick="resetProgress()">🔄 Reiniciar tudo</button>
+</div>
+
+<div id="game" class="screen">
+  <div class="hud">
+    <span class="title" id="gameTitle"></span>
+    <span class="lives" id="lives"></span>
+  </div>
+  <div class="progress"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="card">
+    <div class="q-hint" id="qHint"></div>
+    <div class="q-text" id="qText"></div>
+    <div class="q-sub" id="qSub"></div>
+    <div class="options" id="options"></div>
+    <div class="feedback" id="feedback"></div>
+    <div class="explain" id="explain"></div>
+    <button class="btn next-btn" id="nextBtn" style="font-size:1em;padding:12px 32px" onclick="nextQuestion()">Continuar ➡️</button>
+  </div>
+</div>
+
+<div id="result" class="screen">
+  <div class="result-emoji" id="resultEmoji">🎉</div>
+  <h2 id="resultTitle"></h2>
+  <div class="star-row" id="resultStars"></div>
+  <div class="result-score" id="resultScore"></div>
+  <button class="btn" onclick="showMap()">Voltar ao mapa 🗺️</button>
+</div>
+
+<script>
+// ---------- CONTEÚDO ----------
+// Cada fase = um tópico da AV1. shuffle embaralha alternativas.
+const PHASES = [
+  {
+    id:"potenciacao", icon:"⚡", name:"Potenciação",
+    desc:"Como resolver e ler potências",
+    questions:[
+      {q:"Quanto vale 2⁴?", sub:"2 × 2 × 2 × 2", opts:["16","8","6","24"], a:"16", exp:"2⁴ = 2×2×2×2 = 16."},
+      {q:"Como se lê 5³?", opts:["Cinco ao cubo","Cinco ao quadrado","Três à quinta","Cinco vezes três"], a:"Cinco ao cubo", exp:"Expoente 3 lê-se \"ao cubo\"."},
+      {q:"Quanto vale 3²?", sub:"3 × 3", opts:["9","6","8","23"], a:"9", exp:"3² = 3×3 = 9."},
+      {q:"Na potência 7⁵, quem é a base?", opts:["7","5","35","2"], a:"7", exp:"A base é o número que se repete: 7."},
+      {q:"Quanto vale 4³?", sub:"4 × 4 × 4", opts:["64","12","16","48"], a:"64", exp:"4³ = 4×4×4 = 64."},
+      {q:"Qualquer número (≠0) elevado a 0 é...", opts:["1","0","o próprio número","impossível"], a:"1", exp:"Toda potência de expoente 0 vale 1."},
+      {q:"Quanto vale 2⁵?", sub:"2×2×2×2×2", opts:["32","10","16","25"], a:"32", exp:"2⁵ = 32."},
+      {q:"Como se lê 4²?", opts:["Quatro ao quadrado","Quatro ao cubo","Dois à quarta","Quatro vezes dois"], a:"Quatro ao quadrado", exp:"Expoente 2 lê-se \"ao quadrado\"."},
+      {q:"Na potência 3⁴, quem é o expoente?", opts:["4","3","12","1"], a:"4", exp:"O expoente fica em cima: 4."},
+      {q:"Quanto vale 5²?", opts:["25","10","20","52"], a:"25", exp:"5×5 = 25."},
+      {q:"Quanto vale 2⁶?", opts:["64","12","36","128"], a:"64", exp:"2⁶ = 64."},
+      {q:"Quanto vale 1⁷?", opts:["1","7","17","0"], a:"1", exp:"1 elevado a qualquer número é 1."},
+      {q:"Quanto vale 3³?", sub:"3×3×3", opts:["27","9","33","18"], a:"27", exp:"3³ = 27."},
+      {q:"Quanto vale 0⁵?", opts:["0","5","1","impossível"], a:"0", exp:"0 elevado a qualquer expoente (≠0) é 0."},
+      {q:"Como se lê 10⁴?", opts:["Dez à quarta","Dez ao cubo","Quatro à dez","Dez ao quadrado"], a:"Dez à quarta", exp:"Expoente 4 → \"à quarta potência\"."},
+      {q:"Quanto vale 6²?", opts:["36","12","62","30"], a:"36", exp:"6×6 = 36."},
+    ]
+  },
+  {
+    id:"quadrados-cubos", icon:"🧊", name:"Quadrados e Cubos",
+    desc:"Quadrados e cubos perfeitos",
+    questions:[
+      {q:"Qual destes é um quadrado perfeito?", opts:["49","50","48","51"], a:"49", exp:"49 = 7². Quadrado perfeito!"},
+      {q:"√81 = ?", sub:"raiz quadrada de 81", opts:["9","8","7","18"], a:"9", exp:"9 × 9 = 81."},
+      {q:"Qual destes é um cubo perfeito?", opts:["27","20","30","25"], a:"27", exp:"27 = 3³."},
+      {q:"O quadrado de 6 é...", opts:["36","12","30","66"], a:"36", exp:"6² = 6×6 = 36."},
+      {q:"∛125 = ?", sub:"raiz cúbica de 125", opts:["5","25","15","3"], a:"5", exp:"5×5×5 = 125."},
+      {q:"Qual NÃO é quadrado perfeito?", opts:["20","16","25","100"], a:"20", exp:"20 não tem raiz quadrada exata."},
+      {q:"√64 = ?", sub:"raiz quadrada de 64", opts:["8","6","7","32"], a:"8", exp:"8×8 = 64."},
+      {q:"O quadrado de 9 é...", opts:["81","18","72","99"], a:"81", exp:"9² = 81."},
+      {q:"√100 = ?", opts:["10","20","50","1000"], a:"10", exp:"10×10 = 100."},
+      {q:"∛27 = ?", sub:"raiz cúbica de 27", opts:["3","9","27","6"], a:"3", exp:"3×3×3 = 27."},
+      {q:"Qual destes é um quadrado perfeito?", opts:["64","60","62","63"], a:"64", exp:"64 = 8²."},
+      {q:"O cubo de 2 é...", opts:["8","6","4","23"], a:"8", exp:"2³ = 2×2×2 = 8."},
+      {q:"∛8 = ?", opts:["2","4","3","8"], a:"2", exp:"2×2×2 = 8."},
+      {q:"Qual destes é um cubo perfeito?", opts:["64","50","40","45"], a:"64", exp:"64 = 4³."},
+      {q:"√49 = ?", opts:["7","6","8","24"], a:"7", exp:"7×7 = 49."},
+      {q:"Qual NÃO é cubo perfeito?", opts:["30","27","8","64"], a:"30", exp:"30 não é cubo de nenhum inteiro."},
+    ]
+  },
+  {
+    id:"base10", icon:"🔟", name:"Potências de base 10",
+    desc:"10, 100, 1000...",
+    questions:[
+      {q:"Quanto vale 10³?", opts:["1000","100","300","30"], a:"1000", exp:"10³ = 1000 (o expoente conta os zeros)."},
+      {q:"1 000 000 é 10 elevado a quanto?", opts:["6","5","7","1000000"], a:"6", exp:"São 6 zeros → 10⁶."},
+      {q:"Quanto vale 10²?", opts:["100","20","1000","10"], a:"100", exp:"10² = 100."},
+      {q:"10⁵ tem quantos zeros?", opts:["5","4","6","10"], a:"5", exp:"O expoente indica a quantidade de zeros."},
+      {q:"Quanto vale 10¹?", opts:["10","1","100","0"], a:"10", exp:"Qualquer número elevado a 1 é ele mesmo."},
+      {q:"7 × 10³ = ?", opts:["7000","700","70","73000"], a:"7000", exp:"7 × 1000 = 7000."},
+      {q:"Quanto vale 10⁴?", opts:["10000","1000","40","100000"], a:"10000", exp:"10⁴ = 10000 (4 zeros)."},
+      {q:"100 é 10 elevado a quanto?", opts:["2","1","3","100"], a:"2", exp:"100 = 10²."},
+      {q:"5 × 10² = ?", opts:["500","50","520","5000"], a:"500", exp:"5 × 100 = 500."},
+      {q:"1000 é 10 elevado a quanto?", opts:["3","2","4","1000"], a:"3", exp:"1000 = 10³."},
+      {q:"3 × 10⁴ = ?", opts:["30000","3000","34000","300"], a:"30000", exp:"3 × 10000 = 30000."},
+      {q:"Quantos zeros tem 10⁷?", opts:["7","6","8","70"], a:"7", exp:"O expoente = quantidade de zeros."},
+      {q:"Quanto vale 10⁰?", opts:["1","0","10","100"], a:"1", exp:"Todo número (≠0) elevado a 0 é 1."},
+      {q:"2 × 10⁵ = ?", opts:["200000","20000","2000000","2500"], a:"200000", exp:"2 × 100000 = 200000."},
+      {q:"Quanto vale 10⁶?", opts:["1000000","100000","6000000","60"], a:"1000000", exp:"10⁶ = 1 000 000."},
+    ]
+  },
+  {
+    id:"expressoes", icon:"🧮", name:"Expressões numéricas",
+    desc:"Com potenciação e ordem das operações",
+    questions:[
+      {q:"2³ + 4 = ?", sub:"Potência primeiro", opts:["12","10","16","64"], a:"12", exp:"2³=8, depois 8+4=12."},
+      {q:"5² - 3 × 4 = ?", sub:"Potência e × antes do −", opts:["13","37","88","22"], a:"13", exp:"5²=25, 3×4=12, 25-12=13."},
+      {q:"10 - 2² = ?", sub:"Potência antes", opts:["6","64","8","16"], a:"6", exp:"2²=4, depois 10-4=6."},
+      {q:"(1 + 2)² = ?", sub:"Parênteses, depois potência", opts:["9","5","7","6"], a:"9", exp:"1+2=3, depois 3²=9."},
+      {q:"3² + 2³ = ?", opts:["17","13","30","65"], a:"17", exp:"3²=9, 2³=8, 9+8=17."},
+      {q:"Na ordem correta, o que vem logo depois dos parênteses?", opts:["Potências","Adição","Subtração","Divisão"], a:"Potências", exp:"Parênteses → potências → ×÷ → +−."},
+      {q:"2² + 3² = ?", opts:["13","25","11","36"], a:"13", exp:"4 + 9 = 13."},
+      {q:"4² - 10 = ?", opts:["6","2","26","16"], a:"6", exp:"4²=16, 16-10=6."},
+      {q:"2³ × 2 = ?", opts:["16","8","64","12"], a:"16", exp:"2³=8, 8×2=16."},
+      {q:"(2 + 3)² - 5 = ?", opts:["20","30","0","45"], a:"20", exp:"5²=25, 25-5=20."},
+      {q:"5² - 4² = ?", opts:["9","1","81","41"], a:"9", exp:"25 - 16 = 9."},
+      {q:"6² ÷ 4 = ?", opts:["9","8","12","6"], a:"9", exp:"6²=36, 36÷4=9."},
+      {q:"(4 - 1)³ = ?", opts:["27","9","64","12"], a:"27", exp:"3³ = 27."},
+      {q:"2⁴ + 1 = ?", opts:["17","9","15","33"], a:"17", exp:"2⁴=16, 16+1=17."},
+      {q:"3² × 2 = ?", opts:["18","12","36","81"], a:"18", exp:"3²=9, 9×2=18."},
+    ]
+  },
+  {
+    id:"divisoes", icon:"➗", name:"Divisões exatas e não exatas",
+    desc:"Resto zero ou não",
+    questions:[
+      {q:"A divisão 20 ÷ 5 é...", opts:["Exata","Não exata"], a:"Exata", exp:"20÷5=4, resto 0 → exata."},
+      {q:"Qual o resto de 17 ÷ 5?", opts:["2","3","1","0"], a:"2", exp:"5×3=15, 17-15=2."},
+      {q:"A divisão 23 ÷ 4 é...", opts:["Não exata","Exata"], a:"Não exata", exp:"23÷4 = 5 e sobra 3 → não exata."},
+      {q:"36 ÷ 6 = ?", opts:["6","5","7","8"], a:"6", exp:"6×6=36, divisão exata."},
+      {q:"Numa divisão exata, o resto é...", opts:["0","1","igual ao divisor","qualquer"], a:"0", exp:"Divisão exata sempre tem resto 0."},
+      {q:"Qual o resto de 30 ÷ 7?", opts:["2","3","1","0"], a:"2", exp:"7×4=28, 30-28=2."},
+      {q:"A divisão 15 ÷ 3 é...", opts:["Exata","Não exata"], a:"Exata", exp:"15÷3=5, resto 0."},
+      {q:"Qual o resto de 25 ÷ 4?", opts:["1","2","3","0"], a:"1", exp:"4×6=24, 25-24=1."},
+      {q:"42 ÷ 7 = ?", opts:["6","7","8","5"], a:"6", exp:"7×6=42, divisão exata."},
+      {q:"A divisão 50 ÷ 8 é...", opts:["Não exata","Exata"], a:"Não exata", exp:"50÷8 = 6 e sobra 2."},
+      {q:"Qual o resto de 22 ÷ 5?", opts:["2","3","1","0"], a:"2", exp:"5×4=20, 22-20=2."},
+      {q:"81 ÷ 9 = ?", opts:["9","8","7","6"], a:"9", exp:"9×9=81, divisão exata."},
+      {q:"Qual o resto de 40 ÷ 6?", opts:["4","2","3","0"], a:"4", exp:"6×6=36, 40-36=4."},
+      {q:"100 ÷ 10 é uma divisão...", opts:["Exata","Não exata"], a:"Exata", exp:"100÷10=10, resto 0."},
+      {q:"Numa divisão não exata, o resto é...", opts:["Diferente de zero","Sempre 0","Igual ao divisor","Negativo"], a:"Diferente de zero", exp:"Se sobra algo, resto ≠ 0."},
+    ]
+  },
+  {
+    id:"multiplos-divisores", icon:"🔢", name:"Múltiplos e Divisores",
+    desc:"Quem cabe em quem",
+    questions:[
+      {q:"Qual destes é múltiplo de 4?", opts:["12","10","14","15"], a:"12", exp:"4×3=12."},
+      {q:"5 é divisor de qual número?", opts:["25","23","22","24"], a:"25", exp:"25÷5=5 exato."},
+      {q:"Os primeiros múltiplos de 3 são...", opts:["3, 6, 9","1, 2, 3","3, 5, 7","0, 3, 30"], a:"3, 6, 9", exp:"Multiplica 3 por 1, 2, 3..."},
+      {q:"Quantos divisores tem o número 6?", sub:"1, 2, 3, 6", opts:["4","2","3","6"], a:"4", exp:"1, 2, 3 e 6 → 4 divisores."},
+      {q:"O número 1 é divisor de...", opts:["Todos os números","Só de 1","Nenhum","Só dos pares"], a:"Todos os números", exp:"1 divide qualquer número."},
+      {q:"Qual NÃO é múltiplo de 5?", opts:["22","20","25","35"], a:"22", exp:"Múltiplos de 5 terminam em 0 ou 5."},
+      {q:"Qual destes é múltiplo de 6?", opts:["18","20","15","22"], a:"18", exp:"6×3=18."},
+      {q:"7 é divisor de qual número?", opts:["21","20","22","25"], a:"21", exp:"21÷7=3 exato."},
+      {q:"Quantos divisores tem o número 8?", sub:"1, 2, 4, 8", opts:["4","3","2","8"], a:"4", exp:"1, 2, 4 e 8 → 4 divisores."},
+      {q:"Qual destes é múltiplo de 9?", opts:["27","25","30","19"], a:"27", exp:"9×3=27."},
+      {q:"3 é divisor de qual número?", opts:["15","16","20","22"], a:"15", exp:"15÷3=5 exato."},
+      {q:"Qual NÃO é divisor de 12?", opts:["5","3","4","6"], a:"5", exp:"12÷5 não é exato."},
+      {q:"O menor múltiplo de 5 (sem contar o 0) é...", opts:["5","1","10","0"], a:"5", exp:"5×1 = 5."},
+      {q:"Todo número é divisor de si mesmo?", opts:["Sim","Não"], a:"Sim", exp:"Ex.: 8÷8=1, exato."},
+      {q:"Qual destes é múltiplo de 10?", opts:["40","44","35","14"], a:"40", exp:"Múltiplos de 10 terminam em 0."},
+    ]
+  },
+  {
+    id:"divisibilidade", icon:"🕵️", name:"Critérios de divisibilidade",
+    desc:"Truques para descobrir",
+    questions:[
+      {q:"Um número é divisível por 2 quando...", opts:["Termina em 0,2,4,6,8","É grande","Termina em 5","A soma é par"], a:"Termina em 0,2,4,6,8", exp:"Divisível por 2 = número par."},
+      {q:"48 é divisível por 3?", sub:"Soma: 4+8=12", opts:["Sim","Não"], a:"Sim", exp:"4+8=12, e 12 é divisível por 3."},
+      {q:"Um número é divisível por 5 quando termina em...", opts:["0 ou 5","2 ou 4","só 5","1 ou 6"], a:"0 ou 5", exp:"Regra do 5: termina em 0 ou 5."},
+      {q:"Um número é divisível por 10 quando termina em...", opts:["0","5","1","qualquer"], a:"0", exp:"Só termina em 0."},
+      {q:"123 é divisível por 3?", sub:"Soma: 1+2+3=6", opts:["Sim","Não"], a:"Sim", exp:"1+2+3=6, divisível por 3."},
+      {q:"O número 27 é divisível por 9?", sub:"Soma: 2+7=9", opts:["Sim","Não"], a:"Sim", exp:"2+7=9 → divisível por 9."},
+      {q:"30 é divisível por 2?", opts:["Sim","Não"], a:"Sim", exp:"Termina em 0 → par."},
+      {q:"45 é divisível por 5?", opts:["Sim","Não"], a:"Sim", exp:"Termina em 5."},
+      {q:"Um número é divisível por 3 quando...", opts:["A soma dos algarismos é divisível por 3","É par","Termina em 3","É grande"], a:"A soma dos algarismos é divisível por 3", exp:"Regra do 3: soma dos algarismos."},
+      {q:"100 é divisível por 10?", opts:["Sim","Não"], a:"Sim", exp:"Termina em 0."},
+      {q:"55 é divisível por 2?", opts:["Não","Sim"], a:"Não", exp:"Termina em 5 → ímpar."},
+      {q:"90 é divisível por 9?", sub:"Soma: 9+0=9", opts:["Sim","Não"], a:"Sim", exp:"9+0=9 → sim."},
+      {q:"17 é divisível por 3?", sub:"Soma: 1+7=8", opts:["Não","Sim"], a:"Não", exp:"8 não é divisível por 3."},
+      {q:"Um número divisível por 6 também é divisível por 2 e por...", opts:["3","4","5","9"], a:"3", exp:"6 = 2 × 3."},
+      {q:"64 é divisível por 2?", opts:["Sim","Não"], a:"Sim", exp:"Termina em 4 → par."},
+    ]
+  },
+];
+
+// ---------- ESTADO ----------
+const SAVE_KEY="potencia-quest-progress";
+let progress = load();
+let cur = {phase:0, q:0, lives:3, correct:0};
+
+function load(){
+  try{ return JSON.parse(localStorage.getItem(SAVE_KEY)) || {}; }catch{ return {}; }
+}
+function save(){ localStorage.setItem(SAVE_KEY, JSON.stringify(progress)); }
+
+function shuffle(a){ // ponytail: Fisher-Yates, evita alternativa correta sempre na mesma posição
+  a=a.slice();
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+
+// ---------- TELAS ----------
+function show(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+
+function showMap(){
+  const c=document.getElementById('mapContainer'); c.innerHTML='';
+  PHASES.forEach((p,i)=>{
+    const done = progress[p.id];
+    const unlocked = i===0 || progress[PHASES[i-1].id];
+    const div=document.createElement('div');
+    div.className='phase-card '+(done?'completed':unlocked?'available':'locked');
+    const stars = done ? '⭐'.repeat(done.stars)+'☆'.repeat(3-done.stars) : (unlocked?'▶️':'🔒');
+    div.innerHTML=`<div class="phase-icon">${p.icon}</div>
+      <div class="phase-info"><h3>${i+1}. ${p.name}</h3><p>${p.desc}</p></div>
+      <div class="phase-stars">${stars}</div>`;
+    if(unlocked) div.onclick=()=>startPhase(i);
+    c.appendChild(div);
+  });
+  show('map');
+}
+
+const QUESTIONS_PER_ROUND = 8; // sorteia este tanto do banco a cada partida
+
+function startPhase(i){
+  cur={phase:i, q:0, lives:3, correct:0};
+  PHASES[i]._order = shuffle(PHASES[i].questions.map((_,k)=>k)).slice(0, QUESTIONS_PER_ROUND);
+  document.getElementById('gameTitle').textContent=PHASES[i].icon+' '+PHASES[i].name;
+  renderQuestion();
+  show('game');
+}
+
+function renderQuestion(){
+  const p=PHASES[cur.phase];
+  const q=p.questions[p._order[cur.q]];
+  document.getElementById('lives').textContent='❤️'.repeat(cur.lives)+'🤍'.repeat(3-cur.lives);
+  document.getElementById('progressFill').style.width=(cur.q/p._order.length*100)+'%';
+  document.getElementById('qHint').textContent=p.name;
+  document.getElementById('qText').textContent=q.q;
+  document.getElementById('qSub').textContent=q.sub||'';
+  document.getElementById('feedback').textContent='';
+  document.getElementById('feedback').className='feedback';
+  document.getElementById('explain').textContent='';
+  document.getElementById('nextBtn').classList.remove('show');
+  const box=document.getElementById('options'); box.innerHTML='';
+  shuffle(q.opts).forEach(opt=>{
+    const b=document.createElement('button');
+    b.className='opt'; b.textContent=opt;
+    b.onclick=()=>answer(b,opt,q);
+    box.appendChild(b);
+  });
+}
+
+function answer(btn, opt, q){
+  document.querySelectorAll('.opt').forEach(b=>{
+    b.disabled=true;
+    if(b.textContent===q.a) b.classList.add('correct');
+  });
+  const fb=document.getElementById('feedback');
+  if(opt===q.a){
+    cur.correct++;
+    fb.textContent='✅ Boa!'; fb.className='feedback ok';
+  }else{
+    btn.classList.add('wrong');
+    cur.lives--;
+    fb.textContent='❌ Ops!'; fb.className='feedback no';
+    document.getElementById('lives').textContent='❤️'.repeat(Math.max(0,cur.lives))+'🤍'.repeat(3-Math.max(0,cur.lives));
+  }
+  document.getElementById('explain').textContent=q.exp;
+  if(cur.lives<=0){ setTimeout(endPhase,900); return; }
+  document.getElementById('nextBtn').classList.add('show');
+}
+
+function nextQuestion(){
+  const p=PHASES[cur.phase];
+  cur.q++;
+  if(cur.q>=p._order.length){ endPhase(); return; }
+  renderQuestion();
+}
+
+function endPhase(){
+  const p=PHASES[cur.phase];
+  const total=p._order.length;
+  const stars = cur.lives<=0 ? Math.max(1,Math.round(cur.correct/total*3)) : (cur.correct===total?3:cur.correct>=total*0.6?2:1);
+  const passed = cur.lives>0;
+  if(passed){
+    const prev=progress[p.id]?.stars||0;
+    progress[p.id]={stars:Math.max(prev,stars), correct:cur.correct};
+    save();
+  }
+  document.getElementById('resultEmoji').textContent = passed ? (stars===3?'🏆':'🎉') : '💥';
+  document.getElementById('resultTitle').textContent = passed ? 'Planeta conquistado!' : 'Foguete sem energia!';
+  document.getElementById('resultStars').textContent = passed ? '⭐'.repeat(stars)+'☆'.repeat(3-stars) : 'Tente de novo!';
+  document.getElementById('resultScore').textContent = `Acertos: ${cur.correct} de ${total}`;
+  show('result');
+}
+
+function resetProgress(){
+  if(confirm('Apagar todo o progresso?')){ progress={}; save(); showMap(); }
+}
+
+// ---------- SELF-CHECK (ponytail: valida que toda pergunta tem sua resposta nas opções) ----------
+(function selfCheck(){
+  for(const p of PHASES) for(const q of p.questions){
+    console.assert(q.opts.includes(q.a), `Resposta ausente nas opções: ${p.id} / "${q.q}"`);
+  }
+})();
+</script>
+</body>
+</html>
