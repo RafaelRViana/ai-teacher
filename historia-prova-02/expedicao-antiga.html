@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Expedição ao Mundo Antigo · Mesopotâmia & Egito</title>
+<style>
+  :root {
+    --bg:      #0d1117;
+    --surface: #161d27;
+    --card:    #1c2634;
+    --border:  #2e4057;
+    --sand:    #e0b95c;
+    --teal:    #3fb8af;
+    --blue:    #4a90d9;
+    --text:    #ede4d0;
+    --muted:   #8a94a6;
+    --ok:      #2ecc71;
+    --bad:     #e74c3c;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: var(--bg);
+    background-image: radial-gradient(ellipse at top, #182234 0%, var(--bg) 60%);
+    color: var(--text);
+    min-height: 100vh;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 24px 16px 70px; }
+  .screen { display:none; animation: fadeUp .35s ease; }
+  .screen.active { display:block; }
+  @keyframes fadeUp { from {opacity:0; transform:translateY(12px);} to {opacity:1; transform:translateY(0);} }
+
+  h1 { font-size: 2rem; color: var(--sand); text-align:center; text-shadow: 0 2px 12px rgba(224,185,92,.25); }
+  h2 { font-size: 1.4rem; color: var(--teal); margin-bottom: 10px; }
+  .sub { color: var(--muted); text-align:center; font-size:.92rem; margin-top:6px; }
+  .big-emoji { font-size: 4rem; display:block; text-align:center; margin-bottom: 8px; }
+
+  .card {
+    background: var(--card); border:1px solid var(--border);
+    border-radius: 14px; padding: 20px; margin-top: 16px;
+  }
+  .btn {
+    display:inline-block; cursor:pointer; border:none; border-radius:10px;
+    padding: 13px 30px; font-size: 1rem; font-family: inherit;
+    background: var(--sand); color: #241a05; font-weight:bold;
+    transition: filter .15s, transform .1s;
+  }
+  .btn:hover { filter: brightness(1.12); }
+  .btn:active { transform: scale(.97); }
+  .btn-ghost { background: transparent; color: var(--muted); border:1px solid var(--border); font-weight:normal; }
+  .btn-full { width:100%; text-align:center; }
+  .btn:disabled { opacity:.4; cursor:not-allowed; }
+
+  input {
+    background: var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding: 12px 15px; color: var(--text); font-size:1rem; font-family:inherit; width:100%;
+  }
+  input:focus { outline:none; border-color: var(--sand); }
+
+  .hero-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(140px,1fr)); gap:10px; margin-top:10px; }
+  .hero-card {
+    background: var(--surface); border:2px solid var(--border); border-radius:12px;
+    padding: 14px 8px; cursor:pointer; text-align:center; transition: border-color .15s, transform .12s;
+  }
+  .hero-card:hover { border-color: var(--teal); transform: translateY(-2px); }
+  .hero-card.sel { border-color: var(--sand); background:#26200f; }
+  .hero-card .he { font-size: 2.2rem; display:block; margin-bottom:4px; }
+  .hero-card .hn { font-size:.9rem; color: var(--sand); font-weight:bold; }
+  .hero-card .hd { font-size:.72rem; color: var(--muted); margin-top:3px; }
+
+  /* trilha de fases */
+  .trail { display:flex; flex-direction:column; gap:10px; margin-top:14px; }
+  .stage {
+    display:flex; align-items:center; gap:14px;
+    background: var(--card); border:1px solid var(--border); border-radius:12px; padding: 13px 16px;
+  }
+  .stage .se { font-size: 1.9rem; }
+  .stage .sn { font-weight:bold; color: var(--text); font-size:.98rem; }
+  .stage .sd { font-size:.78rem; color: var(--muted); }
+  .stage.done { border-color: var(--ok); }
+  .stage.done .sn { color: var(--ok); }
+  .stage.next { border-color: var(--sand); box-shadow: 0 0 14px rgba(224,185,92,.15); }
+  .stage.locked { opacity:.45; }
+  .stage .right { margin-left:auto; font-size:1.2rem; }
+
+  /* topbar do jogo */
+  .topbar { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom: 14px; }
+  .badge {
+    background: var(--card); border:1px solid var(--border); border-radius:99px;
+    padding: 5px 14px; font-size:.85rem; color: var(--muted);
+  }
+  .badge strong { color: var(--sand); }
+  .badge.streak-on { border-color:#e67e22; color:#e67e22; animation: pop .25s ease; }
+  @keyframes pop { from {transform:scale(.7);} to {transform:scale(1);} }
+
+  .prog-wrap { background: var(--surface); border-radius:99px; height:8px; overflow:hidden; margin-bottom:16px; }
+  .prog-fill { background: linear-gradient(90deg, var(--teal), var(--sand)); height:100%; transition: width .4s; }
+
+  .q-cat {
+    display:inline-block; background: var(--teal); color:#04211f; border-radius:99px;
+    padding: 4px 14px; font-size:.78rem; font-weight:bold; margin-bottom:12px;
+  }
+  .q-text {
+    font-size: 1.12rem; line-height: 1.65; padding: 16px;
+    background: var(--surface); border-radius: 12px;
+    border-left: 4px solid var(--sand); margin-bottom: 16px;
+  }
+  .opts { display:grid; gap:10px; }
+  .opt {
+    background: var(--surface); border:2px solid var(--border); border-radius:11px;
+    padding: 13px 16px; cursor:pointer; display:flex; gap:12px; align-items:flex-start;
+    font-family:inherit; font-size:.96rem; color:var(--text); text-align:left; width:100%;
+    transition: border-color .12s, background .12s;
+  }
+  .opt:hover:not(:disabled) { border-color: var(--teal); }
+  .opt .letter {
+    flex-shrink:0; width:26px; height:26px; border-radius:50%;
+    background: var(--card); border:1px solid var(--border);
+    display:flex; align-items:center; justify-content:center;
+    font-size:.8rem; font-weight:bold; color: var(--sand);
+  }
+  .opt.right { border-color: var(--ok); background:#12281a; }
+  .opt.wrong { border-color: var(--bad); background:#2b1412; }
+  .opt:disabled { cursor:default; }
+
+  .feedback {
+    display:none; margin-top:14px; border-radius:12px; padding: 15px 17px;
+    font-size:.95rem; line-height:1.6; animation: fadeUp .3s ease;
+  }
+  .feedback.show { display:block; }
+  .feedback.good { background:#12281a; border:1px solid var(--ok); }
+  .feedback.evil { background:#2b1412; border:1px solid var(--bad); }
+  .feedback .ft { font-weight:bold; margin-bottom:6px; display:block; }
+  .feedback.good .ft { color: var(--ok); }
+  .feedback.evil .ft { color: var(--bad); }
+
+  .relic-row { text-align:center; font-size:2rem; letter-spacing:8px; margin: 12px 0; }
+  .stat-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(130px,1fr)); gap:10px; margin-top:14px; }
+  .stat { background: var(--surface); border:1px solid var(--border); border-radius:12px; padding:14px; text-align:center; }
+  .stat .sv { font-size:1.5rem; color:var(--sand); font-weight:bold; }
+  .stat .sl { font-size:.75rem; color:var(--muted); text-transform:uppercase; letter-spacing:.6px; margin-top:4px; }
+
+  .review-item { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:13px 15px; margin-top:10px; font-size:.9rem; line-height:1.55; }
+  .review-item .rq { font-weight:bold; }
+  .review-item .ra { color: var(--ok); }
+
+  .center { text-align:center; }
+  .mt { margin-top: 16px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ═══ INÍCIO ═══ -->
+  <section class="screen active" id="s-start">
+    <span class="big-emoji">🏺</span>
+    <h1>Expedição ao Mundo Antigo</h1>
+    <p class="sub">Mesopotâmia & Egito Antigo · Prova de História 02</p>
+    <div class="card">
+      <p style="font-size:.95rem; line-height:1.6;">
+        Você é membro de uma expedição arqueológica que viaja no tempo!
+        Atravesse <strong>9 sítios históricos</strong>, responda aos enigmas e recupere as
+        <strong>9 relíquias perdidas</strong> das primeiras civilizações. ⚱️
+      </p>
+      <div class="mt">
+        <label style="font-size:.8rem; color:var(--muted); text-transform:uppercase; letter-spacing:.6px;">Seu nome de explorador(a)</label>
+        <input id="inp-name" maxlength="20" placeholder="Ex.: Indiana" style="margin-top:6px;" />
+      </div>
+      <div class="mt">
+        <label style="font-size:.8rem; color:var(--muted); text-transform:uppercase; letter-spacing:.6px;">Escolha seu personagem</label>
+        <div class="hero-grid" id="hero-grid"></div>
+      </div>
+      <button class="btn btn-full mt" id="btn-start">Iniciar Expedição 🧭</button>
+    </div>
+  </section>
+
+  <!-- ═══ MAPA / TRILHA ═══ -->
+  <section class="screen" id="s-map">
+    <h1 style="font-size:1.5rem;">🗺️ Mapa da Expedição</h1>
+    <p class="sub" id="map-sub"></p>
+    <div class="relic-row" id="relic-row"></div>
+    <div class="trail" id="trail"></div>
+    <p class="center mt"><button class="btn" id="btn-go">Explorar próximo sítio ➜</button></p>
+  </section>
+
+  <!-- ═══ INTRO DA FASE ═══ -->
+  <section class="screen" id="s-intro">
+    <div class="card center">
+      <span class="big-emoji" id="intro-emoji"></span>
+      <h2 id="intro-title" style="text-align:center;"></h2>
+      <p style="font-size:.95rem; line-height:1.65; color:var(--muted);" id="intro-text"></p>
+      <button class="btn mt" id="btn-enter">Entrar no sítio ⛏️</button>
+    </div>
+  </section>
+
+  <!-- ═══ PERGUNTA ═══ -->
+  <section class="screen" id="s-game">
+    <div class="topbar">
+      <span class="badge" id="b-hero"></span>
+      <span class="badge">❤️ <strong id="b-lives"></strong></span>
+      <span class="badge">✨ <strong id="b-xp"></strong> XP</span>
+      <span class="badge" id="b-streak" style="display:none;">🔥 <strong id="b-streak-n"></strong> seguidas — bônus x2!</span>
+    </div>
+    <div class="prog-wrap"><div class="prog-fill" id="prog"></div></div>
+    <span class="q-cat" id="q-cat"></span>
+    <div class="q-text" id="q-text"></div>
+    <div class="opts" id="opts"></div>
+    <div class="feedback" id="feedback">
+      <span class="ft" id="fb-title"></span>
+      <span id="fb-text"></span>
+      <p class="mt center"><button class="btn" id="btn-next">Continuar ➜</button></p>
+    </div>
+  </section>
+
+  <!-- ═══ FASE CONCLUÍDA ═══ -->
+  <section class="screen" id="s-done">
+    <div class="card center">
+      <span class="big-emoji" id="done-relic"></span>
+      <h2 style="text-align:center;">Relíquia recuperada!</h2>
+      <p id="done-text" style="color:var(--muted); line-height:1.6;"></p>
+      <button class="btn mt" id="btn-map">Voltar ao mapa 🗺️</button>
+    </div>
+  </section>
+
+  <!-- ═══ SEM VIDAS ═══ -->
+  <section class="screen" id="s-fail">
+    <div class="card center">
+      <span class="big-emoji">💀</span>
+      <h2 style="text-align:center; color:var(--bad);">A expedição desmoronou!</h2>
+      <p style="color:var(--muted);">Você ficou sem vidas neste sítio. Mas todo grande arqueólogo tenta de novo!</p>
+      <button class="btn mt" id="btn-retry">Tentar o sítio novamente 🔄</button>
+    </div>
+  </section>
+
+  <!-- ═══ FIM ═══ -->
+  <section class="screen" id="s-end">
+    <span class="big-emoji">🏆</span>
+    <h1>Expedição concluída!</h1>
+    <div class="relic-row" id="end-relics"></div>
+    <div class="card">
+      <div class="stat-grid">
+        <div class="stat"><div class="sv" id="e-xp">0</div><div class="sl">XP total</div></div>
+        <div class="stat"><div class="sv" id="e-acc">0%</div><div class="sl">Precisão</div></div>
+        <div class="stat"><div class="sv" id="e-best">0</div><div class="sl">Maior sequência</div></div>
+      </div>
+      <p class="center mt" id="e-rank" style="font-size:1.1rem;"></p>
+    </div>
+    <div class="card" id="e-review-card">
+      <h2>📖 Para revisar antes da prova</h2>
+      <div id="e-review"></div>
+    </div>
+    <p class="center mt"><button class="btn" id="btn-again">Jogar novamente 🔄</button></p>
+  </section>
+
+</div>
+
+<script>
+// ══════════════ CONTEÚDO — apostila Bernoulli caps. 03 e 04 ══════════════
+const PHASES = [
+{
+  emoji:'🏕️', relic:'🪵', name:'A Aldeia Neolítica',
+  intro:'Nossa máquina do tempo pousou há 12 mil anos. Grupos nômades estão se fixando perto dos rios... Você presencia o nascimento das primeiras aldeias!',
+  qs:[
+    {q:'Quando um grupo de pessoas deixa de ser nômade e passa a viver em um lugar fixo, dizemos que ele se...',
+     o:['Sedentarizou','Urbanizou','Civilizou','Industrializou'], a:0,
+     e:'Sedentarizar-se é fixar-se em um local. Isso aconteceu no período Neolítico, dando origem às aldeias e, depois, às cidades.'},
+    {q:'Em qual período histórico ocorreu a sedentarização humana?',
+     o:['Neolítico','Paleolítico','Idade Média','Idade dos Metais'], a:0,
+     e:'O Neolítico (cerca de 12000 a.C. a 8500 a.C.) foi o período em que surgiram as aldeias e a agricultura.'},
+    {q:'Qual foi o principal critério para escolher onde construir as primeiras aldeias?',
+     o:['Estar perto de fontes de água (rios)','Estar no topo de montanhas','Estar perto de minas de ouro','Estar longe de outros grupos'], a:0,
+     e:'Os grupos se fixaram perto dos rios: a água servia para irrigar o solo, beber, uso doméstico e abastecer as aldeias.'},
+    {q:'Qual invenção do Neolítico ajudou a preparar a terra e aumentou a produção de alimentos?',
+     o:['O arado','A roda de oleiro','A moeda','O papiro'], a:0,
+     e:'O arado permitiu preparar melhor a terra para a agricultura. O aumento da produção gerou excedentes e deu origem aos celeiros — a chamada Revolução Agrícola.'},
+    {q:'O que as pessoas faziam com os alimentos que sobravam (excedentes)?',
+     o:['Trocavam entre si, dando origem ao comércio','Jogavam fora','Queimavam em rituais','Enterravam com os mortos'], a:0,
+     e:'A troca de excedentes deu origem às primeiras práticas comerciais e também a novas formas de divisão do trabalho.'},
+    {q:'Quais são três elementos importantes para a formação de uma civilização?',
+     o:['Crença religiosa, produção artística e sistema de escrita','Moeda, exército e navios','Estradas, pontes e castelos','Petróleo, ferro e carvão'], a:0,
+     e:'Uma civilização compartilha tradições culturais: religião conduzida por sacerdotes, arte que expressa a cultura e escrita que registra o conhecimento.'},
+  ]
+},
+{
+  emoji:'🌙', relic:'🌾', name:'O Crescente Fértil',
+  intro:'Voamos sobre uma região em formato de lua crescente, verde entre desertos. É aqui, entre grandes rios, que as primeiras civilizações vão nascer!',
+  qs:[
+    {q:'Por que a região onde surgiram as primeiras civilizações é chamada de "Crescente Fértil"?',
+     o:['Seu formato lembra uma lua crescente e suas terras eram muito férteis','Porque a população crescia rápido','Porque a lua era adorada como deusa','Porque as colheitas só cresciam à noite'], a:0,
+     e:'O termo "crescente" vem do formato da região, que lembra uma lua crescente, situada entre o Mar Vermelho e o Mar Mediterrâneo — área fértil e propícia à agricultura.'},
+    {q:'O que tornava o solo do Crescente Fértil tão bom para a agricultura?',
+     o:['As cheias periódicas dos rios, que depositavam matéria orgânica','A areia do deserto','As cinzas de vulcões','O gelo derretido das montanhas'], a:0,
+     e:'A inundação dos rios (Tigre, Eufrates, Nilo e Jordão) depositava uma camada de matéria orgânica que garantia a fertilidade do solo.'},
+    {q:'As primeiras civilizações que dependiam das águas dos rios são conhecidas como civilizações...',
+     o:['Fluviais','Marítimas','Desérticas','Montanhosas'], a:0,
+     e:'Civilizações fluviais: organizadas política, econômica e socialmente em torno dos rios de água doce.'},
+    {q:'O que significa o nome "Mesopotâmia"?',
+     o:['Terra entre rios','Terra dos faraós','Deserto sagrado','Cidade dos deuses'], a:0,
+     e:'Mesopotâmia significa "terra entre rios" — ela ficava entre os Rios Tigre e Eufrates.'},
+    {q:'Qual país atual ocupa a maior parte do território da antiga Mesopotâmia?',
+     o:['Iraque','Egito','Grécia','Brasil'], a:0,
+     e:'A Mesopotâmia corresponde hoje a grande parte do Iraque e a porções da Síria e da Turquia.'},
+    {q:'Quais são os dois principais rios da Mesopotâmia?',
+     o:['Tigre e Eufrates','Nilo e Jordão','Amazonas e Nilo','Tibre e Sena'], a:0,
+     e:'Os Rios Tigre e Eufrates cortavam a planície mesopotâmica. Suas cheias fertilizavam a terra para a agricultura.'},
+  ]
+},
+{
+  emoji:'🏛️', relic:'👑', name:'As Cidades Sumérias',
+  intro:'Chegamos a Ur, por volta de 2000 a.C.! Muralhas, templos, canais e um porto movimentado. Os sumérios fundaram aqui algumas das cidades mais antigas do mundo.',
+  qs:[
+    {q:'Qual povo fundou as primeiras cidades da Mesopotâmia, algumas das mais antigas do mundo?',
+     o:['Sumérios','Romanos','Egípcios','Persas'], a:0,
+     e:'Os sumérios fundaram cidades como Uruk, Ur, Nipur e Lagash, com ruas, casas, templos, palácios e muralhas.'},
+    {q:'As cidades sumérias eram politicamente independentes umas das outras. Por isso são chamadas de...',
+     o:['Cidades-estado','Impérios','Colônias','Aldeias nômades'], a:0,
+     e:'Cada cidade-estado tinha sua própria organização e seus próprios governantes, sem depender das outras.'},
+    {q:'Quem eram os "patesi" nas cidades-estado sumérias?',
+     o:['Sacerdotes que governavam, unindo liderança política e religiosa','Escravos que trabalhavam nos templos','Soldados de elite do rei','Comerciantes estrangeiros'], a:0,
+     e:'Os patesi eram sacerdotes-governantes: cuidavam da administração, da lei, dos rituais religiosos, da economia e da defesa da cidade-estado.'},
+    {q:'Com o tempo, o poder dos patesi foi substituído pelo poder dos reis. De onde os sumérios acreditavam que vinha o poder do rei?',
+     o:['Dos deuses — o rei era visto como divindade na terra','Do voto popular','Da riqueza acumulada em ouro','Da força do exército apenas'], a:0,
+     e:'O poder do rei era legitimado pela vontade divina. Mas ele precisava cumprir condições religiosas impostas pelos sacerdotes, como construir e decorar templos.'},
+    {q:'Na divisão social suméria, quem ocupava o topo da pirâmide?',
+     o:['O rei e sua família','Os camponeses','Os escribas','Os artesãos'], a:0,
+     e:'A ordem era: rei e família → sacerdotes → funcionários públicos → camponeses → escravos.'},
+    {q:'Quais eram as duas principais formas de alguém se tornar escravo na Mesopotâmia?',
+     o:['Ser derrotado em guerra ou não pagar dívidas','Nascer em outra cidade ou ser comerciante','Não saber escrever ou não ter terras','Desobedecer aos pais ou faltar aos rituais'], a:0,
+     e:'Prisioneiros de guerra eram escravizados pelos vencedores; e quem não conseguia pagar uma dívida tornava-se propriedade do credor (escravidão por dívida).'},
+  ]
+},
+{
+  emoji:'📜', relic:'🖋️', name:'A Invenção da Escrita',
+  intro:'Num armazém de Ur, um escriba pressiona um palito em forma de cunha numa tábua de argila úmida. Você está vendo nascer a escrita — o marco que separa a Pré-História da História!',
+  qs:[
+    {q:'Qual era a base da economia da Mesopotâmia?',
+     o:['A agricultura','A mineração de ouro','A pesca em alto-mar','O turismo'], a:0,
+     e:'A agricultura era a base da economia: cultivavam cevada e trigo (para cerveja e pão) e sésamo (gergelim, para óleo). Também criavam cabras, porcos, ovelhas e gado.'},
+    {q:'O que é agricultura irrigada?',
+     o:['Sistema em que a água é levada artificialmente por canais até as plantações','Plantio feito apenas na época das chuvas','Cultivo dentro dos rios','Agricultura feita em vasos'], a:0,
+     e:'Na agricultura irrigada, a água é fornecida de forma artificial, por meio de canais, para suprir as necessidades das plantações.'},
+    {q:'Por que a escrita surgiu na Mesopotâmia?',
+     o:['Pela necessidade de registrar as atividades comerciais e financeiras','Para escrever poemas de amor','Para mandar cartas aos faraós','Para registrar partidas de jogos'], a:0,
+     e:'Com o crescimento do comércio, ficou difícil memorizar todas as trocas, compras e vendas. A escrita surgiu para registrar essas atividades.'},
+    {q:'Como se chama a escrita criada pelos sumérios?',
+     o:['Cuneiforme','Hieroglífica','Alfabética','Romana'], a:0,
+     e:'Escrita cuneiforme: feita com um palito de ponta triangular que marcava sinais em forma de cunha em tábuas de argila úmida, secas depois ao sol. Surgiu por volta de 3000 a.C.'},
+    {q:'A invenção da escrita é usada pelos historiadores como o marco que separa...',
+     o:['A Pré-História da História','A Idade Média da Idade Moderna','O Neolítico do Paleolítico','A Antiguidade do presente'], a:0,
+     e:'O surgimento da escrita é o evento que tradicionalmente separa a Pré-História da História — mas povos sem escrita também produziam história pela oralidade e pela arte.'},
+    {q:'A famosa "Placa de reclamação de Ea-Nasir" (cerca de 1750 a.C.) é considerada...',
+     o:['A reclamação escrita de cliente mais antiga já descoberta','O primeiro livro de receitas','A primeira carta de amor','O primeiro mapa do mundo'], a:0,
+     e:'É uma tábua de argila em que um cliente reclama de um comerciante que o tratou "com desprezo". Está no Museu Britânico!'},
+  ]
+},
+{
+  emoji:'⭐', relic:'🔭', name:'Zigurates e Deuses',
+  intro:'À noite, do alto do Zigurate de Ur, sacerdotes observam os astros. Eles leem nos céus a vontade dos deuses — e, sem querer, inventam a astronomia!',
+  qs:[
+    {q:'Os povos mesopotâmicos eram politeístas. O que isso significa?',
+     o:['Acreditavam em vários deuses','Acreditavam em um único deus','Não acreditavam em deuses','Adoravam apenas os reis'], a:0,
+     e:'Politeísmo = crença em vários deuses. Os deuses mesopotâmicos eram ligados aos fenômenos da natureza e responsáveis por tudo no mundo.'},
+    {q:'Qual era o papel dos sacerdotes na religião mesopotâmica?',
+     o:['Interpretar as mensagens dos deuses (sonhos, estrelas e sinais)','Comandar os exércitos','Cultivar as terras do rei','Construir as muralhas'], a:0,
+     e:'Os mesopotâmicos acreditavam que os deuses se comunicavam por sonhos, estrelas e outros sinais — e cabia aos sacerdotes interpretá-los (inclusive lendo entranhas de animais!).'},
+    {q:'O que eram os zigurates?',
+     o:['Templos dedicados aos deuses de cada cidade-estado','Túmulos dos faraós','Muralhas de defesa','Mercados públicos'], a:0,
+     e:'Cada cidade-estado tinha um deus específico e um templo (zigurate) dedicado a ele. Também serviam de depósito de cereais e local de observação dos astros. O Zigurate de Ur tinha 7 pavimentos!'},
+    {q:'Qual contribuição os mesopotâmicos deixaram para a medida do tempo?',
+     o:['Calendário baseado nos ciclos da Lua e semana de sete dias','O relógio digital','O calendário solar de 365 dias exatos','Os fusos horários'], a:0,
+     e:'Eles criaram um calendário lunar, a semana de 7 dias, dividiam o dia em 12 horas duplas, calculavam eclipses e identificaram 5 planetas: Saturno, Júpiter, Vênus, Marte e Mercúrio.'},
+    {q:'Na mitologia mesopotâmica, quem era Anu?',
+     o:['O deus do céu, considerado o pai dos deuses','O deus da guerra','O deus do rio Nilo','O deus da escrita'], a:0,
+     e:'Anu era o deus do céu e um dos supremos do panteão. Outros: Ishtar (amor, fertilidade e guerra), Enqui (água e sabedoria) e Ninhursag (terra e criação).'},
+    {q:'A Epopeia de Gilgamesh, da literatura mesopotâmica, contém um relato parecido com qual história bíblica?',
+     o:['O dilúvio da Arca de Noé','A Torre de Babel','O êxodo do Egito','Davi e Golias'], a:0,
+     e:'A Epopeia de Gilgamesh traz um relato de dilúvio semelhante ao da Arca de Noé — narrativas míticas de culturas diferentes explicando grandes enchentes.'},
+  ]
+},
+{
+  emoji:'⚔️', relic:'⚖️', name:'Impérios da Mesopotâmia',
+  intro:'Exércitos marcham! Sargão unifica cidades, Hamurabi grava leis na pedra, assírios atacam com armas de ferro... É a era dos grandes impérios!',
+  qs:[
+    {q:'Quem foi Sargão, o Grande?',
+     o:['Líder dos acádios que formou um dos primeiros impérios da história','O primeiro faraó do Egito','Um sacerdote sumério','O último rei persa'], a:0,
+     e:'Sargão, líder dos acádios, unificou as regiões Central e Sul da Mesopotâmia, criando o Império Acádio. Ele permitiu que os sumérios mantivessem suas tradições, misturando as duas culturas.'},
+    {q:'Quem foi Hamurabi?',
+     o:['Rei babilônio que unificou o sul da Mesopotâmia e criou um famoso código de leis','Um deus da guerra','Um escriba egípcio','O construtor das pirâmides'], a:0,
+     e:'Por volta de 1792 a.C., Hamurabi formou o Primeiro Império Babilônico, com capital na Babilônia, que alcançou seu auge político e cultural.'},
+    {q:'Qual princípio era o fundamento essencial do Código de Hamurabi?',
+     o:['A Lei de Talião: "olho por olho, dente por dente"','O perdão universal','A prisão perpétua para todos os crimes','O pagamento de multas em ouro'], a:0,
+     e:'Pela Lei de Talião, quem cometesse um crime sofreria como pena o mesmo dano que causou. O código tratava de família, roubo, divórcio, escravidão, construções e trabalho.'},
+    {q:'O Código de Hamurabi era aplicado igualmente para todas as classes sociais?',
+     o:['Não — as punições variavam conforme a classe social dos envolvidos','Sim — todos eram iguais perante a lei','Só valia para os escravos','Só valia para os sacerdotes'], a:0,
+     e:'Era uma "justiça seletiva": um crime de escravo contra pessoa livre tinha punição mais severa; o "olho por olho" só valia entre pessoas do mesmo grupo social.'},
+    {q:'Qual característica ajudou os assírios a formarem seu império a partir da cidade de Assur?',
+     o:['Um exército poderoso, com arqueiros treinados e armas de ferro','Uma marinha gigante','Alianças de casamento com o Egito','A invenção da pólvora'], a:0,
+     e:'Por volta de 1000 a.C., os assírios conquistaram brutalmente várias terras. Suas armas de ferro eram melhores que as de bronze dos inimigos.'},
+    {q:'Quem foi Nabucodonosor?',
+     o:['O rei caldeu do Segundo Império Babilônico, ligado aos Jardins Suspensos','Um faraó egípcio','O criador da escrita cuneiforme','Um general persa'], a:0,
+     e:'Rei dos caldeus (Império Neobabilônico), tentou reviver a cultura de Hamurabi. Acredita-se que os Jardins Suspensos da Babilônia, uma das Sete Maravilhas do Mundo Antigo, foram construídos em seu reinado.'},
+    {q:'Como terminou a independência da Mesopotâmia?',
+     o:['Ciro II, "o Grande", derrotou os medos e formou o Império Persa, que dominou a região','Um terremoto destruiu todas as cidades','Os sumérios retomaram o poder','Os romanos invadiram em 3000 a.C.'], a:0,
+     e:'Em 550 a.C., o príncipe persa Ciro II se revoltou contra os medos e os derrotou, formando o Império Persa. As cidades mesopotâmicas perderam gradualmente sua independência.'},
+  ]
+},
+{
+  emoji:'🏜️', relic:'☀️', name:'O Egito e o Nilo',
+  intro:'Nova parada: nordeste da África, às margens de um rio que nunca seca. Sem o Nilo, o Egito seria só deserto. Aqui nasce a civilização dos faraós!',
+  qs:[
+    {q:'O Rio Nilo era "perene". O que isso significa?',
+     o:['Ele não secava','Ele mudava de lugar todo ano','Ele era salgado','Ele congelava no inverno'], a:0,
+     e:'O Nilo era perene (não secava), o que permitiu o surgimento da civilização egípcia por volta de 5500 a.C. Sem ele, o Egito seria um grande deserto.'},
+    {q:'Qual era o principal benefício das cheias anuais do Nilo?',
+     o:['Depositavam sedimentos férteis, deixando o solo bom para a agricultura','Traziam ouro das montanhas','Afastavam os inimigos','Esfriavam o clima do deserto'], a:0,
+     e:'As inundações anuais depositavam sedimentos férteis nas margens. O rio também servia para transporte, comércio e pesca.'},
+    {q:'As cheias do Nilo também causavam problemas. Como os egípcios controlavam as águas?',
+     o:['Construindo diques, canais de irrigação e reservatórios','Rezando apenas','Mudando de cidade todo ano','Construindo pontes de pedra'], a:0,
+     e:'Diques continham a água, canais de irrigação a distribuíam pelas cidades e reservatórios a armazenavam para os períodos de seca. As cheias fortes podiam destruir casas e plantações — e até trazer crocodilos!'},
+    {q:'Quem foi Menés (também chamado Narmer)?',
+     o:['O rei que unificou o Alto e o Baixo Egito e se tornou o primeiro faraó','O deus do Sol','O arquiteto das pirâmides','Um escriba famoso'], a:0,
+     e:'Por volta de 3100 a.C., Menés conquistou e unificou o Alto Egito (sul) e o Baixo Egito (norte), dando origem à Primeira Dinastia. "Faraó" significa "a grande casa".'},
+    {q:'O governo egípcio era uma teocracia. O que isso significa?',
+     o:['Governo em que as autoridades políticas são líderes religiosos','Governo eleito pelo povo','Governo comandado por generais','Governo sem nenhum líder'], a:0,
+     e:'O faraó concentrava poderes econômicos, militares e políticos E a liderança religiosa — era considerado um deus na Terra.'},
+    {q:'Por que ninguém podia questionar o poder do faraó?',
+     o:['Porque ele era considerado descendente do deus Rá, com poder de origem divina','Porque ele tinha o maior exército do mundo','Porque ele sabia ler e escrever','Porque ele era o mais velho do reino'], a:0,
+     e:'Acreditava-se que os faraós descendiam de Rá, o deus Sol, e eram "Hórus" — filhos do deus Sol em forma humana. Seu poder divino não podia ser questionado.'},
+    {q:'Quem foi Hatshepsut?',
+     o:['A primeira faraó mulher, que alegou ser filha do deus Amon para legitimar seu reinado','A esposa de Ciro, o Grande','A deusa dos gatos','A rainha da Babilônia'], a:0,
+     e:'Hatshepsut tomou o trono após a morte do marido e criou um mito de nascimento divino. Cleópatra, da dinastia dos Ptolomeus, foi a última rainha do Egito.'},
+  ]
+},
+{
+  emoji:'🐪', relic:'📖', name:'A Sociedade Egípcia',
+  intro:'Nas margens do Nilo, felás colhem trigo, escribas anotam tudo em papiros e artesãos moldam cerâmica. Cada um tem seu lugar na pirâmide social!',
+  qs:[
+    {q:'A sociedade egípcia era "estratificada". O que isso quer dizer?',
+     o:['Dividida em camadas, com uma minoria privilegiada no topo','Todos eram iguais','Formada só por sacerdotes','Sem nenhuma organização'], a:0,
+     e:'A sociedade era dividida em estratos (como uma pirâmide): faraó e família no topo, depois nobreza e sacerdotes, soldados, escribas, comerciantes, artesãos, felás e escravos na base.'},
+    {q:'Quem eram os felás?',
+     o:['Os camponeses, responsáveis por cultivar a terra e produzir alimentos','Os soldados de elite','Os sacerdotes do templo','Os juízes do faraó'], a:0,
+     e:'Os felás eram os camponeses — a base que sustentava a economia egípcia. Trabalhavam muitas vezes usando apenas uma tanga!'},
+    {q:'Qual era a função dos escribas?',
+     o:['Escrever leis e documentar eventos usando hieróglifos em papiros','Defender as fronteiras','Construir as pirâmides','Cuidar dos animais sagrados'], a:0,
+     e:'Os escribas registravam leis e eventos importantes em hieróglifos, escritos em pergaminhos feitos com fibras de papiro.'},
+    {q:'Qual a diferença entre servidão e escravidão no Egito Antigo?',
+     o:['O servo era vinculado à terra, mas não era propriedade; o escravo era propriedade de alguém','Eram exatamente a mesma coisa','O servo trabalhava de graça e o escravo recebia salário','O escravo podia escolher seu trabalho'], a:0,
+     e:'A servidão era intermediária entre liberdade e escravidão: servos deviam trabalhar nas terras dos senhores, mas não eram escravos. No Egito, só o faraó e a elite possuíam escravos (menos que na Mesopotâmia).'},
+    {q:'Além do trigo, os egípcios cultivavam papiro e linho. Para que serviam?',
+     o:['Papiro: alimento e material de escrita; linho: produção de roupas','Papiro: construir barcos; linho: fazer moedas','Papiro: remédio; linho: alimento dos escravos','Ambos serviam só de enfeite'], a:0,
+     e:'O papiro alimentava a população mais pobre e era a base dos pergaminhos de escrita. O linho era fundamental para produzir roupas.'},
+    {q:'Como funcionava o comércio em menor escala no Egito Antigo?',
+     o:['Por troca de excedentes — a moeda só surgiu na decadência da civilização','Com moedas de ouro desde o início','Com cartões de crédito','Não existia comércio no Egito'], a:0,
+     e:'As pessoas trocavam produtos que sobravam por itens de que precisavam. A moeda só foi criada no Egito no período de decadência da civilização.'},
+    {q:'O que permitiu a decifração dos hieróglifos no século XIX?',
+     o:['A Pedra de Roseta, decifrada por Champollion em 1822','Um dicionário deixado pelos faraós','A inteligência artificial','Cartas de Cleópatra'], a:0,
+     e:'A Pedra de Roseta, com inscrição em três línguas, permitiu que o francês Champollion decifrasse a escrita egípcia a partir do copta.'},
+  ]
+},
+{
+  emoji:'⚱️', relic:'🗝️', name:'Deuses, Múmias e o Julgamento',
+  intro:'Última parada: o interior de um templo à luz de tochas. Sacerdotes preparam uma múmia enquanto pintam o Tribunal de Osíris na parede. A relíquia final está próxima!',
+  qs:[
+    {q:'Os deuses egípcios podiam ter forma humana, de animal, ou mista. Como se chama a forma "humano com cabeça de animal"?',
+     o:['Antropozoomorfismo','Antropomorfismo','Zoomorfismo','Metamorfose'], a:0,
+     e:'Antropomorfismo = forma humana; zoomorfismo = forma de animal; antropozoomorfismo = ser humano com cabeça de animal (como Anúbis e Thot).'},
+    {q:'Quem era Rá na mitologia egípcia?',
+     o:['O deus do Sol e do céu, representado com cabeça de falcão','O deus dos mortos','O deus dos rios','O deus da guerra'], a:0,
+     e:'Rá trazia luz e calor ao mundo. Percorria o céu de dia e o mundo subterrâneo à noite. Fundido com Amon, virava Amon-Rá, a divindade suprema.'},
+    {q:'Qual deus tinha cabeça de chacal e supervisionava a mumificação?',
+     o:['Anúbis','Osíris','Thot','Bastet'], a:0,
+     e:'Anúbis, deus da mumificação e dos mortos, guiava as almas no além. Osíris (pele verde) era o deus dos mortos e da ressurreição; Thot (cabeça de íbis), da sabedoria; Bastet (gata), da proteção do lar.'},
+    {q:'Na mumificação, qual órgão NÃO era retirado do corpo?',
+     o:['O coração — considerado o centro da inteligência e das emoções','O cérebro','O estômago','O fígado'], a:0,
+     e:'O coração ficava no corpo para ser pesado no julgamento. Estômago, intestino, pulmão e fígado eram guardados em vasos. O corpo era desidratado com natrão e enfaixado com linho e amuletos.'},
+    {q:'No julgamento dos mortos (Tribunal de Osíris), o coração do morto era pesado contra...',
+     o:['A pena da deusa Maat, símbolo da verdade e da justiça','Uma barra de ouro','Uma pedra do Nilo','O coração do faraó'], a:0,
+     e:'Anúbis pesava o coração na "balança da verdade", Thot anotava o resultado e Osíris presidia. Coração mais leve que a pena = vida eterna; mais pesado = devorado pelo monstro Amit!'},
+    {q:'Por que os egípcios faziam oferendas aos deuses?',
+     o:['Para agradá-los e evitar catástrofes, esperando benefícios em suas vidas','Para pagar impostos','Por ordem dos escribas','Para alimentar os turistas'], a:0,
+     e:'Acreditavam que catástrofes e doenças refletiam a insatisfação dos deuses. Ofereciam vinho, alimentos e até sacrifícios de animais em busca de proteção.'},
+    {q:'Para que serviam as pirâmides do Egito?',
+     o:['Eram túmulos das altas classes sociais, como os faraós','Eram mercados','Eram escolas de escribas','Eram celeiros de trigo'], a:0,
+     e:'As pirâmides eram túmulos (como as de Quéops, Quéfren e Miquerinos em Gizé, uma das Sete Maravilhas do Mundo Antigo). Os templos eram os locais de adoração e oferendas. A Esfinge de Gizé protegia os complexos funerários.'},
+  ]
+},
+];
+
+const HEROES = [
+  {e:'🧭', n:'Explorador', d:'Sempre acha o caminho'},
+  {e:'📜', n:'Escriba', d:'Mestre da escrita'},
+  {e:'👸', n:'Faraó', d:'Poder divino'},
+  {e:'🔮', n:'Sacerdotisa', d:'Lê os astros'},
+];
+
+// ══════════════ ESTADO ══════════════
+let S = null;
+function newState() {
+  return { name:'', hero:HEROES[0], phase:0, qi:0, lives:3, xp:0,
+           streak:0, best:0, right:0, total:0, wrongs:[], relics:[] };
+}
+
+const $ = id => document.getElementById(id);
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  $(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ══════════════ INÍCIO ══════════════
+let selHero = 0;
+function renderHeroes() {
+  $('hero-grid').innerHTML = HEROES.map((h,i) =>
+    `<div class="hero-card ${i===selHero?'sel':''}" onclick="pickHero(${i})">
+       <span class="he">${h.e}</span><span class="hn">${h.n}</span><div class="hd">${h.d}</div>
+     </div>`).join('');
+}
+window.pickHero = i => { selHero = i; renderHeroes(); };
+renderHeroes();
+
+$('btn-start').onclick = () => {
+  S = newState();
+  S.name = $('inp-name').value.trim() || 'Explorador(a)';
+  S.hero = HEROES[selHero];
+  renderMap();
+  show('s-map');
+};
+
+// ══════════════ MAPA ══════════════
+function renderMap() {
+  $('map-sub').textContent = `${S.hero.e} ${S.name} · ${S.relics.length}/${PHASES.length} relíquias`;
+  $('relic-row').textContent = PHASES.map((p,i) => S.relics.includes(i) ? p.relic : '❔').join(' ');
+  $('trail').innerHTML = PHASES.map((p,i) => {
+    const done = S.relics.includes(i);
+    const next = i === S.phase && !done;
+    const cls = done ? 'done' : next ? 'next' : 'locked';
+    const mark = done ? '✅' : next ? '📍' : '🔒';
+    return `<div class="stage ${cls}">
+      <span class="se">${p.emoji}</span>
+      <div><div class="sn">Sítio ${i+1} · ${p.name}</div><div class="sd">${p.qs.length} enigmas</div></div>
+      <span class="right">${mark}</span></div>`;
+  }).join('');
+  $('btn-go').style.display = S.phase < PHASES.length ? '' : 'none';
+}
+$('btn-go').onclick = () => {
+  const p = PHASES[S.phase];
+  $('intro-emoji').textContent = p.emoji;
+  $('intro-title').textContent = `Sítio ${S.phase+1} · ${p.name}`;
+  $('intro-text').textContent = p.intro;
+  show('s-intro');
+};
+$('btn-enter').onclick = () => { S.qi = 0; S.lives = 3; renderQ(); show('s-game'); };
+
+// ══════════════ JOGO ══════════════
+function renderTop() {
+  $('b-hero').textContent = `${S.hero.e} ${S.name}`;
+  $('b-lives').textContent = '❤️'.repeat(S.lives) || '—';
+  $('b-xp').textContent = S.xp;
+  const sb = $('b-streak');
+  if (S.streak >= 3) { sb.style.display=''; sb.classList.add('streak-on'); $('b-streak-n').textContent = S.streak; }
+  else sb.style.display = 'none';
+}
+function renderQ() {
+  const p = PHASES[S.phase], q = p.qs[S.qi];
+  renderTop();
+  $('prog').style.width = (S.qi / p.qs.length * 100) + '%';
+  $('q-cat').textContent = `${p.emoji} ${p.name} · Enigma ${S.qi+1} de ${p.qs.length}`;
+  $('q-text').textContent = q.q;
+  $('feedback').className = 'feedback';
+  // embaralha as opções a cada exibição
+  const order = q.o.map((_,i) => i).sort(() => Math.random() - .5);
+  $('opts').innerHTML = order.map((oi,pos) =>
+    `<button class="opt" data-oi="${oi}" onclick="answer(this)">
+       <span class="letter">${'ABCD'[pos]}</span><span>${q.o[oi]}</span></button>`).join('');
+}
+window.answer = btn => {
+  const p = PHASES[S.phase], q = p.qs[S.qi];
+  const oi = +btn.dataset.oi, correct = oi === q.a;
+  document.querySelectorAll('.opt').forEach(b => {
+    b.disabled = true;
+    if (+b.dataset.oi === q.a) b.classList.add('right');
+    else if (b === btn) b.classList.add('wrong');
+  });
+  S.total++;
+  const fb = $('feedback');
+  if (correct) {
+    S.right++; S.streak++; S.best = Math.max(S.best, S.streak);
+    const gain = S.streak >= 3 ? 20 : 10;
+    S.xp += gain;
+    fb.classList.add('good');
+    $('fb-title').textContent = `✅ Correto! +${gain} XP` + (S.streak >= 3 ? ' (bônus de sequência!)' : '');
+  } else {
+    S.streak = 0; S.lives--;
+    S.wrongs.push({q:q.q, a:q.o[q.a], e:q.e});
+    fb.classList.add('evil');
+    $('fb-title').textContent = '❌ Ops! A resposta certa está em verde.';
+  }
+  $('fb-text').textContent = q.e;
+  fb.classList.add('show');
+  renderTop();
+};
+$('btn-next').onclick = () => {
+  if (S.lives <= 0) { show('s-fail'); return; }
+  S.qi++;
+  const p = PHASES[S.phase];
+  if (S.qi >= p.qs.length) {
+    S.relics.push(S.phase);
+    S.phase++;
+    $('done-relic').textContent = p.relic;
+    $('done-text').textContent = `Você recuperou a relíquia "${p.relic}" do sítio ${p.name}! ` +
+      (S.phase < PHASES.length ? `Faltam ${PHASES.length - S.relics.length} relíquias.` : 'Essa era a última!');
+    show('s-done');
+  } else renderQ();
+};
+$('btn-map').onclick = () => {
+  if (S.phase >= PHASES.length) endGame();
+  else { renderMap(); show('s-map'); }
+};
+$('btn-retry').onclick = () => { S.qi = 0; S.lives = 3; renderQ(); show('s-game'); };
+
+// ══════════════ FIM ══════════════
+function endGame() {
+  $('end-relics').textContent = PHASES.map(p => p.relic).join(' ');
+  $('e-xp').textContent = S.xp;
+  const acc = S.total ? Math.round(S.right / S.total * 100) : 0;
+  $('e-acc').textContent = acc + '%';
+  $('e-best').textContent = S.best;
+  const rank = acc >= 90 ? '🏅 Arqueólogo(a) Lendário(a)! Pronto(a) para a prova!'
+             : acc >= 75 ? '🥈 Grande Explorador(a)! Revise os pontos abaixo e estará pronto(a)!'
+             : acc >= 50 ? '🥉 Aventureiro(a) em treinamento — vale revisar o conteúdo!'
+             : '🗺️ Aprendiz de expedição — jogue de novo para fixar o conteúdo!';
+  $('e-rank').textContent = `${S.hero.e} ${S.name}: ${rank}`;
+  if (S.wrongs.length) {
+    const seen = new Set();
+    $('e-review').innerHTML = S.wrongs.filter(w => !seen.has(w.q) && seen.add(w.q)).map(w =>
+      `<div class="review-item"><div class="rq">${w.q}</div>
+       <div class="ra">✔ ${w.a}</div><div style="color:var(--muted); margin-top:4px;">${w.e}</div></div>`).join('');
+    $('e-review-card').style.display = '';
+  } else {
+    $('e-review-card').style.display = 'none';
+  }
+  show('s-end');
+}
+$('btn-again').onclick = () => { show('s-start'); };
+</script>
+</body>
+</html>
