@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚽ Copa dos Pronomes</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: 'Comic Sans MS', 'Chalkboard SE', 'Marker Felt', 'Segoe Print', sans-serif;
+    background: linear-gradient(160deg, #4fc3f7 0%, #80d8ff 45%, #aed581 100%);
+    color: #1b2a41;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 14px;
+    transition: background .5s ease;
+  }
+  .card {
+    background: #fffdf6;
+    border: 5px solid #ffb300;
+    border-radius: 28px;
+    max-width: 480px;
+    width: 100%;
+    padding: 22px;
+    box-shadow: 0 10px 0 rgba(0,0,0,0.1), 0 0 30px rgba(255,255,255,0.4);
+    text-align: center;
+    align-self: center;
+  }
+  h1 { color: #ff6f00; font-size: 1.6em; margin-bottom: 6px; text-shadow: 2px 2px 0 rgba(255,183,0,.3); }
+  h2 { color: #00897b; font-size: 1.25em; margin: 10px 0; }
+  .subtitle { color: #5c6b7a; font-style: italic; margin-bottom: 18px; font-size: .95em; }
+  label { display: block; margin: 14px 0 6px; color: #00897b; font-size: 1.05em; font-weight: bold; }
+  .stepper { display: flex; align-items: center; justify-content: center; gap: 16px; }
+  .stepper button {
+    font-size: 1.6em; width: 48px; height: 48px; border-radius: 50%;
+    border: none; background: #ffca28; color: #7a4f00; cursor: pointer;
+    box-shadow: 0 3px 0 #e0a800; font-weight: bold;
+  }
+  .stepper button:active { transform: translateY(2px); box-shadow: none; }
+  .stepper span { font-size: 2em; color: #1b2a41; min-width: 50px; font-weight: bold; }
+  .tempos { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+  .tempos button {
+    font-family: inherit; font-size: .95em; padding: 8px 14px; border-radius: 20px;
+    border: 2px solid #90caf9; background: #e3f2fd; color: #1b2a41; cursor: pointer;
+  }
+  .tempos button.sel { background: #66bb6a; color: white; border-color: #43a047; font-weight: bold; }
+  .cronometro { font-size: 1.1em; color: #ff6f00; font-weight: bold; }
+  .cronometro.urgente { color: #e53935; animation: pulsa .5s infinite; }
+  @keyframes pulsa { 0%,100%{transform:scale(1)} 50%{transform:scale(1.2)} }
+  .barra-tempo { background: #e0e0e0; border-radius: 8px; height: 10px; margin-bottom: 12px; overflow: hidden; }
+  .barra-tempo div { background: #66bb6a; height: 100%; width: 100%; transition: width .95s linear; }
+  .barra-tempo div.urgente { background: #e53935; }
+  .nomes { display: grid; gap: 8px; margin: 14px 0; }
+  .nome-row { display: flex; gap: 8px; }
+  .nome-row input {
+    flex: 1; min-width: 0; font-family: inherit; font-size: 1em; padding: 11px; border-radius: 14px;
+    border: 2px solid #90caf9; background: #f5fbff; color: #1b2a41; text-align: center;
+  }
+  .nome-row select {
+    flex: 1; min-width: 0; font-family: inherit; font-size: .95em; padding: 11px; border-radius: 14px;
+    border: 2px solid #90caf9; background: #f5fbff; color: #1b2a41;
+  }
+  .btn {
+    font-family: inherit; font-size: 1.2em; padding: 14px 30px; margin-top: 12px;
+    border: none; border-radius: 50px; background: linear-gradient(180deg, #66bb6a, #43a047); color: white;
+    font-weight: bold; cursor: pointer; width: 100%; box-shadow: 0 4px 0 #2e7d32;
+  }
+  .btn:hover { filter: brightness(1.08); }
+  .btn:active { transform: translateY(3px); box-shadow: none; }
+  .placar { display: flex; justify-content: space-around; margin: 14px 0; font-size: 1.1em; }
+  .placar .lado { padding: 8px 14px; border-radius: 16px; background: #f0f4f8; font-weight: bold; }
+  .placar .ativo { background: #fff3cd; border: 2px solid #ffb300; }
+  .categoria {
+    display: inline-block; background: #b3e5fc; color: #01579b; border-radius: 20px;
+    padding: 4px 14px; font-size: .8em; margin-bottom: 12px; font-weight: bold;
+  }
+  .pergunta { font-size: 1.25em; line-height: 1.5; margin-bottom: 18px; min-height: 60px; }
+  .pergunta b { color: #ff6f00; }
+  .opcoes { display: grid; gap: 10px; }
+  .opcoes button {
+    font-family: inherit; font-size: 1.05em; padding: 14px; border: 3px solid #90caf9;
+    border-radius: 16px; background: #f5fbff; color: #1b2a41; cursor: pointer; transition: transform .1s, background .15s;
+  }
+  .opcoes button:hover:not(:disabled) { background: #e3f2fd; transform: scale(1.02); }
+  .opcoes button.certa { background: #c8e6c9; border-color: #43a047; }
+  .opcoes button.errada { background: #ffcdd2; border-color: #e53935; }
+  .feedback { min-height: 44px; margin-top: 14px; font-size: 1em; line-height: 1.4; }
+  .feedback .dica { color: #5c6b7a; font-size: .9em; }
+  .passe { font-size: 1.4em; line-height: 1.6; margin: 20px 0; }
+  .passe .nome { color: #ff6f00; font-weight: bold; font-size: 1.3em; }
+  .chaveamento { text-align: left; margin: 14px 0; font-size: .95em; }
+  .chaveamento .rodada { margin-bottom: 12px; }
+  .chaveamento .rodada-titulo { color: #00897b; font-weight: bold; margin-bottom: 4px; }
+  .chaveamento .par { padding: 5px 10px; border-radius: 12px; background: #f0f4f8; margin: 3px 0; }
+  .chaveamento .par.feito { opacity: .6; }
+  .chaveamento .venc { color: #2e7d32; font-weight: bold; }
+  .trofeu { font-size: 4em; animation: pulo 1s infinite; }
+  @keyframes pulo { 0%,100%{transform:translateY(0) rotate(-4deg)} 50%{transform:translateY(-12px) rotate(4deg)} }
+  .campeao { font-size: 1.8em; color: #ff6f00; margin: 10px 0; }
+  .escondido { display: none; }
+  .hud { display: flex; justify-content: space-between; align-items: center; font-size: .9em; color: #5c6b7a; margin-bottom: 10px; }
+</style>
+</head>
+<body>
+<div class="card">
+
+  <!-- SETUP -->
+  <div id="tela-setup">
+    <h1>⚽ Copa dos Pronomes</h1>
+    <p class="subtitle">Escolha seu país e dispute o campeonato da turma!</p>
+    <label>Quantos jogadores?</label>
+    <div class="stepper">
+      <button onclick="mudarQtd(-1)">−</button>
+      <span id="qtd">4</span>
+      <button onclick="mudarQtd(1)">+</button>
+    </div>
+    <p class="subtitle" style="margin-top:8px">de 2 a 16 jogadores</p>
+    <label>Tempo por pergunta</label>
+    <div class="tempos" id="tempos">
+      <button data-s="0" class="sel">Sem limite</button>
+      <button data-s="10">10s</button>
+      <button data-s="15">15s</button>
+      <button data-s="20">20s</button>
+      <button data-s="30">30s</button>
+    </div>
+    <div class="nomes" id="nomes"></div>
+    <button class="btn" onclick="montarTorneio()">Sortear o chaveamento ⚽</button>
+  </div>
+
+  <!-- CHAVEAMENTO -->
+  <div id="tela-chaves" class="escondido">
+    <h1>⚽ Chaveamento da Copa</h1>
+    <p class="subtitle" id="chaves-sub"></p>
+    <div class="chaveamento" id="chaveamento"></div>
+    <button class="btn" id="btn-proximo" onclick="proximoDuelo()">Começar partida ▶️</button>
+  </div>
+
+  <!-- PASSE O CELULAR -->
+  <div id="tela-passe" class="escondido">
+    <div style="font-size:3em">📱⚽</div>
+    <div class="passe">
+      Passe o celular para<br>
+      <span class="nome" id="passe-nome"></span>
+    </div>
+    <p class="subtitle" id="passe-info"></p>
+    <button class="btn" onclick="iniciarVez()">Estou pronto ✅</button>
+  </div>
+
+  <!-- DUELO -->
+  <div id="tela-duelo" class="escondido">
+    <div class="hud">
+      <span id="duelo-titulo"></span>
+      <span class="cronometro" id="cronometro"></span>
+      <span id="duelo-progresso"></span>
+    </div>
+    <div class="barra-tempo escondido" id="barra-tempo"><div id="barra-tempo-fill"></div></div>
+    <div class="placar">
+      <div class="lado" id="lado-a"></div>
+      <div class="lado" id="lado-b"></div>
+    </div>
+    <div class="categoria" id="categoria"></div>
+    <div class="pergunta" id="pergunta"></div>
+    <div class="opcoes" id="opcoes"></div>
+    <div class="feedback" id="feedback"></div>
+  </div>
+
+  <!-- RESULTADO DUELO -->
+  <div id="tela-result" class="escondido">
+    <div style="font-size:3em">🎉</div>
+    <h1>Fim de jogo!</h1>
+    <h2 id="result-placar"></h2>
+    <div class="campeao" id="result-venc"></div>
+    <button class="btn" onclick="voltarChaves()">Ver o chaveamento 📋</button>
+  </div>
+
+  <!-- CAMPEÃO -->
+  <div id="tela-campeao" class="escondido">
+    <div class="trofeu">🏆</div>
+    <h1>Temos um campeão da Copa!</h1>
+    <div class="campeao" id="campeao-nome"></div>
+    <p class="subtitle">Mestre absoluto dos pronomes possessivos!</p>
+    <button class="btn" onclick="location.reload()">Nova Copa 🔄</button>
+  </div>
+
+</div>
+
+<script>
+// ponytail: um celular por turma, passado entre os duelistas. Sync entre aparelhos exigiria servidor — fora de escopo.
+
+// ---- Banco de questões: geradas por combinação (>300) + temáticas do conto ----
+const POSS = {
+  eu:  {ms:"meu",  fs:"minha", mp:"meus",  fp:"minhas"},
+  tu:  {ms:"teu",  fs:"tua",   mp:"teus",  fp:"tuas"},
+  ele: {ms:"seu",  fs:"sua",   mp:"seus",  fp:"suas"},
+  nos: {ms:"nosso",fs:"nossa", mp:"nossos",fp:"nossas"},
+  vos: {ms:"vosso",fs:"vossa", mp:"vossos",fp:"vossas"},
+  eles:{ms:"seu",  fs:"sua",   mp:"seus",  fp:"suas"},
+};
+const FRAMES = [
+  {suj:"Eu perdi", k:"eu"}, {suj:"Eu encontrei", k:"eu"}, {suj:"Eu guardei", k:"eu"},
+  {suj:"Tu trouxeste", k:"tu"}, {suj:"Tu esqueceste", k:"tu"},
+  {suj:"Ele guardou", k:"ele"}, {suj:"Ela arrumou", k:"ele"}, {suj:"Você deixou", k:"ele"}, {suj:"Você trouxe", k:"ele"},
+  {suj:"Nós perdemos", k:"nos"}, {suj:"Nós arrumamos", k:"nos"},
+  {suj:"Vós trouxestes", k:"vos"},
+  {suj:"Eles guardaram", k:"eles"}, {suj:"Elas encontraram", k:"eles"},
+];
+const SUBST = [
+  {n:"caderno",g:"ms"},{n:"livro",g:"ms"},{n:"celular",g:"ms"},{n:"lápis",g:"ms"},{n:"estojo",g:"ms"},{n:"boné",g:"ms"},
+  {n:"mochila",g:"fs"},{n:"caneta",g:"fs"},{n:"régua",g:"fs"},{n:"agenda",g:"fs"},{n:"borracha",g:"fs"},{n:"tesoura",g:"fs"},
+  {n:"cadernos",g:"mp"},{n:"livros",g:"mp"},{n:"óculos",g:"mp"},{n:"sapatos",g:"mp"},{n:"documentos",g:"mp"},
+  {n:"canetas",g:"fp"},{n:"chaves",g:"fp"},{n:"revistas",g:"fp"},{n:"malas",g:"fp"},{n:"anotações",g:"fp"},
+];
+const PESSOAS = {eu:"1ª pessoa do singular (eu)",tu:"2ª pessoa do singular (tu)",ele:"3ª pessoa do singular (ele/ela/você)",nos:"1ª pessoa do plural (nós)",vos:"2ª pessoa do plural (vós)",eles:"3ª pessoa do plural (eles/elas)"};
+
+function shuffle(a){ return [...a].sort(() => Math.random() - 0.5); }
+
+function gerarCombinatorias(){
+  const out = [];
+  for (const f of FRAMES) for (const s of SUBST) {
+    const certa = POSS[f.k][s.g];
+    const distr = [...new Set(Object.keys(POSS).map(k => POSS[k][s.g]))].filter(x => x !== certa);
+    const ops = shuffle([certa, ...shuffle(distr).slice(0, 3)]);
+    out.push({ cat:"Complete a frase", q:`${f.suj} ___ ${s.n}.`, ops, certa: ops.indexOf(certa),
+      dica:`"${f.suj.split(' ')[0]}" é ${PESSOAS[f.k]} → ${certa}.` });
+  }
+  return out;
+}
+const TEMATICAS = [
+  { cat:"Pessoa do discurso", q:"\"<b>Meus</b> sentidos\" se refere a qual pessoa?", ops:["1ª do singular","2ª do singular","3ª do singular","1ª do plural"], certa:0, dica:"Meus = do narrador (eu)." },
+  { cat:"Pessoa do discurso", q:"Qual possessivo corresponde a \"eles/elas\"?", ops:["Nosso(s)","Vosso(s)","Teu(s)","Seu(s)"], certa:3, dica:"3ª do plural → seu(s), sua(s)." },
+  { cat:"Pessoa do discurso", q:"\"Tua casa\" indica a que pessoa do discurso?", ops:["1ª do singular","2ª do singular","3ª do singular","2ª do plural"], certa:1, dica:"Tua → tu (2ª do singular)." },
+  { cat:"Pessoa do discurso", q:"O possessivo de \"nós\" é:", ops:["Meu(s)","Nosso(s)","Vosso(s)","Seu(s)"], certa:1, dica:"Nós → nosso(s), nossa(s)." },
+  { cat:"Ache o possessivo", q:"Qual frase TEM pronome possessivo?", ops:["\"Ouço os sons do céu.\"","\"Nunca me abandonou.\"","\"Creio que foi o seu olho!\"","\"A paixão foi estranha.\""], certa:2, dica:"\"Seu\" = o olho dele." },
+  { cat:"Ache o possessivo", q:"Em \"Minha audição ficou apurada\", o possessivo é:", ops:["Minha","Audição","Ficou","Apurada"], certa:0, dica:"Minha mostra posse." },
+  { cat:"Ache o possessivo", q:"Aponte o pronome possessivo:", ops:["Aquele","Nossa","Qual","Alguém"], certa:1, dica:"Nossa indica posse (1ª plural)." },
+  { cat:"Vocabulário do conto", q:"No conto, \"<b>aguçados</b>\" os sentidos significa:", ops:["Enfraquecidos","Apurados, desenvolvidos","Cobertos de névoa","Adoecidos"], certa:1, dica:"Aguçado = apurado. Embotou = enfraqueceu." },
+  { cat:"Vocabulário do conto", q:"\"<b>Embotou</b>\" quer dizer:", ops:["Enfraqueceu","Aprimorou","Iluminou","Endureceu"], certa:0, dica:"Embotou = enfraqueceu." },
+  { cat:"Vocabulário do conto", q:"Um olho \"<b>nevoento</b>\" é um olho:", ops:["Brilhante","Colorido","Coberto de névoa","Fechado"], certa:2, dica:"Nevoento = coberto por névoa, obscuro." },
+];
+const PERGUNTAS = [...gerarCombinatorias(), ...TEMATICAS];
+
+// ---- 48 seleções classificadas para a Copa 2026 (nome, bandeira, cores do fundo) ----
+const PAISES = [
+  // Anfitriões + CONCACAF
+  {n:"Canadá",f:"🇨🇦",c:["#d52b1e","#8a1c14"]},{n:"México",f:"🇲🇽",c:["#006847","#ce1126"]},
+  {n:"Estados Unidos",f:"🇺🇸",c:["#3c3b6e","#b22234"]},{n:"Panamá",f:"🇵🇦",c:["#005293","#d21034"]},
+  {n:"Curaçau",f:"🇨🇼",c:["#002b7f","#f9e814"]},{n:"Haiti",f:"🇭🇹",c:["#00209f","#d21034"]},
+  // CAF
+  {n:"Egito",f:"🇪🇬",c:["#ce1126","#000000"]},{n:"Senegal",f:"🇸🇳",c:["#00853f","#fdef42"]},
+  {n:"África do Sul",f:"🇿🇦",c:["#007749","#ffb612"]},{n:"Cabo Verde",f:"🇨🇻",c:["#003893","#cf2027"]},
+  {n:"Marrocos",f:"🇲🇦",c:["#c1272d","#006233"]},{n:"Costa do Marfim",f:"🇨🇮",c:["#f77f00","#009e60"]},
+  {n:"Argélia",f:"🇩🇿",c:["#006233","#0a3d20"]},{n:"Tunísia",f:"🇹🇳",c:["#e70013","#8a000c"]},
+  {n:"Gana",f:"🇬🇭",c:["#006b3f","#fcd116"]},{n:"RD Congo",f:"🇨🇩",c:["#007fff","#f7d618"]},
+  // CONMEBOL
+  {n:"Argentina",f:"🇦🇷",c:["#6cace4","#0038a8"]},{n:"Equador",f:"🇪🇨",c:["#ffdd00","#034ea2"]},
+  {n:"Colômbia",f:"🇨🇴",c:["#fcd116","#003893"]},{n:"Uruguai",f:"🇺🇾",c:["#0038a8","#ffcc00"]},
+  {n:"Brasil",f:"🇧🇷",c:["#009c3b","#ffdf00"]},{n:"Paraguai",f:"🇵🇾",c:["#d52b1e","#0038a8"]},
+  // AFC
+  {n:"Irã",f:"🇮🇷",c:["#239f40","#da0000"]},{n:"Coreia do Sul",f:"🇰🇷",c:["#003478","#c60c30"]},
+  {n:"Japão",f:"🇯🇵",c:["#bc002d","#7a001d"]},{n:"Uzbequistão",f:"🇺🇿",c:["#0099b5","#1eb53a"]},
+  {n:"Jordânia",f:"🇯🇴",c:["#007a3d","#ce1126"]},{n:"Austrália",f:"🇦🇺",c:["#00008b","#ffcd00"]},
+  {n:"Catar",f:"🇶🇦",c:["#8a1538","#5a0d24"]},{n:"Arábia Saudita",f:"🇸🇦",c:["#006c35","#04401f"]},
+  {n:"Iraque",f:"🇮🇶",c:["#ce1126","#007a3d"]},
+  // OFC
+  {n:"Nova Zelândia",f:"🇳🇿",c:["#00247d","#cc142b"]},
+  // UEFA
+  {n:"Alemanha",f:"🇩🇪",c:["#000000","#dd0000"]},{n:"Suíça",f:"🇨🇭",c:["#d52b1e","#8a1c14"]},
+  {n:"Escócia",f:"🏴󠁧󠁢󠁳󠁣󠁴󠁿",c:["#005eb8","#003b70"]},{n:"França",f:"🇫🇷",c:["#0055a4","#ef4135"]},
+  {n:"Espanha",f:"🇪🇸",c:["#aa151b","#f1bf00"]},{n:"Portugal",f:"🇵🇹",c:["#006600","#ff0000"]},
+  {n:"Países Baixos",f:"🇳🇱",c:["#ae1c28","#21468b"]},{n:"Áustria",f:"🇦🇹",c:["#ed2939","#8a1720"]},
+  {n:"Noruega",f:"🇳🇴",c:["#ba0c2f","#00205b"]},{n:"Bélgica",f:"🇧🇪",c:["#c8102e","#fdda24"]},
+  {n:"Inglaterra",f:"🏴󠁧󠁢󠁥󠁮󠁧󠁿",c:["#ce1124","#1a237e"]},{n:"Croácia",f:"🇭🇷",c:["#ff0000","#171796"]},
+  {n:"Bósnia e Herzegovina",f:"🇧🇦",c:["#002395","#fecb00"]},{n:"Suécia",f:"🇸🇪",c:["#006aa7","#fecc00"]},
+  {n:"Turquia",f:"🇹🇷",c:["#e30a17","#8a0810"]},{n:"Tchéquia",f:"🇨🇿",c:["#11457e","#d7141a"]},
+];
+const FUNDO_PADRAO = "linear-gradient(160deg, #4fc3f7 0%, #80d8ff 45%, #aed581 100%)";
+
+const QPD = 5; // perguntas por jogador em cada duelo
+let jogadores = [], paisDe = {}, rodadas = [], rodadaAtual = 0, dueloIdx = 0;
+let duelo = null;      // { a, b, placarA, placarB }
+let vez = 'a';         // quem está respondendo agora
+let baralho = [], qNaVez = 0, sudden = false;
+let tempoLimite = 0, timerId = null, restante = 0;
+
+// ---------- SETUP ----------
+function mudarQtd(d) {
+  let n = +document.getElementById("qtd").textContent + d;
+  n = Math.max(2, Math.min(16, n));
+  document.getElementById("qtd").textContent = n;
+  renderNomes(n);
+}
+const OPCOES_PAIS = PAISES.map((p, i) => `<option value="${i}">${p.f} ${p.n}</option>`).join("");
+function renderNomes(n) {
+  const div = document.getElementById("nomes");
+  const antigosN = [...div.querySelectorAll("input")].map(i => i.value);
+  const antigosP = [...div.querySelectorAll("select")].map(s => s.value);
+  div.innerHTML = "";
+  for (let i = 0; i < n; i++) {
+    const row = document.createElement("div");
+    row.className = "nome-row";
+    row.innerHTML = `<input placeholder="Aluno ${i + 1}" value="${antigosN[i] || ""}">
+      <select>${OPCOES_PAIS}</select>`;
+    div.appendChild(row);
+    row.querySelector("select").value = antigosP[i] || (i % PAISES.length);
+  }
+}
+renderNomes(4);
+
+// seletor de tempo
+document.getElementById("tempos").addEventListener("click", e => {
+  if (e.target.tagName !== "BUTTON") return;
+  document.querySelectorAll("#tempos button").forEach(b => b.classList.remove("sel"));
+  e.target.classList.add("sel");
+  tempoLimite = +e.target.dataset.s;
+});
+
+function montarTorneio() {
+  const rows = [...document.querySelectorAll("#nomes .nome-row")];
+  jogadores = []; paisDe = {};
+  rows.forEach((row, i) => {
+    let nome = row.querySelector("input").value.trim() || "Aluno " + (i + 1);
+    while (jogadores.includes(nome)) nome += " ."; // garante nomes únicos (chave de identidade)
+    jogadores.push(nome);
+    paisDe[nome] = PAISES[+row.querySelector("select").value];
+  });
+  jogadores = shuffle(jogadores); // sorteio das chaves
+  rodadas = [criarPares(jogadores)];
+  rodadaAtual = 0; dueloIdx = 0;
+  mostrarChaves();
+}
+
+// ---------- CORES DO PAÍS ----------
+function aplicarCores(nome) {
+  const p = paisDe[nome];
+  if (!p) return resetarCores();
+  document.body.style.background = `linear-gradient(160deg, ${p.c[0]} 0%, ${p.c[1]} 100%)`;
+  document.querySelector(".card").style.borderColor = p.c[1];
+}
+function resetarCores() {
+  document.body.style.background = FUNDO_PADRAO;
+  document.querySelector(".card").style.borderColor = "#ffb300";
+}
+function rotulo(nome) { return (paisDe[nome] ? paisDe[nome].f + " " : "") + nome; }
+
+// pares da rodada; número ímpar → último passa direto (bye)
+function criarPares(lista) {
+  const pares = [];
+  for (let i = 0; i < lista.length; i += 2) {
+    pares.push({ a: lista[i], b: lista[i + 1] || null, venc: lista[i + 1] ? null : lista[i] });
+  }
+  return pares;
+}
+
+// ---------- CHAVEAMENTO ----------
+function nomeRodada(idx, total) {
+  const faltam = total - idx;
+  if (faltam === 1) return "🏆 Final";
+  if (faltam === 2) return "🥈 Semifinal";
+  if (faltam === 3) return "Quartas de final";
+  return "Rodada " + (idx + 1);
+}
+function totalRodadas() { return Math.ceil(Math.log2(jogadores.length)); }
+
+function mostrarChaves() {
+  trocarTela("tela-chaves");
+  document.getElementById("chaves-sub").textContent =
+    jogadores.length + " jogadores · partidas de " + QPD + " perguntas cada";
+  const div = document.getElementById("chaveamento");
+  div.innerHTML = "";
+  rodadas.forEach((pares, r) => {
+    const bloco = document.createElement("div");
+    bloco.className = "rodada";
+    bloco.innerHTML = `<div class="rodada-titulo">${nomeRodada(r, totalRodadas())}</div>`;
+    pares.forEach(p => {
+      const feito = p.venc ? "feito" : "";
+      const texto = p.b
+        ? (p.venc
+            ? `<span class="${p.venc === p.a ? 'venc' : ''}">${rotulo(p.a)}</span> × <span class="${p.venc === p.b ? 'venc' : ''}">${rotulo(p.b)}</span>`
+            : `${rotulo(p.a)} × ${rotulo(p.b)}`)
+        : `${rotulo(p.a)} <span class="venc">(passou direto)</span>`;
+      bloco.innerHTML += `<div class="par ${feito}">${texto}</div>`;
+    });
+    div.appendChild(bloco);
+  });
+
+  const prox = proximoParPendente();
+  const btn = document.getElementById("btn-proximo");
+  if (prox) {
+    btn.textContent = `Partida: ${rotulo(prox.par.a)} × ${rotulo(prox.par.b)} ▶️`;
+    btn.classList.remove("escondido");
+  } else {
+    btn.classList.add("escondido");
+  }
+}
+
+function proximoParPendente() {
+  const pares = rodadas[rodadaAtual];
+  for (let i = 0; i < pares.length; i++)
+    if (pares[i].b && !pares[i].venc) return { par: pares[i], idx: i };
+  return null;
+}
+
+function proximoDuelo() {
+  const prox = proximoParPendente();
+  if (!prox) return;
+  dueloIdx = prox.idx;
+  duelo = { a: prox.par.a, b: prox.par.b, placarA: 0, placarB: 0 };
+  vez = 'a'; sudden = false;
+  prepararVez();
+}
+
+// ---------- PASSE O CELULAR ----------
+function prepararVez() {
+  const nome = vez === 'a' ? duelo.a : duelo.b;
+  aplicarCores(nome);
+  document.getElementById("passe-nome").textContent = rotulo(nome);
+  document.getElementById("passe-info").textContent = sudden
+    ? "Gol de ouro! 1 pergunta decide tudo." : `Responda ${QPD} perguntas. Boa sorte!`;
+  trocarTela("tela-passe");
+}
+
+function iniciarVez() {
+  baralho = shuffle(PERGUNTAS);
+  qNaVez = 0;
+  trocarTela("tela-duelo");
+  render();
+}
+
+// ---------- DUELO ----------
+function render() {
+  const nomeAtual = vez === 'a' ? duelo.a : duelo.b;
+  document.getElementById("duelo-titulo").textContent = "Vez de " + rotulo(nomeAtual);
+  const total = sudden ? 1 : QPD;
+  document.getElementById("duelo-progresso").textContent = `Pergunta ${qNaVez + 1}/${total}`;
+  const la = document.getElementById("lado-a"), lb = document.getElementById("lado-b");
+  la.innerHTML = `${rotulo(duelo.a)}<br>⭐ ${duelo.placarA}`;
+  lb.innerHTML = `${rotulo(duelo.b)}<br>⭐ ${duelo.placarB}`;
+  la.className = "lado" + (vez === 'a' ? " ativo" : "");
+  lb.className = "lado" + (vez === 'b' ? " ativo" : "");
+
+  const p = baralho[qNaVez];
+  document.getElementById("categoria").textContent = p.cat;
+  document.getElementById("pergunta").innerHTML = p.q;
+  document.getElementById("feedback").innerHTML = "";
+  const div = document.getElementById("opcoes");
+  div.innerHTML = "";
+  p.ops.forEach((op, idx) => {
+    const b = document.createElement("button");
+    b.innerHTML = op;
+    b.onclick = () => responder(idx, b);
+    div.appendChild(b);
+  });
+  iniciarTimer();
+}
+
+// ---------- CRONÔMETRO ----------
+function pararTimer() {
+  if (timerId) { clearInterval(timerId); timerId = null; }
+}
+function iniciarTimer() {
+  pararTimer();
+  const barra = document.getElementById("barra-tempo");
+  const crono = document.getElementById("cronometro");
+  if (tempoLimite === 0) { barra.classList.add("escondido"); crono.textContent = ""; return; }
+  barra.classList.remove("escondido");
+  restante = tempoLimite;
+  pintarTimer();
+  timerId = setInterval(() => {
+    restante--;
+    pintarTimer();
+    if (restante <= 0) { pararTimer(); responder(-1, null); }
+  }, 1000);
+}
+function pintarTimer() {
+  const crono = document.getElementById("cronometro");
+  const fill = document.getElementById("barra-tempo-fill");
+  crono.textContent = "⏱️ " + restante + "s";
+  const urgente = restante <= 5;
+  crono.classList.toggle("urgente", urgente);
+  fill.classList.toggle("urgente", urgente);
+  fill.style.width = (restante / tempoLimite * 100) + "%";
+}
+
+function responder(idx, botao) {
+  pararTimer();
+  const p = baralho[qNaVez];
+  document.querySelectorAll("#opcoes button").forEach(b => b.disabled = true);
+  document.querySelectorAll("#opcoes button")[p.certa].classList.add("certa");
+  const fb = document.getElementById("feedback");
+  if (idx === p.certa) {
+    if (vez === 'a') duelo.placarA++; else duelo.placarB++;
+    fb.innerHTML = `✅ <b>Acertou!</b> <span class="dica">${p.dica}</span>`;
+  } else if (idx === -1) {
+    fb.innerHTML = `⏰ <b>Tempo esgotado!</b> <span class="dica">${p.dica}</span>`;
+  } else {
+    botao.classList.add("errada");
+    fb.innerHTML = `❌ <b>Errou.</b> <span class="dica">${p.dica}</span>`;
+  }
+  if (vez === 'a') document.getElementById("lado-a").innerHTML = `${rotulo(duelo.a)}<br>⭐ ${duelo.placarA}`;
+  else document.getElementById("lado-b").innerHTML = `${rotulo(duelo.b)}<br>⭐ ${duelo.placarB}`;
+
+  setTimeout(() => {
+    qNaVez++;
+    const total = sudden ? 1 : QPD;
+    if (qNaVez < total) { render(); }
+    else if (vez === 'a') { vez = 'b'; prepararVez(); }
+    else { fimDuelo(); }
+  }, 2200);
+}
+
+function fimDuelo() {
+  if (duelo.placarA === duelo.placarB) { // empate → morte súbita
+    sudden = true; vez = 'a';
+    prepararVez();
+    document.getElementById("passe-info").textContent = "Empate em " + duelo.placarA + "! Gol de ouro: 1 pergunta decide.";
+    return;
+  }
+  const venc = duelo.placarA > duelo.placarB ? duelo.a : duelo.b;
+  rodadas[rodadaAtual][dueloIdx].venc = venc;
+  document.getElementById("result-placar").textContent = `${rotulo(duelo.a)} ${duelo.placarA} × ${duelo.placarB} ${rotulo(duelo.b)}`;
+  document.getElementById("result-venc").textContent = "🎯 " + rotulo(venc) + " avança!";
+  resetarCores();
+  trocarTela("tela-result");
+}
+
+function voltarChaves() {
+  // rodada terminou? monta a próxima
+  const pares = rodadas[rodadaAtual];
+  if (pares.every(p => p.venc)) {
+    const vencedores = pares.map(p => p.venc);
+    if (vencedores.length === 1) return campeao(vencedores[0]);
+    rodadas.push(criarPares(vencedores));
+    rodadaAtual++;
+  }
+  mostrarChaves();
+}
+
+function campeao(nome) {
+  aplicarCores(nome);
+  trocarTela("tela-campeao");
+  document.getElementById("campeao-nome").textContent = "👑 " + rotulo(nome);
+}
+
+// ---------- util ----------
+function trocarTela(id) {
+  ["tela-setup","tela-chaves","tela-passe","tela-duelo","tela-result","tela-campeao"]
+    .forEach(t => document.getElementById(t).classList.add("escondido"));
+  document.getElementById(id).classList.remove("escondido");
+}
+</script>
+</body>
+</html>
