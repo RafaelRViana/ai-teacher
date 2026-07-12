@@ -204,7 +204,7 @@ const CHIP = {
 const ROUNDS = {
   vida: {
     title: 'RODADA 1 — Ser vivo, vírus ou não vivo?',
-    ms: 3600,
+    ms: 5600,
     bins: [
       { key:'vivo',  label:'✅ Ser vivo' },
       { key:'virus', label:'🧬 Vírus'    },
@@ -226,6 +226,13 @@ const ROUNDS = {
       { label:'Fungo do solo',    emoji:'🍂', answer:'vivo' },
       { label:'Peixe',            emoji:'🐟', answer:'vivo' },
       { label:'Protozoário',      emoji:'🦠', answer:'vivo', fact:'Protozoários (ameba, paramécio, plasmodium…) são eucariotas unicelulares. São seres vivos!' },
+      { label:'Musgo',            emoji:'🌱', answer:'vivo' },
+      { label:'Minhoca',          emoji:'🪱', answer:'vivo' },
+      { label:'Girassol',         emoji:'🌻', answer:'vivo' },
+      { label:'Coral',            emoji:'🪸', answer:'vivo', fact:'O coral é um animal! Cada pólipo é um pequeno animal vivo, apesar de parecer uma pedra ou planta.' },
+      { label:'Semente germinando',emoji:'🌰', answer:'vivo', fact:'A semente que germina cresce, se nutre e responde a estímulos (luz, água). É um ser vivo em desenvolvimento!' },
+      { label:'Água-viva',        emoji:'🎐', answer:'vivo' },
+      { label:'Esponja-do-mar',   emoji:'🧽', answer:'vivo', fact:'A esponja-do-mar é um animal, um dos mais simples que existem. É pluricelular e ser vivo!' },
       // ── VÍRUS ───────────────────────────────────────────────────────
       { label:'Vírus da gripe',   emoji:'🤧', answer:'virus', fact:'O vírus influenza é acelular — sem célula, sem metabolismo. Fora do hospedeiro fica completamente inativo.' },
       { label:'Vírus HIV',        emoji:'🔴', answer:'virus', fact:'O HIV é um retrovírus com material genético RNA. Depende 100% da célula hospedeira para se replicar.' },
@@ -235,6 +242,10 @@ const ROUNDS = {
       { label:'SARS-CoV-2',       emoji:'😷', answer:'virus', fact:'SARS-CoV-2 (COVID-19): coronavírus com material genético RNA. Acelular — não é ser vivo.' },
       { label:'Vírus da varíola', emoji:'🔵', answer:'virus' },
       { label:'Vírus da raiva',   emoji:'🐺', answer:'virus', fact:'Vírus da raiva: acelular, material genético RNA. Afeta o sistema nervoso do hospedeiro.' },
+      { label:'Vírus da catapora',emoji:'🟣', answer:'virus', fact:'Vírus varicela-zóster (catapora): acelular. Fora da célula fica inativo, sem metabolismo próprio.' },
+      { label:'Vírus da caxumba', emoji:'🐹', answer:'virus' },
+      { label:'Vírus Ebola',      emoji:'🩸', answer:'virus', fact:'Ebola: vírus de RNA, acelular. Como todo vírus, só se multiplica dentro de uma célula hospedeira.' },
+      { label:'Vírus do sarampo', emoji:'🔴', answer:'virus' },
       // ── NÃO É VIVO ──────────────────────────────────────────────────
       { label:'Pedra',            emoji:'🪨', answer:'nao' },
       { label:'Robô aspirador',   emoji:'🤖', answer:'nao', fact:'O robô "responde a estímulos" e evita obstáculos — mas falta reprodução, metabolismo, células e DNA. Não é vivo!' },
@@ -245,12 +256,18 @@ const ROUNDS = {
       { label:'Nuvem',            emoji:'☁️', answer:'nao' },
       { label:'Automóvel',        emoji:'🚗', answer:'nao' },
       { label:'Pó de estrela',    emoji:'✨', answer:'nao' },
+      { label:'Rio correndo',     emoji:'🏞️', answer:'nao', fact:'O rio se move e "cresce", mas não tem células, DNA nem metabolismo. Movimento não é sinal de vida!' },
+      { label:'Concha vazia',     emoji:'🐚', answer:'nao', fact:'A concha é feita por um molusco vivo, mas ela mesma não é viva — é só carbonato de cálcio, matéria não viva.' },
+      { label:'Vela acesa',       emoji:'🕯️', answer:'nao', fact:'A chama consome "combustível" e cresce, parecendo se alimentar. Mas não tem células — não é ser vivo.' },
+      { label:'Boneco de robô',   emoji:'🦾', answer:'nao' },
+      { label:'Gelo',             emoji:'🧊', answer:'nao' },
+      { label:'Areia',            emoji:'🏖️', answer:'nao' },
     ],
   },
 
   tipo: {
     title: 'RODADA 2 — Procariota ou Eucariota?',
-    ms: 3000,
+    ms: 5000,
     bins: [
       { key:'proc', label:'🦠 Procariota' },
       { key:'euca', label:'🔬 Eucariota'  },
@@ -263,6 +280,11 @@ const ROUNDS = {
       { label:'Lactobacillus (iogurte)', emoji:'🥛', answer:'proc', fact:'Lactobacillus é uma bactéria (procariota) que fermenta o leite e produz iogurte. Vive no intestino.' },
       { label:'Streptococcus',           emoji:'🔴', answer:'proc', fact:'Streptococcus é uma bactéria (procariota) causadora de infecções. Não tem núcleo definido.' },
       { label:'Salmonella',              emoji:'🍗', answer:'proc' },
+      { label:'Bacilo do tétano',        emoji:'💉', answer:'proc', fact:'O bacilo é uma bactéria em forma de bastão — procariota, com DNA livre no citoplasma.' },
+      { label:'Bactéria do iogurte',     emoji:'🥛', answer:'proc' },
+      { label:'Célula sem carioteca',    emoji:'🚫', answer:'proc', fact:'Sem carioteca = sem membrana nuclear = o DNA fica livre no citoplasma. Isso define a célula PROCARIOTA.' },
+      { label:'DNA livre no citoplasma', emoji:'🧬', answer:'proc', fact:'Quando o material genético fica solto no citoplasma (sem núcleo delimitado), a célula é procariota.' },
+      { label:'Bacilo do botulismo',     emoji:'🥫', answer:'proc' },
       // ── EUCARIOTA ───────────────────────────────────────────────────
       { label:'Célula animal',           emoji:'🐾', answer:'euca', fact:'Eucariota: tem carioteca (membrana nuclear) envolvendo o material genético. Rica em organelas.' },
       { label:'Célula vegetal',          emoji:'🌱', answer:'euca' },
@@ -274,12 +296,18 @@ const ROUNDS = {
       { label:'Espermatozoide',          emoji:'🏊', answer:'euca' },
       { label:'Hepatócito (fígado)',     emoji:'🫁', answer:'euca' },
       { label:'Levedura',                emoji:'🫙', answer:'euca', fact:'Levedura é fungo unicelular — EUCARIOTA. "Unicelular" ≠ "procariota". Tem núcleo verdadeiro!' },
+      { label:'Paramécio',               emoji:'🫧', answer:'euca', fact:'Paramécio é protozoário — eucariota unicelular, com núcleo verdadeiro. Vive em água doce.' },
+      { label:'Célula da folha',         emoji:'🍃', answer:'euca', fact:'Toda célula vegetal (inclusive as da folha) é eucariota — tem núcleo com carioteca e cloroplastos.' },
+      { label:'Célula com carioteca',    emoji:'🔵', answer:'euca', fact:'Carioteca = membrana nuclear que envolve o DNA. Quem tem carioteca é EUCARIOTA.' },
+      { label:'Célula do cogumelo',      emoji:'🍄', answer:'euca' },
+      { label:'Óvulo',                   emoji:'🥚', answer:'euca' },
+      { label:'Célula muscular',         emoji:'💪', answer:'euca' },
     ],
   },
 
   celula: {
     title: 'RODADA 3 — Organela: de qual célula?',
-    ms: 3300,
+    ms: 5300,
     bins: [
       { key:'animal',  label:'🐾 Só Animal' },
       { key:'vegetal', label:'🌱 Só Vegetal' },
@@ -297,20 +325,27 @@ const ROUNDS = {
       { label:'Membrana plasmática',       emoji:'🟤', answer:'ambas', fact:'Membrana plasmática: reveste TODA célula (animal, vegetal, procariota). Controla entrada e saída.' },
       { label:'Núcleo',                    emoji:'🔵', answer:'ambas', fact:'Núcleo com carioteca: exclusivo de eucariotas, mas presente tanto em células animais quanto vegetais.' },
       { label:'Citoplasma',                emoji:'🫙', answer:'ambas', fact:'Citoplasma: material gelatinoso presente em TODAS as células. As organelas ficam mergulhadas nele.' },
+      { label:'Carioteca',                 emoji:'⭕', answer:'ambas', fact:'Carioteca (membrana nuclear) envolve o DNA. Presente em toda célula eucariota — animal e vegetal.' },
+      { label:'Material genético (DNA)',   emoji:'🧬', answer:'ambas', fact:'O DNA existe em todas as células. Em animais e vegetais fica dentro do núcleo; em bactérias, solto no citoplasma.' },
+      { label:'Mitocôndrias',              emoji:'🔋', answer:'ambas' },
       // ── SÓ ANIMAL ───────────────────────────────────────────────────
       { label:'Centríolo',                 emoji:'➰', answer:'animal', fact:'Centríolo: auxilia na divisão celular. Presente em células animais (e em raríssimas células vegetais).' },
+      { label:'Centríolos (par)',          emoji:'✖️', answer:'animal', fact:'Os centríolos organizam a divisão celular. São típicos das células animais.' },
       // ── SÓ VEGETAL ──────────────────────────────────────────────────
       { label:'Cloroplasto',               emoji:'🍀', answer:'vegetal', fact:'Cloroplasto: faz fotossíntese. Contém clorofila (pigmento verde). Exclusivo de células vegetais e algas.' },
       { label:'Vacúolo central grande',    emoji:'💧', answer:'vegetal', fact:'Vacúolo central: exclusivo das células vegetais. Controla o teor de água e mantém a turgidez.' },
       { label:'Parede celular',            emoji:'🧱', answer:'vegetal', fact:'Parede celular: feita de celulose, fica FORA da membrana plasmática. Dá rigidez à célula vegetal.' },
       { label:'Clorofila',                 emoji:'🌿', answer:'vegetal', fact:'A clorofila é o pigmento verde dentro do cloroplasto. Só em células vegetais e algas.' },
       { label:'Celulose',                  emoji:'🌾', answer:'vegetal', fact:'Celulose forma a parede celular das células vegetais. Nas células animais, não existe parede celular.' },
+      { label:'Cloroplastos',              emoji:'🥬', answer:'vegetal', fact:'Cloroplastos capturam luz solar para a fotossíntese. Célula animal não tem — por isso animais não fazem fotossíntese.' },
+      { label:'Estrutura de sustentação de celulose', emoji:'🧱', answer:'vegetal' },
+      { label:'Organela da fotossíntese',  emoji:'☀️', answer:'vegetal', fact:'A fotossíntese acontece no cloroplasto — organela exclusiva de células vegetais e algas.' },
     ],
   },
 
   funcao: {
     title: 'RODADA 4 — Qual organela tem essa função?',
-    ms: 4600,
+    ms: 7000,
     bins: null,
     pool: [
       {
@@ -408,12 +443,78 @@ const ROUNDS = {
         bins:[{key:'nucleo',label:'🔵 Núcleo'},{key:'mito',label:'🫘 Mitocôndria'},{key:'golgi',label:'📦 Golgi'}],
         fact:'Células com núcleo verdadeiro (carioteca) = eucariotas. Sem carioteca, DNA livre no citoplasma = procariotas.',
       },
+      {
+        label:'Contém clorofila, o pigmento verde que captura a luz do sol para a planta produzir seu alimento',
+        emoji:'🌿', answer:'cloro',
+        bins:[{key:'cloro',label:'🍀 Cloroplasto'},{key:'mito',label:'🫘 Mitocôndria'},{key:'vacuolo',label:'💧 Vacúolo'}],
+        fact:'Cloroplasto contém clorofila. É onde a planta transforma luz + CO₂ + água em glicose (alimento) e O₂.',
+      },
+      {
+        label:'Membrana nuclear que separa o material genético do restante da célula. Outro nome: carioteca',
+        emoji:'⭕', answer:'nucleo',
+        bins:[{key:'nucleo',label:'🔵 Núcleo (carioteca)'},{key:'membrana',label:'🟤 Membrana plasm.'},{key:'parede',label:'🧱 Parede celular'}],
+        fact:'Carioteca = membrana nuclear = a "casca" do núcleo. É ela que define a célula como eucariota.',
+      },
+      {
+        label:'Reserva energética: nos animais estoca gordura; sua "queima" gera energia para o corpo',
+        emoji:'🥑', answer:'mito',
+        bins:[{key:'mito',label:'🫘 Mitocôndria'},{key:'cloro',label:'🍀 Cloroplasto'},{key:'golgi',label:'📦 Golgi'}],
+        fact:'A mitocôndria "queima" nutrientes (como a gordura) com oxigênio para liberar energia — é a respiração celular.',
+      },
+      {
+        label:'Faz o transporte de substâncias em pequenas bolsas (vesículas) até a membrana da célula',
+        emoji:'🎁', answer:'golgi',
+        bins:[{key:'golgi',label:'📦 Golgi'},{key:'liso',label:'🟡 Lisossomo'},{key:'ribo',label:'⚪ Ribossomo'}],
+        fact:'O Golgi empacota as substâncias em vesículas e as direciona para o destino certo — dentro ou fora da célula.',
+      },
+      {
+        label:'Local da respiração celular, onde o açúcar (glicose) e o gás oxigênio são usados para gerar energia',
+        emoji:'🌬️', answer:'mito',
+        bins:[{key:'mito',label:'🫘 Mitocôndria'},{key:'pero',label:'🟢 Peroxissomo'},{key:'nucleo',label:'🔵 Núcleo'}],
+        fact:'Respiração celular acontece na mitocôndria: glicose + O₂ → energia (ATP) + CO₂ + água. Não confunda com respiração pulmonar!',
+      },
+      {
+        label:'"Fábrica de proteínas" da célula: pode estar solto no citoplasma ou grudado no retículo rugoso',
+        emoji:'🏭', answer:'ribo',
+        bins:[{key:'ribo',label:'⚪ Ribossomo'},{key:'golgi',label:'📦 Golgi'},{key:'liso',label:'🟡 Lisossomo'}],
+        fact:'O ribossomo monta as proteínas. Quando fica aderido ao retículo, forma o retículo endoplasmático RUGOSO.',
+      },
+      {
+        label:'Digere e recicla partes velhas ou danificadas da própria célula usando suas enzimas',
+        emoji:'♻️', answer:'liso',
+        bins:[{key:'liso',label:'🟡 Lisossomo'},{key:'pero',label:'🟢 Peroxissomo'},{key:'rel',label:'🧵 Ret. Liso'}],
+        fact:'O lisossomo é o "estômago" da célula: suas enzimas quebram restos e organelas velhas para reaproveitar o material.',
+      },
+      {
+        label:'Guarda água, sais e outras substâncias; nas plantas é enorme e ocupa quase toda a célula',
+        emoji:'🫗', answer:'vacuolo',
+        bins:[{key:'vacuolo',label:'💧 Vacúolo'},{key:'cito',label:'🫙 Citoplasma'},{key:'liso',label:'🟡 Lisossomo'}],
+        fact:'O grande vacúolo central empurra as organelas para a beira da célula vegetal e mantém a planta "durinha" (túrgida).',
+      },
+      {
+        label:'É rígida, feita de celulose, e impede que a célula da planta estoure ao absorver muita água',
+        emoji:'🛡️', answer:'parede',
+        bins:[{key:'parede',label:'🧱 Parede celular'},{key:'membrana',label:'🟤 Membrana plasm.'},{key:'cloro',label:'🍀 Cloroplasto'}],
+        fact:'A parede celular de celulose dá firmeza e protege a célula vegetal, funcionando como uma "armadura" externa.',
+      },
+      {
+        label:'Seletiva: decide quais substâncias entram e saem da célula. Existe em toda célula viva',
+        emoji:'🎫', answer:'membrana',
+        bins:[{key:'membrana',label:'🟤 Membrana plasm.'},{key:'parede',label:'🧱 Parede celular'},{key:'nucleo',label:'🔵 Núcleo'}],
+        fact:'A membrana plasmática tem permeabilidade seletiva: controla o transporte para dentro e para fora da célula.',
+      },
+      {
+        label:'Local onde ficam mergulhadas todas as organelas; é gelatinoso e feito principalmente de água',
+        emoji:'🌊', answer:'cito',
+        bins:[{key:'cito',label:'🫙 Citoplasma'},{key:'nucleo',label:'🔵 Núcleo'},{key:'vacuolo',label:'💧 Vacúolo'}],
+        fact:'O citoplasma preenche a célula entre a membrana e o núcleo. É o "mar" onde as organelas ficam.',
+      },
     ],
   },
 
   historia: {
     title: 'RODADA 5 — Quem fez/disse isso?',
-    ms: 5200,
+    ms: 8000,
     bins: null,
     pool: [
       {
@@ -506,6 +607,66 @@ const ROUNDS = {
         bins:[{key:'pasteur',label:'🦢 Pasteur'},{key:'spall',label:'🔥 Spallanzani'},{key:'redi',label:'🪰 Redi'}],
         fact:'Louis Pasteur (1822-1895) encerrou séculos de debate com o experimento do frasco pescoço de cisne. Biogênese: vida só vem de vida!',
       },
+      {
+        label:'"Aperfeiçoei o microscópio e observei olhos de mosca, penas de aves e larvas de mosquito"',
+        emoji:'🪰', answer:'hooke',
+        bins:[{key:'hooke',label:'🔭 Robert Hooke'},{key:'leeu',label:'🔬 Leeuwenhoek'},{key:'schwann',label:'📜 Schwann'}],
+        fact:'Robert Hooke usou seu microscópio para observar muitos itens pequenos. Foi ao ver a cortiça que criou o termo "célula".',
+      },
+      {
+        label:'"Observei que as células que vi na cortiça estavam mortas — vi apenas a parede externa resistente"',
+        emoji:'🌳', answer:'hooke',
+        bins:[{key:'hooke',label:'🔭 Robert Hooke'},{key:'leeu',label:'🔬 Leeuwenhoek'},{key:'pasteur',label:'🦢 Pasteur'}],
+        fact:'A cortiça é casca de árvore. Hooke viu apenas as paredes celulares (a parte resistente) das células vegetais já mortas.',
+      },
+      {
+        label:'"Fui o primeiro a observar bactérias, hemácias (células do sangue) e espermatozoides"',
+        emoji:'🩸', answer:'leeu',
+        bins:[{key:'leeu',label:'🔬 Leeuwenhoek'},{key:'hooke',label:'🔭 Hooke'},{key:'schwann',label:'📜 Schwann'}],
+        fact:'Leeuwenhoek observou bactérias, hemácias e espermatozoides pela primeira vez — pioneiro da microbiologia.',
+      },
+      {
+        label:'"Junto de Matthias Schleiden, sou um dos autores alemães da Teoria Celular, de 1839"',
+        emoji:'🇩🇪', answer:'schwann',
+        bins:[{key:'schwann',label:'📜 Theodor Schwann'},{key:'hooke',label:'🔭 Hooke'},{key:'redi',label:'🪰 Redi'}],
+        fact:'Schwann (animais) e Schleiden (plantas), dois cientistas alemães, formularam juntos a Teoria Celular em 1839.',
+      },
+      {
+        label:'"Acreditava-se que larvas surgiam sozinhas na carne podre e ratos surgiam de roupa suja"',
+        emoji:'🥩', answer:'aristo',
+        bins:[{key:'aristo',label:'📖 Abiogênese (antigos)'},{key:'redi',label:'🪰 Redi (Biogênese)'},{key:'pasteur',label:'🦢 Pasteur (Biogênese)'}],
+        fact:'A ideia de geração espontânea (abiogênese) vinha de povos antigos — China, Babilônia, Grécia e Egito — e durou mais de 2000 anos.',
+      },
+      {
+        label:'"Precisei estudar o ciclo de vida das moscas (ovo → larva → pupa → adulto) para montar meu experimento"',
+        emoji:'🔄', answer:'redi',
+        bins:[{key:'redi',label:'🪰 Francesco Redi'},{key:'helmont',label:'🐀 Van Helmont'},{key:'spall',label:'🔥 Spallanzani'}],
+        fact:'Redi sabia que moscas põem ovos que viram larvas. Por isso previu: sem moscas pousando na carne, não surgiriam larvas.',
+      },
+      {
+        label:'"No meu frasco fechado com gaze, as moscas voavam por cima mas nenhuma larva apareceu na carne"',
+        emoji:'🕸️', answer:'redi',
+        bins:[{key:'redi',label:'🪰 Francesco Redi'},{key:'needham',label:'🍲 Needham'},{key:'pasteur',label:'🦢 Pasteur'}],
+        fact:'A gaze deixava o ar passar, mas barrava as moscas. Sem moscas para pôr ovos, não surgiam larvas. Prova da biogênese!',
+      },
+      {
+        label:'"Meu erro foi ferver pouco e vedar mal com cortiça, deixando micro-organismos do ar entrarem"',
+        emoji:'🕳️', answer:'needham',
+        bins:[{key:'needham',label:'🍲 Needham'},{key:'spall',label:'🔥 Spallanzani'},{key:'redi',label:'🪰 Redi'}],
+        fact:'Needham defendia a abiogênese, mas sua vedação falha com cortiça deixava micro-organismos do ar contaminarem o caldo.',
+      },
+      {
+        label:'"Nos frascos que fechei derretendo o vidro (hermético), nenhum micro-organismo apareceu"',
+        emoji:'🔒', answer:'spall',
+        bins:[{key:'spall',label:'🔥 Spallanzani'},{key:'needham',label:'🍲 Needham'},{key:'pasteur',label:'🦢 Pasteur'}],
+        fact:'Spallanzani vedou hermeticamente derretendo a ponta do vidro. Sem entrada de ar, não surgiram micro-organismos. Biogênese!',
+      },
+      {
+        label:'"O formato em S do gargalo prendia os micro-organismos, mas ainda assim deixava o ar entrar no frasco"',
+        emoji:'〰️', answer:'pasteur',
+        bins:[{key:'pasteur',label:'🦢 Pasteur'},{key:'spall',label:'🔥 Spallanzani'},{key:'needham',label:'🍲 Needham'}],
+        fact:'O pescoço de cisne (formato em S) foi genial: rebateu o argumento de que a "força vital" do ar era destruída, pois o ar entrava normalmente.',
+      },
     ],
   },
 };
@@ -563,7 +724,7 @@ function banner(txt) {
 
 function timeFor(item) {
   const base = ROUNDS[item.cat].ms;
-  const cut  = Math.min(S.combo * 65, base - 900);
+  const cut  = Math.min(S.combo * 45, base - 1400);
   return base - cut;
 }
 
