@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+<title>Laboratório Relâmpago - Ciências</title>
+<style>
+  :root {
+    --bg: #071019;
+    --card: #0f2230;
+    --card2: #122840;
+    --accent: #4ce0d2;
+    --gold: #ffcb3d;
+    --danger: #ff5c6c;
+    --ok: #6bff9e;
+    --text: #eaf6f6;
+    --dim: #8fb3b0;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
+  html,body { height:100%; }
+  body {
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    background: radial-gradient(circle at 18% 14%, #103042 0%, var(--bg) 52%),
+                radial-gradient(circle at 84% 82%, #0f2a2a 0%, var(--bg) 58%);
+    color:var(--text); min-height:100dvh; overflow:hidden;
+    user-select:none; display:flex; align-items:center; justify-content:center;
+  }
+  body::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(5px 5px at 12% 22%, rgba(76,224,210,.22), transparent),
+      radial-gradient(4px 4px at 78% 65%, rgba(76,224,210,.18), transparent),
+      radial-gradient(7px 7px at 40% 80%, rgba(255,203,61,.10), transparent),
+      radial-gradient(4px 4px at 88% 18%, rgba(76,224,210,.15), transparent),
+      radial-gradient(3px 3px at 58% 38%, rgba(255,255,255,.12), transparent);
+    animation: drift 12s ease-in-out infinite alternate;
+  }
+  @keyframes drift { to { transform:translateY(-14px); } }
+
+  #app {
+    position:relative; z-index:1;
+    width:100%; max-width:460px; height:100dvh; max-height:900px;
+    display:flex; flex-direction:column; padding:16px;
+  }
+
+  .screen { display:none; flex-direction:column; height:100%; animation:fadeIn .35s ease; }
+  .screen.active { display:flex; }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+  /* ── Intro ── */
+  #intro { align-items:center; justify-content:center; text-align:center; gap:11px; }
+  .logo { font-size:52px; }
+  h1 { font-size:clamp(21px,6vw,27px); color:var(--accent); }
+  .sub { color:var(--dim); font-size:13px; max-width:330px; line-height:1.5; }
+  .rounds-list {
+    background:var(--card); border:1px solid rgba(76,224,210,.2); border-radius:16px;
+    padding:13px 15px; width:100%; max-width:340px; display:flex; flex-direction:column; gap:7px;
+  }
+  .rr { display:flex; align-items:flex-start; gap:8px; font-size:12.5px; color:var(--dim); }
+  .rr b { color:var(--text); }
+  .btn {
+    border:none; border-radius:14px; padding:14px 24px; font-size:15px; font-weight:700;
+    background:linear-gradient(135deg,var(--accent),#2bb3a3); color:#06201c;
+    cursor:pointer; box-shadow:0 6px 18px rgba(76,224,210,.22); width:100%; max-width:340px;
+  }
+  .btn:active { transform:scale(.96); }
+  .btn-ghost { background:transparent; border:1px solid rgba(255,255,255,.22); color:var(--text); box-shadow:none; }
+
+  /* ── Game ── */
+  #game { gap:9px; }
+  .topbar { display:flex; justify-content:space-between; align-items:center; }
+  .hearts { font-size:17px; letter-spacing:2px; }
+  .stat { display:flex; flex-direction:column; align-items:flex-end; }
+  .score { font-size:22px; font-weight:800; color:var(--gold); }
+  .combo { font-size:11.5px; color:var(--ok); font-weight:700; height:14px; }
+
+  .banner {
+    background:var(--card2); border:1px solid rgba(76,224,210,.22); border-radius:10px;
+    padding:7px 11px; font-size:12px; font-weight:700; text-align:center; color:var(--accent);
+  }
+  .banner.pop { animation:bannerPop .45s ease; }
+  @keyframes bannerPop { 0%{transform:scale(.88);opacity:0;} 100%{transform:scale(1);opacity:1;} }
+
+  .stage {
+    flex:1; display:flex; flex-direction:column; align-items:center;
+    justify-content:center; gap:13px; position:relative;
+  }
+
+  .card {
+    width:100%; max-width:310px; min-height:166px; border-radius:24px;
+    background:linear-gradient(155deg,var(--card),var(--card2));
+    border:2px solid rgba(76,224,210,.28);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:7px; box-shadow:0 10px 28px rgba(0,0,0,.32); padding:16px 14px;
+    transition:border-color .2s;
+  }
+  .card.shake { animation:shake .32s ease; border-color:var(--danger); }
+  .card.good  { animation:pop .32s ease;   border-color:var(--ok); }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-9px)} 40%{transform:translateX(9px)} 60%{transform:translateX(-5px)} 80%{transform:translateX(5px)} }
+  @keyframes pop   { 0%{transform:scale(1)} 50%{transform:scale(1.05)} 100%{transform:scale(1)} }
+
+  .chip {
+    font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px;
+    color:var(--accent); opacity:.65;
+  }
+  .card-emoji { font-size:58px; line-height:1; }
+  .card-label { font-size:clamp(16px,5vw,21px); font-weight:800; text-align:center; line-height:1.3; }
+  .card-label.sm { font-size:clamp(11.5px,3.4vw,14px); font-weight:600; }
+
+  .timerbar-wrap { width:100%; max-width:310px; height:6px; background:rgba(255,255,255,.07); border-radius:6px; overflow:hidden; }
+  .timerbar { height:100%; width:100%; background:linear-gradient(90deg,var(--ok),var(--gold),var(--danger)); border-radius:6px; }
+
+  .bins { display:flex; flex-wrap:wrap; gap:7px; width:100%; justify-content:center; }
+  .bin {
+    flex:1; min-width:90px; max-width:180px; border:none; border-radius:12px;
+    padding:12px 7px; font-size:clamp(11px,3.2vw,13px); font-weight:700; line-height:1.25;
+    background:var(--card2); color:var(--text); border:1px solid rgba(255,255,255,.11);
+    cursor:pointer; text-align:center;
+  }
+  .bin:active { transform:scale(.94); }
+  .bin.ok { background:var(--ok); color:#06201c; border-color:var(--ok); }
+  .bin.err { background:var(--danger); color:#200606; border-color:var(--danger); }
+
+  .toast {
+    position:absolute; inset:auto 0 -6px 0; background:#08252a;
+    border:1px solid var(--accent); border-radius:14px;
+    padding:10px 13px; font-size:11.5px; line-height:1.5; color:var(--text);
+    box-shadow:0 8px 24px rgba(0,0,0,.4); display:none; z-index:10;
+  }
+  .toast.show { display:block; animation:fadeIn .28s ease; }
+  .toast b { color:var(--gold); }
+
+  /* ── Game over ── */
+  #over { align-items:center; justify-content:center; text-align:center; gap:11px; }
+  .final { font-size:52px; font-weight:900; color:var(--gold); }
+  .best  { color:var(--dim); font-size:13px; }
+  #over h1 { font-size:24px; }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- INTRO -->
+  <div class="screen active" id="intro">
+    <div class="logo">🧫⚡</div>
+    <h1>Laboratório Relâmpago</h1>
+    <p class="sub">Toque no balde certo antes o timer zerar. Combo acelera tudo. 3 erros = fim!</p>
+    <div class="rounds-list">
+      <div class="rr">🧫 <span><b>Rodada 1</b> — Ser vivo, vírus ou não vivo?</span></div>
+      <div class="rr">🔬 <span><b>Rodada 2</b> — Procariota ou Eucariota?</span></div>
+      <div class="rr">🏠 <span><b>Rodada 3</b> — Organela: animal, vegetal ou ambas?</span></div>
+      <div class="rr">⚡ <span><b>Rodada 4</b> — Qual organela tem essa função?</span></div>
+      <div class="rr">👤 <span><b>Rodada 5</b> — Quem foi? (microscopia + origem da vida)</span></div>
+      <div class="rr">🌪️ <span><b>Modo Relâmpago</b> — tudo misturado, infinito</span></div>
+    </div>
+    <button class="btn" id="btn-start">Começar ⚡</button>
+  </div>
+
+  <!-- GAME -->
+  <div class="screen" id="game">
+    <div class="topbar">
+      <div class="hearts" id="hearts">❤️❤️❤️</div>
+      <div class="stat">
+        <div class="score" id="score">0</div>
+        <div class="combo" id="combo"></div>
+      </div>
+    </div>
+    <div class="banner" id="banner">RODADA 1</div>
+    <div class="stage">
+      <div class="card" id="card">
+        <div class="chip" id="chip"></div>
+        <div class="card-emoji" id="emoji">🦠</div>
+        <div class="card-label" id="label">Bactéria</div>
+      </div>
+      <div class="timerbar-wrap"><div class="timerbar" id="bar"></div></div>
+      <div class="bins" id="bins"></div>
+      <div class="toast" id="toast"></div>
+    </div>
+  </div>
+
+  <!-- GAME OVER -->
+  <div class="screen" id="over">
+    <div style="font-size:44px">💥🧪</div>
+    <h1>Fim de jogo!</h1>
+    <div class="final" id="final">0</div>
+    <div class="best"  id="best">Recorde: 0</div>
+    <button class="btn" id="btn-again">Jogar de novo ⚡</button>
+    <button class="btn btn-ghost" id="btn-menu">Início</button>
+  </div>
+
+</div>
+<script>
+(function(){
+'use strict';
+
+const CHIP = {
+  vida:    '🧫 Vivo, vírus ou não?',
+  tipo:    '🔬 Que tipo de célula?',
+  celula:  '🏠 De qual célula?',
+  funcao:  '⚡ Qual organela faz isso?',
+  historia:'👤 Quem fez/disse isso?',
+};
+
+const ROUNDS = {
+  vida: {
+    title: 'RODADA 1 — Ser vivo, vírus ou não vivo?',
+    ms: 3600,
+    bins: [
+      { key:'vivo',  label:'✅ Ser vivo' },
+      { key:'virus', label:'🧬 Vírus'    },
+      { key:'nao',   label:'❌ Não é vivo' },
+    ],
+    pool: [
+      // ── SERES VIVOS ─────────────────────────────────────────────────
+      { label:'Bactéria',         emoji:'🦠', answer:'vivo' },
+      { label:'Cachorro',         emoji:'🐶', answer:'vivo' },
+      { label:'Sequoia gigante',  emoji:'🌳', answer:'vivo' },
+      { label:'Paramécio',        emoji:'🫧', answer:'vivo' },
+      { label:'Cogumelo',         emoji:'🍄', answer:'vivo' },
+      { label:'Cianobactéria',    emoji:'🟩', answer:'vivo', fact:'Cianobactéria é uma BACTÉRIA (procariota) que faz fotossíntese. É ser vivo, apesar de microscopicamente.' },
+      { label:'Planta carnívora', emoji:'🌿', answer:'vivo', fact:'Dioneia muscipula fecha as folhas ao detectar o toque de um inseto — percepção a estímulos, característica dos seres vivos!' },
+      { label:'Borboleta',        emoji:'🦋', answer:'vivo' },
+      { label:'Ameba',            emoji:'🟠', answer:'vivo' },
+      { label:'Alga verde',       emoji:'🌊', answer:'vivo', fact:'Algas são seres vivos eucariotas fotossintetizantes. Não confunda com cianobactérias (procariotas)!' },
+      { label:'Levedura',         emoji:'🫙', answer:'vivo', fact:'Levedura é um fungo unicelular — eucariota e ser vivo. É usada para fazer pão, cerveja e vinho.' },
+      { label:'Fungo do solo',    emoji:'🍂', answer:'vivo' },
+      { label:'Peixe',            emoji:'🐟', answer:'vivo' },
+      { label:'Protozoário',      emoji:'🦠', answer:'vivo', fact:'Protozoários (ameba, paramécio, plasmodium…) são eucariotas unicelulares. São seres vivos!' },
+      // ── VÍRUS ───────────────────────────────────────────────────────
+      { label:'Vírus da gripe',   emoji:'🤧', answer:'virus', fact:'O vírus influenza é acelular — sem célula, sem metabolismo. Fora do hospedeiro fica completamente inativo.' },
+      { label:'Vírus HIV',        emoji:'🔴', answer:'virus', fact:'O HIV é um retrovírus com material genético RNA. Depende 100% da célula hospedeira para se replicar.' },
+      { label:'Bacteriófago',     emoji:'💉', answer:'virus', fact:'Bacteriófago infecta bactérias. Estrutura: cápsula de proteína + DNA. Vírus como qualquer outro.' },
+      { label:'Vírus HPV',        emoji:'🧬', answer:'virus', fact:'HPV (Papilomavírus humano): acelular, sem metabolismo próprio. Precisa de célula viva para se replicar.' },
+      { label:'Vírus da dengue',  emoji:'🦟', answer:'virus', fact:'Vírus da dengue: transmitido pelo Aedes aegypti. Cápsula de proteína + RNA. Não tem célula.' },
+      { label:'SARS-CoV-2',       emoji:'😷', answer:'virus', fact:'SARS-CoV-2 (COVID-19): coronavírus com material genético RNA. Acelular — não é ser vivo.' },
+      { label:'Vírus da varíola', emoji:'🔵', answer:'virus' },
+      { label:'Vírus da raiva',   emoji:'🐺', answer:'virus', fact:'Vírus da raiva: acelular, material genético RNA. Afeta o sistema nervoso do hospedeiro.' },
+      // ── NÃO É VIVO ──────────────────────────────────────────────────
+      { label:'Pedra',            emoji:'🪨', answer:'nao' },
+      { label:'Robô aspirador',   emoji:'🤖', answer:'nao', fact:'O robô "responde a estímulos" e evita obstáculos — mas falta reprodução, metabolismo, células e DNA. Não é vivo!' },
+      { label:'Computador',       emoji:'💻', answer:'nao' },
+      { label:'Cadeira',          emoji:'🪑', answer:'nao' },
+      { label:'Fogo',             emoji:'🔥', answer:'nao', fact:'Fogo "cresce" e "se espalha", mas não tem células nem material genético. Não é ser vivo!' },
+      { label:'Cristal de neve',  emoji:'❄️', answer:'nao' },
+      { label:'Nuvem',            emoji:'☁️', answer:'nao' },
+      { label:'Automóvel',        emoji:'🚗', answer:'nao' },
+      { label:'Pó de estrela',    emoji:'✨', answer:'nao' },
+    ],
+  },
+
+  tipo: {
+    title: 'RODADA 2 — Procariota ou Eucariota?',
+    ms: 3000,
+    bins: [
+      { key:'proc', label:'🦠 Procariota' },
+      { key:'euca', label:'🔬 Eucariota'  },
+    ],
+    pool: [
+      // ── PROCARIOTA ──────────────────────────────────────────────────
+      { label:'Bactéria',                emoji:'🦠', answer:'proc', fact:'Procariota: sem carioteca — o DNA fica LIVRE no citoplasma. Célula menor e mais simples que a eucariota.' },
+      { label:'E. coli',                 emoji:'🧫', answer:'proc' },
+      { label:'Cianobactéria',           emoji:'🟩', answer:'proc', fact:'Cianobactérias são BACTÉRIAS fotossintetizantes — procariotas! Não confunda com algas (eucariotas).' },
+      { label:'Lactobacillus (iogurte)', emoji:'🥛', answer:'proc', fact:'Lactobacillus é uma bactéria (procariota) que fermenta o leite e produz iogurte. Vive no intestino.' },
+      { label:'Streptococcus',           emoji:'🔴', answer:'proc', fact:'Streptococcus é uma bactéria (procariota) causadora de infecções. Não tem núcleo definido.' },
+      { label:'Salmonella',              emoji:'🍗', answer:'proc' },
+      // ── EUCARIOTA ───────────────────────────────────────────────────
+      { label:'Célula animal',           emoji:'🐾', answer:'euca', fact:'Eucariota: tem carioteca (membrana nuclear) envolvendo o material genético. Rica em organelas.' },
+      { label:'Célula vegetal',          emoji:'🌱', answer:'euca' },
+      { label:'Neurônio',                emoji:'🧠', answer:'euca' },
+      { label:'Fungo',                   emoji:'🍄', answer:'euca', fact:'Fungos são eucariotas! Unicelulares (leveduras) ou pluricelulares (cogumelos). Não são bactérias.' },
+      { label:'Ameba',                   emoji:'🟠', answer:'euca', fact:'Ameba é eucariota unicelular. Tem núcleo verdadeiro — não confunda com bactéria!' },
+      { label:'Adipócito (célula gorda)',emoji:'🫀', answer:'euca', fact:'Adipócito é eucariota, como toda célula animal. Armazena gordura para reserva energética.' },
+      { label:'Hemácia madura',          emoji:'🔴', answer:'euca', fact:'Hemácia madura perde o núcleo, mas AINDA é eucariota — origina-se de célula eucariota. Peculiaridade!' },
+      { label:'Espermatozoide',          emoji:'🏊', answer:'euca' },
+      { label:'Hepatócito (fígado)',     emoji:'🫁', answer:'euca' },
+      { label:'Levedura',                emoji:'🫙', answer:'euca', fact:'Levedura é fungo unicelular — EUCARIOTA. "Unicelular" ≠ "procariota". Tem núcleo verdadeiro!' },
+    ],
+  },
+
+  celula: {
+    title: 'RODADA 3 — Organela: de qual célula?',
+    ms: 3300,
+    bins: [
+      { key:'animal',  label:'🐾 Só Animal' },
+      { key:'vegetal', label:'🌱 Só Vegetal' },
+      { key:'ambas',   label:'🔁 Animal e Vegetal' },
+    ],
+    pool: [
+      // ── AMBAS ───────────────────────────────────────────────────────
+      { label:'Mitocôndria',               emoji:'🫘', answer:'ambas', fact:'Mitocôndria: presente em animais E vegetais. Produz energia (ATP) por respiração celular.' },
+      { label:'Ribossomo',                 emoji:'⚪', answer:'ambas', fact:'Ribossomo: o único que está em TODOS — animais, vegetais e até procariotas! Produz proteínas.' },
+      { label:'Lisossomo',                 emoji:'🟡', answer:'ambas' },
+      { label:'Peroxissomo',               emoji:'🟢', answer:'ambas' },
+      { label:'Retículo endoplasmático liso',  emoji:'🧵', answer:'ambas' },
+      { label:'Retículo endoplasmático rugoso',emoji:'🧶', answer:'ambas', fact:'RE Rugoso: tem ribossomos grudados ("rugoso"). Presente em animais e vegetais. Produz proteínas.' },
+      { label:'Complexo de Golgi',         emoji:'📦', answer:'ambas', fact:'Golgi: "correio" da célula — modifica e envia proteínas. Presente em animais e vegetais.' },
+      { label:'Membrana plasmática',       emoji:'🟤', answer:'ambas', fact:'Membrana plasmática: reveste TODA célula (animal, vegetal, procariota). Controla entrada e saída.' },
+      { label:'Núcleo',                    emoji:'🔵', answer:'ambas', fact:'Núcleo com carioteca: exclusivo de eucariotas, mas presente tanto em células animais quanto vegetais.' },
+      { label:'Citoplasma',                emoji:'🫙', answer:'ambas', fact:'Citoplasma: material gelatinoso presente em TODAS as células. As organelas ficam mergulhadas nele.' },
+      // ── SÓ ANIMAL ───────────────────────────────────────────────────
+      { label:'Centríolo',                 emoji:'➰', answer:'animal', fact:'Centríolo: auxilia na divisão celular. Presente em células animais (e em raríssimas células vegetais).' },
+      // ── SÓ VEGETAL ──────────────────────────────────────────────────
+      { label:'Cloroplasto',               emoji:'🍀', answer:'vegetal', fact:'Cloroplasto: faz fotossíntese. Contém clorofila (pigmento verde). Exclusivo de células vegetais e algas.' },
+      { label:'Vacúolo central grande',    emoji:'💧', answer:'vegetal', fact:'Vacúolo central: exclusivo das células vegetais. Controla o teor de água e mantém a turgidez.' },
+      { label:'Parede celular',            emoji:'🧱', answer:'vegetal', fact:'Parede celular: feita de celulose, fica FORA da membrana plasmática. Dá rigidez à célula vegetal.' },
+      { label:'Clorofila',                 emoji:'🌿', answer:'vegetal', fact:'A clorofila é o pigmento verde dentro do cloroplasto. Só em células vegetais e algas.' },
+      { label:'Celulose',                  emoji:'🌾', answer:'vegetal', fact:'Celulose forma a parede celular das células vegetais. Nas células animais, não existe parede celular.' },
+    ],
+  },
+
+  funcao: {
+    title: 'RODADA 4 — Qual organela tem essa função?',
+    ms: 4600,
+    bins: null,
+    pool: [
+      {
+        label:'Produz energia (ATP) por respiração celular usando glicose e O₂. Gera CO₂ e H₂O',
+        emoji:'⚡', answer:'mito',
+        bins:[{key:'mito',label:'🫘 Mitocôndria'},{key:'cloro',label:'🍀 Cloroplasto'},{key:'liso',label:'🟡 Lisossomo'}],
+        fact:'Mitocôndria = usina energética. Produz ATP, a "moeda" que alimenta todas as atividades celulares.',
+      },
+      {
+        label:'Realiza fotossíntese usando luz solar, CO₂ e água. Produz glicose e libera O₂',
+        emoji:'☀️', answer:'cloro',
+        bins:[{key:'mito',label:'🫘 Mitocôndria'},{key:'cloro',label:'🍀 Cloroplasto'},{key:'vacuolo',label:'💧 Vacúolo'}],
+        fact:'Cloroplasto: a clorofila (pigmento verde) captura luz solar e converte em energia química (fotossíntese).',
+      },
+      {
+        label:'Tem ribossomos aderidos à membrana ("rugoso"). Produz e monta proteínas para secreção',
+        emoji:'🧶', answer:'rer',
+        bins:[{key:'rer',label:'🧶 Ret. Rugoso'},{key:'rel',label:'🧵 Ret. Liso'},{key:'golgi',label:'📦 Golgi'}],
+        fact:'RE Rugoso: "rugoso" pelos ribossomos colados. Produz proteínas que serão enviadas para fora da célula.',
+      },
+      {
+        label:'NÃO tem ribossomos ("liso"). Produz lipídios, hormônios e desintoxica substâncias',
+        emoji:'💊', answer:'rel',
+        bins:[{key:'rer',label:'🧶 Ret. Rugoso'},{key:'rel',label:'🧵 Ret. Liso'},{key:'pero',label:'🟢 Peroxissomo'}],
+        fact:'RE Liso: sem ribossomos (daí "liso"). Especialista em lipídios e hormônios esteroides.',
+      },
+      {
+        label:'Recebe proteínas do retículo rugoso, modifica e empacota para envio ao exterior da célula',
+        emoji:'📦', answer:'golgi',
+        bins:[{key:'golgi',label:'📦 Golgi'},{key:'rer',label:'🧶 Ret. Rugoso'},{key:'ribo',label:'⚪ Ribossomo'}],
+        fact:'Golgi = correio da célula. Recebe → modifica → empacota → envia. Trabalha em equipe com o RE rugoso.',
+      },
+      {
+        label:'Repleto de enzimas digestivas. Realiza digestão intracelular de organelas velhas e substâncias ingeridas',
+        emoji:'🗑️', answer:'liso',
+        bins:[{key:'liso',label:'🟡 Lisossomo'},{key:'pero',label:'🟢 Peroxissomo'},{key:'mito',label:'🫘 Mitocôndria'}],
+        fact:'Lisossomo: enzimas digestivas que decompõem o que a célula não quer mais. "Lixeiro" da célula.',
+      },
+      {
+        label:'Degrada substâncias específicas e tóxicas que entram na célula. Diferente do lisossomo',
+        emoji:'☣️', answer:'pero',
+        bins:[{key:'pero',label:'🟢 Peroxissomo'},{key:'liso',label:'🟡 Lisossomo'},{key:'golgi',label:'📦 Golgi'}],
+        fact:'Peroxissomo: degrada substâncias como ácidos graxos e toxinas. Produz peróxido de hidrogênio (água oxigenada).',
+      },
+      {
+        label:'Produz proteínas. É a ÚNICA organela presente em animais, vegetais E também em procariotas',
+        emoji:'⚪', answer:'ribo',
+        bins:[{key:'ribo',label:'⚪ Ribossomo'},{key:'rer',label:'🧶 Ret. Rugoso'},{key:'pero',label:'🟢 Peroxissomo'}],
+        fact:'Ribossomo é universal: existe em TODOS os tipos de célula — inclusive bactérias. Fábrica de proteínas.',
+      },
+      {
+        label:'Auxilia na divisão celular. Exclusivo de células animais (e de raríssimas células vegetais)',
+        emoji:'➰', answer:'centri',
+        bins:[{key:'centri',label:'➰ Centríolo'},{key:'ribo',label:'⚪ Ribossomo'},{key:'liso',label:'🟡 Lisossomo'}],
+      },
+      {
+        label:'Fina camada que reveste a célula. Controla o que entra e sai usando proteínas transportadoras',
+        emoji:'🚪', answer:'membrana',
+        bins:[{key:'membrana',label:'🟤 Membrana plasm.'},{key:'parede',label:'🧱 Parede celular'},{key:'nucleo',label:'🔵 Núcleo'}],
+        fact:'Membrana plasmática = "porteira" da célula. Seleciona o que entra e sai. Presente em TODA célula.',
+      },
+      {
+        label:'Sustentação e proteção da célula vegetal. Fica do lado de FORA da membrana. Feita de celulose',
+        emoji:'🧱', answer:'parede',
+        bins:[{key:'parede',label:'🧱 Parede celular'},{key:'membrana',label:'🟤 Membrana plasm.'},{key:'vacuolo',label:'💧 Vacúolo'}],
+        fact:'Parede celular: celulose é sua matéria-prima. Impede que a célula vegetal se rompa com o excesso de água.',
+      },
+      {
+        label:'Controla a quantidade de água na célula vegetal. Mantém a turgidez (firmeza) da célula',
+        emoji:'💧', answer:'vacuolo',
+        bins:[{key:'vacuolo',label:'💧 Vacúolo'},{key:'liso',label:'🟡 Lisossomo'},{key:'membrana',label:'🟤 Membrana plasm.'}],
+        fact:'Vacúolo central: ocupa a maior parte da célula vegetal. Regula a pressão osmótica interna.',
+      },
+      {
+        label:'Contém o DNA (ácido desoxirribonucleico). Tem carioteca. Controla as funções da célula',
+        emoji:'🔵', answer:'nucleo',
+        bins:[{key:'nucleo',label:'🔵 Núcleo'},{key:'ribo',label:'⚪ Ribossomo'},{key:'mito',label:'🫘 Mitocôndria'}],
+        fact:'Núcleo: "centro de comando". Carioteca = membrana nuclear que envolve o DNA. Só em eucariotas!',
+      },
+      {
+        label:'Material gelatinoso que preenche o espaço entre a membrana e o núcleo. Organelas mergulhadas nele',
+        emoji:'🫙', answer:'cito',
+        bins:[{key:'cito',label:'🫙 Citoplasma'},{key:'nucleo',label:'🔵 Núcleo'},{key:'membrana',label:'🟤 Membrana plasm.'}],
+        fact:'Citoplasma: composto de água e várias substâncias. É o "mar" onde as organelas flutuam.',
+      },
+      {
+        label:'É formado por carioteca, nucléolo e nucleoplasma. O DNA (material genético) se encontra nele',
+        emoji:'🧬', answer:'nucleo',
+        bins:[{key:'nucleo',label:'🔵 Núcleo'},{key:'cito',label:'🫙 Citoplasma'},{key:'ribo',label:'⚪ Ribossomo'}],
+        fact:'O núcleo tem: carioteca (membrana), nucléolo (produz RNA ribossômico) e nucleoplasma (onde fica o DNA).',
+      },
+      {
+        label:'Armazena informações hereditárias (DNA). Sem ela (sem carioteca) a célula é chamada procariota',
+        emoji:'💡', answer:'nucleo',
+        bins:[{key:'nucleo',label:'🔵 Núcleo'},{key:'mito',label:'🫘 Mitocôndria'},{key:'golgi',label:'📦 Golgi'}],
+        fact:'Células com núcleo verdadeiro (carioteca) = eucariotas. Sem carioteca, DNA livre no citoplasma = procariotas.',
+      },
+    ],
+  },
+
+  historia: {
+    title: 'RODADA 5 — Quem fez/disse isso?',
+    ms: 5200,
+    bins: null,
+    pool: [
+      {
+        label:'"Em 1665, observei cortiça no microscópio e dei o nome de célula às estruturas que vi"',
+        emoji:'🔭', answer:'hooke',
+        bins:[{key:'hooke',label:'🔭 Robert Hooke'},{key:'leeu',label:'🔬 Leeuwenhoek'},{key:'schwann',label:'📜 Schwann'}],
+        fact:'Hooke (1635-1703): "célula" vem do latim cellula = pequena cela. As estruturas lembravam as celas de um mosteiro.',
+      },
+      {
+        label:'"Fui o primeiro a observar micro-organismos vivos, que chamei de animalculos"',
+        emoji:'🔬', answer:'leeu',
+        bins:[{key:'hooke',label:'🔭 Hooke'},{key:'leeu',label:'🔬 Leeuwenhoek'},{key:'pasteur',label:'🦢 Pasteur'}],
+        fact:'Antonie van Leeuwenhoek (1632-1723): microscópios com até 1000x. Viu bactérias, protozoários e espermatozoides.',
+      },
+      {
+        label:'"Analisei uma amostra de água de lagoa e vi criaturas minúsculas que nomeei de animalculos"',
+        emoji:'💧', answer:'leeu',
+        bins:[{key:'leeu',label:'🔬 Leeuwenhoek'},{key:'hooke',label:'🔭 Hooke'},{key:'schwann',label:'📜 Schwann'}],
+        fact:'Leeuwenhoek foi o primeiro a ver micro-organismos vivos. Hoje sabemos que seus "animalculos" eram bactérias e protozoários.',
+      },
+      {
+        label:'"Meu microscópio de lente biconvexa ampliava amostras em até 1000 vezes"',
+        emoji:'🔭', answer:'leeu',
+        bins:[{key:'leeu',label:'🔬 Leeuwenhoek'},{key:'hooke',label:'🔭 Hooke'},{key:'pasteur',label:'🦢 Pasteur'}],
+        fact:'Leeuwenhoek produziu lentes biconvexas mais potentes que as de seus contemporâneos, pioneirando a microbiologia.',
+      },
+      {
+        label:'"Com Schleiden, propus em 1839: todos os seres vivos são feitos de células, e toda célula vem de outra"',
+        emoji:'📜', answer:'schwann',
+        bins:[{key:'schwann',label:'📜 Schwann'},{key:'hooke',label:'🔭 Hooke'},{key:'pasteur',label:'🦢 Pasteur'}],
+        fact:'Teoria Celular (Schwann + Schleiden, 1839): 1) Todo ser vivo é formado por células. 2) A célula é a menor unidade de vida. 3) Toda célula vem de outra célula.',
+      },
+      {
+        label:'"Os seres vivos podem surgir espontaneamente da matéria inanimada, graças ao princípio vital"',
+        emoji:'📖', answer:'aristo',
+        bins:[{key:'aristo',label:'📖 Aristóteles'},{key:'helmont',label:'🐀 Van Helmont'},{key:'redi',label:'🪰 Redi'}],
+        fact:'Aristóteles (384-322 a.C.) foi um dos primeiros a defender a geração espontânea, acreditando em um "princípio vital" que animaria a matéria.',
+      },
+      {
+        label:'"Vi ratos surgirem em roupas suadas misturadas a grãos de trigo — geração espontânea confirmada!"',
+        emoji:'🐀', answer:'helmont',
+        bins:[{key:'helmont',label:'🐀 Van Helmont'},{key:'needham',label:'🍲 Needham'},{key:'redi',label:'🪰 Redi'}],
+        fact:'Van Helmont (1580-1644): não percebeu que o ambiente úmido + alimento era perfeito para ratos que JÁ EXISTIAM. Nada surgiu do nada!',
+      },
+      {
+        label:'"Coloquei carne em pote aberto e em pote fechado com gaze. Larvas só surgiram no aberto"',
+        emoji:'🪰', answer:'redi',
+        bins:[{key:'redi',label:'🪰 Francesco Redi'},{key:'needham',label:'🍲 Needham'},{key:'helmont',label:'🐀 Van Helmont'}],
+        fact:'Redi (1688): larvas = ovos de mosca. No pote com gaze, moscas voavam por cima, mas não depositavam ovos. Biogênese!',
+      },
+      {
+        label:'"Meu experimento de 1688 foi um dos primeiros da biologia com grupo controle e grupo experimental"',
+        emoji:'🏆', answer:'redi',
+        bins:[{key:'redi',label:'🪰 Francesco Redi'},{key:'pasteur',label:'🦢 Pasteur'},{key:'spall',label:'🔥 Spallanzani'}],
+        fact:'Redi foi pioneiro no método científico experimental em biologia. Pote aberto = controle; pote com gaze = experimental.',
+      },
+      {
+        label:'"Fervei caldo de carne, fechei com cortiça. Dias depois surgiram micro-organismos — força vital existe!"',
+        emoji:'🍲', answer:'needham',
+        bins:[{key:'needham',label:'🍲 Needham'},{key:'spall',label:'🔥 Spallanzani'},{key:'pasteur',label:'🦢 Pasteur'}],
+        fact:'John Needham (1745): errou porque a vedação com cortiça era FALHA e a fervura, INSUFICIENTE. Micro-organismos do ar entravam pelas frestas.',
+      },
+      {
+        label:'"Defendi que os micro-organismos de Spallanzani vieram do ar — a cortiça vedou mal e a fervura destruiu a força vital"',
+        emoji:'💨', answer:'needham',
+        bins:[{key:'needham',label:'🍲 Needham'},{key:'spall',label:'🔥 Spallanzani'},{key:'redi',label:'🪰 Redi'}],
+        fact:'Needham rebateu Spallanzani dizendo que a fervura excessiva destruiria a "força vital" do ar. O debate só terminou com Pasteur.',
+      },
+      {
+        label:'"Fervi 8 frascos por mais tempo e vedei 4 hermeticamente. Os herméticos ficaram sem micro-organismos!"',
+        emoji:'🔥', answer:'spall',
+        bins:[{key:'needham',label:'🍲 Needham'},{key:'spall',label:'🔥 Spallanzani'},{key:'redi',label:'🪰 Redi'}],
+        fact:'Spallanzani (1770): refez o experimento de Needham com fervura mais longa + vedação hermética. Resultado: sem micro-organismos nos herméticos. Biogênese!',
+      },
+      {
+        label:'"Meu frasco pescoço de cisne deixava o ar entrar, mas os micro-organismos ficavam presos no gargalo curvo"',
+        emoji:'🦢', answer:'pasteur',
+        bins:[{key:'pasteur',label:'🦢 Pasteur'},{key:'spall',label:'🔥 Spallanzani'},{key:'needham',label:'🍲 Needham'}],
+        fact:'Pasteur (1860): o gargalo em "S" permitia a entrada de ar (satisfazendo abiogenenistas), mas micro-organismos ficavam presos. Genial!',
+      },
+      {
+        label:'"Ao quebrar o gargalo do meu frasco, o caldo que estava limpo se contaminou em poucos dias"',
+        emoji:'💥', answer:'pasteur',
+        bins:[{key:'pasteur',label:'🦢 Pasteur'},{key:'spall',label:'🔥 Spallanzani'},{key:'needham',label:'🍲 Needham'}],
+        fact:'Pasteur quebrou o gargalo → micro-organismos do ar entraram → caldo se contaminou. Provou que eram eles, não a "força vital", a causa.',
+      },
+      {
+        label:'Propôs o experimento em 1860 que encerrou definitivamente o debate entre abiogênese e biogênese',
+        emoji:'🏅', answer:'pasteur',
+        bins:[{key:'pasteur',label:'🦢 Pasteur'},{key:'spall',label:'🔥 Spallanzani'},{key:'redi',label:'🪰 Redi'}],
+        fact:'Louis Pasteur (1822-1895) encerrou séculos de debate com o experimento do frasco pescoço de cisne. Biogênese: vida só vem de vida!',
+      },
+    ],
+  },
+};
+
+const ORDER = ['vida','tipo','celula','funcao','historia'];
+const BEST  = 'labrel-v3-best';
+
+const $  = id => document.getElementById(id);
+const screens = { intro:$('intro'), game:$('game'), over:$('over') };
+
+function showScreen(name) {
+  Object.values(screens).forEach(s => s.classList.remove('active'));
+  screens[name].classList.add('active');
+}
+
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length-1; i > 0; i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+let S; // state
+function reset() {
+  S = {
+    ri: 0,                  // round index
+    queue: mkQueue(ORDER[0]),
+    infinite: false,
+    score: 0, lives: 3, combo: 0,
+    cur: null, tid: null, locked: false,
+  };
+}
+function mkQueue(key) {
+  return shuffle(ROUNDS[key].pool.map(it => ({ ...it, cat: key })));
+}
+function mkAll() {
+  return shuffle(ORDER.flatMap(k => ROUNDS[k].pool.map(it => ({ ...it, cat: k }))));
+}
+
+function ui() {
+  $('hearts').textContent = '❤️'.repeat(S.lives) + '🖤'.repeat(3 - S.lives);
+  $('score').textContent  = S.score;
+  $('combo').textContent  = S.combo >= 2 ? '🔥 combo x' + S.combo : '';
+}
+
+function banner(txt) {
+  const b = $('banner');
+  b.textContent = txt;
+  b.classList.remove('pop');
+  void b.offsetWidth;
+  b.classList.add('pop');
+}
+
+function timeFor(item) {
+  const base = ROUNDS[item.cat].ms;
+  const cut  = Math.min(S.combo * 65, base - 900);
+  return base - cut;
+}
+
+function next() {
+  $('toast').classList.remove('show');
+  if (!S.queue.length) {
+    if (S.infinite) {
+      S.queue = mkAll();
+    } else {
+      S.ri++;
+      if (S.ri < ORDER.length) {
+        S.queue = mkQueue(ORDER[S.ri]);
+        banner(ROUNDS[ORDER[S.ri]].title);
+      } else {
+        S.infinite = true;
+        S.queue = mkAll();
+        banner('🌪️ MODO RELÂMPAGO — tudo misturado, cada vez mais rápido!');
+      }
+    }
+  }
+  S.cur = S.queue.shift();
+  render();
+}
+
+function render() {
+  const item = S.cur;
+  const bins = item.bins || ROUNDS[item.cat].bins;
+
+  $('chip').textContent  = CHIP[item.cat] || '';
+  $('emoji').textContent = item.emoji;
+
+  const lbl = $('label');
+  lbl.textContent = item.label;
+  lbl.classList.toggle('sm', item.label.length > 42);
+
+  $('card').classList.remove('shake','good');
+  $('toast').classList.remove('show');
+
+  const bw = $('bins');
+  bw.innerHTML = '';
+  bins.forEach(b => {
+    const btn = document.createElement('button');
+    btn.className   = 'bin';
+    btn.textContent = b.label;
+    btn.dataset.key = b.key;
+    btn.addEventListener('click', () => answer(b.key, btn));
+    bw.appendChild(btn);
+  });
+
+  S.locked = false;
+
+  const bar = $('bar');
+  bar.style.transition = 'none';
+  bar.style.width = '100%';
+  void bar.offsetWidth;
+  const ms = timeFor(item);
+  bar.style.transition = `width ${ms}ms linear`;
+  bar.style.width = '0%';
+
+  clearTimeout(S.tid);
+  S.tid = setTimeout(() => answer(null, null), ms);
+}
+
+function answer(key, btnEl) {
+  if (S.locked) return;
+  S.locked = true;
+  clearTimeout(S.tid);
+
+  const item    = S.cur;
+  const correct = key === item.answer;
+  const card    = $('card');
+
+  if (correct) {
+    S.score += 10 + S.combo * 3;
+    S.combo++;
+    card.classList.add('good');
+    if (btnEl) btnEl.classList.add('ok');
+  } else {
+    S.combo = 0;
+    S.lives--;
+    card.classList.add('shake');
+    if (btnEl) btnEl.classList.add('err');
+    document.querySelectorAll('.bin').forEach(b => {
+      if (b.dataset.key === item.answer) b.classList.add('ok');
+    });
+  }
+  ui();
+
+  const go = () => S.lives <= 0 ? over() : next();
+
+  if (item.fact) {
+    const t = $('toast');
+    t.innerHTML = '<b>💡 Sabia?</b> ' + item.fact;
+    t.classList.add('show');
+    setTimeout(go, 2600);
+  } else {
+    setTimeout(go, correct ? 380 : 620);
+  }
+}
+
+function over() {
+  clearTimeout(S.tid);
+  const best = Math.max(S.score, parseInt(localStorage.getItem(BEST)||'0',10));
+  localStorage.setItem(BEST, best);
+  $('final').textContent = S.score;
+  $('best').textContent  = 'Recorde: ' + best;
+  showScreen('over');
+}
+
+function start() {
+  reset(); ui();
+  banner(ROUNDS[ORDER[0]].title);
+  showScreen('game');
+  next();
+}
+
+$('btn-start').addEventListener('click', start);
+$('btn-again').addEventListener('click', start);
+$('btn-menu').addEventListener('click', () => showScreen('intro'));
+
+})();
+</script>
+</body>
+</html>
