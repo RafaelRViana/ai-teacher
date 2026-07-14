@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌍 Expedição Geográfica · Quiz</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: linear-gradient(160deg, #0c1a16 0%, #123a2c 50%, #0c1a16 100%);
+    color: #eafaf1;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+  .card {
+    background: rgba(10, 26, 20, 0.92);
+    border: 2px solid #57c785;
+    border-radius: 16px;
+    max-width: 640px;
+    width: 100%;
+    padding: 28px;
+    box-shadow: 0 0 40px rgba(87, 199, 133, 0.25);
+    text-align: center;
+  }
+  h1 { color: #57c785; font-size: 1.7em; margin-bottom: 8px; }
+  .subtitle { color: #9dc4b3; font-style: italic; margin-bottom: 20px; }
+  .hud {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.1em;
+    margin-bottom: 16px;
+    color: #ffcf5c;
+  }
+  .categoria {
+    display: inline-block;
+    background: #16412f;
+    color: #b7e8cd;
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 0.85em;
+    margin-bottom: 14px;
+  }
+  .pergunta { font-size: 1.22em; line-height: 1.5; margin-bottom: 20px; min-height: 70px; }
+  .pergunta b { color: #ffcf5c; }
+  .opcoes { display: grid; gap: 10px; }
+  .opcoes button {
+    font-family: inherit;
+    font-size: 1.05em;
+    padding: 13px;
+    border: 2px solid #2e6b4d;
+    border-radius: 10px;
+    background: #123a2c;
+    color: #eafaf1;
+    cursor: pointer;
+    transition: transform .1s, background .2s;
+    text-align: left;
+  }
+  .opcoes button:hover:not(:disabled) { background: #185038; transform: scale(1.02); }
+  .opcoes button.certa { background: #1e5d34; border-color: #7dffa8; }
+  .opcoes button.errada { background: #5c1a1a; border-color: #ff6b6b; }
+  .feedback { min-height: 52px; margin-top: 16px; font-size: 1.03em; line-height: 1.45; }
+  .feedback .dica { color: #9dc4b3; font-size: 0.92em; }
+  .btn-grande {
+    font-family: inherit;
+    font-size: 1.2em;
+    padding: 14px 36px;
+    margin-top: 18px;
+    border: none;
+    border-radius: 10px;
+    background: #57c785;
+    color: #04160e;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .btn-grande:hover { background: #6fd89a; }
+  .globo { font-size: 2.5em; animation: girar 4s linear infinite; display: inline-block; }
+  @keyframes girar { 0% { transform: rotate(0); } 100% { transform: rotate(360deg); } }
+  .barra { background: #123a2c; border-radius: 8px; height: 10px; margin-bottom: 18px; overflow: hidden; }
+  .barra div { background: #57c785; height: 100%; width: 0%; transition: width .4s; }
+  .escondido { display: none; }
+  .patente { font-size: 1.4em; color: #ffcf5c; margin: 12px 0; }
+</style>
+</head>
+<body>
+<div class="card">
+
+  <!-- TELA INICIAL -->
+  <div id="tela-inicio">
+    <div class="globo">🌍</div>
+    <h1>Expedição Geográfica</h1>
+    <p class="subtitle">O ser humano e o espaço geográfico</p>
+    <p style="line-height:1.6; margin-bottom:8px;">
+      Parta em uma expedição pelo mundo! Responda os <b style="color:#ffcf5c">14 desafios</b>
+      sobre paisagem, território, fronteiras e a marca humana no espaço — e descubra seu título de explorador.
+    </p>
+    <p class="subtitle" style="font-size:.9em">Você tem 3 bússolas (vidas). Cada acerto vale 10 pontos. Boa expedição!</p>
+    <button class="btn-grande" onclick="iniciar()">Iniciar expedição 🧭</button>
+  </div>
+
+  <!-- TELA DO JOGO -->
+  <div id="tela-jogo" class="escondido">
+    <div class="hud">
+      <span id="progresso">Desafio 1/14</span>
+      <span id="vidas">🧭🧭🧭</span>
+      <span id="pontos">⭐ 0</span>
+    </div>
+    <div class="barra"><div id="barra-fill"></div></div>
+    <div class="categoria" id="categoria"></div>
+    <div class="pergunta" id="pergunta"></div>
+    <div class="opcoes" id="opcoes"></div>
+    <div class="feedback" id="feedback"></div>
+  </div>
+
+  <!-- TELA FINAL -->
+  <div id="tela-fim" class="escondido">
+    <div style="font-size:3em" id="emoji-final">🏆</div>
+    <h1>Expedição concluída!</h1>
+    <div class="patente" id="patente"></div>
+    <p id="resumo" style="line-height:1.6"></p>
+    <button class="btn-grande" onclick="location.reload()">Explorar de novo 🔄</button>
+  </div>
+
+</div>
+
+<script>
+// ponytail: banco fixo de perguntas embaralhadas; conteúdo do cap. "O Ser Humano e o Espaço Geográfico" (Bernoulli)
+const PERGUNTAS = [
+  { cat: "🧠 Espaço geográfico", q: "Segundo Milton Santos, o que é o espaço geográfico?", ops: [
+      "Um conjunto fixo e imutável, feito só de objetos naturais",
+      "A combinação de sistemas de objetos e de ações humanas, que se renovam ao longo das épocas",
+      "Apenas as ações humanas, sendo os objetos sem importância",
+      "Um conjunto caótico onde as ações humanas não influenciam nada"
+    ], certa: 1,
+    dica: "Para Milton Santos, o espaço é um conjunto indissociável de sistemas de objetos e sistemas de ações que se influenciam e se renovam com o tempo." },
+
+  { cat: "🏞️ Paisagem", q: "Uma plantação de eucalipto, com relevo e árvores, é considerada paisagem:", ops: [
+      "Natural, porque só tem árvores e relevo",
+      "Cultural (antrópica), porque foi produzida pela ação humana",
+      "Natural, porque não tem prédios",
+      "Não é considerada paisagem"
+    ], certa: 1,
+    dica: "Mesmo parecendo natural, a plantação foi produzida pela ação humana — logo é uma paisagem cultural (ou antrópica)." },
+
+  { cat: "🏞️ Paisagem", q: "A paisagem cultural também pode ser chamada de:", ops: [
+      "Antrópica", "Natural", "Sonora", "Geológica"
+    ], certa: 0,
+    dica: "Paisagem cultural = antrópica: aquela que recebeu intervenção humana." },
+
+  { cat: "👁️ Percepção", q: "Sobre a leitura da paisagem, é CORRETO afirmar que ela:", ops: [
+      "Depende apenas da visão",
+      "É sempre igual para todas as pessoas",
+      "Chega por vários sentidos (visão, audição, olfato, tato) e varia conforme quem observa",
+      "Não se altera com o tempo nem com o ângulo"
+    ], certa: 2,
+    dica: "A paisagem é a dimensão da percepção: chega aos sentidos e pode ser vista e sentida de formas diferentes conforme o momento, o ângulo e o observador." },
+
+  { cat: "👁️ Planos da paisagem", q: "Na leitura de uma paisagem, a linha do horizonte corresponde:", ops: [
+      "Ao primeiro plano, com os elementos mais próximos e detalhados",
+      "Ao último plano, com os elementos mais distantes e sem detalhes claros",
+      "Aos sons da paisagem",
+      "Aos elementos culturais apenas"
+    ], certa: 1,
+    dica: "No primeiro plano estão os elementos mais próximos; na linha do horizonte (último plano) estão os mais distantes, sem clareza de detalhes." },
+
+  { cat: "🔄 Transformações do espaço", q: "Para compreender uma transformação do espaço, o livro sugere questionar quatro fatores. São eles:", ops: [
+      "Clima, relevo, vegetação e solo",
+      "Local, época, sociedade e motivação",
+      "Norte, sul, leste e oeste",
+      "Terra, água, ar e fogo"
+    ], certa: 1,
+    dica: "É preciso questionar: de qual LOCAL se trata, em que ÉPOCA, por qual SOCIEDADE e qual a MOTIVAÇÃO das mudanças." },
+
+  { cat: "⚙️ Trabalho e tecnologia", q: "Qual o papel do desenvolvimento tecnológico na construção do espaço geográfico?", ops: [
+      "Não interfere no espaço",
+      "Só transforma as áreas urbanas",
+      "Transforma o espaço tanto no campo quanto na cidade",
+      "Faz o espaço voltar a ser natural"
+    ], certa: 2,
+    dica: "As tecnologias transformam as áreas rurais (formas de produção) e as urbanas (edificações e vias), mudando os modos de vida." },
+
+  { cat: "🗺️ Território", q: "Sobre o território brasileiro, é correto dizer que ele:", ops: [
+      "Não é reconhecido pelos outros países",
+      "É reconhecido por todos os países do mundo",
+      "Pertence a outro país",
+      "Não possui fronteiras"
+    ], certa: 1,
+    dica: "O território brasileiro é reconhecido por todos os países. A questão interna debatida é a demarcação das terras indígenas." },
+
+  { cat: "🏹 Terras Indígenas", q: "De acordo com a Constituição de 1988, a Terra Indígena (TI) é:", ops: [
+      "Um Estado autônomo dentro do Brasil",
+      "Um território demarcado e protegido, destinado à posse permanente dos povos indígenas",
+      "Uma área conquistada por guerras entre tribos",
+      "Um território sem dono"
+    ], certa: 1,
+    dica: "A TI é um território demarcado e protegido, reconhecido como patrimônio da União, para a posse permanente e o usufruto exclusivo dos povos indígenas." },
+
+  { cat: "👥 Estado e nação", q: "Os curdos, que vivem espalhados por países do Oriente Médio, são um exemplo de:", ops: [
+      "Um Estado com território definido",
+      "Uma nação sem Estado próprio",
+      "Uma terra indígena",
+      "Uma fronteira natural"
+    ], certa: 1,
+    dica: "Os curdos são uma nação (identidade comum) sem Estado nem território definidos, e desejam constituir um Estado-nação." },
+
+  { cat: "👥 Estado e nação", q: "Quais povos, entre os estudados, desejam estabelecer um Estado-nação?", ops: [
+      "Mexicanos e brasileiros",
+      "Curdos e tibetanos",
+      "Portugueses e franceses",
+      "Nenhum povo deseja isso"
+    ], certa: 1,
+    dica: "Curdos e tibetanos reivindicam a criação de um Estado próprio. Os mexicanos buscavam migrar; os povos indígenas reivindicam a demarcação de terras, não um Estado separado." },
+
+  { cat: "🚧 Fronteiras", q: "A fronteira entre Brasil e Paraguai é o Rio Paraná, atravessado pela Ponte da Amizade. Como classificá-la?", ops: [
+      "Fronteira artificial, com muros e disputas",
+      "Fronteira natural, com travessia tranquila e sem disputas",
+      "Não existe fronteira entre os dois países",
+      "Fronteira feita de arame farpado"
+    ], certa: 1,
+    dica: "O Rio Paraná é um elemento natural que delimita a fronteira; a travessia é tranquila (Ponte da Amizade) e não há disputas territoriais." },
+
+  { cat: "🚧 Fronteiras", q: "Na fronteira entre Estados Unidos e México foram instalados muros e grades. Isso é um exemplo de fronteira:", ops: [
+      "Natural, formada por um rio",
+      "Artificial, construída pela ação humana",
+      "Cultural, feita de tradições",
+      "Sonora"
+    ], certa: 1,
+    dica: "Muros e grades foram construídos para impedir a imigração ilegal — é uma fronteira artificial." },
+
+  { cat: "🕊️ Muros e pontes", q: "O Papa Francisco disse: \"temos que derrubar muros e construir pontes\". Relacionando à Geografia, a frase sugere:", ops: [
+      "Fechar as fronteiras entre os países",
+      "Separar as diferentes nações",
+      "Aproximar povos e nações em vez de dividi-los",
+      "Construir mais muros nas fronteiras"
+    ], certa: 2,
+    dica: "\"Pontes\" simbolizam aproximação e diálogo entre nações; \"muros\", separação. A frase defende unir os povos apesar das diferenças." },
+
+  { cat: "🧊 Espaço natural x geográfico", q: "Nas imagens da Antártida, aquela em que a natureza permanece praticamente inalterada representa o:", ops: [
+      "Espaço geográfico",
+      "Espaço natural",
+      "Espaço urbano",
+      "Espaço cultural"
+    ], certa: 1,
+    dica: "O espaço natural é composto só por elementos naturais (o meio físico), com pouca ou nenhuma interferência humana. Quando surge a ação humana, temos o espaço geográfico." },
+
+  { cat: "🧊 Espaço natural x geográfico", q: "Qual característica é do ESPAÇO NATURAL?", ops: [
+      "É composto apenas por elementos produzidos pela natureza",
+      "Resulta das necessidades da sociedade em cada momento histórico",
+      "É formado por prédios e ferramentas humanas",
+      "Depende das tecnologias disponíveis para alterá-lo"
+    ], certa: 0,
+    dica: "O espaço natural corresponde ao meio físico, produzido pela natureza. Já o espaço geográfico resulta da interação entre o meio e os seres humanos." },
+
+  { cat: "🧊 Espaço natural x geográfico", q: "Sobre o espaço natural no planeta atualmente, é correto afirmar que ele é:", ops: [
+      "Cada vez mais abundante",
+      "Cada vez mais escasso",
+      "Impossível de existir",
+      "Igual ao espaço geográfico"
+    ], certa: 1,
+    dica: "Com o avanço da ação humana, o espaço natural (praticamente sem interferência) está cada vez mais escasso no planeta." },
+
+  { cat: "🏡 O lugar", q: "Na Geografia, o conceito de \"lugar\" refere-se ao espaço:", ops: [
+      "Com o qual temos vínculos afetivos e do qual nos sentimos parte",
+      "Delimitado por fronteiras e disputado por países",
+      "Composto apenas por elementos naturais",
+      "Governado por um Estado soberano"
+    ], certa: 0,
+    dica: "Lugar é o espaço especial por algum motivo, com o qual temos vínculos afetivos, identidade e sentimento de pertencimento." },
+
+  { cat: "🏡 O lugar", q: "A frase de Dorothy, no filme O Mágico de Oz, \"Não há lugar como o nosso lar\", ilustra qual categoria geográfica?", ops: [
+      "Território", "Fronteira", "Lugar", "Nação"
+    ], certa: 2,
+    dica: "A frase expressa o vínculo afetivo e o pertencimento a um espaço — exatamente a ideia de LUGAR na Geografia." },
+
+  { cat: "🏡 O lugar", q: "Quais dimensões estão ligadas ao conceito de lugar?", ops: [
+      "Latitude, longitude e altitude",
+      "Pertencimento, afeto e identidade",
+      "Norte, sul e leste",
+      "Governo, exército e leis"
+    ], certa: 1,
+    dica: "O lugar reúne pertencimento, afeto e identidade — os vínculos que criamos com um espaço e com quem o compartilha." },
+
+  { cat: "🏡 O lugar", q: "Na música \"Serra da Boa Esperança\", os versos revelam saudade e vínculo com a terra natal. Isso remete à categoria:", ops: [
+      "Fronteira", "Lugar", "Estado", "Espaço natural"
+    ], certa: 1,
+    dica: "Saudade, memória afetiva e vínculo com a terra são elementos da categoria LUGAR." },
+
+  { cat: "👁️ Percepção", q: "Os ruídos e sons que fazem parte de uma paisagem formam a chamada:", ops: [
+      "Paisagem sonora", "Paisagem cultural", "Linha do horizonte", "Paisagem natural"
+    ], certa: 0,
+    dica: "A paisagem sonora são os sons e ruídos que compõem a paisagem; eles mudam conforme a distância do observador." },
+
+  { cat: "👁️ Percepção", q: "Na ilha de Bornholm, uma mesma paisagem parece só natural ou revela construções. Isso depende principalmente:", ops: [
+      "Do país onde fica",
+      "Do ângulo e da perspectiva de observação",
+      "Do preço das casas",
+      "Da estação do ano"
+    ], certa: 1,
+    dica: "O ângulo e a perspectiva de quem observa mudam o que se vê: de perto, só elementos naturais; de longe, construções e paisagismo." },
+
+  { cat: "🏞️ Paisagem", q: "O bairro da Liberdade, em São Paulo, tem paisagem marcada pela cultura:", ops: [
+      "Alemã", "Asiática (japonesa)", "Africana", "Indígena"
+    ], certa: 1,
+    dica: "A arquitetura, o comércio, a gastronomia e as festividades da Liberdade valorizam a imigração japonesa/asiática — paisagem cultural." },
+
+  { cat: "🏗️ Transformações do espaço", q: "Casarões que viram museus e fábricas que viram shoppings mostram que a paisagem:", ops: [
+      "Nunca muda",
+      "Pode mudar de função com o passar do tempo",
+      "Volta a ser natural",
+      "Deixa de ser cultural"
+    ], certa: 1,
+    dica: "Com o tempo, elementos da paisagem podem adquirir funções diferentes das originais — uma marca das transformações do espaço." },
+
+  { cat: "🏙️ Balneário Camboriú", q: "Em Balneário Camboriú (SC), a \"Dubai brasileira\", a última casa de madeira de 1956 cercada de arranha-céus mostra:", ops: [
+      "Uma paisagem que nunca se transformou",
+      "A transformação da paisagem pela ação humana ao longo do tempo",
+      "Uma paisagem exclusivamente natural",
+      "Que não houve valorização dos imóveis"
+    ], certa: 1,
+    dica: "O contraste entre a antiga casa de madeira e os prédios revela a intensa transformação da paisagem urbana pela ação humana." },
+
+  { cat: "🏹 Terras Indígenas", q: "Qual órgão é responsável pela demarcação das terras indígenas no Brasil?", ops: [
+      "FUNAI", "IBGE", "ONU", "FIFA"
+    ], certa: 0,
+    dica: "A FUNAI (Fundação Nacional dos Povos Indígenas) é responsável pela demarcação das terras indígenas, reconhecidas como patrimônio da União." },
+
+  { cat: "👥 Estado e nação", q: "O Tibete, que reivindica independência, é atualmente:", ops: [
+      "Um Estado independente",
+      "Uma região autônoma da China",
+      "Uma terra indígena brasileira",
+      "Uma fronteira natural"
+    ], certa: 1,
+    dica: "O Tibete é uma região autônoma da China; fatores culturais e históricos levam parte da população a reivindicar a criação de um Estado próprio." },
+
+  { cat: "🖼️ Desigualdade no espaço", q: "Uma charge mostra uma criança em meio ao lixo apontando para arranha-céus e dizendo \"quero morar naquele mundo\". Ela representa:", ops: [
+      "A igualdade entre as pessoas",
+      "A desigualdade social presente no espaço geográfico",
+      "Uma paisagem natural preservada",
+      "Uma fronteira artificial"
+    ], certa: 1,
+    dica: "O contraste entre a paisagem de pobreza e os prédios ao fundo evidencia a desigualdade socioespacial." },
+
+  { cat: "🧭 Categorias da Geografia", q: "Assinale a alternativa que reúne categorias de análise da Geografia estudadas no capítulo:", ops: [
+      "Célula, tecido, órgão e sistema",
+      "Espaço geográfico, paisagem, lugar e território",
+      "Soma, subtração, multiplicação e divisão",
+      "Sujeito, verbo, objeto e predicado"
+    ], certa: 1,
+    dica: "O capítulo trabalha as categorias: espaço geográfico, paisagem, lugar, território (além de fronteira, Estado e nação)." },
+];
+
+const POR_PARTIDA = 14; // sorteia 14 do banco a cada jogo
+
+let i = 0, pontos = 0, vidas = 3, ordem = [];
+
+function iniciar() {
+  ordem = [...PERGUNTAS].sort(() => Math.random() - 0.5).slice(0, POR_PARTIDA);
+  document.getElementById("tela-inicio").classList.add("escondido");
+  document.getElementById("tela-jogo").classList.remove("escondido");
+  mostrar();
+}
+
+function mostrar() {
+  const p = ordem[i];
+  document.getElementById("progresso").textContent = `Desafio ${i + 1}/${ordem.length}`;
+  document.getElementById("vidas").textContent = "🧭".repeat(vidas) || "💀";
+  document.getElementById("pontos").textContent = `⭐ ${pontos}`;
+  document.getElementById("barra-fill").style.width = (i / ordem.length * 100) + "%";
+  document.getElementById("categoria").textContent = p.cat;
+  document.getElementById("pergunta").innerHTML = p.q;
+  document.getElementById("feedback").innerHTML = "";
+  const div = document.getElementById("opcoes");
+  div.innerHTML = "";
+  p.ops.forEach((op, idx) => {
+    const b = document.createElement("button");
+    b.innerHTML = op;
+    b.onclick = () => responder(idx, b);
+    div.appendChild(b);
+  });
+}
+
+function responder(idx, botao) {
+  const p = ordem[i];
+  const botoes = document.querySelectorAll("#opcoes button");
+  botoes.forEach(b => b.disabled = true);
+  botoes[p.certa].classList.add("certa");
+  const fb = document.getElementById("feedback");
+  if (idx === p.certa) {
+    pontos += 10;
+    fb.innerHTML = `✅ <b>Certa a rota!</b><br><span class="dica">${p.dica}</span>`;
+  } else {
+    vidas--;
+    botao.classList.add("errada");
+    fb.innerHTML = `❌ <b>Rota errada!</b><br><span class="dica">${p.dica}</span>`;
+  }
+  document.getElementById("vidas").textContent = "🧭".repeat(vidas) || "💀";
+  document.getElementById("pontos").textContent = `⭐ ${pontos}`;
+  setTimeout(() => {
+    i++;
+    if (vidas === 0 || i >= ordem.length) fim();
+    else mostrar();
+  }, 2800);
+}
+
+function fim() {
+  document.getElementById("tela-jogo").classList.add("escondido");
+  document.getElementById("tela-fim").classList.remove("escondido");
+  const max = ordem.length * 10;
+  let patente, emoji;
+  if (vidas === 0)            { patente = "Explorador Perdido 🧭"; emoji = "🌫️"; }
+  else if (pontos >= max)     { patente = "Grande Geógrafo — nível Milton Santos!"; emoji = "🏆"; }
+  else if (pontos >= max * .7){ patente = "Cartógrafo Mestre"; emoji = "🥇"; }
+  else if (pontos >= max * .4){ patente = "Explorador Aprendiz"; emoji = "🗺️"; }
+  else                        { patente = "Aventureiro Iniciante"; emoji = "🧳"; }
+  document.getElementById("emoji-final").textContent = emoji;
+  document.getElementById("patente").textContent = patente;
+  document.getElementById("resumo").innerHTML =
+    vidas === 0
+      ? `Suas bússolas acabaram... Você fez <b>${pontos}</b> pontos. Reabasteça e tente de novo!`
+      : `Você fez <b>${pontos}</b> de ${max} pontos e terminou com ${vidas} bússola(s). O espaço geográfico não tem mais segredos para você!`;
+}
+</script>
+</body>
+</html>
