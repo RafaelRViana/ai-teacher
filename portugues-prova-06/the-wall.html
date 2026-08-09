@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🟢 The Wall — Pronomes</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family:'Trebuchet MS', Verdana, sans-serif;
+    background:radial-gradient(ellipse at top,#101a2e 0%,#05070d 70%);
+    color:#eef3fa; min-height:100vh; padding:14px; display:flex; justify-content:center;
+  }
+  .wrap { width:100%; max-width:640px; }
+  h1 { text-align:center; font-size:1.5em; letter-spacing:2px; color:#7ee787;
+       text-shadow:0 0 16px rgba(126,231,135,.5); }
+  .sub { text-align:center; color:#8fb6d9; font-size:.82em; margin:4px 0 14px; }
+
+  .hud { display:flex; justify-content:space-between; align-items:center; gap:10px;
+         background:#0d1728; border:2px solid #24405f; border-radius:12px; padding:10px 14px; margin-bottom:10px; }
+  .hud .banca { font-size:1.35em; font-weight:bold; color:#7ee787; }
+  .hud .banca.baixa { color:#f87171; }
+  .hud .info { font-size:.78em; color:#8fb6d9; text-align:right; line-height:1.4; }
+
+  canvas { width:100%; height:auto; display:block; border:2px solid #24405f;
+           border-radius:12px; background:#070d18; }
+
+  .painel { background:#0d1728; border:2px solid #24405f; border-radius:12px;
+            padding:14px; margin-top:10px; }
+  .instru { text-align:center; color:#ffd54a; font-size:.95em; margin-bottom:10px; }
+  .calhas { display:flex; gap:6px; }
+  .calhas button { flex:1; font-family:inherit; font-size:1.1em; padding:12px 4px;
+                   background:#14243d; color:#eef3fa; border:2px solid #3a6ea5;
+                   border-radius:10px; cursor:pointer; }
+  .calhas button:hover { background:#1e3960; }
+  .calhas button.sel { background:#ffd54a; color:#05070d; border-color:#ffd54a; font-weight:bold; }
+  .grande:disabled { opacity:.35; cursor:default; }
+
+  .tags { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px; }
+  .tag { background:#1d3a5c; color:#9fd2ff; border-radius:20px; padding:3px 12px; font-size:.72em; }
+  .tag.dif { background:#3a2a05; color:#ffd54a; }
+  .pergunta { font-size:1.05em; line-height:1.5; margin-bottom:12px; }
+  .pergunta b, .pergunta i { color:#ffd54a; }
+  .opcoes { display:grid; gap:8px; }
+  .op { display:flex; gap:10px; text-align:left; font-family:inherit; font-size:.98em;
+        padding:10px 13px; background:#14243d; color:#eef3fa; border:2px solid #3a6ea5;
+        border-radius:999px; cursor:pointer; transition:.15s; }
+  .op:hover:not(:disabled) { background:#1e3960; }
+  .op .letra { color:#ffd54a; font-weight:bold; }
+  .op:disabled { cursor:default; }
+  .op.certa { background:#146b38; border-color:#7ee787; }
+  .op.errada { background:#6b1c1c; border-color:#f87171; }
+
+  .aviso { border-left:4px solid #7ee787; background:#0f2418; padding:10px 12px;
+           border-radius:8px; margin-top:12px; font-size:.9em; line-height:1.5; }
+  .aviso.ruim { border-left-color:#f87171; background:#251111; }
+  .aviso b { color:#ffd54a; }
+
+  .grande { display:block; width:100%; font-family:inherit; font-size:1em; padding:12px;
+            margin-top:8px; border-radius:10px; cursor:pointer; font-weight:bold; border:2px solid; }
+  .contrato { background:#2a1f05; color:#ffd54a; border-color:#ffd54a; }
+  .arriscar { background:#0f2418; color:#7ee787; border-color:#7ee787; }
+  .final { text-align:center; }
+  .final h2 { color:#ffd54a; font-size:1.4em; margin-bottom:6px; }
+  .premio { font-size:2em; color:#7ee787; margin:10px 0; }
+  .final button { width:auto; padding:12px 26px; background:#7ee787; color:#05070d;
+                  border:none; border-radius:999px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🟢 THE WALL 🔴</h1>
+  <div class="sub">Bolas verdes somam · bolas vermelhas subtraem — tudo sobre PRONOMES</div>
+  <div class="hud">
+    <div><div style="font-size:.7em;color:#8fb6d9">BANCA</div><div class="banca" id="banca">R$ 0</div></div>
+    <div class="info" id="info"></div>
+  </div>
+  <canvas id="wall" width="600" height="440"></canvas>
+  <div class="painel" id="painel"></div>
+</div>
+
+<script src="pronomes-banco.js"></script>
+<script>
+// Perguntas: pronomes-banco.js (NIVEIS + BANCO)
+
+// ---------- A parede ----------
+const SLOTS  = 9;                       // casas na base
+const ROWS   = 10;                      // fileiras de pinos (par → a bola sempre cai numa casa inteira)
+const CHUTES = [0, 2, 4, 6, 8];         // calhas de largada (coluna da casa)
+const VALORES = [50000, 10000, 2500, 500, 100, 500, 2500, 10000, 50000];
+
+const RODADAS = [
+  { nome:"Queda Livre", perguntas:3, maxBolas:1, mult:1, tiers:[0,1,2],
+    regra:"Só bolas verdes: acertou, soma. Errou, a bola não vale nada." },
+  { nome:"Verde ou Vermelha", perguntas:3, maxBolas:2, mult:2, tiers:[3,4,5],
+    regra:"Acertou = bola VERDE (soma). Errou = bola VERMELHA (subtrai). Valores dobrados." },
+  { nome:"Rodada Final", perguntas:3, maxBolas:3, mult:3, tiers:[6,7],
+    regra:"Valores triplicados — e as vermelhas também." }
+];
+
+const cv = document.getElementById("wall"), ctx = cv.getContext("2d");
+const W = cv.width, H = cv.height;
+const TOPO = 46, PEG0 = 78, ROWH = 25, BASE = 340, SLOTH = H - BASE;
+const colW = W / SLOTS;
+const px = c => (c + 0.5) * colW;
+const py = r => PEG0 + r * ROWH;
+const brl = v => "R$ " + v.toLocaleString("pt-BR");
+const curto = v => v >= 1000 ? (v/1000).toLocaleString("pt-BR") + " mil" : String(v);
+const embaralha = a => a.map(x => [Math.random(), x]).sort((p,q) => p[0]-q[0]).map(p => p[1]);
+
+let banca, rodada, pergunta, pilhas, atual, calhas, bolaViva, destaque;
+
+function novoJogo(){
+  banca = 0; rodada = 0; pergunta = 0;
+  pilhas = BANCO.map(t => embaralha(t.slice()));
+  calhas = []; bolaViva = null; destaque = null;
+  desenha(); atualizaHud(); pedeCalhas();
+}
+
+// ---------- Desenho ----------
+function desenha(){
+  ctx.clearRect(0,0,W,H);
+
+  // calhas
+  CHUTES.forEach((c,i) => {
+    const sel = calhas.includes(c);
+    ctx.fillStyle = sel ? "#ffd54a" : "#24405f";
+    ctx.beginPath(); ctx.moveTo(px(c)-16, 14); ctx.lineTo(px(c)+16, 14);
+    ctx.lineTo(px(c)+8, TOPO-10); ctx.lineTo(px(c)-8, TOPO-10); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = sel ? "#05070d" : "#8fb6d9";
+    ctx.font = "bold 13px Verdana"; ctx.textAlign = "center";
+    ctx.fillText(i+1, px(c), 28);
+  });
+
+  // pinos
+  ctx.fillStyle = "#3a6ea5";
+  for (let r = 0; r < ROWS; r++)
+    for (let c = 0; c <= SLOTS; c++) {
+      const x = px(c - 0.5) + (r % 2 ? colW/2 : 0);
+      if (x < 6 || x > W-6) continue;
+      ctx.beginPath(); ctx.arc(x, py(r), 3.5, 0, 7); ctx.fill();
+    }
+
+  // casas da base
+  VALORES.forEach((v,i) => {
+    const forte = v >= 10000, medio = v >= 1000;
+    ctx.fillStyle = destaque === i ? "#ffd54a" : forte ? "#3d2f05" : medio ? "#16283f" : "#101c2e";
+    ctx.fillRect(i*colW+2, BASE+4, colW-4, SLOTH-8);
+    ctx.strokeStyle = forte ? "#ffd54a" : "#24405f"; ctx.lineWidth = 2;
+    ctx.strokeRect(i*colW+2, BASE+4, colW-4, SLOTH-8);
+    ctx.fillStyle = destaque === i ? "#05070d" : forte ? "#ffd54a" : "#9fd2ff";
+    ctx.font = "bold 13px Verdana"; ctx.textAlign = "center";
+    ctx.fillText(curto(v), px(i), BASE + SLOTH/2 + 5);
+  });
+
+  // bola
+  if (bolaViva) {
+    const {x, y, cor} = bolaViva;
+    ctx.beginPath(); ctx.arc(x, y, 11, 0, 7);
+    ctx.fillStyle = cor === "verde" ? "#3fd964" : cor === "vermelha" ? "#f04b4b" : "#8899aa";
+    ctx.fill();
+    ctx.strokeStyle = "#ffffff55"; ctx.lineWidth = 2; ctx.stroke();
+  }
+}
+
+// ---------- Física da queda ----------
+function trajeto(colInicial){
+  const caminho = [{ c: colInicial, y: TOPO }];
+  let c = colInicial;
+  for (let r = 0; r < ROWS; r++) {
+    let d = Math.random() < 0.5 ? -0.5 : 0.5;
+    if (c + d < 0 || c + d > SLOTS - 1) d = -d;   // bate na lateral e volta
+    c += d;
+    caminho.push({ c, y: py(r) });
+  }
+  caminho.push({ c, y: BASE + SLOTH/2 });          // entra na casa
+  return caminho;
+}
+
+function cai(colInicial, cor, aoParar){
+  const caminho = trajeto(colInicial);
+  let i = 0, t0 = null;
+  requestAnimationFrame(function passo(ts){
+    if (t0 === null) t0 = ts;
+    const dur = i === caminho.length - 2 ? 260 : 120;
+    const k = Math.min(1, (ts - t0) / dur);
+    const a = caminho[i], b = caminho[i+1];
+    bolaViva = { x: px(a.c + (b.c - a.c) * k), y: a.y + (b.y - a.y) * k, cor };
+    desenha();
+    if (k < 1) return requestAnimationFrame(passo);
+    i++; t0 = null;
+    if (i < caminho.length - 1) return requestAnimationFrame(passo);
+    aoParar(Math.round(caminho[caminho.length-1].c));
+  });
+}
+
+// ---------- HUD ----------
+function atualizaHud(){
+  const r = RODADAS[rodada];
+  const el = document.getElementById("banca");
+  el.textContent = brl(banca);
+  el.className = "banca" + (banca === 0 ? " baixa" : "");
+  document.getElementById("info").innerHTML = r
+    ? `Rodada ${rodada+1}/3 — <b style="color:#ffd54a">${r.nome}</b><br>` +
+      `Pergunta ${pergunta+1} de ${r.perguntas} · até ${r.maxBolas} bola${r.maxBolas>1?"s":""} · valores ×${r.mult}`
+    : "";
+}
+
+// ---------- Fluxo ----------
+function pedeCalhas(){
+  calhas = []; destaque = null; desenha(); renderCalhas();
+}
+
+function renderCalhas(){
+  const r = RODADAS[rodada];
+  document.getElementById("painel").innerHTML = `
+    <div class="instru">${r.regra}</div>
+    <div class="instru" style="color:#eef3fa">
+      Escolha de 1 a ${r.maxBolas} calha${r.maxBolas>1?"s":""} — cada calha solta uma bola.
+      ${r.maxBolas>1 ? "<br><span style='color:#8fb6d9;font-size:.9em'>Mais bolas = mais dinheiro se acertar, mais prejuízo se errar.</span>" : ""}
+    </div>
+    <div class="calhas">
+      ${CHUTES.map((c,i) => `<button class="${calhas.includes(c)?"sel":""}" onclick="alternaCalha(${c})">${i+1}</button>`).join("")}
+    </div>
+    <button class="grande arriscar" onclick="confirmaCalhas()" ${calhas.length ? "" : "disabled"}>
+      ▶️ Soltar ${calhas.length} bola${calhas.length===1?"":"s"}</button>`;
+}
+
+function alternaCalha(c){
+  const max = RODADAS[rodada].maxBolas;
+  if (calhas.includes(c)) calhas = calhas.filter(x => x !== c);
+  else if (calhas.length < max) calhas.push(c);
+  else if (max === 1) calhas = [c];              // com 1 bola, clicar troca a escolha
+  calhas.sort((a,b) => a-b);
+  desenha(); renderCalhas();
+}
+
+function confirmaCalhas(){
+  const r = RODADAS[rodada];
+  const tier = r.tiers[Math.floor(Math.random() * r.tiers.length)];
+  const q = pilhas[tier].pop();
+  atual = { ...q, tier, alts: embaralha(q.a.map((txt,i) => ({ txt, certa: i === 0 }))) };
+  document.getElementById("painel").innerHTML = `
+    <div class="tags">
+      <span class="tag dif">🔥 Nível ${tier+1}/8 · ${NIVEIS[tier]}</span>
+      <span class="tag">${atual.t}</span>
+    </div>
+    <div class="pergunta">${atual.p}</div>
+    <div class="opcoes">
+      ${atual.alts.map((o,i) => `
+        <button class="op" onclick="responde(${i})">
+          <span class="letra">${"ABCD"[i]}</span><span>${o.txt}</span></button>`).join("")}
+    </div>`;
+}
+
+function responde(i){
+  const certo = atual.alts[i].certa;
+  document.querySelectorAll(".op").forEach((b,j) => {
+    b.disabled = true;
+    if (atual.alts[j].certa) b.classList.add("certa");
+    else if (j === i) b.classList.add("errada");
+  });
+  const cor = certo ? "verde" : (rodada === 0 ? "cinza" : "vermelha");
+  const n = calhas.length;
+  const box = document.createElement("div");
+  box.className = "aviso" + (certo ? "" : " ruim");
+  box.innerHTML = (certo ? `✅ <b>Acertou — ${n>1?`${n} bolas VERDES`:"bola VERDE"}!</b> `
+    : rodada === 0 ? "❌ <b>Errou — a bola vale zero.</b> "
+    : `❌ <b>Errou — ${n>1?`${n} bolas VERMELHAS`:"bola VERMELHA"}!</b> `) + atual.e;
+  document.getElementById("painel").appendChild(box);
+
+  setTimeout(() => solta(0, cor, []), certo ? 1800 : 3400);
+}
+
+// solta uma bola por calha escolhida, uma de cada vez
+function solta(k, cor, resultados){
+  if (k >= calhas.length) return fechaJogada(cor, resultados);
+  cai(calhas[k], cor, slot => {
+    const valor = VALORES[slot] * RODADAS[rodada].mult;
+    const delta = cor === "verde" ? valor : cor === "vermelha" ? -valor : 0;
+    banca = Math.max(0, banca + delta);
+    destaque = slot; desenha(); atualizaHud();
+    resultados.push({ slot, delta });
+    setTimeout(() => solta(k+1, cor, resultados), 650);
+  });
+}
+
+function fechaJogada(cor, resultados){
+  const mult = RODADAS[rodada].mult;
+  const total = resultados.reduce((a,r) => a + r.delta, 0);
+  const box = document.createElement("div");
+  box.className = "aviso" + (total < 0 ? " ruim" : "");
+  box.innerHTML = resultados.map(r =>
+      `Bola em <b>${brl(VALORES[r.slot])}</b> ×${mult} → ` +
+      (r.delta > 0 ? `<b style="color:#7ee787">+${brl(r.delta)}</b>`
+       : r.delta < 0 ? `<b style="color:#f87171">−${brl(-r.delta)}</b>` : "<b>nada</b>")
+    ).join("<br>") + `<br>Banca: <b>${brl(banca)}</b>`;
+  document.getElementById("painel").appendChild(box);
+  setTimeout(proxima, 2400 + resultados.length * 300);
+}
+
+function proxima(){
+  if (!RODADAS[rodada]) return;          // jogo já encerrado: ignora timer atrasado
+  pergunta++;
+  if (pergunta < RODADAS[rodada].perguntas) { atualizaHud(); return pedeCalhas(); }
+  pergunta = 0; rodada++;
+  bolaViva = null;
+  if (rodada === 2) return ofereceContrato();
+  if (rodada >= RODADAS.length) return fim(banca, "Você foi até o fim da parede!");
+  atualizaHud(); pedeCalhas();
+}
+
+function ofereceContrato(){
+  const garantido = Math.max(10000, Math.round(banca / 2 / 1000) * 1000);
+  desenha();
+  document.getElementById("painel").innerHTML = `
+    <div class="instru">✍️ <b>Hora do contrato</b></div>
+    <p style="font-size:.92em;line-height:1.55;color:#cfe0f2">
+      Sua banca está em <b style="color:#7ee787">${brl(banca)}</b>. Você pode assinar o contrato e sair
+      agora com <b style="color:#ffd54a">${brl(garantido)}</b> garantidos — ou rasgar o contrato e encarar
+      a rodada final, em que tudo vale <b>três vezes mais</b>, inclusive as bolas vermelhas.</p>
+    <button class="grande contrato" onclick="fim(${garantido}, 'Você assinou o contrato.')">
+      ✍️ Assinar e levar ${brl(garantido)}</button>
+    <button class="grande arriscar" onclick="rasgaContrato()">🎯 Rasgar o contrato e jogar a rodada final</button>`;
+  atualizaHud();
+}
+
+function rasgaContrato(){ atualizaHud(); pedeCalhas(); }
+
+function fim(valor, msg){
+  bolaViva = null; desenha();
+  document.getElementById("painel").innerHTML = `
+    <div class="final">
+      <h2>${valor >= 100000 ? "🏆 Que parede!" : valor > 0 ? "🎬 Fim de jogo" : "😢 A parede venceu"}</h2>
+      <p style="color:#8fb6d9;font-size:.92em">${msg}</p>
+      <div class="premio">${brl(valor)}</div>
+      <button onclick="novoJogo()">Jogar de novo</button>
+    </div>`;
+  document.getElementById("info").innerHTML = "";
+}
+
+// ---------- Autoteste: abra com ?test=1 ou rode autoteste() no console ----------
+function autoteste(){
+  const erros = [];
+  if (VALORES.length !== SLOTS) erros.push("VALORES não bate com o número de casas");
+  if (ROWS % 2) erros.push("ROWS precisa ser par para a bola cair numa casa inteira");
+  if (CHUTES.some(c => !Number.isInteger(c) || c < 0 || c > SLOTS-1)) erros.push("calha fora da parede");
+  RODADAS.forEach((r,i) => {
+    if (r.maxBolas < 1 || r.maxBolas > CHUTES.length)
+      erros.push(`rodada ${i+1}: maxBolas (${r.maxBolas}) não cabe em ${CHUTES.length} calhas`);
+  });
+
+  // 2000 quedas por calha: sempre numa casa válida?
+  const dist = CHUTES.map(() => Array(SLOTS).fill(0));
+  CHUTES.forEach((c, ci) => {
+    for (let k = 0; k < 2000; k++) {
+      const fim = trajeto(c).pop().c;
+      if (!Number.isInteger(fim) || fim < 0 || fim > SLOTS-1)
+        return erros.push(`calha ${ci+1} terminou fora da parede: ${fim}`);
+      dist[ci][fim]++;
+    }
+  });
+
+  // matemática da banca: verde soma, vermelha subtrai, nunca fica negativa
+  const conta = (b, cor, v) => Math.max(0, b + (cor==="verde" ? v : cor==="vermelha" ? -v : 0));
+  if (conta(1000, "verde", 500) !== 1500) erros.push("bola verde não somou");
+  if (conta(1000, "vermelha", 500) !== 500) erros.push("bola vermelha não subtraiu");
+  if (conta(100, "vermelha", 50000) !== 0) erros.push("banca ficou negativa");
+  if (conta(1000, "cinza", 500) !== 1000) erros.push("bola cinza alterou a banca");
+
+  // todas as perguntas do banco precisam existir para os tiers usados
+  RODADAS.forEach((r, ri) => r.tiers.forEach(t => {
+    if (!BANCO[t]) erros.push(`rodada ${ri+1} usa nível ${t+1}, que não existe no banco`);
+  }));
+
+  document.body.innerHTML = `<pre style="padding:20px;font-size:13px;white-space:pre-wrap">${
+    erros.length ? "FALHOU:\n" + erros.join("\n")
+    : "OK — quedas válidas, banca correta, banco completo.\n\n"
+      + "Distribuição por calha (2000 quedas cada), em % por casa:\n"
+      + "casa:      " + VALORES.map(v => curto(v).padStart(7)).join("") + "\n"
+      + dist.map((linha, i) => "calha " + (i+1) + ":  "
+          + linha.map(n => (n/20).toFixed(1).padStart(7)).join("")).join("\n")}</pre>`;
+}
+
+if (location.search.includes("test=1")) autoteste(); else novoJogo();
+</script>
+</body>
+</html>
