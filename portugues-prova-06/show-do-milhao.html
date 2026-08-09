@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💰 Show do Milhão — Pronomes</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'Trebuchet MS', Verdana, sans-serif;
+    background: radial-gradient(ellipse at top, #123 0%, #04070f 70%);
+    color:#f3f3f3; min-height:100vh; padding:14px;
+    display:flex; justify-content:center;
+  }
+  .wrap { width:100%; max-width:900px; }
+  h1 { text-align:center; font-size:1.6em; color:#ffd54a; text-shadow:0 0 14px rgba(255,213,74,.55); letter-spacing:1px; }
+  .sub { text-align:center; color:#8fb6d9; font-size:.85em; margin:4px 0 16px; }
+
+  .palco { display:grid; grid-template-columns:1fr 220px; gap:14px; }
+  @media (max-width:760px){ .palco { grid-template-columns:1fr; } } /* escada vai para baixo da pergunta */
+
+  .painel {
+    background:linear-gradient(160deg,#0d1b33,#071021);
+    border:2px solid #2f5c8f; border-radius:14px; padding:18px;
+    box-shadow:0 0 28px rgba(47,92,143,.35);
+  }
+  .tag { display:inline-block; background:#1d3a5c; color:#9fd2ff; border-radius:20px;
+         padding:3px 12px; font-size:.75em; margin-bottom:12px; }
+  .pergunta { font-size:1.15em; line-height:1.55; min-height:64px; margin-bottom:16px; }
+  .pergunta b, .pergunta i { color:#ffd54a; }
+
+  .opcoes { display:grid; gap:9px; }
+  .op {
+    display:flex; align-items:center; gap:10px; text-align:left;
+    font-family:inherit; font-size:1em; padding:11px 13px;
+    background:#0f2544; color:#eaf3ff; border:2px solid #2f5c8f;
+    border-radius:999px; cursor:pointer; transition:.15s;
+  }
+  .op:hover:not(:disabled) { background:#1a3a66; transform:translateX(3px); }
+  .op .letra { color:#ffd54a; font-weight:bold; min-width:18px; }
+  .op:disabled { cursor:default; }
+  .op.oculta { visibility:hidden; }
+  .op.certa { background:#1c6b3a; border-color:#4ade80; }
+  .op.errada { background:#6b1c1c; border-color:#f87171; }
+
+  .ajudas { display:flex; gap:8px; margin:16px 0 10px; flex-wrap:wrap; }
+  .ajuda {
+    flex:1; min-width:96px; font-family:inherit; font-size:.85em; padding:9px 6px;
+    background:#3a2a05; color:#ffd54a; border:2px solid #ffd54a; border-radius:10px; cursor:pointer;
+  }
+  .ajuda:hover:not(:disabled) { background:#5a4208; }
+  .ajuda:disabled { opacity:.3; cursor:default; }
+  .parar { width:100%; font-family:inherit; font-size:.9em; padding:10px;
+           background:#4a1030; color:#ffb3d1; border:2px solid #ff6fa8; border-radius:10px; cursor:pointer; }
+  .parar:hover:not(:disabled) { background:#6a1745; }
+
+  .aviso { background:#132a1a; border-left:4px solid #4ade80; padding:11px 13px;
+           border-radius:8px; margin-top:14px; font-size:.92em; line-height:1.5; }
+  .aviso.ruim { background:#2a1313; border-left-color:#f87171; }
+  .aviso b { color:#ffd54a; }
+
+  .escada { background:linear-gradient(160deg,#0d1b33,#071021); border:2px solid #2f5c8f;
+            border-radius:14px; padding:10px; }
+  .escada ol { list-style:none; display:flex; flex-direction:column-reverse; }
+  .escada li { display:flex; justify-content:space-between; gap:6px; font-size:.8em;
+               padding:4px 8px; border-radius:6px; color:#7fa5c9; }
+  .escada li .n { opacity:.6; }
+  .escada li.check { color:#eaf3ff; font-weight:bold; }
+  .escada li.atual { background:#ffd54a; color:#04070f; font-weight:bold; }
+  .escada li.feita { color:#4ade80; }
+
+  .placar { text-align:center; font-size:1.05em; color:#ffd54a; margin-bottom:12px; }
+  .universitarios { margin-top:14px; font-size:.85em; }
+  .barra { display:flex; align-items:center; gap:8px; margin:4px 0; }
+  .barra .b { height:14px; background:#4a90d9; border-radius:3px; }
+  .final { text-align:center; }
+  .final h2 { color:#ffd54a; font-size:1.5em; margin-bottom:8px; }
+  .premio { font-size:2em; color:#4ade80; margin:10px 0; }
+  .final button { font-family:inherit; font-size:1em; padding:12px 26px; margin-top:12px;
+                  background:#ffd54a; color:#04070f; border:none; border-radius:999px;
+                  cursor:pointer; font-weight:bold; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>💰 SHOW DO MILHÃO</h1>
+  <div class="sub">Rodada especial: PRONOMES — Língua Portuguesa</div>
+  <div class="palco">
+    <div class="painel" id="painel"></div>
+    <div class="escada" id="escada"></div>
+  </div>
+</div>
+
+<script>
+// ---------- Banco de questões: 4 níveis de dificuldade ----------
+// t = tema | p = pergunta | a = alternativas (a[0] é sempre a correta no banco) | e = explicação
+const BANCO = [
+[ // NÍVEL 1 — fácil (perguntas 1 a 4)
+ {t:"Pronomes pessoais", p:"“Eu, tu, ele, nós, vós, eles” são pronomes pessoais do caso...",
+  a:["reto","oblíquo átono","oblíquo tônico","de tratamento"],
+  e:"Os pronomes do caso <b>reto</b> funcionam como sujeito da oração."},
+ {t:"Pronomes pessoais", p:"Em “Ele <i>me</i> deu um livro”, o pronome “me” é um pronome oblíquo...",
+  a:["átono","tônico","reto","possessivo"],
+  e:"Oblíquos <b>átonos</b> não vêm acompanhados de preposição: me, te, o, a, lhe, se, nos, vos, os, as, lhes."},
+ {t:"Pronomes possessivos", p:"Qual é o pronome possessivo correspondente à 1ª pessoa do singular?",
+  a:["meu(s), minha(s)","teu(s), tua(s)","nosso(s), nossa(s)","seu(s), sua(s)"],
+  e:"Eu → <b>meu(s), minha(s)</b>. Tu → teu/tua. Nós → nosso/nossa."},
+ {t:"Pronomes de tratamento", p:"“Você”, “Senhor” e “Vossa Excelência” são pronomes de...",
+  a:["tratamento","posse","interrogação","dúvida"],
+  e:"Pronomes de <b>tratamento</b> são usados para se dirigir à outra pessoa conforme a situação, o cargo, o título e a idade."},
+ {t:"Pronomes indefinidos", p:"Em “Ninguém mais se ocupa de mim”, a palavra “ninguém” é um pronome...",
+  a:["indefinido","demonstrativo","relativo","possessivo"],
+  e:"Pronomes <b>indefinidos</b> se referem à 3ª pessoa de forma vaga ou imprecisa."},
+ {t:"Pronomes pessoais", p:"Qual é a função dos pronomes pessoais?",
+  a:["Substituir os substantivos e indicar as pessoas do discurso","Ligar duas orações","Indicar circunstância de tempo","Dar qualidade ao substantivo"],
+  e:"Eles <b>substituem os substantivos</b> e indicam as pessoas do discurso (quem fala, com quem se fala, de quem se fala)."},
+ {t:"Pronomes pessoais", p:"Qual pronome do caso reto corresponde à 2ª pessoa do plural?",
+  a:["vós","nós","eles","tu"],
+  e:"1ª sing. eu · 2ª sing. tu · 3ª sing. ele/ela · 1ª pl. nós · 2ª pl. <b>vós</b> · 3ª pl. eles/elas."},
+ {t:"Tipos de pronomes", p:"“Este, esse, aquele, isto, isso, aquilo” são pronomes...",
+  a:["demonstrativos","indefinidos","interrogativos","de tratamento"],
+  e:"Pronomes <b>demonstrativos</b> situam um elemento no espaço, no tempo ou no discurso."},
+ {t:"Pronomes pessoais", p:"Em “<i>Nós</i> fomos ao cinema”, o pronome “nós” exerce a função de...",
+  a:["sujeito","objeto","adjunto","complemento nominal"],
+  e:"Quando o pronome pessoal é <b>sujeito</b>, ele é do caso reto."},
+ {t:"Pronomes indefinidos", p:"Qual destes pronomes indefinidos é INVARIÁVEL?",
+  a:["ninguém","algum","muitas","certos"],
+  e:"São invariáveis: algo, alguém, cada, mais, menos, nada, <b>ninguém</b>, outrem, tudo."}
+],
+[ // NÍVEL 2 — médio (perguntas 5 a 8)
+ {t:"Oblíquos tônicos", p:"Em “Trouxe essa rosa para <i>ti</i>”, o pronome “ti” é oblíquo...",
+  a:["tônico, porque vem acompanhado de preposição","átono, porque é curto","reto, porque é sujeito","de tratamento, porque é formal"],
+  e:"Os oblíquos <b>tônicos</b> exigem preposição: mim, comigo, ti, contigo, si, consigo, conosco, convosco."},
+ {t:"Oblíquos tônicos", p:"Por que NÃO se diz “com comigo”?",
+  a:["Porque a preposição “com” já faz parte da palavra “comigo”","Porque “comigo” é pronome reto","Porque “comigo” é possessivo","Porque “comigo” não aceita preposição nenhuma"],
+  e:"Em comigo, contigo, consigo, conosco e convosco a <b>preposição já está incorporada</b> à palavra."},
+ {t:"Pronomes de tratamento", p:"Qual pronome de tratamento é usado para o Presidente da República, senadores e deputados?",
+  a:["Vossa Excelência","Vossa Magnificência","Vossa Eminência","Vossa Alteza"],
+  e:"<b>Vossa Excelência</b> (V. Ex.ª) é usado para pessoas com alta autoridade."},
+ {t:"Pronomes de tratamento", p:"“Vossa Magnificência” é o tratamento dirigido a...",
+  a:["reitores de universidades","cardeais","reis e rainhas","príncipes e duques"],
+  e:"V. Mag.ª → <b>reitores</b>. Cardeais → V. Em.ª. Reis → V. M. Príncipes → V. A."},
+ {t:"Colocação pronominal", p:"Qual frase está de acordo com a norma-padrão?",
+  a:["Diga-me a verdade.","Me diga a verdade.","Me diz a verdade.","Me digas a verdade."],
+  e:"Não se inicia frase com pronome oblíquo átono: nesses casos o pronome vem <b>depois</b> do verbo (ênclise)."},
+ {t:"Colocação pronominal", p:"Em “Não <i>o</i> machuque”, por que o pronome aparece antes do verbo?",
+  a:["Porque foi atraído pela palavra negativa “não”","Porque o verbo está no infinitivo","Porque o verbo termina em -r","Porque o sujeito está oculto"],
+  e:"<b>Palavras negativas</b> (não, nunca, jamais) atraem o pronome oblíquo átono para antes do verbo."},
+ {t:"Colocação pronominal", p:"Em “Eu <i>te</i> levarei ao cinema”, o que atraiu o pronome para antes do verbo?",
+  a:["O pronome reto “eu”","O tempo futuro","A vírgula","O sujeito indeterminado"],
+  e:"Os oblíquos átonos são atraídos por <b>pronomes retos</b>: “Eu te levarei”, “Ele se chama Antônio”."},
+ {t:"Pronomes pessoais", p:"Segundo a norma-padrão, a construção “a gente” deve ser flexionada...",
+  a:["no singular: “a gente foi ao cinema”","no plural: “a gente foram ao cinema”","sempre no futuro","sempre com o pronome “nós” junto"],
+  e:"“A gente” substitui “nós”, mas sua flexão é feita no <b>singular</b>, mesmo indicando mais de uma pessoa."},
+ {t:"Possessivos", p:"Em “<i>Nosso</i> jantar estava pronto”, o possessivo é classificado como...",
+  a:["adjetivo, porque acompanha o substantivo","substantivo, porque substitui o substantivo","átono, porque é curto","de tratamento, porque é formal"],
+  e:"Possessivo <b>adjetivo</b> acompanha o substantivo; possessivo <b>substantivo</b> o substitui (“tenho o meu”)."},
+ {t:"Pronomes pessoais", p:"Em “A pescaria era uma boa atividade para <i>ele</i>”, o pronome “ele” é...",
+  a:["oblíquo tônico, pois é complemento com preposição","reto, pois é sujeito","átono, pois não tem preposição","possessivo, pois indica posse"],
+  e:"“Ele/ela/nós/vós” são retos quando são <b>sujeito</b> e oblíquos tônicos quando são <b>complemento com preposição</b>."}
+],
+[ // NÍVEL 3 — difícil (perguntas 9 a 12)
+ {t:"Pronomes o/a e lhe", p:"Reescrevendo “Catarina comprou alguns livros” com pronome oblíquo átono, temos:",
+  a:["Catarina comprou-os.","Catarina comprou-lhes.","Catarina comprou-nos.","Catarina os comprou-lhe."],
+  e:"Se o verbo <b>não exige preposição</b>, usam-se “o(s)” e “a(s)”. Se exige, usa-se “lhe(s)”."},
+ {t:"Pronomes o/a e lhe", p:"Em “Deu uma bronca nele, dizendo-<i>lhe</i> que deveria pescar mais”, usa-se “lhe” porque...",
+  a:["o verbo exige preposição (dizer a ele)","o verbo termina em -r","há palavra negativa na frase","o pronome está no início da frase"],
+  e:"Verbo com preposição → <b>lhe(s)</b>: “dizendo a ele” = “dizendo-lhe”."},
+ {t:"Formas -lo/-la", p:"“A escritora vai publicar o livro amanhã.” Substituindo o trecho destacado:",
+  a:["A escritora vai publicá-lo amanhã.","A escritora vai publicar-o amanhã.","A escritora vai publicar-no amanhã.","A escritora vai publicar-lhe amanhã."],
+  e:"Com verbos terminados em <b>-r, -s, -z</b>, os pronomes o/a/os/as viram <b>lo, la, los, las</b>."},
+ {t:"Formas -no/-na", p:"“As jogadoras venceram as partidas.” A forma correta com pronome é:",
+  a:["As jogadoras venceram-nas.","As jogadoras venceram-as.","As jogadoras venceram-las.","As jogadoras venceram-lhes."],
+  e:"Com verbos terminados em ditongo nasal (-am, -em, -ão, -õe), usam-se <b>no, na, nos, nas</b>."},
+ {t:"Formas -no/-na", p:"Em “Até que um dia mataram-<i>na</i>”, o pronome assume a forma “na” porque o verbo...",
+  a:["termina em ditongo nasal (-am)","termina em -r","exige preposição","está no infinitivo"],
+  e:"“Mataram” termina em <b>-am</b> (som nasal), por isso “a” vira “<b>na</b>”."},
+ {t:"Pronomes indefinidos", p:"Qual alternativa contém APENAS pronomes indefinidos invariáveis?",
+  a:["algo, alguém, nada, tudo","algum, muito, todo, vários","certo, outro, tanto, quanto","pouco, qualquer, diverso, bastante"],
+  e:"Invariáveis: algo, alguém, cada, mais, menos, nada, ninguém, outrem, tudo. Os demais <b>flexionam</b>."},
+ {t:"Locução pronominal", p:"Em “<i>Qualquer um</i> pode fazer mágicas com truques simples”, o trecho destacado é uma...",
+  a:["locução pronominal","locução verbal","locução adjetiva","locução adverbial"],
+  e:"Quando um <b>grupo de palavras</b> assume o valor de um pronome indefinido, temos uma locução pronominal: cada um, cada qual, seja quem for..."},
+ {t:"Pronomes indefinidos", p:"Em “<i>Certo</i> dia, o garoto encontrou o caderno velho”, “certo” é pronome indefinido porque...",
+  a:["está anteposto ao substantivo","está posposto ao substantivo","é invariável","vem depois do verbo"],
+  e:"“Certo/certa” assume função de pronome indefinido quando vem <b>antes</b> do substantivo."},
+ {t:"Pronomes indefinidos", p:"Qual frase tem valor NEGATIVO por causa da posição do pronome indefinido?",
+  a:["Deputado algum defendeu a construção de novos abrigos.","Algum vereador defenderá a causa ambiental?","Todo jovem quer viajar.","Cada paciente aguardou sua vez."],
+  e:"“Algum” <b>anteposto</b> ao substantivo tem valor afirmativo; <b>posposto</b>, valor negativo (= nenhum)."},
+ {t:"Possessivos", p:"Em “Lucas e Pedro são game players. <i>Seu</i> videogame é o Nintendo Switch”, o possessivo concorda:",
+  a:["na 3ª pessoa com os possuidores e no masculino singular com “videogame”","no plural, porque são dois possuidores","no feminino, porque “pessoa” é feminino","apenas com o verbo da oração"],
+  e:"O possessivo concorda em <b>pessoa</b> com o possuidor e em <b>gênero e número</b> com o substantivo pertencente."}
+],
+[ // NÍVEL 4 — expert (perguntas 13 a 16)
+ {t:"Ambiguidade", p:"“O Lucas e a <i>sua</i> irmã andando no shopping.” Para deixar claro que a irmã é do Lucas, escreve-se:",
+  a:["O Lucas e a irmã dele andando no shopping.","Sua irmã e o Lucas andando no shopping.","O Lucas e a irmã sua andando no shopping.","O Lucas e a irmã tua andando no shopping."],
+  e:"“Seu/sua” pode se referir à 2ª ou à 3ª pessoa, gerando ambiguidade. “<b>Dele</b>” desfaz a dúvida."},
+ {t:"Possessivos", p:"Sobre as palavras “dele” e “dela”, é correto afirmar que...",
+  a:["não são possessivos, e sim a contração da preposição “de” com “ele/ela”","são possessivos de 3ª pessoa","são pronomes de tratamento","são pronomes indefinidos invariáveis"],
+  e:"“Dele/dela” = <b>de + ele/ela</b>. São contrações, ainda que indiquem posse."},
+ {t:"Valor possessivo", p:"Em “Cada vez que esse olho me fitava, sentia gelar-<i>me</i> o sangue”, o pronome “me” tem valor...",
+  a:["possessivo (= meu sangue)","de sujeito","de tratamento","indefinido"],
+  e:"Oblíquos átonos podem ter <b>valor possessivo</b>: “gelar-me o sangue” = “meu sangue gelar”."},
+ {t:"Valor emotivo", p:"Em “<i>Minha</i> senhora, posso te ajudar a atravessar a rua?”, o possessivo indica...",
+  a:["respeito e afetividade, e não posse","que a senhora pertence à jovem","uma dúvida do falante","uma quantidade indeterminada"],
+  e:"Os possessivos também exprimem <b>valor emotivo</b>: respeito, admiração, afetividade ou ironia."},
+ {t:"Possessivos", p:"Em “Não invejo seu dinheiro, pois tenho <i>o meu</i>”, o possessivo destacado é...",
+  a:["substantivo, porque substitui o substantivo “dinheiro”","adjetivo, porque acompanha o substantivo","um pronome de tratamento","um pronome relativo"],
+  e:"O possessivo <b>substantivo</b> substitui o substantivo para não repeti-lo na frase."},
+ {t:"Tipos de pronomes", p:"“Que, o qual, cujo, quem, onde” retomam algo já dito na frase. São pronomes...",
+  a:["relativos","interrogativos","demonstrativos","de tratamento"],
+  e:"Pronomes <b>relativos</b> retomam um termo anterior; os <b>interrogativos</b> (qual, quanto, quem, que) indicam perguntas."},
+ {t:"Colocação pronominal", p:"Em “Há pessoas que <i>lhe</i> querem bem”, a próclise ocorre por causa...",
+  a:["da palavra iniciada por qu- (“que”)","do verbo no infinitivo","do imperativo afirmativo","da ausência de sujeito"],
+  e:"Palavras iniciadas por <b>qu-</b> (que, quem, quando) atraem o pronome para antes do verbo."},
+ {t:"Colocação pronominal", p:"Em “Ele <i>se</i> chama Antônio”, o pronome “se” é...",
+  a:["oblíquo átono, atraído pelo pronome reto “ele”","oblíquo tônico, exigido por preposição","possessivo de 3ª pessoa","indefinido invariável"],
+  e:"“Se” é <b>oblíquo átono</b> e foi atraído pelo pronome reto que o antecede."},
+ {t:"Colocação pronominal", p:"Com o verbo no infinitivo impessoal, o pronome oblíquo átono...",
+  a:["pode vir antes ou depois do verbo","só pode vir depois do verbo","só pode vir antes do verbo","não pode ser usado"],
+  e:"“Eu vou lhe contar um segredo” e “Eu vou contar-lhe um segredo”: <b>as duas formas</b> são corretas."},
+ {t:"Pronomes de tratamento", p:"Em “Me desculpe, rei dos memes”, o problema em relação à norma-padrão é que...",
+  a:["não se inicia frase com pronome oblíquo átono","“desculpe” não aceita pronome","“rei” exige Vossa Eminência","o pronome deveria ser possessivo"],
+  e:"O correto seria “<b>Desculpe-me</b>”. Em contextos informais, porém, a próclise inicial é comum na fala."}
+]
+];
+
+const ESCADA = [1000,2000,3000,4000,5000,10000,20000,30000,40000,50000,100000,200000,300000,400000,500000,1000000];
+const SEGUROS = [4, 9]; // índices garantidos (5ª e 10ª perguntas)
+
+const brl = v => "R$ " + v.toLocaleString("pt-BR");
+const embaralha = a => a.map(x => [Math.random(), x]).sort((p,q) => p[0]-q[0]).map(p => p[1]);
+
+let nivel, pilhas, atual, ajudas, ocultas, universitarios;
+
+function novoJogo(){
+  nivel = 0;
+  pilhas = BANCO.map(t => embaralha(t.slice()));   // uma pilha por dificuldade
+  ajudas = { cartas:true, universitarios:true, pular:true };
+  sorteia();
+  render();
+}
+
+function sorteia(){
+  const q = pilhas[Math.floor(nivel/4)].pop();
+  const alts = embaralha(q.a.map((txt,i) => ({txt, certa:i===0})));
+  atual = { ...q, alts };
+  ocultas = [];
+  universitarios = null;
+}
+
+// ---------- Ajudas ----------
+function usarCartas(){
+  ajudas.cartas = false;
+  const erradas = atual.alts.map((o,i) => i).filter(i => !atual.alts[i].certa);
+  ocultas = embaralha(erradas).slice(0,2);
+  render();
+}
+
+function usarUniversitarios(){
+  ajudas.universitarios = false;
+  const base = [58, 48, 38, 30][Math.floor(nivel/4)];
+  const pesos = atual.alts.map((o,i) =>
+    ocultas.includes(i) ? 0 : (o.certa ? base + Math.random()*22 : 4 + Math.random()*base*0.75));
+  const soma = pesos.reduce((a,b) => a+b, 0);
+  universitarios = pesos.map(p => Math.round(p/soma*100));
+  render();
+}
+
+function usarPular(){
+  ajudas.pular = false;
+  sorteia();
+  render();
+}
+
+// ---------- Fluxo ----------
+function responde(i){
+  const certa = atual.alts[i].certa;
+  document.querySelectorAll(".op").forEach((b, j) => {
+    b.disabled = true;
+    if (atual.alts[j].certa) b.classList.add("certa");
+    else if (j === i) b.classList.add("errada");
+  });
+  const box = document.createElement("div");
+  box.className = "aviso" + (certa ? "" : " ruim");
+  box.innerHTML = (certa ? "✅ <b>Acertou!</b> " : "❌ <b>Errou.</b> ") + atual.e;
+  document.getElementById("painel").appendChild(box);
+
+  setTimeout(() => {
+    if (!certa) return fim(valorSeguro(), false);
+    if (nivel === ESCADA.length - 1) return fim(ESCADA[nivel], true);
+    nivel++;
+    sorteia();
+    render();
+  }, certa ? 2600 : 4200);
+}
+
+function valorSeguro(){
+  const passou = SEGUROS.filter(s => nivel > s);
+  return passou.length ? ESCADA[passou[passou.length-1]] : 0;
+}
+
+function parar(){
+  fim(nivel === 0 ? 0 : ESCADA[nivel-1], false);
+}
+
+function fim(valor, milhao){
+  document.getElementById("painel").innerHTML = `
+    <div class="final">
+      <h2>${milhao ? "🏆 VOCÊ GANHOU O MILHÃO!" : valor > 0 ? "🎬 Fim de jogo" : "😢 Fim de jogo"}</h2>
+      <p>Você chegou à pergunta ${nivel+1} de ${ESCADA.length}.</p>
+      <div class="premio">${brl(valor)}</div>
+      <p style="color:#8fb6d9;font-size:.9em">${milhao
+        ? "Domínio total dos pronomes. Impressionante!"
+        : valor > 0 ? "Você saiu com o prêmio garantido." : "Estude o quadro de pronomes e tente de novo!"}</p>
+      <button onclick="novoJogo()">Jogar de novo</button>
+    </div>`;
+  renderEscada();
+}
+
+// ---------- Render ----------
+function render(){
+  const ultima = nivel === ESCADA.length - 1;
+  document.getElementById("painel").innerHTML = `
+    <div class="placar">Pergunta ${nivel+1} — valendo ${brl(ESCADA[nivel])}</div>
+    <span class="tag">${atual.t}</span>
+    <div class="pergunta">${atual.p}</div>
+    <div class="opcoes">
+      ${atual.alts.map((o,i) => `
+        <button class="op ${ocultas.includes(i) ? "oculta" : ""}" onclick="responde(${i})">
+          <span class="letra">${"ABCD"[i]}</span><span>${o.txt}</span>
+        </button>`).join("")}
+    </div>
+    ${universitarios ? `<div class="universitarios"><b>🎓 Universitários:</b>
+      ${atual.alts.map((o,i) => ocultas.includes(i) ? "" : `
+        <div class="barra"><span class="letra" style="color:#ffd54a">${"ABCD"[i]}</span>
+        <div class="b" style="width:${universitarios[i]*2}px"></div><span>${universitarios[i]}%</span></div>`).join("")}
+      </div>` : ""}
+    <div class="ajudas">
+      <button class="ajuda" onclick="usarCartas()" ${ajudas.cartas && !ultima ? "" : "disabled"}>🃏 Cartas</button>
+      <button class="ajuda" onclick="usarUniversitarios()" ${ajudas.universitarios && !ultima ? "" : "disabled"}>🎓 Universitários</button>
+      <button class="ajuda" onclick="usarPular()" ${ajudas.pular && !ultima ? "" : "disabled"}>⏭️ Pular</button>
+    </div>
+    <button class="parar" onclick="parar()" ${nivel === 0 ? "disabled" : ""}>
+      🛑 Parar e levar ${brl(nivel === 0 ? 0 : ESCADA[nivel-1])}</button>
+    ${ultima ? `<div class="aviso"><b>Pergunta do milhão!</b> Sem ajudas. Se errar, você volta para ${brl(valorSeguro())}.</div>` : ""}`;
+  renderEscada();
+}
+
+function renderEscada(){
+  document.getElementById("escada").innerHTML = "<ol>" + ESCADA.map((v,i) => {
+    const cls = i === nivel ? "atual" : i < nivel ? "feita" : SEGUROS.includes(i) ? "check" : "";
+    return `<li class="${cls}"><span class="n">${i+1}</span><span>${brl(v)}</span></li>`;
+  }).join("") + "</ol>";
+}
+
+// ---------- Autoteste: abra com ?test=1 ----------
+function autoteste(){
+  const erros = [];
+  BANCO.forEach((tier, ti) => {
+    if (tier.length < 4) erros.push(`nível ${ti+1} tem menos de 4 perguntas`);
+    tier.forEach((q, qi) => {
+      if (q.a.length !== 4) erros.push(`nível ${ti+1} q${qi+1}: não tem 4 alternativas`);
+      if (new Set(q.a).size !== 4) erros.push(`nível ${ti+1} q${qi+1}: alternativas repetidas`);
+      const correta = q.a[0];
+      const alts = embaralha(q.a.map((txt,i) => ({txt, certa:i===0})));
+      const marcadas = alts.filter(o => o.certa);
+      if (marcadas.length !== 1 || marcadas[0].txt !== correta)
+        erros.push(`nível ${ti+1} q${qi+1}: embaralhamento perdeu a resposta certa`);
+    });
+  });
+  if (ESCADA.length !== 16) erros.push("escada deveria ter 16 degraus");
+  document.body.innerHTML = `<pre style="padding:20px;font-size:14px">${
+    erros.length ? "FALHOU:\n" + erros.join("\n") : "OK — banco e embaralhamento válidos ("
+      + BANCO.flat().length + " perguntas)"}</pre>`;
+}
+
+if (location.search.includes("test=1")) autoteste(); else novoJogo();
+</script>
+</body>
+</html>
