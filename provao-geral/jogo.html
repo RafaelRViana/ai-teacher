@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Provão Geral — Missão 4 Matérias</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:#0f0c29;
+       background:linear-gradient(160deg,#0f0c29,#302b63,#24243e);color:#fff;min-height:100vh;padding:16px}
+  .wrap{max-width:760px;margin:0 auto}
+  h1{font-size:2em;text-align:center;margin:10px 0 4px;text-shadow:0 0 24px rgba(96,165,250,.6)}
+  .sub{text-align:center;opacity:.7;margin-bottom:22px;font-size:.95em}
+  .card{background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.12);border-radius:16px;
+        padding:16px;margin-bottom:12px;cursor:pointer;transition:.15s;display:flex;gap:14px;align-items:center}
+  .card:hover{transform:translateY(-2px);border-color:#60a5fa;background:rgba(255,255,255,.14)}
+  .card .ico{font-size:2.2em}
+  .card b{display:block;font-size:1.15em}
+  .card small{opacity:.7}
+  .best{margin-left:auto;font-size:.85em;background:rgba(74,222,128,.2);color:#4ade80;
+        padding:4px 10px;border-radius:20px;white-space:nowrap}
+  button{font-family:inherit;font-size:1em;cursor:pointer;border:none;border-radius:12px}
+  .btn{background:#60a5fa;color:#0f172a;font-weight:700;padding:12px 22px;margin:6px 4px}
+  .btn.ghost{background:rgba(255,255,255,.15);color:#fff}
+  .opt{display:block;width:100%;text-align:left;background:rgba(255,255,255,.08);
+       border:2px solid rgba(255,255,255,.15);color:#fff;padding:14px 16px;margin-bottom:10px;transition:.12s}
+  .opt:hover:not(:disabled){border-color:#60a5fa;background:rgba(96,165,250,.15)}
+  .opt:disabled{cursor:default;opacity:.75}
+  .opt.ok{background:rgba(74,222,128,.25);border-color:#4ade80;opacity:1}
+  .opt.no{background:rgba(248,113,113,.25);border-color:#f87171;opacity:1}
+  .bar{height:8px;background:rgba(255,255,255,.12);border-radius:8px;overflow:hidden;margin:14px 0}
+  .bar i{display:block;height:100%;background:linear-gradient(90deg,#60a5fa,#4ade80);transition:.3s}
+  .hud{display:flex;justify-content:space-between;font-size:.9em;opacity:.85}
+  .q{font-size:1.2em;line-height:1.5;margin:16px 0 18px;font-weight:600}
+  .fb{border-radius:12px;padding:14px;margin-top:8px;line-height:1.5;font-size:.95em}
+  .fb.ok{background:rgba(74,222,128,.18);border-left:4px solid #4ade80}
+  .fb.no{background:rgba(248,113,113,.18);border-left:4px solid #f87171}
+  .tag{display:inline-block;font-size:.75em;background:rgba(255,255,255,.15);padding:3px 10px;
+       border-radius:20px;margin-bottom:6px;letter-spacing:.5px}
+  .center{text-align:center}
+  .score{font-size:3.5em;font-weight:800;margin:10px 0}
+  .rev{background:rgba(248,113,113,.12);border-radius:12px;padding:12px;margin-bottom:8px;
+       font-size:.9em;line-height:1.5;text-align:left}
+  .hide{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div id="menu">
+    <h1>🎯 Provão Geral</h1>
+    <p class="sub">Escolha a matéria. Cada seção estuda separado.</p>
+    <div id="subjects"></div>
+    <p class="sub" style="margin-top:18px">💡 Cada rodada sorteia 10 questões. Dá pra repetir sempre.</p>
+  </div>
+
+  <div id="topics" class="hide">
+    <h1 id="tTitle"></h1>
+    <p class="sub">Escolha o assunto ou treine tudo junto.</p>
+    <div id="topicList"></div>
+    <div class="center"><button class="btn ghost" onclick="go('menu')">← Voltar</button></div>
+  </div>
+
+  <div id="quiz" class="hide">
+    <div class="hud"><span id="qWhere"></span><span id="qScore"></span></div>
+    <div class="bar"><i id="qBar" style="width:0"></i></div>
+    <span class="tag" id="qTag"></span>
+    <div class="q" id="qText"></div>
+    <div id="qOpts"></div>
+    <div id="qFb"></div>
+    <div class="center"><button class="btn hide" id="qNext">Próxima →</button>
+      <button class="btn ghost" onclick="if(confirm('Sair da rodada?'))go('menu')">Sair</button></div>
+  </div>
+
+  <div id="end" class="hide center">
+    <h1 id="eTitle"></h1>
+    <div class="score" id="eScore"></div>
+    <p class="sub" id="eMsg"></p>
+    <div id="eRev" style="margin:18px 0"></div>
+    <button class="btn" onclick="startQuiz(cur.s,cur.t)">🔁 Jogar de novo</button>
+    <button class="btn ghost" onclick="go('menu')">🏠 Menu</button>
+  </div>
+
+</div>
+<script>
+// ===== BANCO DE QUESTÕES =====
+// q=pergunta  o=opções (a 1ª é sempre a correta, embaralha na hora)  e=explicação
+const SUBJECTS = [
+  {id:'ing', nome:'Inglês', ico:'🇬🇧'},
+  {id:'geo', nome:'Geografia', ico:'🌍'},
+  {id:'his', nome:'História', ico:'🏛️'},
+  {id:'por', nome:'Português', ico:'📚'},
+];
+
+const Q = [
+// ================================================================ INGLÊS
+{s:'ing',t:'Partes da casa',q:'Where do you cook the food?',o:['In the kitchen','In the bathroom','In the garage','In the bedroom'],e:'Kitchen = cozinha, o lugar de cozinhar.'},
+{s:'ing',t:'Partes da casa',q:'"Banheiro" em inglês é:',o:['Bathroom','Bedroom','Living room','Dining room'],e:'Bathroom = banheiro. Cuidado: bedroom = quarto.'},
+{s:'ing',t:'Partes da casa',q:'We watch TV and receive visitors in the...',o:['living room','kitchen','garage','attic'],e:'Living room = sala de estar.'},
+{s:'ing',t:'Partes da casa',q:'"Garagem" é o lugar onde deixamos o carro:',o:['Garage','Garden','Basement','Stairs'],e:'Garage = garagem; garden = jardim.'},
+{s:'ing',t:'Partes da casa',q:'We have lunch and dinner in the:',o:['dining room','bathroom','bedroom','roof'],e:'Dining room = sala de jantar (to dine = jantar).'},
+{s:'ing',t:'Partes da casa',q:'"Stairs" significa:',o:['escada','telhado','porão','quintal'],e:'Stairs = escada. Roof = telhado, basement = porão.'},
+{s:'ing',t:'Objetos do quarto',q:'You sleep on a:',o:['bed','desk','mirror','lamp'],e:'Bed = cama.'},
+{s:'ing',t:'Objetos do quarto',q:'"Guarda-roupa" em inglês:',o:['Wardrobe','Curtain','Pillow','Shelf'],e:'Wardrobe (ou closet) = guarda-roupa.'},
+{s:'ing',t:'Objetos do quarto',q:'I put my head on the... when I sleep.',o:['pillow','blanket','carpet','drawer'],e:'Pillow = travesseiro; blanket = cobertor.'},
+{s:'ing',t:'Objetos do quarto',q:'"Mirror" significa:',o:['espelho','tapete','cortina','abajur'],e:'Mirror = espelho. Rug/carpet = tapete.'},
+{s:'ing',t:'Objetos do quarto',q:'I study and do homework at my:',o:['desk','bed','wardrobe','window'],e:'Desk = escrivaninha/mesa de estudo.'},
+{s:'ing',t:'Objetos do quarto',q:'"Cortinas" em inglês:',o:['Curtains','Blankets','Shelves','Drawers'],e:'Curtains = cortinas.'},
+{s:'ing',t:'Estações e meses',q:'The months of the year are:',o:['twelve','ten','seven','four'],e:'12 meses no ano.'},
+{s:'ing',t:'Estações e meses',q:'Which month comes after July?',o:['August','June','September','January'],e:'July (julho) → August (agosto).'},
+{s:'ing',t:'Estações e meses',q:'"Outono" em inglês (inglês britânico):',o:['Autumn','Summer','Spring','Winter'],e:'Autumn (UK) ou Fall (US) = outono.'},
+{s:'ing',t:'Estações e meses',q:'The coldest season is:',o:['winter','summer','spring','autumn'],e:'Winter = inverno.'},
+{s:'ing',t:'Estações e meses',q:'Qual é a ordem correta dos meses?',o:['March, April, May','May, March, April','April, March, May','March, May, April'],e:'Março, abril, maio.'},
+{s:'ing',t:'Estações e meses',q:'"Primavera" em inglês:',o:['Spring','Summer','Season','Sunday'],e:'Spring = primavera.'},
+{s:'ing',t:'Números ordinais',q:'The ordinal number for 1 is:',o:['first','one','once','oneth'],e:'1st = first.'},
+{s:'ing',t:'Números ordinais',q:'The ordinal number for 3 is:',o:['third','threeth','thirdy','three'],e:'3rd = third (irregular).'},
+{s:'ing',t:'Números ordinais',q:'The 5th month of the year is:',o:['May','April','June','March'],e:'5th = fifth = maio.'},
+{s:'ing',t:'Números ordinais',q:'"Vigésimo" em inglês:',o:['twentieth','twenty','twelfth','twentyth'],e:'20th = twentieth.'},
+{s:'ing',t:'Números ordinais',q:'"Nono" em inglês:',o:['ninth','nineth','nineeth','ninthy'],e:'9th = ninth (perde o "e" de nine).'},
+{s:'ing',t:'Números ordinais',q:'Christmas is on December ___.',o:['twenty-fifth','twenty-five','twentieth-five','fifth-twenty'],e:'25th = twenty-fifth.'},
+{s:'ing',t:'Pronomes possessivos',q:'This is ___ book. (I)',o:['my','mine','me','I'],e:'Antes do substantivo usa-se o adjetivo possessivo: my book.'},
+{s:'ing',t:'Pronomes possessivos',q:'This book is ___. (I)',o:['mine','my','me','mines'],e:'Sozinho, sem substantivo depois: mine.'},
+{s:'ing',t:'Pronomes possessivos',q:'Sarah lost ___ keys.',o:['her','his','hers','she'],e:'Sarah → her (dela) antes do substantivo.'},
+{s:'ing',t:'Pronomes possessivos',q:'The dog is playing with ___ ball.',o:['its','it\'s','his','their'],e:'Its = dele/dela (coisa/animal). It\'s = it is.'},
+{s:'ing',t:'Pronomes possessivos',q:'That house is ___. (they)',o:['theirs','their','them','there'],e:'Sem substantivo depois: theirs.'},
+{s:'ing',t:'Artigos (a/an/the)',q:'I have ___ apple in my bag.',o:['an','a','the','—'],e:'Antes de som de vogal (a-e-i-o-u): an.'},
+{s:'ing',t:'Artigos (a/an/the)',q:'She is ___ teacher.',o:['a','an','the','—'],e:'Som de consoante (t) → a.'},
+{s:'ing',t:'Artigos (a/an/the)',q:'___ sun is very hot today.',o:['The','A','An','—'],e:'Coisa única no mundo → the.'},
+{s:'ing',t:'Artigos (a/an/the)',q:'It is ___ hour before the test.',o:['an','a','the','—'],e:'"Hour" tem H mudo, o som é de vogal → an hour.'},
+{s:'ing',t:'Artigos (a/an/the)',q:'Qual a diferença entre "a" e "the"?',o:['"a" é indefinido (um qualquer) e "the" é definido (aquele específico)','"a" é plural e "the" é singular','"a" é para pessoas e "the" para objetos','Não há diferença'],e:'a/an = indefinido; the = definido.'},
+{s:'ing',t:'There is / There are',q:'___ a lamp on the desk.',o:['There is','There are','There have','It are'],e:'Singular (a lamp) → there is.'},
+{s:'ing',t:'There is / There are',q:'___ three bedrooms in my house.',o:['There are','There is','There be','Have'],e:'Plural (three bedrooms) → there are.'},
+{s:'ing',t:'There is / There are',q:'Negativa correta:',o:['There isn\'t a mirror in the bathroom.','There amn\'t a mirror.','There don\'t a mirror.','There not a mirror.'],e:'There is not = there isn\'t.'},
+{s:'ing',t:'There is / There are',q:'Pergunta correta no plural:',o:['Are there any chairs in the room?','Is there any chairs?','There are chairs?','Do there are chairs?'],e:'Invertendo: Are there...?'},
+{s:'ing',t:'There is / There are',q:'"Há muitos livros na estante." =',o:['There are many books on the shelf.','There is many books on the shelf.','It has many books.','Have many books.'],e:'"Haver/existir" em inglês é there is/there are, nunca "have".'},
+{s:'ing',t:'Partes da casa',q:'Which room is NOT part of a house?',o:['Playground','Kitchen','Bedroom','Bathroom'],e:'Playground = parquinho, fica fora da casa.'},
+{s:'ing',t:'Partes da casa',q:'"Jardim / quintal" em inglês:',o:['Garden','Garage','Basement','Attic'],e:'Garden = jardim. Não confunda com garage.'},
+{s:'ing',t:'Partes da casa',q:'The "attic" is located:',o:['at the top of the house, under the roof','under the ground','next to the kitchen','in the garden'],e:'Attic = sótão.'},
+{s:'ing',t:'Partes da casa',q:'"Basement" significa:',o:['porão','sótão','telhado','corredor'],e:'Basement = porão (embaixo da casa).'},
+{s:'ing',t:'Partes da casa',q:'Where do we take a shower?',o:['In the bathroom','In the dining room','In the garage','In the garden'],e:'To take a shower = tomar banho.'},
+{s:'ing',t:'Partes da casa',q:'"Hall" ou "corridor" é:',o:['o corredor','a cozinha','o telhado','a escada'],e:'Liga um cômodo ao outro.'},
+{s:'ing',t:'Partes da casa',q:'"Roof" é a parte da casa que:',o:['cobre a casa por cima','fica embaixo da terra','liga os andares','guarda o carro'],e:'Roof = telhado.'},
+{s:'ing',t:'Partes da casa',q:'Qual frase está correta?',o:['There is a big kitchen in my house.','There is a big kitchens in my house.','There are a big kitchen.','It has a big kitchen there.'],e:'Singular (a big kitchen) → there is.'},
+{s:'ing',t:'Partes da casa',q:'My house has three ___ , so five people can sleep here.',o:['bedrooms','kitchens','roofs','garages'],e:'Bedroom = quarto de dormir.'},
+{s:'ing',t:'Objetos do quarto',q:'"Blanket" significa:',o:['cobertor','travesseiro','lençol','cortina'],e:'Blanket = cobertor.'},
+{s:'ing',t:'Objetos do quarto',q:'"Lençol" em inglês:',o:['Sheet','Shelf','Shell','Shirt'],e:'Sheet = lençol; shelf = prateleira.'},
+{s:'ing',t:'Objetos do quarto',q:'I keep my books on the ___ .',o:['shelf','pillow','blanket','rug'],e:'Shelf = prateleira/estante.'},
+{s:'ing',t:'Objetos do quarto',q:'"Gaveta" em inglês:',o:['Drawer','Door','Desk','Dresser'],e:'Drawer = gaveta; dresser = cômoda.'},
+{s:'ing',t:'Objetos do quarto',q:'"Rug" significa:',o:['tapete','cortina','abajur','armário'],e:'Rug/carpet = tapete.'},
+{s:'ing',t:'Objetos do quarto',q:'The object that gives light next to the bed is the:',o:['lamp','mirror','rug','pillow'],e:'Lamp = luminária/abajur.'},
+{s:'ing',t:'Objetos do quarto',q:'"Nightstand" é:',o:['a mesinha de cabeceira','a cama','a janela','o guarda-roupa'],e:'Fica ao lado da cama.'},
+{s:'ing',t:'Objetos do quarto',q:'Qual objeto NÃO costuma ficar no quarto?',o:['Stove','Bed','Wardrobe','Lamp'],e:'Stove = fogão, fica na cozinha.'},
+{s:'ing',t:'Objetos do quarto',q:'"Alarm clock" é:',o:['o despertador','o espelho','a cortina','o tapete'],e:'Serve para acordar de manhã.'},
+{s:'ing',t:'Estações e meses',q:'How many seasons are there in a year?',o:['Four','Twelve','Two','Seven'],e:'Spring, summer, autumn e winter.'},
+{s:'ing',t:'Estações e meses',q:'The first month of the year is:',o:['January','December','June','March'],e:'January = janeiro.'},
+{s:'ing',t:'Estações e meses',q:'The last month of the year is:',o:['December','November','January','October'],e:'December = dezembro.'},
+{s:'ing',t:'Estações e meses',q:'"Junho" em inglês:',o:['June','July','August','September'],e:'June = junho; July = julho.'},
+{s:'ing',t:'Estações e meses',q:'Which month comes before April?',o:['March','May','June','February'],e:'March (março) vem antes de April (abril).'},
+{s:'ing',t:'Estações e meses',q:'"Inverno" em inglês:',o:['Winter','Summer','Autumn','Spring'],e:'Winter = inverno.'},
+{s:'ing',t:'Estações e meses',q:'The season when flowers bloom and it gets warmer:',o:['spring','winter','autumn','summer'],e:'Spring = primavera.'},
+{s:'ing',t:'Estações e meses',q:'Em inglês, os meses e as estações do ano:',o:['os meses são sempre escritos com letra maiúscula','os meses são sempre minúsculos','nunca levam maiúscula','só levam maiúscula no plural'],e:'January, February, March... sempre com maiúscula.'},
+{s:'ing',t:'Estações e meses',q:'Which is the correct order after summer?',o:['autumn, winter, spring','winter, autumn, spring','spring, autumn, winter','winter, spring, autumn'],e:'Verão → outono → inverno → primavera.'},
+{s:'ing',t:'Estações e meses',q:'My birthday is ___ March.',o:['in','on','at','to'],e:'Usamos "in" com meses: in March, in July.'},
+{s:'ing',t:'Números ordinais',q:'The ordinal number for 2 is:',o:['second','twoth','twond','two'],e:'2nd = second (irregular).'},
+{s:'ing',t:'Números ordinais',q:'The ordinal number for 12 is:',o:['twelfth','twelveth','twelvth','twelve'],e:'12th = twelfth.'},
+{s:'ing',t:'Números ordinais',q:'"Oitavo" em inglês:',o:['eighth','eightth','eightieth','eighty'],e:'8th = eighth.'},
+{s:'ing',t:'Números ordinais',q:'A abreviação de "third" é:',o:['3rd','3th','3st','3nd'],e:'Usa-se as duas últimas letras: thi-RD.'},
+{s:'ing',t:'Números ordinais',q:'A abreviação de "first" é:',o:['1st','1th','1rd','1nd'],e:'fir-ST → 1st.'},
+{s:'ing',t:'Números ordinais',q:'The 10th month of the year is:',o:['October','August','November','December'],e:'10th = tenth = outubro.'},
+{s:'ing',t:'Números ordinais',q:'"Vigésimo primeiro" em inglês:',o:['twenty-first','twenty-oneth','twentieth-first','twenty-one'],e:'Só o último número vira ordinal.'},
+{s:'ing',t:'Números ordinais',q:'A maioria dos números ordinais é formada:',o:['acrescentando -th ao número cardinal','acrescentando -s','acrescentando -ing','acrescentando -ed'],e:'four → fourth; six → sixth.'},
+{s:'ing',t:'Números ordinais',q:'My birthday is on the ___ of May. (2)',o:['second','two','twoth','secondth'],e:'Datas usam números ordinais.'},
+{s:'ing',t:'Pronomes possessivos',q:'We love ___ school. (we)',o:['our','ours','us','we'],e:'Antes do substantivo: our school.'},
+{s:'ing',t:'Pronomes possessivos',q:'This pen is ___ . (you)',o:['yours','your','you','youres'],e:'Sem substantivo depois: yours.'},
+{s:'ing',t:'Pronomes possessivos',q:'Peter is washing ___ car.',o:['his','her','hers','him'],e:'Peter → his (dele).'},
+{s:'ing',t:'Pronomes possessivos',q:'The books are ___ . (she)',o:['hers','her','she','shes'],e:'Sozinho: hers.'},
+{s:'ing',t:'Pronomes possessivos',q:'Qual é o possessivo que acompanha o substantivo, referente a "they"?',o:['their','theirs','them','there'],e:'their house / the house is theirs.'},
+{s:'ing',t:'Pronomes possessivos',q:'Escolha a frase correta:',o:['This is my bedroom.','This is mine bedroom.','This is me bedroom.','This is I bedroom.'],e:'Antes do substantivo usa-se my.'},
+{s:'ing',t:'Pronomes possessivos',q:'Escolha a frase correta (possessivo sem substantivo depois):',o:['That car is ours.','That car is our.','That car is us.','That car is we.'],e:'Sem substantivo depois: ours.'},
+{s:'ing',t:'Pronomes possessivos',q:'"Whose bag is this?" — "It is ___ ." (I)',o:['mine','my','me','I'],e:'Resposta sem substantivo: mine.'},
+{s:'ing',t:'Pronomes possessivos',q:'Os pronomes mine, yours, hers, ours e theirs são usados:',o:['sozinhos, sem substantivo depois','sempre antes do substantivo','apenas em perguntas','apenas no plural'],e:'São os pronomes possessivos substantivos.'},
+{s:'ing',t:'Artigos (a/an/the)',q:'I saw ___ elephant at the zoo.',o:['an','a','the','—'],e:'Elephant começa com som de vogal.'},
+{s:'ing',t:'Artigos (a/an/the)',q:'She bought ___ umbrella.',o:['an','a','the','—'],e:'Umbrella começa com som de vogal.'},
+{s:'ing',t:'Artigos (a/an/the)',q:'He is ___ university student.',o:['a','an','the','—'],e:'"University" tem som inicial de "iu", que é som de consoante.'},
+{s:'ing',t:'Artigos (a/an/the)',q:'This is ___ book I told you about.',o:['the','a','an','—'],e:'Livro específico, já conhecido → the.'},
+{s:'ing',t:'Artigos (a/an/the)',q:'Usamos "an" antes de palavras que começam com:',o:['som de vogal','som de consoante','letra maiúscula','plural'],e:'an apple, an hour, an egg.'},
+{s:'ing',t:'Artigos (a/an/the)',q:'Escolha a frase correta (uso de a/an):',o:['I have an orange and a banana.','I have a orange and an banana.','I have an orange and an banana.','I have a orange and a banana.'],e:'orange (vogal) → an; banana (consoante) → a.'},
+{s:'ing',t:'Artigos (a/an/the)',q:'O artigo "the" é usado quando:',o:['falamos de algo específico ou já conhecido','falamos de algo qualquer','o substantivo é plural','a palavra começa com vogal'],e:'É o artigo definido.'},
+{s:'ing',t:'There is / There are',q:'___ two windows in my bedroom.',o:['There are','There is','There have','It is'],e:'Plural (two windows) → there are.'},
+{s:'ing',t:'There is / There are',q:'___ a wardrobe and a bed in the room.',o:['There is','There are','There have','There be'],e:'O primeiro elemento é singular → there is.'},
+{s:'ing',t:'There is / There are',q:'Complete a negativa: ___ any books on the shelf.',o:['There aren\'t','There isn\'t','There not are','There no are'],e:'Plural (books) → there aren\'t.'},
+{s:'ing',t:'There is / There are',q:'Resposta curta correta para "Is there a mirror in the bathroom?"',o:['Yes, there is.','Yes, there are.','Yes, it has.','Yes, there have.'],e:'A resposta repete a forma da pergunta.'},
+{s:'ing',t:'There is / There are',q:'"Não há uma cadeira na cozinha." =',o:['There isn\'t a chair in the kitchen.','There aren\'t a chair in the kitchen.','It doesn\'t have a chair.','Have not a chair.'],e:'Singular → there isn\'t.'},
+{s:'ing',t:'There is / There are',q:'Qual frase está ERRADA?',o:['There is four chairs in the room.','There is a chair in the room.','There are four chairs in the room.','There are two lamps in the room.'],e:'Com "four chairs" (plural) o certo é there are.'},
+{s:'ing',t:'There is / There are',q:'___ a lot of people in the living room.',o:['There are','There is','There have','It are'],e:'"People" é plural em inglês.'},
+
+// ================================================================ GEOGRAFIA
+// --- Vol. 2, Cap. 4: Clima em foco
+{s:'geo',t:'Climas do mundo',q:'Os climas do mundo acompanham as:',o:['zonas climáticas da Terra','placas tectônicas','correntes de ar poluído','divisões políticas dos países'],e:'Zona tropical, temperada e polar organizam a distribuição dos climas.'},
+{s:'geo',t:'Climas do mundo',q:'Os climas mais quentes estão localizados na zona:',o:['tropical','temperada','polar','ártica'],e:'Na zona tropical há maior incidência de raios solares.'},
+{s:'geo',t:'Climas do mundo',q:'Os climas temperados estão localizados na zona:',o:['temperada','tropical','polar','equatorial'],e:'Zona temperada = climas temperados.'},
+{s:'geo',t:'Climas do mundo',q:'Nas zonas polares os climas são mais frios porque:',o:['há menor incidência de raios solares','a Terra está mais longe do Sol','não existe atmosfera lá','o vento é mais fraco'],e:'A inclinação faz os raios chegarem mais espalhados.'},
+{s:'geo',t:'Climas do mundo',q:'Os três grandes grupos de climas são:',o:['frios, temperados e quentes','secos, úmidos e mistos','altos, médios e baixos','norte, sul e centro'],e:'É a divisão do infográfico "Principais climas do mundo".'},
+{s:'geo',t:'Climas do mundo',q:'Fazem parte dos climas frios:',o:['polar e frio de montanha','tropical e desértico','mediterrâneo e oceânico','equatorial e semiárido'],e:'Climas frios = polar + frio de montanha.'},
+{s:'geo',t:'Climas do mundo',q:'Fazem parte dos climas temperados:',o:['oceânico, continental e mediterrâneo','polar, frio e tropical','equatorial, tropical e desértico','semiárido, litorâneo e subtropical'],e:'São os três tipos de clima temperado.'},
+{s:'geo',t:'Climas do mundo',q:'Fazem parte dos climas quentes:',o:['equatorial, tropical e desértico','polar e de montanha','oceânico e continental','mediterrâneo e frio'],e:'Climas quentes = equatorial, tropical e desértico.'},
+{s:'geo',t:'Climograma',q:'Climograma é um gráfico que combina:',o:['temperatura e precipitação de um local ao longo de um ano','relevo e vegetação de uma região','população e área de um país','altitude e latitude'],e:'É a definição do capítulo.'},
+{s:'geo',t:'Climograma',q:'No climograma, as barras azuis representam:',o:['a quantidade de chuva (mm) em cada mês','a temperatura média','a altitude do lugar','a velocidade do vento'],e:'Barras = precipitação em milímetros.'},
+{s:'geo',t:'Climograma',q:'No climograma, a linha vermelha representa:',o:['a temperatura média ao longo do ano','a chuva acumulada','a umidade do ar','a latitude'],e:'A linha mostra a temperatura média.'},
+{s:'geo',t:'Climograma',q:'Na base do climograma estão:',o:['os meses do ano','os anos da década','as estações apenas','os países'],e:'Uma barra para cada mês.'},
+{s:'geo',t:'Climograma',q:'Barras maiores no climograma indicam:',o:['mais chuva naquele mês','mais calor naquele mês','menos umidade','dias mais longos'],e:'Quanto maior a barra, maior o volume de chuva.'},
+{s:'geo',t:'Climograma',q:'Amplitude térmica anual é:',o:['a diferença entre a maior e a menor temperatura do ano','a soma de todas as temperaturas','a média das chuvas','a temperatura do mês mais quente'],e:'Maior − menor.'},
+{s:'geo',t:'Climograma',q:'Se a maior temperatura é 23 °C e a menor 15 °C, a amplitude térmica anual é:',o:['8 °C','38 °C','15 °C','23 °C'],e:'23 − 15 = 8 °C (exemplo de São Paulo no livro).'},
+{s:'geo',t:'Climograma',q:'Climograma com temperatura sempre alta e barras grandes o ano todo indica clima:',o:['equatorial','polar','desértico','mediterrâneo'],e:'Equatorial: quente e chuvoso o ano inteiro, baixa amplitude térmica.'},
+{s:'geo',t:'Climograma',q:'Climograma com quase nenhuma barra e temperaturas altíssimas indica clima:',o:['desértico','tropical','oceânico','frio de montanha'],e:'Deserto: chuvas raras, abaixo de 300 mm por ano.'},
+{s:'geo',t:'Climograma',q:'Climograma de cidade brasileira com muita chuva de novembro a março e quase nenhuma de junho a agosto indica clima:',o:['tropical','equatorial','temperado oceânico','polar'],e:'Duas estações: verão chuvoso e inverno seco.'},
+{s:'geo',t:'Climas frios',q:'No clima polar:',o:['as temperaturas negativas prevalecem em boa parte do ano e a precipitação vem em forma de neve','faz calor o ano todo','chove muito e faz calor','as quatro estações são bem definidas'],e:'Invernos rigorosos, típico de elevadas latitudes.'},
+{s:'geo',t:'Climas frios',q:'Iqaluit, no Canadá, é exemplo de clima:',o:['polar','tropical','mediterrâneo','semiárido'],e:'Temperaturas abaixo de zero na maior parte do ano.'},
+{s:'geo',t:'Climas frios',q:'São regiões de clima polar:',o:['Antártida, Groenlândia, Rússia e Suécia','Saara e Arábia','Amazônia e Congo','Portugal e Itália'],e:'Latitudes muito elevadas.'},
+{s:'geo',t:'Climas frios',q:'O clima frio de montanha aparece:',o:['em elevadas altitudes, com temperaturas negativas o ano todo e neve eterna','no litoral quente','ao nível do mar, perto do Equador','só nos desertos'],e:'Quanto maior a altitude, menor a temperatura.'},
+{s:'geo',t:'Climas frios',q:'A Cordilheira dos Andes, no Peru, é paisagem típica do clima:',o:['frio de montanha','tropical','mediterrâneo','desértico'],e:'Elevadas altitudes.'},
+{s:'geo',t:'Climas frios',q:'A floresta de coníferas (taiga) é típica do clima:',o:['frio','equatorial','desértico','mediterrâneo'],e:'Rússia, Canadá, Alasca e Europa setentrional e leste.'},
+{s:'geo',t:'Climas temperados',q:'Os climas temperados apresentam:',o:['as quatro estações do ano bem definidas','apenas duas estações','calor o ano inteiro','neve o ano inteiro'],e:'Verão, outono, inverno e primavera.'},
+{s:'geo',t:'Climas temperados',q:'No temperado OCEÂNICO, as chuvas:',o:['são bem distribuídas ao longo do ano','só caem no verão','quase não existem','caem apenas em forma de neve'],e:'Influência das massas de ar úmidas vindas do mar.'},
+{s:'geo',t:'Climas temperados',q:'No temperado oceânico a amplitude térmica não é tão grande por causa:',o:['da ação da maritimidade (proximidade do mar)','da altitude elevada','da Linha do Equador','da falta de chuva'],e:'Invernos frios e verões de temperaturas amenas.'},
+{s:'geo',t:'Climas temperados',q:'Brest, na França, é exemplo de clima:',o:['temperado oceânico','temperado continental','polar','desértico'],e:'Litoral francês, chuvas bem distribuídas.'},
+{s:'geo',t:'Climas temperados',q:'O temperado CONTINENTAL tem elevada amplitude térmica por causa:',o:['do efeito da continentalidade (estar longe do mar)','da proximidade do oceano','da Linha do Equador','das correntes marítimas quentes'],e:'Verões quentes e invernos frios.'},
+{s:'geo',t:'Climas temperados',q:'No temperado continental, as chuvas estão mais concentradas:',o:['no verão, podendo ocorrer precipitação em forma de neve','no inverno apenas','na primavera apenas','distribuídas igualmente'],e:'Característica da continentalidade.'},
+{s:'geo',t:'Climas temperados',q:'Minsk, na Bielorrússia, é exemplo de clima:',o:['temperado continental','mediterrâneo','equatorial','tropical'],e:'Interior do continente: grande amplitude térmica.'},
+{s:'geo',t:'Climas temperados',q:'No temperado MEDITERRÂNEO, os verões são:',o:['quentes, longos e com pouca precipitação','frios e chuvosos','curtos e nevados','iguais ao inverno'],e:'E os invernos são amenos e úmidos.'},
+{s:'geo',t:'Climas temperados',q:'Faro, no Algarve (Portugal), é exemplo de clima:',o:['temperado mediterrâneo','polar','equatorial','semiárido'],e:'Localizado próximo ao mar Mediterrâneo.'},
+{s:'geo',t:'Climas temperados',q:'São regiões de clima temperado:',o:['Europa, Canadá, Japão, Nova Zelândia e sul da Argentina','Saara e Arábia','Amazônia e Congo','Antártida e Groenlândia'],e:'Também Chile e costa leste da Austrália.'},
+{s:'geo',t:'Climas quentes',q:'O clima equatorial ocorre em regiões:',o:['próximas à Linha do Equador','próximas aos polos','em grandes altitudes','no interior dos continentes frios'],e:'Por isso o nome.'},
+{s:'geo',t:'Climas quentes',q:'Característica do clima equatorial:',o:['temperaturas elevadas o ano todo, amplitude térmica baixa e chuvas em grande quantidade','invernos rigorosos com neve','chuvas concentradas só no verão','quatro estações bem definidas'],e:'Quente e chuvoso o ano inteiro.'},
+{s:'geo',t:'Climas quentes',q:'Mitú, na Colômbia, é exemplo de clima:',o:['equatorial','desértico','polar','continental'],e:'Chuva abundante o ano todo e temperatura sempre alta.'},
+{s:'geo',t:'Climas quentes',q:'São regiões de clima equatorial:',o:['Floresta Amazônica, Congo, Madagascar e Sudeste Asiático','Deserto do Saara e Arábia','Patagônia e Sibéria','Portugal e Grécia'],e:'Também América Central, Caribe, Índia e Sri Lanka.'},
+{s:'geo',t:'Climas quentes',q:'O clima tropical ocorre em regiões:',o:['localizadas entre os trópicos','em cima da Linha do Equador apenas','nos círculos polares','em grandes altitudes'],e:'Entre os trópicos de Câncer e de Capricórnio.'},
+{s:'geo',t:'Climas quentes',q:'O clima tropical tem:',o:['duas estações bem definidas: verão quente e chuvoso, inverno ameno e seco','chuva igual o ano todo','temperaturas negativas no inverno','neve nas montanhas'],e:'Marca do clima tropical.'},
+{s:'geo',t:'Climas quentes',q:'São variações do clima tropical:',o:['subtropical, semiárido e litorâneo','polar e de montanha','oceânico e continental','equatorial e desértico'],e:'O livro cita essas três variações.'},
+{s:'geo',t:'Climas quentes',q:'Campo Grande (MS) é exemplo de clima:',o:['tropical','equatorial','temperado','polar'],e:'Verão chuvoso e inverno mais seco.'},
+{s:'geo',t:'Climas quentes',q:'A savana do Quênia, com girafas e acácias, é paisagem típica do clima:',o:['tropical','equatorial','polar','mediterrâneo'],e:'Savana = vegetação típica do tropical.'},
+{s:'geo',t:'Climas quentes',q:'No clima desértico as chuvas:',o:['são raras e não ultrapassam 300 mm por ano','caem todos os meses','vêm em forma de neve','superam 2 000 mm por ano'],e:'Chuvas raras.'},
+{s:'geo',t:'Climas quentes',q:'No clima desértico, as temperaturas podem ser maiores que:',o:['40 °C','15 °C','0 °C','100 °C'],e:'Temperaturas elevadas, podendo passar de 40 °C.'},
+{s:'geo',t:'Climas quentes',q:'A amplitude térmica DIÁRIA do deserto é elevada porque:',o:['os dias são muito quentes e as noites, muito frias','chove de manhã e faz sol à tarde','neva à noite','o vento muda de direção'],e:'Sem nuvens e umidade, o calor se perde rápido à noite.'},
+{s:'geo',t:'Climas quentes',q:'Bir Moghrein, na Mauritânia, é exemplo de clima:',o:['desértico','oceânico','frio','equatorial'],e:'Quase sem chuva e com temperaturas muito altas.'},
+{s:'geo',t:'Climas quentes',q:'São regiões de clima desértico:',o:['Saara, Arábia, Austrália, Mongólia e Ásia Central','Amazônia e Congo','Rússia e Canadá','Nova Zelândia e Japão'],e:'Regiões muito secas.'},
+{s:'geo',t:'Climas quentes',q:'A Caatinga, no Nordeste do Brasil, é a vegetação do clima:',o:['semiárido','equatorial','temperado','polar'],e:'Semiárido: poucas chuvas e longas secas.'},
+{s:'geo',t:'El Niño e La Niña',q:'A sigla ENOS significa:',o:['El Niño Oscilação Sul','Estudo Nacional de Oceanos do Sul','Efeito Natural do Oceano Sul','Escala Numérica de Oscilação Solar'],e:'É a interação atmosfera-oceano no Pacífico Equatorial.'},
+{s:'geo',t:'El Niño e La Niña',q:'El Niño e La Niña são:',o:['fases diferentes de um mesmo fenômeno','fenômenos totalmente independentes','tipos de furacão','nomes de correntes marítimas do Atlântico'],e:'Ambos fazem parte do ENOS.'},
+{s:'geo',t:'El Niño e La Niña',q:'O El Niño é:',o:['o aquecimento anormal das águas superficiais do Pacífico Equatorial','o resfriamento das águas do Atlântico','um tipo de ciclone tropical','o derretimento das calotas polares'],e:'Aquecimento anormal.'},
+{s:'geo',t:'El Niño e La Niña',q:'A La Niña é:',o:['o resfriamento anormal das águas superficiais do Pacífico Equatorial','o aquecimento do Pacífico','uma tempestade de areia','uma corrente de ar quente da África'],e:'Resfriamento anormal.'},
+{s:'geo',t:'El Niño e La Niña',q:'Durante o El Niño, no Brasil:',o:['o Sul fica mais chuvoso e o Nordeste, mais seco','o Sul fica mais seco e o Nordeste, mais chuvoso','todo o país fica mais frio','nada muda'],e:'Seca prolongada no Nordeste e chuvas torrenciais no Sul.'},
+{s:'geo',t:'El Niño e La Niña',q:'Durante a La Niña, no Brasil:',o:['o Sul tende a ficar mais seco e frio e o Nordeste, mais chuvoso','o Sul fica mais chuvoso','o Nordeste fica em seca extrema','o Centro-Oeste congela'],e:'É o oposto do El Niño.'},
+{s:'geo',t:'El Niño e La Niña',q:'A frequência do El Niño e da La Niña é de:',o:['dois a sete anos','todo mês','duas vezes por ano','a cada cem anos'],e:'Intervalos de dois a sete anos.'},
+{s:'geo',t:'El Niño e La Niña',q:'A duração média do El Niño é de:',o:['doze a dezoito meses','dois a três dias','cinco a dez anos','um mês'],e:'A La Niña dura de nove a doze meses.'},
+{s:'geo',t:'El Niño e La Niña',q:'O El Niño pode prejudicar a pesca no Peru porque:',o:['enfraquece os ventos alísios e dificulta a ressurgência','deixa o mar congelado','aumenta o número de tubarões','destrói os barcos com furacões'],e:'Sem ressurgência, os peixes não sobem à superfície.'},
+{s:'geo',t:'El Niño e La Niña',q:'Ressurgência é o fenômeno em que:',o:['águas frias com plâncton sobem para a superfície e atraem os peixes','a água do mar evapora rapidamente','o mar recua da praia','o gelo polar derrete'],e:'Por isso ela favorece a pesca.'},
+{s:'geo',t:'El Niño e La Niña',q:'Durante a La Niña, na costa do Peru:',o:['ocorre aumento da ressurgência, favorecendo a pesca','a pesca é totalmente proibida','o mar fica mais quente','não há mudança nenhuma'],e:'Efeito contrário ao do El Niño.'},
+{s:'geo',t:'Ciclones e tornados',q:'Ciclones são:',o:['centros de baixa pressão atmosférica','centros de alta pressão atmosférica','massas de ar frio e seco','ondas gigantes do mar'],e:'Baixa pressão concentra umidade e calor.'},
+{s:'geo',t:'Ciclones e tornados',q:'No Hemisfério Sul, os ventos de um ciclone giram no sentido:',o:['horário','anti-horário','sempre para o norte','sempre para o oeste'],e:'No Hemisfério Norte é anti-horário.'},
+{s:'geo',t:'Ciclones e tornados',q:'Os ciclones podem atingir de diâmetro entre:',o:['200 km e 500 km','2 km e 5 km','20 m e 50 m','2 000 km e 5 000 km'],e:'A formação é comum nos oceanos aquecidos.'},
+{s:'geo',t:'Ciclones e tornados',q:'Os ciclones TROPICAIS também são conhecidos como:',o:['furacões ou tufões','tornados','frentes frias','monções'],e:'Formam-se entre 20°S e 20°N e são devastadores.'},
+{s:'geo',t:'Ciclones e tornados',q:'Os ciclones EXTRATROPICAIS:',o:['formam-se entre 30° e 60° e são mais comuns no Brasil','só ocorrem no Pacífico','são os mais fracos que existem','ocorrem apenas no inverno polar'],e:'Estão associados a uma frente fria.'},
+{s:'geo',t:'Ciclones e tornados',q:'Os ciclones SUBTROPICAIS:',o:['formam-se entre 20° e 40°, ocorrem na primavera e são menos intensos','são os mais devastadores','só existem na Antártida','nunca atingem o continente'],e:'São os mais fracos dos três tipos.'},
+{s:'geo',t:'Ciclones e tornados',q:'O tornado é:',o:['uma coluna de ar giratória e violenta em formato de funil','uma onda gigante','uma nuvem de poeira parada','um tipo de chuva ácida'],e:'Forma-se entre uma nuvem convectiva e a superfície.'},
+{s:'geo',t:'Ciclones e tornados',q:'Os tornados estão associados a:',o:['ambientes de tempestades mais destrutivas','dias de céu limpo','regiões polares apenas','oceanos frios'],e:'O redemoinho desce da nuvem e pode causar destruição ao atingir o chão.'},
+{s:'geo',t:'Ciclones e tornados',q:'No centro do ciclone (área de menor pressão):',o:['o ar quente e úmido ascende, provocando nuvens','o ar desce e o céu fica limpo','a temperatura cai a zero','não há vento nenhum'],e:'O movimento dos ventos concentra umidade e calor.'},
+{s:'geo',t:'Ilhas de calor',q:'A ilha de calor é um fenômeno que acontece:',o:['nas zonas urbanas, sendo o centro da cidade a área mais quente','nas zonas rurais','apenas no litoral','somente nos desertos'],e:'Diferença de temperatura entre as áreas do município.'},
+{s:'geo',t:'Ilhas de calor',q:'Uma das causas das ilhas de calor é:',o:['o asfalto e as edificações, que absorvem calor e dificultam a circulação do ar','o excesso de árvores','a falta de carros','o vento vindo do mar'],e:'Materiais urbanos retêm calor.'},
+{s:'geo',t:'Ilhas de calor',q:'A poluição atmosférica contribui para a ilha de calor porque:',o:['carros e indústrias liberam gases que retêm calor','deixa o céu mais escuro e frio','aumenta a chuva na cidade','esfria o asfalto'],e:'Os gases retêm o calor sobre a cidade.'},
+{s:'geo',t:'Ilhas de calor',q:'A falta de cobertura vegetal nas cidades causa:',o:['menor resfriamento por sombra','mais chuva','mais vento frio','diminuição da temperatura'],e:'Sem árvores, falta sombra para resfriar.'},
+{s:'geo',t:'Ilhas de calor',q:'Nos mapas de São Paulo, as áreas com MENOR cobertura vegetal apresentam:',o:['as maiores temperaturas','as menores temperaturas','a mesma temperatura das outras','mais chuva'],e:'Vegetação e temperatura estão diretamente relacionadas.'},
+{s:'geo',t:'Ilhas de calor',q:'São soluções para diminuir a temperatura nas zonas urbanas:',o:['telhados verdes e parques urbanos','mais asfalto e cimento','mais indústrias no centro','retirar as árvores das praças'],e:'Reduzem a absorção de calor e aumentam a sombra.'},
+{s:'geo',t:'Ilhas de calor',q:'Um fenômeno "antropogênico" é aquele:',o:['provocado em decorrência da atividade humana','causado apenas pela natureza','que ocorre só no passado','ligado a vulcões'],e:'Antropogênico = de origem humana.'},
+{s:'geo',t:'Aquecimento global',q:'O efeito estufa é:',o:['um fenômeno natural que retém o calor necessário para a vida na Terra','uma invenção das indústrias','um tipo de poluição do solo','sempre prejudicial'],e:'Sem ele, a vida na Terra não seria possível.'},
+{s:'geo',t:'Aquecimento global',q:'São gases de efeito estufa:',o:['dióxido de carbono, metano e vapor d\'água','oxigênio e hidrogênio puros','hélio e neônio','nitrogênio apenas'],e:'Formam a camada que retém calor na atmosfera.'},
+{s:'geo',t:'Aquecimento global',q:'O aquecimento global é:',o:['o resultado da intensificação do efeito estufa pelas ações humanas','o mesmo que efeito estufa natural','o resfriamento do planeta','uma estação do ano'],e:'Corresponde ao aumento da temperatura média do planeta.'},
+{s:'geo',t:'Aquecimento global',q:'O aumento da liberação de poluentes na atmosfera se intensificou após:',o:['a Revolução Industrial','a Idade Média','a Pré-História','a Segunda Guerra Mundial apenas'],e:'Grande liberação de CO₂ a partir daí.'},
+{s:'geo',t:'Aquecimento global',q:'As florestas atuam como reguladoras do clima porque:',o:['contribuem para a retirada do CO₂ da atmosfera','produzem gás carbônico','aumentam o calor do solo','impedem a chuva'],e:'Retirar a cobertura vegetal gera desequilíbrio climático.'},
+{s:'geo',t:'Aquecimento global',q:'São efeitos do aquecimento global:',o:['degelo das calotas polares, elevação do nível do mar e aumento dos períodos de seca','diminuição das temperaturas','aumento das geleiras','fim dos desertos'],e:'Também causa desequilíbrio ecológico.'},
+{s:'geo',t:'Aquecimento global',q:'Por que o degelo das calotas polares eleva o nível do mar?',o:['A água do gelo derretido vai para os oceanos','O mar esquenta e se expande para o céu','As calotas empurram a água','O gelo bloqueia os rios'],e:'Quanto mais elevada a temperatura, mais as calotas derretem.'},
+{s:'geo',t:'Aquecimento global',q:'São soluções apontadas para reduzir o aquecimento global:',o:['maior fiscalização, filtros nas indústrias e redução do consumo','aumentar as queimadas','desmatar mais rápido','usar mais carros a combustão'],e:'Também conscientização para reduzir o desmatamento.'},
+{s:'geo',t:'Camada de ozônio',q:'A fórmula química do ozônio é:',o:['O₃','O₂','CO₂','H₂O'],e:'É um gás formado por três átomos de oxigênio.'},
+{s:'geo',t:'Camada de ozônio',q:'A camada de ozônio protege a vida na Terra contra:',o:['os raios ultravioletas emitidos pelo Sol','os meteoros','o vento solar frio','a chuva ácida do espaço'],e:'Funciona como um filtro a favor da vida.'},
+{s:'geo',t:'Camada de ozônio',q:'A camada de ozônio que nos protege está localizada:',o:['na estratosfera, entre 25 e 30 km acima da superfície','no fundo dos oceanos','na superfície das cidades','no núcleo da Terra'],e:'Na superfície, o ozônio agrava a poluição do ar e a chuva ácida.'},
+// --- Vol. 3, Cap. 6: O ser humano e o espaço geográfico
+{s:'geo',t:'Espaço natural e geográfico',q:'O espaço NATURAL é composto por:',o:['elementos produzidos pela natureza, que correspondem ao meio físico','elementos construídos pelas pessoas','apenas prédios e estradas','somente vegetação plantada'],e:'Resulta de processos naturais ao longo do tempo.'},
+{s:'geo',t:'Espaço natural e geográfico',q:'O espaço GEOGRÁFICO é:',o:['composto por elementos naturais e elementos produzidos pelos seres humanos','formado apenas por elementos naturais','o mesmo que espaço natural','a parte da Terra sem vida'],e:'Resulta das interações entre o meio ambiente e os seres humanos.'},
+{s:'geo',t:'Espaço natural e geográfico',q:'Sobre o espaço natural, é correto afirmar que:',o:['é cada vez mais escasso no planeta','está aumentando a cada ano','só existe nas cidades','nunca existiu'],e:'A ação humana transforma cada vez mais o espaço.'},
+{s:'geo',t:'Espaço natural e geográfico',q:'Elementos culturais, sociais ou ANTRÓPICOS são:',o:['os produzidos pelos seres humanos','os produzidos pela natureza','as rochas e o relevo','os rios e as montanhas'],e:'Antrópico = de origem humana.'},
+{s:'geo',t:'Espaço natural e geográfico',q:'As três imagens da Antártida no início do capítulo se diferenciam:',o:['pelo nível de interferência dos seres humanos no espaço','pelo clima de cada região','pela estação do ano','pela altitude'],e:'Da natureza inalterada até a base construída.'},
+{s:'geo',t:'Espaço natural e geográfico',q:'As transformações do espaço geográfico dependem de:',o:['local, época, sociedade e motivação','apenas do clima','apenas da altitude','somente do dinheiro'],e:'É o esquema apresentado no capítulo.'},
+{s:'geo',t:'Espaço natural e geográfico',q:'Tenochtitlán, cidade do México no século XIV, era:',o:['uma cidade asteca bem desenvolvida do ponto de vista estrutural, social e político','uma pequena aldeia sem organização','uma colônia inglesa','uma cidade europeia'],e:'No Império Asteca havia a ideia de produção de riqueza.'},
+{s:'geo',t:'Espaço natural e geográfico',q:'Nos Estados Unidos, antes da colonização, os povos originários:',o:['estabeleciam relações mais harmônicas com o meio e pouco transformaram o espaço','construíram grandes metrópoles','destruíram todas as florestas','não existiam'],e:'A transformação rápida veio com a colonização inglesa no século XVII.'},
+{s:'geo',t:'Espaço natural e geográfico',q:'No Brasil, os colonizadores portugueses visavam principalmente:',o:['a exploração dos recursos naturais, com devastação de florestas e extração de minerais','o povoamento planejado das cidades','a preservação da natureza','a industrialização imediata'],e:'Isso resultou em desigualdades e pobreza.'},
+{s:'geo',t:'Espaço natural e geográfico',q:'A Terra Indígena Vale do Javari, no Amazonas, é onde está:',o:['o maior número de povos isolados do país','a maior cidade da Amazônia','a maior mineradora do Brasil','a nascente do Rio Amazonas'],e:'Área com poucas alterações no espaço geográfico.'},
+{s:'geo',t:'Espaço natural e geográfico',q:'O desenvolvimento tecnológico transformou o espaço geográfico porque:',o:['permitiu avanços na agropecuária, na indústria, na construção civil e nos transportes','impediu qualquer mudança','só afetou as áreas rurais','diminuiu as profissões'],e:'A especialização e a diversificação das profissões ampliaram a ação no espaço.'},
+{s:'geo',t:'As paisagens',q:'Paisagem é:',o:['tudo o que percebemos de um espaço pela visão e pelos demais sentidos, em determinado momento','apenas o que está escrito nos mapas','somente a vegetação de um lugar','o clima de uma região'],e:'Definição trabalhada a partir de Milton Santos.'},
+{s:'geo',t:'As paisagens',q:'Para Milton Santos, a paisagem não é formada só de volumes, mas também de:',o:['cores, movimentos, odores e sons','números e cálculos','leis e normas','datas históricas'],e:'É o domínio do visível, aquilo que a vista abarca.'},
+{s:'geo',t:'As paisagens',q:'Paisagem NATURAL é aquela que:',o:['recebeu intervenções mínimas ou nenhuma intervenção humana','foi totalmente construída','só existe nas cidades','tem apenas prédios'],e:'Elementos naturais predominam.'},
+{s:'geo',t:'As paisagens',q:'Paisagem CULTURAL (ou antrópica) é aquela que:',o:['reúne elementos naturais e culturais, ou apenas elementos culturais','não tem nenhuma construção','só existe na Antártida','é formada apenas por rochas'],e:'Resulta das alterações humanas.'},
+{s:'geo',t:'As paisagens',q:'Uma plantação de eucalipto, mesmo cheia de árvores, é paisagem:',o:['cultural, porque foi produzida pela ação humana','natural, porque tem árvores','sem classificação','natural, porque tem relevo'],e:'É o exemplo de Igaratá (SP) no livro.'},
+{s:'geo',t:'As paisagens',q:'As fotos da Praia do Porto da Barra (Salvador-BA) de 1957 e de hoje mostram que:',o:['a paisagem cultural se transforma com o passar do tempo','a paisagem nunca muda','só o clima mudou','a praia deixou de existir'],e:'Os elementos naturais permitem reconhecer que é a mesma área.'},
+{s:'geo',t:'As paisagens',q:'O Estádio Mineirão, em Belo Horizonte, é um exemplo de:',o:['permanência: um elemento cultural que se mantém semelhante ao passado','elemento natural','paisagem sem interferência humana','construção destruída pelo tempo'],e:'As permanências representam a cultura e a história das sociedades.'},
+{s:'geo',t:'As paisagens',q:'Casarões que viram museus e uma antiga estação de trem que vira shopping em Curitiba mostram que:',o:['elementos da paisagem podem se modificar e adquirir funções diferentes','a paisagem é sempre igual','só se pode demolir o antigo','a história se apaga completamente'],e:'Mudança de função dos elementos culturais.'},
+{s:'geo',t:'As paisagens',q:'O bairro da Liberdade, em São Paulo, tem uma paisagem marcada por:',o:['elementos que remetem à cultura asiática, principalmente japonesa','arquitetura indígena','construções da Antiguidade','ruínas romanas'],e:'Arquitetura, decoração, comércio, gastronomia e festividades.'},
+{s:'geo',t:'As paisagens',q:'No PRIMEIRO PLANO de uma paisagem estão:',o:['os elementos mais próximos do observador','os elementos mais distantes','apenas o céu','somente construções'],e:'No último plano fica a linha do horizonte.'},
+{s:'geo',t:'As paisagens',q:'A LINHA DO HORIZONTE de uma paisagem:',o:['é o último plano, onde estão os elementos mais distantes e sem detalhes claros','fica sempre no primeiro plano','mostra os elementos mais próximos','só existe no mar'],e:'Não é possível ver com clareza os detalhes.'},
+{s:'geo',t:'As paisagens',q:'A percepção de uma paisagem muda de acordo com:',o:['o ângulo, a perspectiva, o momento do dia e quem está observando','apenas o tamanho da foto','somente a estação do ano','apenas a altitude'],e:'Exemplo da ilha de Bornholm, na Dinamarca.'},
+{s:'geo',t:'As paisagens',q:'Shibuya, em Tóquio, é citada como exemplo de paisagem que:',o:['se transforma à noite, com centenas de letreiros luminosos','nunca muda','é totalmente natural','só existe no inverno'],e:'A iluminação artificial altera a percepção da paisagem.'},
+{s:'geo',t:'As paisagens',q:'Imagens de um lixão a céu aberto e de moradias precárias em Mumbai mostram que a paisagem:',o:['revela condições ambientais, políticas, econômicas e sociais do espaço','é sempre bonita','não tem relação com a sociedade','só mostra a natureza'],e:'A leitura da paisagem revela problemas do espaço.'},
+{s:'geo',t:'O lugar',q:'Para a Geografia, LUGAR é:',o:['o espaço com o qual temos vínculos afetivos e do qual nos sentimos parte','qualquer ponto do mapa','apenas a cidade onde nascemos','somente o país onde moramos'],e:'Trata-se do espaço que é especial por algum motivo.'},
+{s:'geo',t:'O lugar',q:'As três palavras que definem o conceito de lugar são:',o:['pertencimento, afeto e identidade','território, fronteira e Estado','clima, relevo e vegetação','norte, sul e leste'],e:'Esquema do capítulo.'},
+{s:'geo',t:'O lugar',q:'Sobre o lugar onde a pessoa nasceu:',o:['nem todo mundo estabelece vínculos afetivos com ele','é sempre o lugar de todos','é obrigatoriamente o lugar preferido','não pode ser mudado'],e:'A pessoa pode considerar outro espaço como seu lugar.'},
+{s:'geo',t:'O lugar',q:'São exemplos de espaços que podem ser considerados "meu lugar":',o:['a escola, o bairro, o condomínio e a casa de um familiar','apenas o país','só o planeta Terra','somente o quarto'],e:'O vínculo pode se modificar com o tempo.'},
+{s:'geo',t:'Território e fronteira',q:'Território é:',o:['a porção do espaço geográfico onde um povo possui certa autonomia e soberania','qualquer paisagem natural','o mesmo que paisagem','uma área sem donos'],e:'Resultado das ações humanas, da organização política e das relações de poder.'},
+{s:'geo',t:'Território e fronteira',q:'Fronteira é:',o:['uma área de transição entre espaços geográficos diferentes','uma linha desenhada no mapa apenas','o centro de um país','um tipo de relevo'],e:'É uma faixa territorial, não apenas uma linha.'},
+{s:'geo',t:'Território e fronteira',q:'O LIMITE, dentro de uma fronteira:',o:['separa a faixa territorial e indica onde um território termina e outro começa','é o mesmo que a capital','é uma área de comércio','é sempre invisível'],e:'A fronteira é a faixa; o limite é a separação.'},
+{s:'geo',t:'Território e fronteira',q:'O limite pode ser definido por elementos NATURAIS, como:',o:['rios e montanhas','muros e grades','estradas asfaltadas','placas de trânsito'],e:'Os artificiais são estradas, muros ou grades.'},
+{s:'geo',t:'Território e fronteira',q:'Estado é:',o:['o conjunto de instituições que organizam e administram o território, regido por leis','o mesmo que nação','apenas o presidente','uma região do país'],e:'A soberania se sustenta por seus órgãos representativos.'},
+{s:'geo',t:'Território e fronteira',q:'Os três poderes que constituem os órgãos representativos do Estado são:',o:['Executivo, Legislativo e Judiciário','Militar, Civil e Religioso','Federal, Estadual e Municipal','Político, Econômico e Social'],e:'É o que sustenta a soberania de um povo sobre um território.'},
+{s:'geo',t:'Território e fronteira',q:'Nação é:',o:['o povo que compartilha características históricas e culturais e tem identidade cultural comum','o conjunto de leis de um país','o território demarcado','o governo eleito'],e:'Algumas nações reivindicam formar um Estado-nação.'},
+{s:'geo',t:'Território e fronteira',q:'Os curdos são um exemplo de:',o:['nação sem Estado ou território definidos','Estado sem povo','território sem fronteira','país reconhecido pela ONU'],e:'Vivem distribuídos em diferentes países do Oriente Médio.'},
+{s:'geo',t:'Território e fronteira',q:'O Tibete é:',o:['uma região autônoma da China cuja população reivindica a independência','um país independente reconhecido','uma província do Japão','uma ilha do Pacífico'],e:'Cultura, história e relações internacionais motivam a reivindicação.'},
+{s:'geo',t:'Território e fronteira',q:'Sobre a Ucrânia e a Rússia, o livro destaca que:',o:['ambas já integraram a União Soviética, dissolvida em 1991','sempre foram o mesmo país','nunca tiveram relação','são aliadas históricas sem conflitos'],e:'Desde então a Rússia reivindica soberania sobre territórios ucranianos.'},
+{s:'geo',t:'Território e fronteira',q:'Na fronteira entre Estados Unidos e México foram instalados muros e grades para:',o:['impedir a entrada ilegal de mexicanos que buscam melhores condições de vida','marcar o clima da região','delimitar reservas naturais','facilitar o comércio'],e:'Exemplo de limite artificial.'},
+{s:'geo',t:'Território e fronteira',q:'As Terras Indígenas (TIs) no Brasil são:',o:['áreas ocupadas por etnias indígenas específicas, muitas estabelecidas há séculos','áreas criadas depois de 2020','terras de propriedade de empresas','regiões desabitadas'],e:'A demarcação é uma questão territorial muito debatida.'},
+{s:'geo',t:'Território e fronteira',q:'A Terra Indígena Yanomami está localizada principalmente em:',o:['Roraima e Amazonas','São Paulo e Paraná','Bahia e Sergipe','Rio Grande do Sul'],e:'Fica na fronteira norte do Brasil, perto da Venezuela.'},
+{s:'geo',t:'Território e fronteira',q:'Brasil e Paraguai são separados pelo:',o:['Rio Paraná, atravessado pela Ponte da Amizade','Rio Amazonas','Oceano Atlântico','Rio São Francisco'],e:'A travessia é considerada tranquila: limite natural sem barreiras.'},
+
+// ================================================================ HISTÓRIA
+// --- Cap. 3: O surgimento das primeiras civilizações — Mesopotâmia
+{s:'his',t:'Sedentarização',q:'Nômade é o grupo de pessoas que:',o:['não se fixava em um local e vivia migrando em busca de alimentos','morava sempre na mesma cidade','vivia apenas em palácios','não caçava nem plantava'],e:'A sedentarização acabou com esse modo de vida para muitos grupos.'},
+{s:'his',t:'Sedentarização',q:'Sedentarizar-se significa:',o:['decidir viver em um lugar fixo','viajar constantemente','abandonar a agricultura','viver isolado'],e:'Foi o que deu origem às aldeias e, depois, às cidades.'},
+{s:'his',t:'Sedentarização',q:'O período histórico da sedentarização é chamado de:',o:['Neolítico','Paleolítico','Idade Média','Idade Moderna'],e:'Ocorreu entre 12000 a.C. e 8500 a.C.'},
+{s:'his',t:'Sedentarização',q:'Qual critério os grupos seguiram para escolher onde se fixar?',o:['Estar próximo de fontes de água','Ficar longe dos rios','Procurar montanhas altas','Buscar desertos'],e:'Por isso as aldeias surgiram perto dos rios.'},
+{s:'his',t:'Sedentarização',q:'A água era fundamental porque servia para:',o:['irrigar o solo, hidratar as pessoas, uso doméstico e abastecimento das aldeias','apenas para banho','somente para transporte','só para pesca'],e:'Água = sobrevivência e produção de alimentos.'},
+{s:'his',t:'Sedentarização',q:'A invenção do ARADO permitiu:',o:['o aumento da produção de alimentos, auxiliando na preparação da terra','a construção de navios','a criação da escrita','a domesticação de cavalos'],e:'Instrumento agrícola do Neolítico.'},
+{s:'his',t:'Sedentarização',q:'Os celeiros surgiram porque:',o:['os alimentos excedentes precisavam ser armazenados','era preciso guardar armas','serviam de moradia','eram templos religiosos'],e:'A maior disponibilidade de mantimentos deu origem aos celeiros.'},
+{s:'his',t:'Sedentarização',q:'A Revolução Agrícola foi:',o:['o processo em que os seres humanos passaram a ter mais controle dos alimentos para sua subsistência','uma guerra por terras','a invenção do trator','o fim da agricultura'],e:'Marca o Neolítico.'},
+{s:'his',t:'Sedentarização',q:'O armazenamento de alimentos permitiu que as pessoas:',o:['começassem a trocar a produção excedente, dando origem às primeiras práticas comerciais','parassem de plantar','abandonassem as aldeias','vivessem sozinhas'],e:'Foi a base do comércio como conhecemos hoje.'},
+{s:'his',t:'Sedentarização',q:'A divisão do trabalho significou que:',o:['as tarefas foram distribuídas e as pessoas passaram a exercer funções específicas','todos faziam tudo igual','só os reis trabalhavam','o trabalho foi proibido'],e:'Agricultura, criação de animais, artesanato, comércio, etc.'},
+{s:'his',t:'Formação das civilizações',q:'Nas primeiras comunidades, quem estabelecia as normas eram:',o:['as pessoas de maior influência, como os mais velhos, os adivinhos, os mais fortes e os grandes proprietários de terras','as crianças','os estrangeiros','ninguém'],e:'Esquema apresentado no capítulo.'},
+{s:'his',t:'Formação das civilizações',q:'Uma civilização é formada por:',o:['um grupo que se estabelece em um território e desenvolve valores e características culturais semelhantes','um grupo com fronteiras políticas obrigatoriamente definidas','uma única cidade sempre','uma família apenas'],e:'Pode se estender por grandes regiões e incluir várias cidades.'},
+{s:'his',t:'Formação das civilizações',q:'São elementos importantes para a formação de uma civilização:',o:['crença religiosa com sacerdotes, produção artística e sistema de escrita','exército, moeda e bandeira','apenas escrita','apenas religião'],e:'Esses elementos garantem identidade e transmissão de conhecimento.'},
+{s:'his',t:'Formação das civilizações',q:'O Crescente Fértil está situado entre:',o:['o Mar Vermelho e o Mar Mediterrâneo','o Atlântico e o Pacífico','o Mar Cáspio e o Mar do Norte','a Índia e a China'],e:'Região onde surgiram as primeiras civilizações.'},
+{s:'his',t:'Formação das civilizações',q:'Os rios que fertilizavam o Crescente Fértil eram:',o:['Tigre, Eufrates, Nilo e Jordão','Amazonas e Paraná','Ganges e Indo','Danúbio e Reno'],e:'As cheias periódicas garantiam a fertilidade.'},
+{s:'his',t:'Formação das civilizações',q:'O termo "crescente", no Crescente Fértil, faz referência:',o:['ao formato da região, que lembra uma lua crescente','ao crescimento da população','ao aumento do deserto','à colheita crescente'],e:'Além disso, era uma área fertilizada e propícia à agricultura.'},
+{s:'his',t:'Formação das civilizações',q:'Civilizações fluviais são aquelas:',o:['dependentes das águas doces dos rios','que vivem no meio do oceano','que não usam água','construídas em montanhas'],e:'Mari, às margens do Eufrates, é um exemplo.'},
+{s:'his',t:'Formação das civilizações',q:'A inundação dos rios era importante porque:',o:['depositava uma camada de matéria orgânica que garantia a fertilidade do solo','levava ouro para as cidades','esfriava o clima','afastava os inimigos'],e:'Foi onde a prática agrícola teve origem.'},
+{s:'his',t:'A Mesopotâmia',q:'A palavra "Mesopotâmia" significa:',o:['terra entre rios','terra do sol','vale sagrado','deserto fértil'],e:'Referência aos rios Tigre e Eufrates.'},
+{s:'his',t:'A Mesopotâmia',q:'A região da Mesopotâmia corresponde hoje a:',o:['grande parte do Iraque e porções da Síria e da Turquia','Egito e Sudão','Grécia e Itália','Índia e Paquistão'],e:'No Oriente Médio.'},
+{s:'his',t:'A Mesopotâmia',q:'As primeiras civilizações se formaram na Mesopotâmia há cerca de:',o:['5 000 anos a.C.','500 anos','100 anos','1 000 anos d.C.'],e:'Entre os Rios Tigre e Eufrates.'},
+{s:'his',t:'A Mesopotâmia',q:'São legados dos povos mesopotâmicos que ainda afetam nossas vidas:',o:['a escrita, a Astronomia, a Arquitetura e a Matemática','a internet e o rádio','a energia elétrica','a máquina a vapor'],e:'Também o primeiro conjunto de leis escritas.'},
+{s:'his',t:'A Mesopotâmia',q:'As cheias dos Rios Tigre e Eufrates ocorriam entre os meses de:',o:['abril e maio','janeiro e fevereiro','agosto e setembro','novembro e dezembro'],e:'Por isso era preciso aprender a dominar as águas.'},
+{s:'his',t:'Economia da Mesopotâmia',q:'A base da economia da Mesopotâmia era:',o:['a agricultura, com a maior parte das terras de propriedade do governo','o comércio de escravos apenas','a mineração de ouro','a pesca no mar'],e:'As terras pertenciam majoritariamente ao governo.'},
+{s:'his',t:'Economia da Mesopotâmia',q:'Os principais produtos cultivados na Mesopotâmia eram:',o:['a cevada e o trigo, usados na produção de cerveja e pão','o milho e a batata','o café e o cacau','o arroz e a soja'],e:'Também cultivavam sésamo.'},
+{s:'his',t:'Economia da Mesopotâmia',q:'O sésamo era cultivado na Mesopotâmia para:',o:['extrair um óleo usado na alimentação e como combustível para iluminação','fazer roupas','construir casas','alimentar apenas animais'],e:'O sésamo produz o gergelim.'},
+{s:'his',t:'Economia da Mesopotâmia',q:'Agricultura irrigada é o sistema de cultivo em que:',o:['a água é fornecida de forma artificial, por meio de canais','se planta só na época das chuvas','não se usa água','a água vem apenas da chuva'],e:'Permitiu o plantio em grande escala e gerou excedente.'},
+{s:'his',t:'Economia da Mesopotâmia',q:'Além da agricultura, uma atividade econômica importante na Mesopotâmia era:',o:['a domesticação de animais, com criação de cabras, porcos, ovelhas e gado','a criação de elefantes','a pesca oceânica','a fabricação de vidro'],e:'Algumas pessoas passaram a se dedicar ao pastoreio.'},
+{s:'his',t:'Economia da Mesopotâmia',q:'As casas mesopotâmicas mais resistentes eram feitas de:',o:['tijolos de argila cozidos e betume','madeira e palha','pedras de mármore','metal e vidro'],e:'O betume é um petróleo natural da região.'},
+{s:'his',t:'Sumérios e cidades-Estado',q:'Os sumérios foram responsáveis por:',o:['fundar as primeiras cidades da Mesopotâmia','construir as pirâmides do Egito','inventar a moeda','criar o alfabeto grego'],e:'Algumas das cidades mais antigas do mundo.'},
+{s:'his',t:'Sumérios e cidades-Estado',q:'As cidades sumérias mais desenvolvidas eram:',o:['Uruk, Ur, Nipur e Lagash','Atenas, Esparta e Tebas','Roma, Cartago e Pompeia','Menfis, Tebas e Gizé'],e:'Cada uma com governo próprio.'},
+{s:'his',t:'Sumérios e cidades-Estado',q:'As cidades sumérias possuíam muralhas para:',o:['proteção contra ataques e invasões inimigas','decorar a paisagem','armazenar grãos','marcar o limite dos rios'],e:'Fora das muralhas ficavam plantações, pomares e hortas.'},
+{s:'his',t:'Sumérios e cidades-Estado',q:'O planejamento urbano sumério:',o:['não era amplamente utilizado, resultando em urbanização irregular (exceto templos e palácios)','era perfeito e simétrico em toda a cidade','não existia em lugar nenhum','copiava o modelo egípcio'],e:'Só templos, palácios e áreas adjacentes eram planejados.'},
+{s:'his',t:'Sumérios e cidades-Estado',q:'Cidade-Estado significa que cada cidade:',o:['tinha independência política, organização e governantes próprios','era governada por um imperador único','pertencia a outro país','não tinha governo'],e:'Independência em relação às outras cidades-estado.'},
+{s:'his',t:'Sumérios e cidades-Estado',q:'Os primeiros governantes das cidades-estado sumérias eram chamados de:',o:['patesi','faraós','césares','xeiques'],e:'Eram sacerdotes que exerciam o governo.'},
+{s:'his',t:'Sumérios e cidades-Estado',q:'Entre as funções do patesi estavam:',o:['liderança política, liderança religiosa, gestão econômica local e defesa','apenas cuidar dos templos','somente comandar o exército','apenas cobrar impostos'],e:'A função era multifacetada.'},
+{s:'his',t:'Sumérios e cidades-Estado',q:'A famosa estátua de Gudea representa:',o:['um governante da cidade-estado de Lagash','um faraó egípcio','um deus sumério','um escravo'],e:'Escultura em diorito preto, hoje no Museu do Louvre.'},
+{s:'his',t:'Sumérios e cidades-Estado',q:'Por volta do segundo milênio a.C., surgiram na Mesopotâmia:',o:['estados maiores governados por reis','repúblicas democráticas','impérios coloniais','tribos nômades apenas'],e:'Disputas políticas e alianças entre cidades-estado.'},
+{s:'his',t:'Sumérios e cidades-Estado',q:'Dinastia é:',o:['a família que assumia o poder político, representado pelo palácio','um tipo de templo','um conjunto de leis','uma cidade fortificada'],e:'Os sumérios acreditavam que o poder dos reis vinha dos deuses.'},
+{s:'his',t:'Sumérios e cidades-Estado',q:'Mesmo sendo visto como divindade, o poder do rei mesopotâmico:',o:['dependia do apoio dos sacerdotes e do cumprimento de condições religiosas','era absolutamente ilimitado','era eleito pelo povo','durava apenas um ano'],e:'Ele precisava garantir a construção e a decoração dos templos.'},
+{s:'his',t:'Sumérios e cidades-Estado',q:'As Liras de Ur são:',o:['instrumentos musicais sumérios encontrados no Cemitério Real, no Iraque','armas de guerra','tábuas com leis','vasos para grãos'],e:'A Lira da Rainha data de 2600 a.C.'},
+{s:'his',t:'Sociedade e escravidão',q:'A sociedade mesopotâmica era:',o:['organizada em uma estrutura social rigidamente dividida','totalmente igualitária','formada só por sacerdotes','sem qualquer hierarquia'],e:'Cada camada determinava as funções dos indivíduos.'},
+{s:'his',t:'Sociedade e escravidão',q:'A ordem da divisão social suméria, do topo para a base, era:',o:['rei e família, sacerdotes, funcionários públicos, camponeses e escravos','escravos, camponeses e rei','sacerdotes, rei e soldados','camponeses, rei e sacerdotes'],e:'O rei era o comandante da nação.'},
+{s:'his',t:'Sociedade e escravidão',q:'Os homens livres da Mesopotâmia, ricos ou pobres:',o:['tinham o direito de possuir bens','não podiam ter propriedades','eram todos sacerdotes','viviam nos templos'],e:'Já os escravos eram considerados propriedade.'},
+{s:'his',t:'Sociedade e escravidão',q:'A principal origem da escravidão na Mesopotâmia estava em:',o:['conflitos e guerras: os derrotados eram levados pelos vencedores','castigos religiosos','decisão dos próprios escravos','sorteios anuais'],e:'Tanto um indivíduo quanto um grupo inteiro podiam ser escravizados.'},
+{s:'his',t:'Sociedade e escravidão',q:'A escravidão por dívida acontecia quando:',o:['a pessoa se colocava como garantia de um empréstimo e não conseguia pagar','o rei decidia punir alguém','havia uma seca prolongada','o escravo pedia para ser vendido'],e:'Ela se tornava propriedade do credor.'},
+{s:'his',t:'Sociedade e escravidão',q:'No festival do Ano Novo na Babilônia, o rei era:',o:['despido dos signos de seu poder e esbofeteado por um sacerdote, recuperando o cargo após jurar não ter tratado mal seus subordinados','coroado novamente com ouro','substituído por um escravo','levado para outra cidade'],e:'Mostra a influência dos sacerdotes sobre o poder real.'},
+{s:'his',t:'A invenção da escrita',q:'A escrita surgiu na Mesopotâmia principalmente pela necessidade de:',o:['registrar as atividades financeiras e as trocas comerciais','escrever poesias','desenhar mapas','contar histórias de guerra'],e:'Memorizar todas as trocas tornava-se difícil.'},
+{s:'his',t:'A invenção da escrita',q:'A escrita dos sumérios recebeu o nome de cuneiforme porque:',o:['os sinais eram feitos em forma de cunha','usava figuras de animais','era escrita em círculos','tinha formato de cone'],e:'Cuneus = cunha, em latim.'},
+{s:'his',t:'A invenção da escrita',q:'A escrita cuneiforme era feita:',o:['com um palito afiado de extremidade triangular em tábuas de argila úmida, secas ao sol','com tinta em papiro','esculpida em ouro','pintada em couro de animais'],e:'Depois as tábuas eram colocadas ao sol para secar.'},
+{s:'his',t:'A invenção da escrita',q:'Os primeiros registros da escrita cuneiforme surgiram por volta de:',o:['3000 a.C.','1500 d.C.','500 a.C.','10000 a.C.'],e:'Marco na história da humanidade.'},
+{s:'his',t:'A invenção da escrita',q:'O desenvolvimento da escrita é o evento que separa:',o:['a História da Pré-História','a Idade Média da Idade Moderna','o Neolítico do Paleolítico','a Antiguidade da Contemporaneidade'],e:'Por isso é considerado um marco.'},
+{s:'his',t:'A invenção da escrita',q:'Os povos sem escrita produziam sua história:',o:['por meio da oralidade, de artefatos e de produções artísticas','apenas em livros','com fotografias','não produziam história'],e:'A história não depende só da escrita.'},
+{s:'his',t:'A invenção da escrita',q:'A "placa de reclamação" de Ea-Nasir, de cerca de 1750 a.C., é:',o:['a reclamação escrita mais antiga já descoberta','o primeiro código de leis','um mapa do Crescente Fértil','uma receita culinária'],e:'Tábua de argila ligada à antiga Ur, hoje no Museu Britânico.'},
+{s:'his',t:'A invenção da escrita',q:'A escrita chinesa:',o:['teve origem há mais de 3 000 anos e usa caracteres para representar palavras e conceitos','é igual à cuneiforme','foi criada no Egito','usa o alfabeto latino'],e:'A escrita variou de região para região.'},
+{s:'his',t:'Religião e cultura mesopotâmica',q:'Os povos mesopotâmicos eram:',o:['politeístas, acreditavam em vários deuses','monoteístas','ateístas','sem religião definida'],e:'Os deuses poderiam interferir na vida cotidiana.'},
+{s:'his',t:'Religião e cultura mesopotâmica',q:'Para decifrar a vontade divina, os sacerdotes mesopotâmicos usavam:',o:['a leitura das entranhas de animais e a observação de sinais celestes','livros sagrados impressos','sonhos apenas do rei','cálculos matemáticos'],e:'Isso levou ao desenvolvimento da Astronomia.'},
+{s:'his',t:'Religião e cultura mesopotâmica',q:'As oferendas eram feitas para:',o:['conseguir se livrar de ameaças, como fortes vendavais e doenças','pagar impostos','alimentar o exército','decorar as casas'],e:'A população acreditava ser necessário realizar rituais diários.'},
+{s:'his',t:'Religião e cultura mesopotâmica',q:'Os mesopotâmicos criaram um calendário baseado em:',o:['uma semana de sete dias, dia em doze horas duplas e ano nos ciclos da Lua','um ano de 300 dias','uma semana de dez dias','meses de 40 dias'],e:'Eles calculavam eclipses e observavam os planetas.'},
+{s:'his',t:'Religião e cultura mesopotâmica',q:'Os astrônomos mesopotâmicos identificaram cinco planetas:',o:['Saturno, Júpiter, Vênus, Marte e Mercúrio','Terra, Marte, Urano, Netuno e Plutão','Vênus, Terra, Lua, Sol e Marte','Júpiter, Netuno, Urano, Saturno e Plutão'],e:'Cada planeta era associado a um dia da semana; Sol e Lua representavam os outros dois.'},
+{s:'his',t:'Religião e cultura mesopotâmica',q:'Ishtar (Inanna) era a deusa:',o:['do amor, da fertilidade e da guerra','do céu e pai dos deuses','da água e da sabedoria','da terra apenas'],e:'Representada como poderosa, mas volátil.'},
+{s:'his',t:'Religião e cultura mesopotâmica',q:'Enqui (Ea ou Enki) era o deus:',o:['da água, da inteligência e da magia','do fogo','da guerra','do vento'],e:'Teve papel fundamental na criação da humanidade, segundo a mitologia.'},
+{s:'his',t:'Religião e cultura mesopotâmica',q:'Anu era o deus:',o:['do céu, considerado o pai dos deuses','dos mortos','da colheita','do mar'],e:'Um dos deuses supremos do panteão mesopotâmico.'},
+{s:'his',t:'Religião e cultura mesopotâmica',q:'Ninhursag (Ninmah ou Ki) era a deusa:',o:['da terra, associada à fertilidade e à criação','da guerra','do submundo','da escrita'],e:'Representada como uma mãe que dá à luz a humanidade.'},
+{s:'his',t:'Religião e cultura mesopotâmica',q:'O zigurate era:',o:['o templo da cidade-estado, também usado como depósito de cereais e local de observação dos astros','o palácio do rei','a muralha da cidade','um tipo de barco'],e:'O Zigurate de Ur foi concluído em 2096 a.C. e tinha sete pavimentos.'},
+{s:'his',t:'Religião e cultura mesopotâmica',q:'Entre as esculturas mesopotâmicas mais famosas estão:',o:['os touros alados de Nínive, que decoravam palácios reais','as esfinges de Gizé','as estátuas gregas de mármore','os totens indígenas'],e:'Representavam seres míticos e divindades aladas.'},
+{s:'his',t:'Religião e cultura mesopotâmica',q:'A "arte cuneiforme" mesopotâmica se caracteriza por:',o:['inscrições em tabuletas de argila, estelas e relevos que acompanhavam as imagens','pinturas a óleo','esculturas de gelo','mosaicos de vidro'],e:'Forneciam informações sobre o conteúdo e o contexto histórico da obra.'},
+{s:'his',t:'Religião e cultura mesopotâmica',q:'A Epopeia de Gilgamesh:',o:['é uma narrativa mitológica mesopotâmica que contém um relato de dilúvio semelhante ao da Arca de Noé','é um código de leis','é um mapa antigo','foi escrita no Egito'],e:'Foi encontrada em escavações do século XIX, em escrita cuneiforme.'},
+{s:'his',t:'Acádios e babilônios',q:'Os acádios viviam originalmente:',o:['próximos ao deserto da Síria','no vale do Nilo','na Grécia','na Índia'],e:'Invadiram as cidades-estado e os reinos mesopotâmicos.'},
+{s:'his',t:'Acádios e babilônios',q:'Sargão, o Grande, foi o líder que:',o:['unificou as regiões Central e Sul da Mesopotâmia, criando o Império Acádio','construiu as pirâmides','escreveu a Epopeia de Gilgamesh','fundou a cidade de Ur'],e:'Um dos primeiros impérios da história.'},
+{s:'his',t:'Acádios e babilônios',q:'Sargão, o Grande, em relação à cultura suméria:',o:['não impôs a cultura de seu povo, permitindo que os sumérios continuassem com suas tradições','destruiu toda a cultura suméria','proibiu a escrita cuneiforme','expulsou todos os sumérios'],e:'Isso gerou uma mistura de culturas: escrita cuneiforme com a língua acádia.'},
+{s:'his',t:'Acádios e babilônios',q:'O povo amorita, originário da Arábia, fundou a cidade da Babilônia entre:',o:['2000 e 1900 a.C.','500 e 400 a.C.','1000 e 900 d.C.','3000 e 2900 d.C.'],e:'Dominou os sumérios e os acádios.'},
+{s:'his',t:'Acádios e babilônios',q:'Por volta de 1792 a.C., Hamurabi:',o:['unificou o sul da Mesopotâmia e a Assíria, originando o Primeiro Império Babilônico','criou a escrita cuneiforme','fundou o Egito','derrotou os persas'],e:'A Babilônia se tornou a capital.'},
+{s:'his',t:'Acádios e babilônios',q:'O Código de Hamurabi era:',o:['uma legislação que deveria ser seguida por todos no império','um livro de orações','um manual de agricultura','um mapa do império'],e:'Levou o nome de seu criador.'},
+{s:'his',t:'Acádios e babilônios',q:'O Código de Hamurabi tratava de assuntos como:',o:['família, roubo, divórcio, escravidão, construções civis e trabalho','apenas religião','somente guerra','apenas comércio exterior'],e:'Regulava a vida e as propriedades da população.'},
+{s:'his',t:'Acádios e babilônios',q:'Sobre a criação do Código de Hamurabi, é correto dizer que:',o:['Hamurabi não inventou as leis, mas as unificou na escrita cuneiforme acadiana','ele criou todas as leis do zero','as leis vieram do Egito','elas nunca foram escritas'],e:'Muitas já eram praticadas em outras sociedades.'},
+{s:'his',t:'Acádios e babilônios',q:'O Princípio de Talião pode ser resumido como:',o:['"olho por olho, dente por dente"','"todos são iguais perante a lei"','"o rei está acima da lei"','"a lei perdoa quem se arrepende"'],e:'A pena correspondia ao sofrimento causado ao outro.'},
+{s:'his',t:'Acádios e babilônios',q:'Na aplicação do Código de Hamurabi:',o:['havia diferença de tratamento e punição conforme a classe social','todos recebiam a mesma pena','só os nobres eram punidos','não havia punições'],e:'O "olho por olho" valia apenas entre pessoas do mesmo grupo social.'},
+{s:'his',t:'Acádios e babilônios',q:'A Estela de Hamurabi é:',o:['o monolito no qual foi inscrito o Código de Hamurabi','uma estátua de Sargão','um templo babilônico','uma tumba real'],e:'Antes dele, as leis eram apenas faladas, e cada governante podia mudá-las.'},
+{s:'his',t:'Acádios e babilônios',q:'O Portão de Ishtar foi construído em homenagem:',o:['à deusa babilônica Istar','ao rei Hamurabi','ao deus Anu','ao Império Persa'],e:'Já foi considerado uma das maravilhas do mundo antigo.'},
+{s:'his',t:'Assírios, caldeus e declínio',q:'Após a morte de Hamurabi, o Primeiro Império Babilônico:',o:['começou a declinar gradualmente, enfrentando ataques de outros povos','se expandiu ainda mais','virou uma república','desapareceu de uma só vez'],e:'A Assíria lutava contra seus vizinhos em busca de controle político.'},
+{s:'his',t:'Assírios, caldeus e declínio',q:'Por volta de 1000 a.C., os assírios conquistaram terras a partir da cidade de:',o:['Assur, na Alta Mesopotâmia','Babilônia','Ur','Meroé'],e:'Estabeleceram assim o Império Assírio.'},
+{s:'his',t:'Assírios, caldeus e declínio',q:'O exército assírio era poderoso porque contava com:',o:['arqueiros e lanceiros bem treinados e armas de ferro','elefantes de guerra','navios a vapor','cavalaria pesada com armaduras de ouro'],e:'As armas de ferro eram melhores que as de bronze.'},
+{s:'his',t:'Assírios, caldeus e declínio',q:'Em 600 a.C., o Império Assírio foi dominado pelos:',o:['caldeus','egípcios','gregos','romanos'],e:'Povo que habitava o sul da Mesopotâmia.'},
+{s:'his',t:'Assírios, caldeus e declínio',q:'O rei caldeu mais importante foi:',o:['Nabucodonosor','Sargão','Hamurabi','Ciro II'],e:'Instalou seu governo na Babilônia, iniciando o Segundo Império Babilônico.'},
+{s:'his',t:'Assírios, caldeus e declínio',q:'O período de domínio caldeu ficou conhecido como:',o:['Segundo Império Babilônico ou Império Neobabilônico','Império Acádio','Império Persa','Império Assírio'],e:'Nabucodonosor tentou reviver a cultura da época de Hamurabi.'},
+{s:'his',t:'Assírios, caldeus e declínio',q:'Os Jardins Suspensos da Babilônia:',o:['foram considerados uma das Sete Maravilhas do Mundo Antigo, mas não há evidências concretas de sua existência','foram totalmente preservados até hoje','ficavam no Egito','eram um templo religioso'],e:'Atribuídos ao reinado de Nabucodonosor.'},
+{s:'his',t:'Assírios, caldeus e declínio',q:'Medos e persas eram:',o:['grupos nômades vindos da Ásia que se estabeleceram no leste da Mesopotâmia por volta de 2000 a.C.','povos africanos','habitantes originais de Ur','colonos gregos'],e:'Os medos ao oeste/noroeste e os persas ao sudoeste.'},
+{s:'his',t:'Assírios, caldeus e declínio',q:'Em 612 a.C., os medos:',o:['expandiram seu império e destruíram a capital do Reino Assírio','foram derrotados pelos egípcios','fundaram a Babilônia','criaram a escrita cuneiforme'],e:'Antes já haviam conquistado os persas.'},
+{s:'his',t:'Assírios, caldeus e declínio',q:'Em 550 a.C., quem se revoltou contra os medos e formou o Império Persa?',o:['Ciro II, conhecido como "Ciro, o Grande"','Nabucodonosor','Hamurabi','Sargão, o Grande'],e:'Com isso, as cidades mesopotâmicas perderam sua independência.'},
+// --- Cap. 4: Antiguidade Africana
+{s:'his',t:'Egito: o Rio Nilo',q:'Os primeiros grupos humanos se estabeleceram próximos ao Rio Nilo por volta de:',o:['5500 a.C.','1500 d.C.','500 a.C.','12000 d.C.'],e:'Na região nordeste da África.'},
+{s:'his',t:'Egito: o Rio Nilo',q:'Dizer que o Nilo é PERENE significa que ele:',o:['não seca','transborda todo mês','é salgado','muda de lugar'],e:'Por isso a escolha da região foi estratégica.'},
+{s:'his',t:'Egito: o Rio Nilo',q:'Sem o Rio Nilo, o Egito:',o:['seria um grande deserto','continuaria igual','viraria uma floresta','seria coberto pelo mar'],e:'Foi a proximidade com a água que possibilitou a civilização.'},
+{s:'his',t:'Egito: o Rio Nilo',q:'As inundações anuais do Nilo eram importantes porque:',o:['depositavam sedimentos férteis nas margens, tornando o solo propício à agricultura','levavam ouro','esfriavam o deserto','afastavam os inimigos'],e:'Base da agricultura egípcia.'},
+{s:'his',t:'Egito: o Rio Nilo',q:'Além da agricultura, o Nilo servia como:',o:['rota de transporte, comércio e fonte de alimentos, como peixes','apenas fonte de água para banho','campo de batalha','fronteira intransponível'],e:'As embarcações facilitavam a comunicação entre as regiões.'},
+{s:'his',t:'Egito: o Rio Nilo',q:'As cheias do Nilo também podiam ser ruins porque:',o:['destruíam casas próximas ao rio, causavam estragos nas plantações e traziam animais perigosos, como crocodilos','deixavam o solo estéril para sempre','congelavam o rio','secavam os poços'],e:'Por isso surgiu a necessidade de controlar a natureza.'},
+{s:'his',t:'Egito: o Rio Nilo',q:'Os DIQUES construídos pelos egípcios eram:',o:['barreiras erguidas ao longo do rio para conter a passagem da água','canais para irrigar as plantações','templos religiosos','túmulos de faraós'],e:'Já os canais de irrigação distribuíam a água pelas cidades.'},
+{s:'his',t:'Egito: o Rio Nilo',q:'Os reservatórios egípcios serviam para:',o:['armazenar água em excesso e amenizar os efeitos da seca nos períodos de estiagem','guardar grãos','abrigar soldados','criar peixes'],e:'Forma de controlar os fenômenos da natureza.'},
+{s:'his',t:'Egito: faraós',q:'Por volta de 3100 a.C., quem unificou o Alto e o Baixo Egito?',o:['Menés, também conhecido como Narmer','Tutancâmon','Cleópatra','Ramsés II'],e:'Ele deu origem à Primeira Dinastia e se tornou o primeiro faraó.'},
+{s:'his',t:'Egito: faraós',q:'O Baixo Egito ficava ao ___ e o Alto Egito ao ___.',o:['norte / sul','sul / norte','leste / oeste','oeste / leste'],e:'O Baixo Egito é a região do delta do Nilo.'},
+{s:'his',t:'Egito: faraós',q:'O termo "faraó" significa:',o:['"a grande casa", referindo-se à sede da administração política do Egito','"filho do rio"','"senhor da guerra"','"sacerdote do Sol"'],e:'Vem do nome do palácio real.'},
+{s:'his',t:'Egito: faraós',q:'Teocracia é o sistema de governo em que:',o:['as autoridades políticas são líderes religiosos','o povo elege seus governantes','os militares governam','não existe governo'],e:'Os faraós tinham poder político e religioso ao mesmo tempo.'},
+{s:'his',t:'Egito: faraós',q:'Os faraós eram vistos como deuses porque, segundo a crença:',o:['descendiam do deus Rá e eram considerados "Hórus", filhos do deus Sol em forma humana','eram escolhidos pelo povo','venciam sempre as guerras','viviam mais de cem anos'],e:'Assim, seu poder era de origem divina e não podia ser questionado.'},
+{s:'his',t:'Egito: faraós',q:'Hatshepsut foi:',o:['a primeira faraó mulher, que assumiu o trono após a morte de seu marido, Tutmés II','a última rainha do Egito','uma sacerdotisa de Amon','uma rainha núbia'],e:'Para legitimar seu reinado, criou um mito de nascimento divino como filha do deus Amon.'},
+{s:'his',t:'Egito: faraós',q:'A história de Hatshepsut foi parcialmente apagada porque:',o:['seus sucessores tentaram ignorar o reinado dela, removendo inscrições e monumentos','ela nunca existiu','os documentos se perderam no Nilo','ela pediu para ser esquecida'],e:'Pesquisas modernas ajudaram a restaurar sua história.'},
+{s:'his',t:'Egito: faraós',q:'Cleópatra foi:',o:['a última rainha do Egito, da dinastia dos Ptolomeus','a primeira faraó mulher','a esposa de Menés','uma deusa egípcia'],e:'Após uma luta pelo poder, assumiu o trono e governou sozinha.'},
+{s:'his',t:'Egito: faraós',q:'A barba postiça usada pelo faraó em público:',o:['era um símbolo que enfatizava sua divindade e autoridade real','servia para proteger do sol','indicava idade avançada','era usada só nas guerras'],e:'Ele também usava joias e trajes luxuosos.'},
+{s:'his',t:'Egito: economia',q:'O trigo era cultivado no Egito Antigo principalmente para:',o:['fazer pães','produzir papel','fabricar roupas','alimentar cavalos'],e:'Base da alimentação egípcia.'},
+{s:'his',t:'Egito: economia',q:'O papiro era importante porque:',o:['alimentava a população mais pobre e servia de material-base para a produção de pergaminhos de escrita','era usado só como enfeite','servia para construir casas','era moeda de troca'],e:'Duplo uso: alimento e suporte para escrita.'},
+{s:'his',t:'Egito: economia',q:'O cultivo de linho era fundamental para:',o:['a produção de roupas','a fabricação de tijolos','a alimentação dos faraós','a construção de barcos'],e:'Os egípcios vestiam roupas de linho.'},
+{s:'his',t:'Egito: economia',q:'No Egito Antigo, os bois eram criados principalmente para:',o:['pisotear os campos, semear as sementes e complementar a alimentação','puxar carruagens de guerra','serem sacrificados nos templos apenas','transporte de pessoas'],e:'A carne de boi era mais cara devido à necessidade de pastagens.'},
+{s:'his',t:'Egito: economia',q:'O Egito precisava importar produtos como:',o:['madeira, essencial para a construção naval, e minerais como pedras preciosas','trigo e cevada','água potável','papiro'],e:'O transporte era feito principalmente pelo Rio Nilo.'},
+{s:'his',t:'Egito: economia',q:'Sobre a moeda no Egito Antigo:',o:['ela só foi criada no período de decadência dessa civilização; antes o comércio menor era feito por troca de excedentes','existiu desde o início','era feita de papiro','nunca foi criada'],e:'As pessoas trocavam o que sobrava por itens de que precisavam.'},
+{s:'his',t:'Egito: sociedade',q:'Uma sociedade ESTRATIFICADA é aquela que:',o:['está dividida em diferentes estratos ou camadas, gerando desigualdade','é totalmente igualitária','não tem governo','vive sem regras'],e:'A base sustentava economicamente a minoria privilegiada.'},
+{s:'his',t:'Egito: sociedade',q:'No topo da pirâmide social egípcia estavam:',o:['o faraó e sua família','os escribas','os comerciantes','os felás'],e:'Considerados de origem divina.'},
+{s:'his',t:'Egito: sociedade',q:'O vizir, no Egito Antigo, fazia parte:',o:['da nobreza hereditária, como funcionário do governo','dos escravos','dos camponeses','dos soldados rasos'],e:'Os sacerdotes também eram responsáveis por rituais e oferendas.'},
+{s:'his',t:'Egito: sociedade',q:'Os escribas eram responsáveis por:',o:['escrever leis e documentar eventos significativos usando hieróglifos em pergaminhos de papiro','comandar o exército','construir as pirâmides','cultivar a terra'],e:'Poucos dominavam a escrita: era um cargo de prestígio.'},
+{s:'his',t:'Egito: sociedade',q:'Os felás eram:',o:['os camponeses, principais responsáveis por cultivar a terra e produzir alimentos','os sacerdotes','os comerciantes','os nobres'],e:'Contribuíam significativamente para a subsistência do Egito.'},
+{s:'his',t:'Egito: sociedade',q:'Os escravos no Egito Antigo eram, frequentemente:',o:['prisioneiros de guerra obrigados a trabalhar nas minas e pedreiras controladas pelo governo','pessoas que escolhiam essa condição','estrangeiros ricos','sacerdotes punidos'],e:'Estavam na base da pirâmide social.'},
+{s:'his',t:'Egito: sociedade',q:'Sobre as roupas no Egito Antigo:',o:['os felás trabalhavam apenas com uma tanga, enquanto funcionários públicos e a família real usavam linho drapeado','todos vestiam-se igual','ninguém usava roupas','só os escravos usavam linho'],e:'A roupa indicava a ocupação e a posição social.'},
+{s:'his',t:'Egito: sociedade',q:'A SERVIDÃO no Egito Antigo era:',o:['uma forma de trabalho intermediária entre a liberdade e a escravidão','o mesmo que escravidão','trabalho totalmente livre e bem pago','proibida por lei'],e:'Os servos eram vinculados à terra e não eram livres para escolher onde trabalhar.'},
+{s:'his',t:'Egito: sociedade',q:'Comparada à Mesopotâmia, a escravidão no Egito era:',o:['mais limitada, dado que apenas o faraó e a elite possuíam escravos','muito mais ampla','inexistente','igual em tudo'],e:'A maioria dos escravizados era prisioneira de guerra.'},
+{s:'his',t:'Egito: escrita e monumentos',q:'Os hieróglifos eram:',o:['um sistema de escrita pictográfica composto por símbolos que representavam palavras, sons, objetos, conceitos e ideias','um alfabeto de 26 letras','números apenas','desenhos sem significado'],e:'Usados em monumentos, templos, túmulos e papiros.'},
+{s:'his',t:'Egito: escrita e monumentos',q:'A Pedra de Roseta foi importante porque:',o:['tinha uma inscrição em três línguas que permitiu decifrar os hieróglifos','continha o mapa do Egito','era feita de ouro','listava todos os faraós'],e:'Encontrada no século XIX.'},
+{s:'his',t:'Egito: escrita e monumentos',q:'Quem decifrou a escrita hieroglífica, em 1822?',o:['François Champollion','Thomas Young','Heródoto','Napoleão Bonaparte'],e:'A língua egípcia foi decifrada a partir do copta, idioma ainda usado na Igreja cristã egípcia.'},
+{s:'his',t:'Egito: escrita e monumentos',q:'As pirâmides do Egito eram, na maioria das vezes:',o:['túmulos das altas classes sociais, como os faraós','templos de comércio','fortalezas militares','depósitos de grãos'],e:'Os templos eram os locais de adoração e oferendas.'},
+{s:'his',t:'Egito: escrita e monumentos',q:'As Pirâmides de Gizé (ca. 2550 a.C.) incluem:',o:['a Pirâmide de Quéops, a de Quéfren e a de Miquerinos','apenas uma pirâmide','a Esfinge e o Zigurate','as pirâmides de Meroé'],e:'São consideradas uma das Sete Maravilhas do Mundo Antigo.'},
+{s:'his',t:'Egito: escrita e monumentos',q:'A Esfinge de Gizé é uma escultura com:',o:['corpo de leão e cabeça humana','corpo humano e cabeça de falcão','corpo de touro e asas','cabeça de chacal'],e:'Datada de cerca de 2500 a.C., associada à proteção de complexos funerários.'},
+{s:'his',t:'Egito: escrita e monumentos',q:'Alguns canais internos das pirâmides:',o:['se alinhavam com estrelas como a Ursa Menor e Sírius, o que sugere conotações religiosas ou astronômicas','serviam apenas de esgoto','eram usados como estradas','não existem'],e:'Outros acreditam que serviam para ventilação.'},
+{s:'his',t:'Egito: escrita e monumentos',q:'As inscrições nas tumbas dos faraós tinham a intenção de:',o:['garantir proteção, orientação e continuidade do faraó no além-vida','contar piadas','registrar dívidas','ensinar agricultura'],e:'Também serviam como documentação histórica e expressão de poder.'},
+{s:'his',t:'Egito: religião',q:'A religião egípcia era politeísta, e os deuses podiam ter formas:',o:['humanas (antropomorfismo), de animais (zoomorfismo) ou mistas (antropozoomorfismo)','apenas humanas','apenas de animais','sempre invisíveis'],e:'Cada deus correspondia a uma força da natureza e representava um grupo social ou cidade.'},
+{s:'his',t:'Egito: religião',q:'Rá era o deus:',o:['do Sol e do céu, representado com cabeça de falcão ou disco solar','dos mortos','da escrita','da guerra'],e:'Acreditava-se que percorria o céu de dia e o mundo subterrâneo à noite.'},
+{s:'his',t:'Egito: religião',q:'Nut era:',o:['a personificação do céu, representada como uma mulher arqueada sobre o mundo','a deusa da guerra','o deus do Nilo','a deusa dos gatos'],e:'Acreditava-se que engolia o Sol à noite e o dava à luz durante o dia.'},
+{s:'his',t:'Egito: religião',q:'Bastet era a deusa:',o:['da casa, da família e da proteção, representada em forma de gato','do Sol','da guerra','da escrita'],e:'Acreditava-se que afastava pestes e doenças.'},
+{s:'his',t:'Egito: religião',q:'Amon, fundido com o deus solar Rá, tornou-se:',o:['Amon-Rá, a divindade suprema do panteão egípcio','Osíris','Anúbis','Thot'],e:'Representado com uma coroa dupla, associada ao Alto e ao Baixo Egito.'},
+{s:'his',t:'Egito: religião',q:'Osíris era o deus:',o:['dos mortos, da ressurreição e do renascimento, representado com a pele verde','do Sol','da sabedoria','da casa'],e:'A pele verde simbolizava o renascimento anual das colheitas.'},
+{s:'his',t:'Egito: religião',q:'Ísis era:',o:['esposa de Osíris e deusa da maternidade, da magia e da proteção','a deusa do Sol','o deus da mumificação','a deusa da guerra'],e:'Figura antropomórfica.'},
+{s:'his',t:'Egito: religião',q:'Thot, representado com cabeça de íbis, era o deus:',o:['da sabedoria, da escrita e da medição do tempo','da guerra','do amor','do vento'],e:'É ele quem anota o resultado da pesagem do coração.'},
+{s:'his',t:'Egito: religião',q:'Anúbis, com cabeça de chacal, era o deus:',o:['da mumificação e dos mortos','da colheita','do céu','do comércio'],e:'Supervisionava o embalsamamento e guiava as almas no além.'},
+{s:'his',t:'Egito: religião',q:'Maat era a deusa:',o:['da ordem, da justiça e da verdade, representada com uma pena de avestruz','da guerra','da fertilidade','do Nilo'],e:'Sua pena é usada na balança do julgamento dos mortos.'},
+{s:'his',t:'Egito: mumificação',q:'Os egípcios acreditavam que, após a morte:',o:['a alma (ka) sobreviveria e precisaria de cuidados para garantir uma passagem segura ao além','tudo acabava','a alma virava uma estrela','o corpo desaparecia'],e:'Isso levou à construção de complexos funerários.'},
+{s:'his',t:'Egito: mumificação',q:'A primeira etapa da mumificação era:',o:['a limpeza, em um local chamado Ibu, com vinho de palma e água do Rio Nilo','o enfaixamento','a remoção dos órgãos','a desidratação'],e:'Depois vinha a remoção dos órgãos.'},
+{s:'his',t:'Egito: mumificação',q:'Na mumificação, qual órgão NÃO era removido do corpo?',o:['O coração','O estômago','O pulmão','O fígado'],e:'O coração era considerado o centro da inteligência e das emoções.'},
+{s:'his',t:'Egito: mumificação',q:'Os órgãos mais importantes retirados na mumificação eram guardados em:',o:['vasos','caixas de madeira','sacos de linho','poços de água'],e:'Estômago, intestino, pulmão e fígado.'},
+{s:'his',t:'Egito: mumificação',q:'Na etapa de desidratação, o corpo era coberto com:',o:['natrão, um composto natural formado principalmente por carbonato de sódio','sal marinho','areia do deserto','cinzas'],e:'O natrão absorvia a umidade e preservava os tecidos.'},
+{s:'his',t:'Egito: mumificação',q:'No enfaixamento, o corpo era envolvido com tiras de:',o:['linho, com amuletos protetores inseridos entre as camadas','papiro','couro','algodão'],e:'Os amuletos protegiam na vida após a morte.'},
+{s:'his',t:'Egito: mumificação',q:'O amuleto Ankh representava:',o:['a crença de que auxiliava na superação dos obstáculos na próxima vida','a proteção do coração apenas','a riqueza do faraó','o poder militar'],e:'É o símbolo da vida.'},
+{s:'his',t:'Egito: mumificação',q:'O escaravelho era colocado com a intenção de:',o:['impedir que o coração se separasse do corpo do falecido','proteger os olhos','trazer riqueza','afastar insetos'],e:'Já o Olho de Wadjet ficava na testa, como símbolo de proteção.'},
+{s:'his',t:'Egito: mumificação',q:'No Tribunal de Osíris, quantos deuses aguardavam a alma para julgá-la?',o:['42','12','7','100'],e:'A alma navegava em um rio até chegar ao local do julgamento.'},
+{s:'his',t:'Egito: mumificação',q:'No julgamento dos mortos, Anúbis pesava o coração do morto contra:',o:['uma pena, que simbolizava a deusa Maat (verdade e justiça)','uma pedra de ouro','um vaso de barro','uma estátua'],e:'Se o coração fosse mais leve que a pena, o morto teria direito à vida eterna.'},
+{s:'his',t:'Egito: mumificação',q:'Quem devorava o coração de quem não praticou boas ações em vida?',o:['O monstro do Nilo, Amit','O deus Thot','A deusa Ísis','O faraó'],e:'Quem preside o julgamento é o deus Osíris.'},
+{s:'his',t:'Egito: mumificação',q:'Tutancâmon ficou conhecido como:',o:['o "Rei Menino", cuja tumba foi descoberta quase intacta no século XX','o unificador do Egito','o criador dos hieróglifos','o último faraó'],e:'A tumba continha uma riqueza de artefatos e tesouros.'},
+{s:'his',t:'A Antiguidade Núbia',q:'A Núbia estava localizada:',o:['no nordeste da África, ao longo do vale do Rio Nilo, ao sul do Egito e norte do Sudão','no oeste da África','na Península Arábica','no sul da Europa'],e:'Região historicamente rica.'},
+{s:'his',t:'A Antiguidade Núbia',q:'Os registros arqueológicos indicam que a Antiguidade Núbia remonta a pelo menos:',o:['3500 a.C.','1500 d.C.','500 a.C.','100 a.C.'],e:'Época dos primeiros assentamentos agrícolas às margens do Nilo.'},
+{s:'his',t:'A Antiguidade Núbia',q:'O nome do Reino Ta-Seti significa:',o:['"Terra dos Arqueiros"','"Terra do Ouro"','"Reino do Sol"','"Vale dos Reis"'],e:'Seus habitantes eram conhecidos pela habilidade como arqueiros.'},
+{s:'his',t:'A Antiguidade Núbia',q:'Durante o Reino de Cuxe (Kush), entre 747 a.C. e 656 a.C.:',o:['os núbios conquistaram o Egito e governaram como a Dinastia 25','o Egito conquistou a Núbia','a Núbia foi destruída','os romanos chegaram à região'],e:'A capital de Cuxe era Napata, depois transferida para Meroé.'},
+{s:'his',t:'A Antiguidade Núbia',q:'No Período Meroítico (300 a.C. a 350 d.C.):',o:['a cultura meroítica floresceu e os meroítas desenvolveram seu próprio sistema de escrita','a Núbia deixou de existir','os núbios abandonaram o Nilo','o Egito dominou tudo'],e:'Meroé era a capital e mantinha relações comerciais com o Mediterrâneo.'},
+{s:'his',t:'A Antiguidade Núbia',q:'A partir do século IV, a Núbia:',o:['passou por influência romana e cristã, com povos convertidos ao cristianismo','virou parte do Egito','foi abandonada','tornou-se muçulmana'],e:'Depois ficou sob influência do Império Bizantino.'},
+{s:'his',t:'A Antiguidade Núbia',q:'A partir do século VII, a Núbia começou a ser:',o:['islamizada, o que marcou o declínio das culturas cristãs e meroíticas','romanizada','egípcia novamente','despovoada'],e:'Fim de um longo período histórico.'},
+{s:'his',t:'A Antiguidade Núbia',q:'Por volta de 730 a.C., quem lançou uma campanha militar no Egito e iniciou a XXV Dinastia?',o:['Piye, rei da Núbia','Ramsés II','Nabucodonosor','Ezana'],e:'Tornou-se o primeiro faraó núbio na região.'},
+{s:'his',t:'A Antiguidade Núbia',q:'Por que os egípcios buscavam expandir seu território em direção à Núbia?',o:['Pela localização estratégica e pelos recursos naturais, como minerais e pedras preciosas','Por causa do clima frio','Para fugir das cheias do Nilo','Para escapar dos assírios'],e:'A Núbia também tentava expandir suas influências e conquistar o Egito.'},
+{s:'his',t:'A Antiguidade Núbia',q:'A economia da Núbia se apoiava em três frentes:',o:['mineração, agricultura e comércio','pesca, caça e coleta','indústria, serviços e turismo','navegação, guerra e tributos'],e:'A região era rica em ouro, cobre, pedras preciosas e minerais de ferro.'},
+{s:'his',t:'A Antiguidade Núbia',q:'A cidade de Meroé era importante porque:',o:['era um centro comercial movimentado, ponto de encontro entre o Egito e as regiões ao sul da África','era a capital do Egito','ficava na Europa','era um porto no Mediterrâneo'],e:'Produtos núbios, como tecidos e cerâmica, eram fabricados internamente.'},
+{s:'his',t:'A Antiguidade Núbia',q:'No topo da hierarquia da sociedade núbia estavam:',o:['a realeza e a elite: os reis e a aristocracia','os agricultores','os artesãos','os escravos'],e:'A realeza tinha autoridade suprema sobre a terra e o povo.'},
+{s:'his',t:'A Antiguidade Núbia',q:'A maioria da população núbia era composta por:',o:['agricultores e trabalhadores braçais','sacerdotes','comerciantes ricos','soldados'],e:'Eram responsáveis pela produção de alimentos e pela construção de monumentos.'},
+{s:'his',t:'A Antiguidade Núbia',q:'ORALIDADE é:',o:['a tradição de transmitir conhecimento, histórias e informações por meio da fala','a escrita em pedra','o desenho em cavernas','o uso de sinais de fumaça'],e:'Foi o principal meio de preservação do conhecimento na Núbia.'},
+{s:'his',t:'A Antiguidade Núbia',q:'Na tradição oral núbia, quem tinha papel crucial na transmissão de histórias?',o:['Os mais velhos','As crianças','Os estrangeiros','Os escravos'],e:'Transmitiam mitos, lendas e conhecimentos ancestrais às gerações mais jovens.'},
+{s:'his',t:'A Antiguidade Núbia',q:'A religião dos povos núbios era:',o:['politeísta, com deuses compartilhados com o Egito, como Osíris e Ísis, e divindades próprias','monoteísta','cristã desde o início','sem deuses'],e:'As divindades locais refletiam sua identidade única.'},
+{s:'his',t:'A Antiguidade Núbia',q:'Apedemak era o deus núbio:',o:['da guerra, da fertilidade e da proteção do rei, representado com cabeça de tigre e corpo humano','do Sol','da escrita','da música'],e:'Figura antropozoomórfica.'},
+{s:'his',t:'A Antiguidade Núbia',q:'Sebiumeker era o deus núbio:',o:['da fertilidade e da colheita, com papel fundamental na agricultura','da guerra','dos mortos','do mar'],e:'Figura antropomórfica.'},
+{s:'his',t:'A Antiguidade Núbia',q:'Bes era o deus núbio:',o:['da música, da dança e da alegria','da guerra','da morte','da chuva'],e:'Retratado com aparência caricatural, invocado para trazer alegria e proteção.'},
+{s:'his',t:'O Reino de Axum',q:'O Reino de Axum se formou onde hoje estão os países:',o:['Etiópia e Eritreia','Egito e Sudão','Marrocos e Argélia','África do Sul e Namíbia'],e:'Na região conhecida como Planalto do Tigré.'},
+{s:'his',t:'O Reino de Axum',q:'Quem unificou as comunidades isoladas de Axum, no século I?',o:['O rei Zoscales, também conhecido como Za Hecale','O rei Ezana','O rei Kaleb','O rei Piye'],e:'Os primeiros habitantes eram povos do século V a.C.'},
+{s:'his',t:'O Reino de Axum',q:'O auge do poder do Reino de Axum ocorreu entre os séculos:',o:['IV e VII','I e II','X e XII','XV e XVI'],e:'Axum rivalizava comercial e politicamente com o Império Romano.'},
+{s:'his',t:'O Reino de Axum',q:'O rei Ezana (ca. 325 a 360) ficou conhecido por:',o:['pacificar tribos e introduzir o cristianismo no reino axumita','construir pirâmides','criar a escrita ge\'ez','conquistar o Egito'],e:'O cristianismo virou religião de prestígio após ser oficial no Império Romano.'},
+{s:'his',t:'O Reino de Axum',q:'O rei Kaleb, também conhecido como Elesbão (ca. 570 a 590):',o:['foi um guerreiro que expandiu os territórios de Axum, conquistando partes do sul da Arábia','introduziu o Islã','fundou Meroé','destruiu Axum'],e:'Foi transformado em santidade pela Igreja Ortodoxa Etíope.'},
+{s:'his',t:'O Reino de Axum',q:'O rei Degna Djan (ca. 600 a 620) enfrentou:',o:['conflitos internos e a propagação da religião Islã na região','a invasão romana','a chegada dos portugueses','uma grande seca'],e:'Momento de desafios para o reino.'},
+{s:'his',t:'O Reino de Axum',q:'A cidade de Adulis, em Axum, era importante porque:',o:['tinha um porto fundamental no comércio marítimo entre a região e outras partes do mundo','era a capital religiosa','tinha as maiores minas de ouro','era uma fortaleza militar'],e:'Ligava Axum a Grécia, Roma, Egito, Península Arábica, Pérsia, Síria e Índia.'},
+{s:'his',t:'O Reino de Axum',q:'A localização de Axum, próxima ao Mar Vermelho, permitiu:',o:['controlar rotas comerciais entre o interior da África e as civilizações do Mediterrâneo','isolamento total do reino','o domínio do Oceano Atlântico','a conquista da Europa'],e:'Posição estratégica.'},
+{s:'his',t:'O Reino de Axum',q:'Axum foi uma das primeiras civilizações africanas a:',o:['emitir moedas, o que facilitou o comércio monetizado','construir pirâmides','usar hieróglifos','domesticar o cavalo'],e:'As moedas traziam imagens ou nomes dos reis gravados.'},
+{s:'his',t:'O Reino de Axum',q:'Antes do cristianismo, os axumitas eram:',o:['politeístas e cultuavam deuses ligados a elementos naturais, como o Sol, a Lua e as estrelas','monoteístas','ateus','muçulmanos'],e:'Acreditavam que seus ancestrais poderiam se tornar espíritos.'},
+{s:'his',t:'O Reino de Axum',q:'Marém era, para os axumitas:',o:['a divindade patrona de Axum, deus do céu, das tribos, da guerra e da família','a deusa do Sol','o deus da colheita','a deusa da fertilidade'],e:'Seu símbolo era uma lua crescente envolta por um disco solar.'},
+{s:'his',t:'O Reino de Axum',q:'Shams era, na religião axumita:',o:['a deusa do Sol, representando a divindade solar','o deus da guerra','a deusa da terra','o deus da chuva'],e:'Astart era a deusa da fertilidade e Warq, deus da guerra.'},
+{s:'his',t:'O Reino de Axum',q:'As ESTELAS de Axum eram:',o:['grandes monumentos que serviam como sepulturas de reis e líderes importantes','moedas de ouro','templos subterrâneos','muralhas de defesa'],e:'Algumas também comemoravam eventos marcantes.'},
+{s:'his',t:'O Reino de Axum',q:'Além do cristianismo e do politeísmo, parte considerável dos axumitas praticava:',o:['o judaísmo','o budismo','o hinduísmo','o xintoísmo'],e:'Religião ainda seguida por menos de 1% da população da atual Etiópia.'},
+{s:'his',t:'O Reino de Axum',q:'O idioma de escrita usado pelos axumitas era o:',o:['ge\'ez','latim','grego','árabe'],e:'Usado em inscrições em pedra, documentos religiosos e textos administrativos.'},
+{s:'his',t:'O Reino de Axum',q:'Na escrita ge\'ez:',o:['cada símbolo representa uma consoante seguida por uma vogal inerente (sistema silábico)','cada símbolo é uma palavra inteira','só existem vogais','os símbolos são desenhos de animais'],e:'É escrita da esquerda para a direita.'},
+
+// ================================================================ PORTUGUÊS
+{s:'por',t:'Adjetivos',q:'Adjetivo é a palavra que:',o:['caracteriza o substantivo, indicando qualidade, estado ou aparência','indica ação','substitui o substantivo','indica quantidade exata'],e:'Ex.: menino "estudioso".'},
+{s:'por',t:'Adjetivos',q:'Em "O cachorro peludo dormia na casa velha", os adjetivos são:',o:['peludo e velha','cachorro e casa','dormia e na','o e na'],e:'Peludo caracteriza cachorro; velha caracteriza casa.'},
+{s:'por',t:'Adjetivos',q:'"Amor de mãe" — a expressão "de mãe" é:',o:['uma locução adjetiva (equivale a materno)','um adjetivo simples','um numeral','um pronome'],e:'Locução adjetiva = preposição + substantivo com valor de adjetivo.'},
+{s:'por',t:'Adjetivos',q:'A locução adjetiva "de cidade" equivale ao adjetivo:',o:['urbano','rural','celeste','fluvial'],e:'De cidade = urbano; de campo = rural.'},
+{s:'por',t:'Adjetivos',q:'Em "Ela é mais alta que o irmão", temos grau:',o:['comparativo de superioridade','superlativo absoluto','comparativo de igualdade','normal'],e:'"mais... que" = comparativo de superioridade.'},
+{s:'por',t:'Adjetivos',q:'"Ele é altíssimo" está no grau:',o:['superlativo absoluto sintético','comparativo','diminutivo','aumentativo'],e:'O sufixo -íssimo intensifica sem comparar com outro ser.'},
+{s:'por',t:'Artigo',q:'Os artigos definidos são:',o:['o, a, os, as','um, uma, uns, umas','este, esse, aquele','meu, teu, seu'],e:'Definidos indicam ser específico.'},
+{s:'por',t:'Artigo',q:'Os artigos indefinidos são:',o:['um, uma, uns, umas','o, a, os, as','de, para, com','muito, pouco'],e:'Indicam algo genérico, não determinado.'},
+{s:'por',t:'Artigo',q:'Em "Comprei um livro", o artigo indica que o livro é:',o:['qualquer um, não especificado','um já conhecido pelo ouvinte','o único que existe','o mais caro'],e:'Artigo indefinido: não se sabe qual livro.'},
+{s:'por',t:'Artigo',q:'O artigo sempre:',o:['vem antes do substantivo e concorda em gênero e número com ele','vem depois do verbo','é invariável','substitui o adjetivo'],e:'O menino / as meninas.'},
+{s:'por',t:'Artigo',q:'Em "O jogador chutou a bola", os artigos são:',o:['O e a','jogador e bola','chutou','não há artigos'],e:'Ambos definidos.'},
+{s:'por',t:'Numeral',q:'Numeral é a palavra que indica:',o:['quantidade, ordem, múltiplo ou fração','qualidade','ação','lugar'],e:'Ex.: dois, segundo, dobro, meio.'},
+{s:'por',t:'Numeral',q:'"Cinco" é um numeral:',o:['cardinal','ordinal','multiplicativo','fracionário'],e:'Cardinal indica quantidade.'},
+{s:'por',t:'Numeral',q:'"Terceiro" é um numeral:',o:['ordinal','cardinal','multiplicativo','fracionário'],e:'Ordinal indica posição/ordem.'},
+{s:'por',t:'Numeral',q:'"O dobro do valor" — "dobro" é numeral:',o:['multiplicativo','fracionário','ordinal','cardinal'],e:'Dobro, triplo, quádruplo = multiplicativos.'},
+{s:'por',t:'Numeral',q:'"Comi um terço da pizza" — "um terço" é numeral:',o:['fracionário','multiplicativo','ordinal','cardinal'],e:'Meio, terço, quarto = fracionários.'},
+{s:'por',t:'Numeral',q:'Em "Ele ficou em primeiro lugar entre os vinte competidores", os numerais são:',o:['primeiro (ordinal) e vinte (cardinal)','primeiro e lugar','vinte e competidores','não há numerais'],e:'Um ordinal e um cardinal na mesma frase.'},
+{s:'por',t:'Descrição objetiva e subjetiva',q:'A descrição OBJETIVA:',o:['apresenta o que é observável, sem opinião de quem descreve','usa muitas opiniões e sentimentos','é sempre poética','só existe em poemas'],e:'É imparcial e concreta.'},
+{s:'por',t:'Descrição objetiva e subjetiva',q:'A descrição SUBJETIVA:',o:['revela impressões, sentimentos e opiniões de quem descreve','apenas mede e conta dados','nunca usa adjetivos','é usada só em manuais técnicos'],e:'Carrega o olhar pessoal do observador.'},
+{s:'por',t:'Descrição objetiva e subjetiva',q:'"A casa tem 8 metros de largura e duas janelas azuis." É descrição:',o:['objetiva','subjetiva','narrativa','argumentativa'],e:'Só dados observáveis e mensuráveis.'},
+{s:'por',t:'Descrição objetiva e subjetiva',q:'"A casa era acolhedora e trazia lembranças felizes da infância." É descrição:',o:['subjetiva','objetiva','instrucional','dissertativa'],e:'Acolhedora e feliz expressam sentimento.'},
+{s:'por',t:'Descrição objetiva e subjetiva',q:'Um laudo técnico ou uma bula de remédio usam principalmente descrição:',o:['objetiva','subjetiva','poética','irônica'],e:'Precisam de precisão e imparcialidade.'},
+{s:'por',t:'Pronomes',q:'Pronome é a palavra que:',o:['substitui ou acompanha o substantivo','indica ação','liga orações apenas','indica qualidade'],e:'Ex.: ele, meu, este, alguém.'},
+{s:'por',t:'Pronomes',q:'"Eu, tu, ele, nós, vós, eles" são pronomes:',o:['pessoais do caso reto','possessivos','demonstrativos','indefinidos'],e:'Funcionam como sujeito da oração.'},
+{s:'por',t:'Pronomes',q:'"Meu, teu, seu, nosso" são pronomes:',o:['possessivos','pessoais','relativos','interrogativos'],e:'Indicam posse.'},
+{s:'por',t:'Pronomes',q:'"Este, esse, aquele" são pronomes:',o:['demonstrativos','possessivos','indefinidos','pessoais oblíquos'],e:'Situam algo no espaço, no tempo ou no texto.'},
+{s:'por',t:'Pronomes',q:'"Alguém, ninguém, tudo, nada, algum" são pronomes:',o:['indefinidos','definidos','demonstrativos','relativos'],e:'Referem-se de modo vago à 3ª pessoa.'},
+{s:'por',t:'Pronomes',q:'Em "Quem chegou primeiro?", "quem" é pronome:',o:['interrogativo','possessivo','demonstrativo','pessoal'],e:'Usado em perguntas: que, quem, qual, quanto.'},
+{s:'por',t:'Pronomes',q:'Em "O livro que li era ótimo", "que" é pronome:',o:['relativo','interrogativo','possessivo','indefinido'],e:'Retoma o termo anterior (livro) e liga as orações.'},
+{s:'por',t:'Pronomes',q:'"Você, senhor, Vossa Excelência" são pronomes:',o:['de tratamento','pessoais retos','demonstrativos','numerais'],e:'Usados para se dirigir a alguém com formalidade.'},
+{s:'por',t:'Pronomes',q:'Em "Maria comprou o livro e o leu rapidamente", o segundo "o" é:',o:['pronome pessoal oblíquo (substitui "o livro")','artigo definido','numeral','adjetivo'],e:'Substitui o substantivo já citado.'},
+{s:'por',t:'Sinônimos e antônimos',q:'Sinônimos são palavras de sentido:',o:['semelhante','oposto','sem relação','apenas sonoro'],e:'Ex.: casa / residência.'},
+{s:'por',t:'Sinônimos e antônimos',q:'Antônimos são palavras de sentido:',o:['contrário','parecido','igual','indefinido'],e:'Ex.: alto / baixo.'},
+{s:'por',t:'Sinônimos e antônimos',q:'O sinônimo de "belo" é:',o:['bonito','feio','triste','rápido'],e:'Belo = bonito.'},
+{s:'por',t:'Sinônimos e antônimos',q:'O antônimo de "generoso" é:',o:['avarento','bondoso','gentil','solidário'],e:'Generoso × avarento/mesquinho.'},
+{s:'por',t:'Sinônimos e antônimos',q:'Qual par é de ANTÔNIMOS?',o:['claro / escuro','feliz / alegre','rápido / veloz','casa / lar'],e:'Os outros pares são sinônimos.'},
+{s:'por',t:'Sinônimos e antônimos',q:'Qual par é de SINÔNIMOS?',o:['esperto / astuto','forte / fraco','cheio / vazio','entrar / sair'],e:'Os outros são antônimos.'},
+{s:'por',t:'Sinônimos e antônimos',q:'O antônimo de "efêmero" (que dura pouco) é:',o:['duradouro','passageiro','breve','rápido'],e:'Efêmero × duradouro/eterno.'},
+{s:'por',t:'Adjetivos',q:'Em "A menina inteligente venceu o concurso difícil", os adjetivos são:',o:['inteligente e difícil','menina e concurso','venceu e o','a e o'],e:'Ambos caracterizam os substantivos.'},
+{s:'por',t:'Adjetivos',q:'O adjetivo concorda com o substantivo em:',o:['gênero e número','tempo e modo','pessoa e número apenas','nada'],e:'Menino alto / meninas altas.'},
+{s:'por',t:'Adjetivos',q:'A locução adjetiva "de mar" equivale ao adjetivo:',o:['marítimo','terrestre','fluvial','aéreo'],e:'De rio = fluvial; de mar = marítimo.'},
+{s:'por',t:'Adjetivos',q:'A locução adjetiva "de irmão" equivale a:',o:['fraternal','paternal','maternal','filial'],e:'De pai = paternal; de mãe = maternal.'},
+{s:'por',t:'Adjetivos',q:'A locução adjetiva "do campo" equivale a:',o:['rural','urbano','celeste','lunar'],e:'Do céu = celeste; da Lua = lunar.'},
+{s:'por',t:'Adjetivos',q:'Em "Ele é tão rápido quanto o irmão", o grau é:',o:['comparativo de igualdade','comparativo de superioridade','comparativo de inferioridade','superlativo'],e:'"tão... quanto" indica igualdade.'},
+{s:'por',t:'Adjetivos',q:'Em "Ela é menos tímida que a prima", o grau é:',o:['comparativo de inferioridade','comparativo de superioridade','superlativo relativo','comparativo de igualdade'],e:'"menos... que" indica inferioridade.'},
+{s:'por',t:'Adjetivos',q:'"Ele é o mais alto da turma" está no grau:',o:['superlativo relativo de superioridade','superlativo absoluto','comparativo de igualdade','normal'],e:'Compara um ser com todo um grupo.'},
+{s:'por',t:'Adjetivos',q:'"Muito bonito" é a forma ___ do superlativo absoluto:',o:['analítica','sintética','comparativa','diminutiva'],e:'A forma sintética seria "belíssimo".'},
+{s:'por',t:'Adjetivos',q:'Qual palavra NÃO é adjetivo?',o:['correr','feliz','simpático','pequeno'],e:'"Correr" é verbo, indica ação.'},
+{s:'por',t:'Adjetivos',q:'Em "céu azul", a palavra "azul" indica:',o:['uma característica do substantivo','uma ação','uma quantidade','um lugar'],e:'Adjetivo = característica.'},
+{s:'por',t:'Artigo',q:'Em "As crianças brincaram no parque", o artigo é:',o:['As','crianças','brincaram','parque'],e:'Artigo definido feminino plural.'},
+{s:'por',t:'Artigo',q:'Qual frase tem artigo INDEFINIDO?',o:['Vi uma estrela cadente.','Vi a estrela cadente.','Vi o cometa.','Vi as estrelas.'],e:'"uma" é indefinido; o, a, os, as são definidos.'},
+{s:'por',t:'Artigo',q:'Em "O jantar estava delicioso", a palavra "jantar" é:',o:['um substantivo, pois vem precedida de artigo','um verbo','um adjetivo','um advérbio'],e:'O artigo pode substantivar outras classes de palavras.'},
+{s:'por',t:'Artigo',q:'Em "um dia", o artigo indica:',o:['um dia qualquer, não determinado','o dia de hoje','o último dia','um dia específico já citado'],e:'Artigo indefinido generaliza.'},
+{s:'por',t:'Artigo',q:'A contração "do" é formada por:',o:['preposição de + artigo o','dois artigos','artigo + adjetivo','verbo + artigo'],e:'de + o = do; de + a = da.'},
+{s:'por',t:'Artigo',q:'A contração "na" é formada por:',o:['preposição em + artigo a','de + a','a + a','para + a'],e:'em + a = na; em + o = no.'},
+{s:'por',t:'Artigo',q:'Quantos artigos há em "O menino comprou uma bola e as figurinhas"?',o:['Três','Dois','Um','Quatro'],e:'O (definido), uma (indefinido) e as (definido).'},
+{s:'por',t:'Artigo',q:'Os artigos variam em:',o:['gênero e número','tempo e modo','pessoa e grau','não variam'],e:'o/a/os/as e um/uma/uns/umas.'},
+{s:'por',t:'Numeral',q:'Em "Li a quarta página do livro", "quarta" é numeral:',o:['ordinal','cardinal','fracionário','multiplicativo'],e:'Indica posição na sequência.'},
+{s:'por',t:'Numeral',q:'"Triplo" é numeral:',o:['multiplicativo','fracionário','ordinal','cardinal'],e:'Dobro, triplo, quádruplo = multiplicativos.'},
+{s:'por',t:'Numeral',q:'"Metade" é numeral:',o:['fracionário','multiplicativo','ordinal','cardinal'],e:'Meio, metade, terço, quarto = fracionários.'},
+{s:'por',t:'Numeral',q:'Em "Vinte alunos foram à excursão", "vinte" é numeral:',o:['cardinal','ordinal','fracionário','multiplicativo'],e:'Indica quantidade exata.'},
+{s:'por',t:'Numeral',q:'O numeral ordinal correspondente a 100 é:',o:['centésimo','cem','cêntuplo','centena'],e:'Cem é cardinal; cêntuplo é multiplicativo.'},
+{s:'por',t:'Numeral',q:'O numeral ordinal correspondente a 1000 é:',o:['milésimo','mil','milhar','milenar'],e:'Mil é cardinal.'},
+{s:'por',t:'Numeral',q:'Em "Ele comeu meia melancia", "meia" é numeral:',o:['fracionário','cardinal','ordinal','multiplicativo'],e:'Meia = metade.'},
+{s:'por',t:'Numeral',q:'Qual alternativa contém APENAS numerais ordinais?',o:['primeiro, segundo, décimo','um, dois, três','dobro, triplo, quádruplo','meio, terço, quarto'],e:'Os outros são cardinais, multiplicativos e fracionários.'},
+{s:'por',t:'Numeral',q:'Os numerais cardinais "um" e "dois":',o:['variam em gênero: um/uma, dois/duas','são invariáveis','só existem no plural','não são numerais'],e:'Dois livros / duas canetas.'},
+{s:'por',t:'Descrição objetiva e subjetiva',q:'Descrição é o tipo de texto que:',o:['retrata as características de um ser, objeto, lugar ou cena','narra fatos em sequência','defende uma opinião com argumentos','ensina um passo a passo'],e:'É como "pintar com palavras".'},
+{s:'por',t:'Descrição objetiva e subjetiva',q:'Na descrição são muito usados:',o:['substantivos e adjetivos','conjunções conclusivas','verbos no imperativo','números romanos'],e:'Os adjetivos caracterizam o que está sendo descrito.'},
+{s:'por',t:'Descrição objetiva e subjetiva',q:'"O cachorro é preto, pesa 12 kg e tem orelhas caídas." É descrição:',o:['objetiva','subjetiva','narrativa','argumentativa'],e:'Apenas dados observáveis e mensuráveis.'},
+{s:'por',t:'Descrição objetiva e subjetiva',q:'"O cachorro tem um olhar carinhoso e parece triste quando saio." É descrição:',o:['subjetiva','objetiva','instrucional','expositiva'],e:'Há impressões e sentimentos de quem descreve.'},
+{s:'por',t:'Descrição objetiva e subjetiva',q:'Uma descrição pode misturar traços objetivos e subjetivos?',o:['Sim, isso é comum em textos literários','Não, nunca','Só em textos técnicos','Só em poemas'],e:'Os dois tipos podem aparecer no mesmo texto.'},
+{s:'por',t:'Descrição objetiva e subjetiva',q:'Qual trecho é MAIS objetivo?',o:['A sala mede 4 m por 5 m e tem duas janelas.','A sala é aconchegante e cheirosa.','A sala parece um abraço.','A sala é o lugar mais gostoso da casa.'],e:'Medidas e dados concretos, sem opinião.'},
+{s:'por',t:'Descrição objetiva e subjetiva',q:'Anúncios de venda de imóveis geralmente usam descrição:',o:['objetiva, com medidas e características observáveis','apenas subjetiva','narrativa','dissertativa'],e:'O comprador precisa de dados precisos.'},
+{s:'por',t:'Pronomes',q:'São pronomes pessoais do caso OBLÍQUO:',o:['me, te, se, o, a, lhe, nos, vos','eu, tu, ele, nós','meu, teu, seu','este, esse, aquele'],e:'Funcionam como complemento, não como sujeito.'},
+{s:'por',t:'Pronomes',q:'Em "Ele me chamou ontem", "me" é pronome:',o:['pessoal oblíquo','possessivo','demonstrativo','relativo'],e:'Complemento do verbo chamar.'},
+{s:'por',t:'Pronomes',q:'O pronome demonstrativo "este" indica algo:',o:['próximo de quem fala','próximo de quem ouve','distante dos dois','sem localização'],e:'Este = perto de mim.'},
+{s:'por',t:'Pronomes',q:'O pronome demonstrativo "esse" indica algo:',o:['próximo de quem ouve','próximo de quem fala','distante dos dois','no futuro'],e:'Esse = perto de você.'},
+{s:'por',t:'Pronomes',q:'O pronome demonstrativo "aquele" indica algo:',o:['distante de quem fala e de quem ouve','na mão de quem fala','muito próximo','recém-citado'],e:'Aquele = longe dos dois.'},
+{s:'por',t:'Pronomes',q:'Em "Nossa casa é grande", "Nossa" é pronome:',o:['possessivo','pessoal','demonstrativo','indefinido'],e:'Indica posse (de nós).'},
+{s:'por',t:'Pronomes',q:'Em "Quantos livros você leu?", "Quantos" é pronome:',o:['interrogativo','indefinido','relativo','possessivo'],e:'Aparece em perguntas.'},
+{s:'por',t:'Pronomes',q:'Em "Vários alunos faltaram", "Vários" é pronome:',o:['indefinido','definido','demonstrativo','pessoal'],e:'Refere-se de modo vago à 3ª pessoa.'},
+{s:'por',t:'Pronomes',q:'Os pronomes possessivos concordam com:',o:['o objeto possuído, em gênero e número','apenas com o dono','o verbo','o advérbio'],e:'Meu livro / minhas canetas.'},
+{s:'por',t:'Pronomes',q:'Para que servem os pronomes em um texto?',o:['Evitar a repetição de palavras e dar coesão','Aumentar o tamanho do texto','Substituir os verbos','Criar rimas'],e:'Retomam termos já citados.'},
+{s:'por',t:'Pronomes',q:'Em "A menina cujo pai é médico chegou", "cujo" é pronome:',o:['relativo, indicando posse','possessivo','interrogativo','pessoal'],e:'Cujo liga as orações e indica posse.'},
+{s:'por',t:'Sinônimos e antônimos',q:'O sinônimo de "rápido" é:',o:['veloz','lento','pesado','curto'],e:'Rápido = veloz, ligeiro.'},
+{s:'por',t:'Sinônimos e antônimos',q:'O sinônimo de "triste" é:',o:['melancólico','alegre','esperto','calmo'],e:'Alegre seria o antônimo.'},
+{s:'por',t:'Sinônimos e antônimos',q:'O antônimo de "cheio" é:',o:['vazio','completo','lotado','repleto'],e:'Completo, lotado e repleto são sinônimos de cheio.'},
+{s:'por',t:'Sinônimos e antônimos',q:'O antônimo de "sair" é:',o:['entrar','partir','fugir','correr'],e:'Sair × entrar.'},
+{s:'por',t:'Sinônimos e antônimos',q:'O sinônimo de "casa" é:',o:['residência','rua','cidade','quarto'],e:'Também: lar, moradia, domicílio.'},
+{s:'por',t:'Sinônimos e antônimos',q:'Usar sinônimos em um texto ajuda a:',o:['evitar a repetição de palavras','aumentar os erros','deixar o texto confuso','trocar o assunto'],e:'Dá variedade e elegância ao texto.'},
+{s:'por',t:'Sinônimos e antônimos',q:'Qual par NÃO é de sinônimos?',o:['bonito / horrível','contente / feliz','sábio / inteligente','iniciar / começar'],e:'Bonito × horrível são antônimos.'},
+{s:'por',t:'Sinônimos e antônimos',q:'O antônimo de "amor" é:',o:['ódio','paixão','carinho','afeto'],e:'Os outros são sinônimos de amor.'},
+{s:'por',t:'Sinônimos e antônimos',q:'O sinônimo de "difícil" é:',o:['complicado','fácil','simples','leve'],e:'Fácil e simples são antônimos.'},
+{s:'por',t:'Sinônimos e antônimos',q:'O antônimo de "claro" (sobre uma cor) é:',o:['escuro','iluminado','nítido','evidente'],e:'Claro × escuro.'},
+];
+
+// ===== ENGINE =====
+const $=id=>document.getElementById(id);
+let cur={s:null,t:null}, deck=[], idx=0, hits=0, misses=[];
+
+function go(screen){
+  ['menu','topics','quiz','end'].forEach(s=>$(s).classList.toggle('hide',s!==screen));
+  if(screen==='menu')renderMenu();
+  window.scrollTo(0,0);
+}
+// ponytail: localStorage falha em file:/data: URLs; memória volátil serve de fallback
+const key=(s,t)=>'pg:'+s+':'+(t||'*');
+const mem={};
+const best=(s,t)=>{try{return +(localStorage.getItem(key(s,t))||0)}catch(e){return mem[key(s,t)]||0}};
+const saveBest=(s,t,v)=>{try{localStorage.setItem(key(s,t),v)}catch(e){mem[key(s,t)]=v}};
+
+function renderMenu(){
+  $('subjects').innerHTML=SUBJECTS.map(s=>{
+    const n=Q.filter(q=>q.s===s.id).length, b=best(s.id,null);
+    return `<div class="card" onclick="openSubject('${s.id}')">
+      <span class="ico">${s.ico}</span>
+      <span><b>${s.nome}</b><small>${n} questões</small></span>
+      ${b?`<span class="best">🏆 ${b}%</span>`:''}</div>`;
+  }).join('');
+}
+
+function openSubject(sid){
+  cur={s:sid,t:null};
+  const subj=SUBJECTS.find(s=>s.id===sid);
+  $('tTitle').textContent=subj.ico+' '+subj.nome;
+  const topics=[...new Set(Q.filter(q=>q.s===sid).map(q=>q.t))];
+  $('topicList').innerHTML=
+    `<div class="card" onclick="startQuiz('${sid}',null)">
+       <span class="ico">🎲</span><span><b>Tudo misturado</b><small>sorteia de todos os assuntos</small></span>
+       ${best(sid,null)?`<span class="best">🏆 ${best(sid,null)}%</span>`:''}</div>`
+    + topics.map(t=>{
+      const n=Q.filter(q=>q.s===sid&&q.t===t).length, b=best(sid,t);
+      return `<div class="card" onclick="startQuiz('${sid}',${JSON.stringify(t).replace(/"/g,'&quot;')})">
+        <span class="ico">▸</span><span><b>${t}</b><small>${n} questões</small></span>
+        ${b?`<span class="best">🏆 ${b}%</span>`:''}</div>`;
+    }).join('');
+  go('topics');
+}
+
+const shuffle=a=>a.map(v=>[Math.random(),v]).sort((x,y)=>x[0]-y[0]).map(v=>v[1]);
+
+function startQuiz(sid,topic){
+  cur={s:sid,t:topic};
+  const pool=Q.filter(q=>q.s===sid&&(!topic||q.t===topic));
+  deck=shuffle(pool).slice(0,10);
+  idx=0;hits=0;misses=[];
+  go('quiz');showQ();
+}
+
+function showQ(){
+  const q=deck[idx];
+  $('qWhere').textContent=`Questão ${idx+1}/${deck.length}`;
+  $('qScore').textContent=`✅ ${hits}`;
+  $('qBar').style.width=(idx/deck.length*100)+'%';
+  $('qTag').textContent=q.t;
+  $('qText').textContent=q.q;
+  $('qFb').innerHTML='';
+  $('qNext').classList.add('hide');
+  const correct=q.o[0];
+  $('qOpts').innerHTML=shuffle(q.o).map(o=>
+    `<button class="opt">${o}</button>`).join('');
+  [...$('qOpts').children].forEach(b=>b.onclick=()=>answer(b,b.textContent===correct,correct,q));
+}
+
+function answer(btn,right,correct,q){
+  [...$('qOpts').children].forEach(b=>{
+    b.disabled=true;
+    if(b.textContent===correct)b.classList.add('ok');
+  });
+  if(right){hits++;}
+  else{btn.classList.add('no');misses.push({q:q.q,a:correct,e:q.e});}
+  $('qScore').textContent=`✅ ${hits}`;
+  $('qFb').innerHTML=`<div class="fb ${right?'ok':'no'}">
+    <b>${right?'✅ Isso aí!':'❌ Resposta: '+correct}</b><br>${q.e}</div>`;
+  $('qNext').classList.remove('hide');
+  $('qNext').onclick=()=>{idx++;idx<deck.length?showQ():finish()};
+}
+
+function finish(){
+  const pct=Math.round(hits/deck.length*100);
+  if(pct>best(cur.s,cur.t))saveBest(cur.s,cur.t,pct);
+  $('eTitle').textContent=pct===100?'🏆 Gabaritou!':pct>=70?'🎉 Muito bem!':'💪 Bora treinar mais!';
+  $('eScore').textContent=hits+'/'+deck.length+' ('+pct+'%)';
+  $('eMsg').textContent=pct>=70?'Esse assunto tá dominado.':'Revise os erros abaixo e jogue de novo.';
+  $('eRev').innerHTML=misses.length
+    ? '<h3 style="margin-bottom:8px">Para revisar:</h3>'+misses.map(m=>
+        `<div class="rev"><b>${m.q}</b><br>✅ ${m.a}<br><i>${m.e}</i></div>`).join('')
+    : '';
+  go('end');
+}
+
+renderMenu();
+</script>
+</body>
+</html>
