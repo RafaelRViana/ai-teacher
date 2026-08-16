@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Chocadeira do Stitch 🥚 — Pronomes</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --ink:#1e1b4b;--blue:#2563eb;--blue2:#60a5fa;--pink:#ec4899;--pink2:#f9a8d4;
+  --gold:#f59e0b;--gold2:#fbbf24;--green:#16a34a;--green2:#4ade80;--red:#dc2626;
+}
+html,body{height:100%}
+body{
+  font-family:'Nunito',sans-serif;color:var(--ink);
+  background:linear-gradient(160deg,#0c4a6e,#1e40af,#7e22ce);
+  background-attachment:fixed;min-height:100vh;overflow-x:hidden;
+  -webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;
+}
+.screen{display:none;flex-direction:column;align-items:center;min-height:100vh;padding:18px;animation:fadeIn .4s ease}
+.screen.active{display:flex}
+@keyframes fadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-6deg)}75%{transform:rotate(6deg)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}60%{transform:translateX(8px)}}
+@keyframes pop{0%{transform:scale(.3)}70%{transform:scale(1.15)}100%{transform:scale(1)}}
+@keyframes glow{0%,100%{filter:drop-shadow(0 0 8px #fff7)}50%{filter:drop-shadow(0 0 26px #fff)}}
+h1,h2,h3,.btn{font-family:'Fredoka One',cursive}
+
+/* intro */
+#intro{justify-content:center;text-align:center}
+#intro .logo{font-size:90px;animation:float 3s ease-in-out infinite}
+#intro h1{color:#fff;font-size:2.2em;text-shadow:2px 3px 0 rgba(0,0,0,.35);line-height:1.15;margin:8px 0}
+#intro .tag{color:var(--gold2);font-family:'Fredoka One',cursive;margin-bottom:14px}
+#intro p{color:#dbeafe;max-width:420px;line-height:1.6;margin-bottom:22px}
+.btn{cursor:pointer;border:none;transition:transform .15s}
+.btn:active{transform:scale(.94)}
+.btn-play{font-size:1.25em;padding:15px 44px;background:linear-gradient(135deg,var(--gold2),var(--gold));color:#3b2200;border-radius:50px;box-shadow:0 6px 22px rgba(245,158,11,.5)}
+
+/* nursery */
+#nursery{gap:14px}
+.nur-head{width:100%;max-width:560px;display:flex;justify-content:space-between;align-items:center}
+.nur-head h2{color:#fff;font-size:1.4em;text-shadow:1px 2px 0 rgba(0,0,0,.3)}
+.chip{background:rgba(255,255,255,.15);border-radius:16px;padding:6px 14px;color:#fff;font-size:.85em}
+.chip b{color:var(--gold2);font-family:'Fredoka One',cursive}
+.egg-grid{width:100%;max-width:560px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.egg-card{background:rgba(255,255,255,.93);border-radius:22px;padding:16px 10px;text-align:center;cursor:pointer;transition:transform .15s;position:relative;min-height:190px;display:flex;flex-direction:column;align-items:center;justify-content:space-between}
+.egg-card:active{transform:scale(.96)}
+.egg-card.locked{filter:grayscale(.85);opacity:.6;cursor:default}
+.egg-card .rar{position:absolute;top:10px;left:12px;font-size:.68em;font-family:'Fredoka One',cursive;padding:2px 10px;border-radius:20px;color:#fff}
+.rar.comum{background:#16a34a}.rar.raro{background:#7c3aed}.rar.lendario{background:linear-gradient(90deg,#f59e0b,#ec4899)}
+.egg-card h3{font-size:1em;margin-top:4px}
+.egg-card .prog{font-size:.78em;color:#64748b;font-weight:700}
+.egg-mini{width:74px;height:92px}
+.pet-mini{width:96px;height:96px;animation:float 3s ease-in-out infinite}
+.lockico{position:absolute;top:8px;right:12px;font-size:1.1em}
+
+/* game */
+#game{gap:12px;justify-content:flex-start}
+.game-head{width:100%;max-width:560px;display:flex;justify-content:space-between;align-items:center}
+.btn-ghost{background:rgba(255,255,255,.16);color:#fff;border-radius:14px;padding:9px 16px;font-size:.85em;border:none;font-family:'Fredoka One',cursive;cursor:pointer}
+.heat{display:flex;gap:5px}
+.heat span{font-size:1.25em;filter:grayscale(1);opacity:.4;transition:all .3s}
+.heat span.on{filter:none;opacity:1;transform:scale(1.15)}
+#eggStage{width:150px;height:186px;margin:4px 0}
+#eggStage.happy{animation:wiggle .5s ease}
+#eggStage.sad{animation:shake .45s ease}
+.qcard{background:rgba(255,255,255,.95);border-radius:22px;padding:20px;width:100%;max-width:560px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.qtema{font-size:.72em;font-family:'Fredoka One',cursive;color:#7c3aed;letter-spacing:.5px;text-transform:uppercase}
+.qtxt{font-size:1.12em;font-weight:800;line-height:1.5;margin:8px 0 14px}
+.answers{display:grid;gap:10px}
+.ans{background:#eef2ff;border:3px solid #c7d2fe;border-radius:16px;padding:13px 14px;font-size:1em;font-weight:800;color:var(--ink);cursor:pointer;text-align:left;font-family:'Nunito',sans-serif;transition:transform .12s}
+.ans:active{transform:scale(.97)}
+.ans.ok{background:#dcfce7;border-color:var(--green)}
+.ans.no{background:#fee2e2;border-color:var(--red)}
+.ans:disabled{cursor:default}
+.feedback{width:100%;max-width:560px;border-radius:18px;padding:14px 16px;color:#fff;font-weight:700;line-height:1.45;display:none;animation:pop .3s ease}
+.feedback.show{display:block}
+.feedback.good{background:var(--green)}
+.feedback.bad{background:var(--red)}
+.feedback b{color:#fef08a}
+.btn-next{margin-top:10px;background:#fff;color:var(--ink);border-radius:14px;padding:10px 22px;font-size:.95em}
+
+/* hatch */
+#hatch{justify-content:center;text-align:center}
+#hatch h2{color:#fff;font-size:1.9em;text-shadow:2px 3px 0 rgba(0,0,0,.35)}
+#hatch .petbig{width:200px;height:200px;animation:pop .6s ease,glow 2s ease-in-out infinite}
+#hatch .petname{font-family:'Fredoka One',cursive;font-size:1.5em;color:var(--gold2);margin:6px 0 2px}
+#hatch .petrar{color:#dbeafe;margin-bottom:20px}
+.confetti{position:fixed;top:-20px;font-size:22px;animation:cfall linear forwards;pointer-events:none;z-index:50}
+@keyframes cfall{to{transform:translateY(110vh) rotate(720deg)}}
+
+/* end */
+#fim{justify-content:center;text-align:center}
+#fim h2{color:#fff;font-size:2em;text-shadow:2px 3px 0 rgba(0,0,0,.35);margin-bottom:6px}
+#fim p{color:#dbeafe;margin-bottom:18px}
+.fam{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;max-width:480px;margin-bottom:20px}
+.fam svg{width:86px;height:86px;animation:float 3s ease-in-out infinite}
+.fam svg:nth-child(2n){animation-delay:.6s}
+.fam svg:nth-child(3n){animation-delay:1.2s}
+</style>
+</head>
+<body>
+
+<!-- ===== INTRO ===== -->
+<div class="screen active" id="intro">
+  <div class="logo">🥚💙💗</div>
+  <h1>Chocadeira do Stitch</h1>
+  <div class="tag">✨ Pronomes Pessoais e Não Pessoais ✨</div>
+  <p>Ohana quer dizer <b>família</b>! 🌺 Responda as perguntas para esquentar os ovos e chocar os filhotes. Os ovos lendários guardam o <b>Stitch</b> e a <b>Angel</b>!</p>
+  <button class="btn btn-play" onclick="showNursery()">🌺 JOGAR</button>
+</div>
+
+<!-- ===== NURSERY ===== -->
+<div class="screen" id="nursery">
+  <div class="nur-head">
+    <h2>🏝️ Berçário</h2>
+    <div class="chip">Filhotes: <b id="petCount">0</b>/6</div>
+  </div>
+  <div class="egg-grid" id="eggGrid"></div>
+  <button class="btn-ghost" onclick="resetGame()" style="margin-top:8px;opacity:.7">🔄 Recomeçar do zero</button>
+</div>
+
+<!-- ===== GAME ===== -->
+<div class="screen" id="game">
+  <div class="game-head">
+    <button class="btn-ghost" onclick="showNursery()">← Berçário</button>
+    <div class="heat" id="heat"></div>
+  </div>
+  <div id="eggStage"></div>
+  <div class="qcard">
+    <div class="qtema" id="qTema"></div>
+    <div class="qtxt" id="qTxt"></div>
+    <div class="answers" id="qAns"></div>
+  </div>
+  <div class="feedback" id="fb">
+    <div id="fbTxt"></div>
+    <button class="btn btn-next" onclick="nextQuestion()">Continuar ➜</button>
+  </div>
+</div>
+
+<!-- ===== HATCH ===== -->
+<div class="screen" id="hatch">
+  <h2>🎉 CHOCOU! 🎉</h2>
+  <div class="petbig" id="hatchPet"></div>
+  <div class="petname" id="hatchName"></div>
+  <div class="petrar" id="hatchRar"></div>
+  <button class="btn btn-play" onclick="showNursery()">🌺 Voltar ao berçário</button>
+</div>
+
+<!-- ===== FIM ===== -->
+<div class="screen" id="fim">
+  <h2>🌺 OHANA COMPLETA! 🌺</h2>
+  <p>Você chocou todos os filhotes e virou a maior<br>especialista em pronomes da ilha! 🏆</p>
+  <div class="fam" id="famRow"></div>
+  <button class="btn btn-play" onclick="resetGame()">🔄 Jogar de novo</button>
+</div>
+
+<script>
+// ============ PERGUNTAS — a[0] é SEMPRE a correta (embaralha na tela) ============
+const TIERS = [
+// ---- FÁCIL ----
+[
+ {t:"Pronome pessoal",p:"Qual destas palavras é um pronome pessoal?",a:["eu","bolo","azul","pular"],e:"<b>Eu</b> é pronome pessoal! Bolo é coisa, azul é cor e pular é ação."},
+ {t:"Pronome pessoal",p:"Stitch comeu o bolo inteiro. ___ ficou muito feliz!",a:["Ele","Ela","Nós","Eu"],e:"Stitch é um menino, então usamos <b>ele</b>."},
+ {t:"Pronome pessoal",p:"Angel canta muito bem. ___ é uma ótima cantora!",a:["Ela","Ele","Eles","Tu"],e:"Angel é uma menina, então usamos <b>ela</b>."},
+ {t:"Pronome pessoal",p:"Complete: “Lilo e Stitch surfam juntos. ___ adoram o mar!”",a:["Eles","Ele","Ela","Nós"],e:"Lilo e Stitch são duas pessoas, então usamos <b>eles</b>."},
+ {t:"Pronome pessoal",p:"Eu, tu, ele, ela, nós, vós, eles e elas são pronomes...",a:["pessoais","possessivos","demonstrativos","mágicos"],e:"Esses são os pronomes <b>pessoais</b>: eles indicam as pessoas da conversa!"},
+ {t:"Pronome pessoal",p:"Quando o Stitch fala dele mesmo, qual pronome ele usa?",a:["eu","ele","tu","elas"],e:"Quem fala de si mesmo usa <b>eu</b>. “<b>Eu</b> sou o Stitch!”"},
+ {t:"Pronome pessoal",p:"Você + Stitch + Angel juntos. Qual pronome usamos?",a:["nós","eu","eles","ela"],e:"Quando eu estou junto no grupo, usamos <b>nós</b>!"},
+ {t:"Pronome pessoal",p:"Qual pronome substitui “a Angel” na frase: “A Angel dorme cedo”?",a:["Ela","Ele","Eu","Vós"],e:"“A Angel dorme cedo” vira “<b>Ela</b> dorme cedo”."},
+ {t:"Não é pessoal!",p:"Qual destas palavras NÃO é um pronome pessoal?",a:["meu","eu","ela","nós"],e:"<b>Meu</b> mostra que algo é da gente: é pronome <b>possessivo</b>, não pessoal."},
+ {t:"Pronome pessoal",p:"Complete: “Angel e Lilo dançam hula. ___ dançam lindamente!”",a:["Elas","Eles","Ela","Nós"],e:"Angel e Lilo são duas meninas: usamos <b>elas</b>."},
+ {t:"Pronome pessoal",p:"Na frase “Tu és meu melhor amigo, Stitch!”, o pronome pessoal é...",a:["tu","meu","amigo","Stitch"],e:"<b>Tu</b> é pronome pessoal (2ª pessoa). “Meu” é possessivo!"},
+ {t:"Pronome pessoal",p:"Qual frase tem um pronome pessoal?",a:["Nós amamos a praia.","O mar é azul.","Que onda grande!","Stitch surfa bem."],e:"“<b>Nós</b> amamos a praia” — nós é pronome pessoal!"}
+],
+// ---- MÉDIO ----
+[
+ {t:"Pessoal ou não?",p:"A palavra “ele” é um pronome pessoal ou não pessoal?",a:["Pessoal","Não pessoal","Nenhum dos dois","É um verbo"],e:"<b>Ele</b> indica uma pessoa da conversa: é pronome <b>pessoal</b>."},
+ {t:"Pessoal ou não?",p:"A palavra “aquele” (ex.: “aquele ovo”) é um pronome...",a:["não pessoal (demonstrativo)","pessoal","verbo","adjetivo"],e:"<b>Aquele</b> mostra onde a coisa está: é <b>demonstrativo</b>, um pronome não pessoal."},
+ {t:"Pessoal ou não?",p:"Na frase “Esta boneca é minha”, a palavra “minha” é um pronome...",a:["não pessoal (possessivo)","pessoal","de pergunta","nenhum"],e:"<b>Minha</b> indica posse (é de mim!): pronome <b>possessivo</b>, não pessoal."},
+ {t:"Pessoas do discurso",p:"O pronome “eu” é qual pessoa do discurso?",a:["1ª pessoa (quem fala)","2ª pessoa (com quem se fala)","3ª pessoa (de quem se fala)","Nenhuma"],e:"<b>Eu</b> = 1ª pessoa, quem está falando!"},
+ {t:"Pessoas do discurso",p:"O pronome “tu” é qual pessoa do discurso?",a:["2ª pessoa (com quem se fala)","1ª pessoa (quem fala)","3ª pessoa (de quem se fala)","4ª pessoa"],e:"<b>Tu</b> = 2ª pessoa, a pessoa com quem falamos!"},
+ {t:"Pessoas do discurso",p:"“Ele” e “ela” são a 3ª pessoa. Isso quer dizer que são...",a:["de quem se fala","quem fala","com quem se fala","quem escuta"],e:"3ª pessoa é <b>de quem</b> estamos falando. Ex.: falamos DO Stitch = ele."},
+ {t:"Singular ou plural?",p:"O pronome “nós” está no singular ou no plural?",a:["Plural (mais de uma pessoa)","Singular (uma pessoa só)","Nenhum","Os dois"],e:"<b>Nós</b> = eu + mais alguém, então é <b>plural</b>!"},
+ {t:"Substituição",p:"“Lilo abraçou o Stitch e a Angel.” Quem Lilo abraçou? Substitua por um pronome:",a:["eles","nós","ela","eu"],e:"Stitch + Angel = <b>eles</b>."},
+ {t:"Pessoal ou não?",p:"Na frase “Isso é incrível!”, a palavra “isso” é um pronome...",a:["não pessoal (demonstrativo)","pessoal","possessivo","verbo"],e:"<b>Isso</b> aponta para uma coisa: é <b>demonstrativo</b>, não pessoal."},
+ {t:"Pronome pessoal",p:"Qual lista tem SÓ pronomes pessoais?",a:["eu, tu, ele, nós","meu, teu, seu","este, esse, aquele","um, dois, três"],e:"<b>Eu, tu, ele, nós</b> são pessoais. Meu/teu = possessivos, este/esse = demonstrativos."},
+ {t:"Pessoal ou não?",p:"Na frase “Nossa nave é rápida”, a palavra “nossa” é...",a:["possessivo (não pessoal)","pessoal","demonstrativo","numeral"],e:"<b>Nossa</b> = posse de nós: pronome <b>possessivo</b>."},
+ {t:"Substituição",p:"“Eu e você vamos chocar os ovos.” Podemos trocar “eu e você” por...",a:["nós","eles","vós","elas"],e:"Eu + você = <b>nós</b>!"}
+],
+// ---- DIFÍCIL ----
+[
+ {t:"Caso reto",p:"Os pronomes “eu, tu, ele, nós, vós, eles” são pessoais do caso...",a:["reto","torto","possessivo","curvo"],e:"Pronomes do caso <b>reto</b>: são os que fazem a ação na frase (o sujeito)."},
+ {t:"Oblíquo",p:"Na frase “Stitch ME deu um abraço”, a palavra “me” é...",a:["pronome pessoal oblíquo","pronome possessivo","verbo","nome próprio"],e:"<b>Me</b> também é pronome pessoal! É do tipo <b>oblíquo</b>: recebe a ação."},
+ {t:"Oblíquo",p:"“Angel fez um desenho para MIM.” A palavra “mim” é um pronome...",a:["pessoal oblíquo","possessivo","demonstrativo","interrogativo"],e:"<b>Mim</b> é pronome pessoal <b>oblíquo</b>: aparece depois de palavrinhas como “para”, “de”, “em”."},
+ {t:"Substituição",p:"“Lilo encontrou o Stitch na praia.” → “Lilo ___ encontrou na praia.”",a:["o","ele","lhe","se"],e:"“Lilo <b>o</b> encontrou” — o pronome <b>o</b> substitui “o Stitch”. Fica mais elegante!"},
+ {t:"Pessoas do discurso",p:"Em “Nós adotamos a Angel”, o pronome “nós” é...",a:["1ª pessoa do plural","3ª pessoa do plural","1ª pessoa do singular","2ª pessoa do singular"],e:"<b>Nós</b> = 1ª pessoa (eu estou junto!) do plural (mais de um)."},
+ {t:"Pessoal ou não?",p:"Qual frase tem um pronome NÃO pessoal?",a:["Aquela nave é veloz.","Eu amo ohana.","Ela surfa muito.","Nós somos família."],e:"“<b>Aquela</b> nave” — aquela é demonstrativo (não pessoal). As outras têm eu, ela e nós (pessoais)."},
+ {t:"Caso reto",p:"Em “Ele pilota a nave”, o pronome “ele” faz o papel de...",a:["sujeito (quem faz a ação)","objeto (quem recebe)","enfeite","lugar"],e:"<b>Ele</b> é quem pilota = <b>sujeito</b>. Por isso é do caso reto!"},
+ {t:"Oblíquo",p:"Qual lista tem SÓ pronomes oblíquos?",a:["me, te, se, nos","eu, tu, ele","meu, teu, seu","este, isso, aquilo"],e:"<b>Me, te, se, nos</b> são oblíquos átonos: pequenos mas poderosos!"},
+ {t:"Análise",p:"Em “Eu te amo, Stitch!”, quantos pronomes pessoais existem?",a:["dois (eu, te)","um (eu)","três","nenhum"],e:"<b>Eu</b> (reto) e <b>te</b> (oblíquo) — os dois são pessoais!"},
+ {t:"Substituição",p:"“Lilo viu a Angel voando.” → “Lilo ___ viu voando.”",a:["a","ela","lhe","na"],e:"“Lilo <b>a</b> viu” — o pronome <b>a</b> substitui “a Angel”."},
+ {t:"Pessoal ou não?",p:"Em “Este ovo é meu e ele vai chocar!”, os pronomes são...",a:["este e meu (não pessoais) + ele (pessoal)","todos pessoais","todos possessivos","não há pronomes"],e:"<b>Este</b> = demonstrativo, <b>meu</b> = possessivo, <b>ele</b> = pessoal. Três tipos numa frase!"},
+ {t:"Pessoas do discurso",p:"“Vós sois bem-vindos à ilha!” O pronome “vós” é...",a:["2ª pessoa do plural","2ª pessoa do singular","3ª pessoa do plural","1ª pessoa do plural"],e:"<b>Vós</b> = 2ª pessoa do plural (várias pessoas com quem falamos). É antigo, mas cai na prova!"}
+]
+];
+
+// ============ OVOS & FILHOTES ============
+const EGGS=[
+ {nome:"Ovo da Praia",  rar:"comum",   cls:"comum",   tier:0,need:4,egg:["#a7f3d0","#34d399"],pet:{nome:"Kiko",  c1:"#22c55e",c2:"#bbf7d0"}},
+ {nome:"Ovo do Mar",    rar:"comum",   cls:"comum",   tier:0,need:4,egg:["#bae6fd","#38bdf8"],pet:{nome:"Bolha", c1:"#0ea5e9",c2:"#e0f2fe"}},
+ {nome:"Ovo da Noite",  rar:"raro",    cls:"raro",    tier:1,need:5,egg:["#ddd6fe","#8b5cf6"],pet:{nome:"Lua",   c1:"#8b5cf6",c2:"#ede9fe"}},
+ {nome:"Ovo do Sol",    rar:"raro",    cls:"raro",    tier:1,need:5,egg:["#fde68a","#f59e0b"],pet:{nome:"Raio",  c1:"#f59e0b",c2:"#fef3c7"}},
+ {nome:"Ovo Lendário 💗",rar:"lendário",cls:"lendario",tier:2,need:6,egg:["#fbcfe8","#ec4899"],pet:{nome:"Angel", c1:"#f472b6",c2:"#fce7f3"}},
+ {nome:"Ovo Lendário 💙",rar:"lendário",cls:"lendario",tier:2,need:6,egg:["#bfdbfe","#2563eb"],pet:{nome:"Stitch",c1:"#3b82f6",c2:"#bfdbfe"}}
+];
+
+// ============ SVGs ============
+function eggSVG(c,cracks){
+  const crackPaths=[
+    'M55 60 l10 12 l-8 10 l12 9',
+    'M95 45 l-9 13 l10 9 l-7 12',
+    'M75 95 l-12 8 l9 11 l-13 7',
+    'M40 100 l11 7 l-6 12'
+  ].slice(0,cracks).map(d=>`<path d="${d}" stroke="#7c5a2b" stroke-width="3" fill="none" stroke-linecap="round"/>`).join('');
+  return `<svg viewBox="0 0 150 186" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="75" cy="170" rx="52" ry="12" fill="rgba(0,0,0,.18)"/>
+    <path d="M75 8 C115 8 132 60 132 105 C132 145 107 168 75 168 C43 168 18 145 18 105 C18 60 35 8 75 8 Z" fill="${c[0]}" stroke="${c[1]}" stroke-width="5"/>
+    <circle cx="55" cy="70" r="9" fill="${c[1]}" opacity=".45"/>
+    <circle cx="93" cy="110" r="12" fill="${c[1]}" opacity=".45"/>
+    <circle cx="62" cy="130" r="7" fill="${c[1]}" opacity=".45"/>
+    <ellipse cx="58" cy="40" rx="12" ry="20" fill="#fff" opacity=".5" transform="rotate(-18 58 40)"/>
+    ${crackPaths}
+  </svg>`;
+}
+function petSVG(p){
+  return `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="100" cy="188" rx="55" ry="9" fill="rgba(0,0,0,.18)"/>
+    <!-- orelhas -->
+    <path d="M52 78 C18 40 12 14 30 10 C48 6 68 38 72 62 Z" fill="${p.c1}"/>
+    <path d="M50 66 C30 42 26 24 36 21 C46 18 60 42 63 58 Z" fill="${p.c2}"/>
+    <path d="M148 78 C182 40 188 14 170 10 C152 6 132 38 128 62 Z" fill="${p.c1}"/>
+    <path d="M150 66 C170 42 174 24 164 21 C154 18 140 42 137 58 Z" fill="${p.c2}"/>
+    <!-- corpo -->
+    <ellipse cx="100" cy="150" rx="52" ry="42" fill="${p.c1}"/>
+    <ellipse cx="100" cy="158" rx="32" ry="26" fill="${p.c2}"/>
+    <!-- patas -->
+    <ellipse cx="55" cy="180" rx="16" ry="10" fill="${p.c1}"/>
+    <ellipse cx="145" cy="180" rx="16" ry="10" fill="${p.c1}"/>
+    <!-- cabeça -->
+    <circle cx="100" cy="88" r="52" fill="${p.c1}"/>
+    <!-- olhos -->
+    <ellipse cx="80" cy="84" rx="13" ry="16" fill="#0f172a"/>
+    <ellipse cx="120" cy="84" rx="13" ry="16" fill="#0f172a"/>
+    <circle cx="84" cy="78" r="4.5" fill="#fff"/>
+    <circle cx="124" cy="78" r="4.5" fill="#fff"/>
+    <!-- nariz e boca -->
+    <ellipse cx="100" cy="104" rx="10" ry="7" fill="#1e293b"/>
+    <path d="M84 118 Q100 132 116 118" stroke="#1e293b" stroke-width="4" fill="none" stroke-linecap="round"/>
+  </svg>`;
+}
+
+// ============ ESTADO ============
+const SAVE_KEY='chocadeira-stitch-v1';
+let state=load();
+function load(){try{return JSON.parse(localStorage.getItem(SAVE_KEY))||fresh()}catch(e){return fresh()}}
+function fresh(){return {prog:EGGS.map(()=>0),hatched:EGGS.map(()=>false)}}
+function save(){try{localStorage.setItem(SAVE_KEY,JSON.stringify(state))}catch(e){}}
+function resetGame(){if(state.hatched.some(h=>h)&&!confirm('Apagar todos os filhotes e começar de novo?'))return;state=fresh();save();showNursery()}
+
+let curEgg=0,curQ=null,pool=[];
+
+// ============ TELAS ============
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
+
+function unlocked(i){return i===0||state.hatched[i-1]}
+
+function showNursery(){
+  if(state.hatched.every(h=>h)){showFim();return}
+  const grid=document.getElementById('eggGrid');
+  grid.innerHTML=EGGS.map((eg,i)=>{
+    const lock=!unlocked(i);
+    let visual,status;
+    if(state.hatched[i]){visual=`<div class="pet-mini">${petSVG(eg.pet)}</div>`;status=`💚 ${eg.pet.nome}`}
+    else{visual=`<div class="egg-mini">${eggSVG(eg.egg,crackCount(i))}</div>`;status=lock?'Choque o ovo anterior!':`🔥 ${state.prog[i]}/${eg.need}`}
+    return `<div class="egg-card ${lock?'locked':''}" onclick="${lock||state.hatched[i]?'':`startEgg(${i})`}">
+      <span class="rar ${eg.cls}">${eg.rar}</span>
+      ${lock?'<span class="lockico">🔒</span>':''}
+      ${visual}<h3>${state.hatched[i]?eg.pet.nome:eg.nome}</h3><div class="prog">${status}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('petCount').textContent=state.hatched.filter(h=>h).length;
+  show('nursery');
+}
+
+function crackCount(i){return Math.min(4,Math.floor(state.prog[i]/EGGS[i].need*4))}
+
+function startEgg(i){
+  curEgg=i;pool=[];
+  renderHeat();renderEgg(false);
+  nextQuestion();
+  show('game');
+}
+
+function renderHeat(){
+  const eg=EGGS[curEgg];
+  document.getElementById('heat').innerHTML=Array.from({length:eg.need},(_,k)=>`<span class="${k<state.prog[curEgg]?'on':''}">🔥</span>`).join('');
+}
+function renderEgg(){
+  document.getElementById('eggStage').innerHTML=eggSVG(EGGS[curEgg].egg,crackCount(curEgg));
+}
+
+function drawQuestion(){
+  const tier=TIERS[EGGS[curEgg].tier];
+  if(!pool.length)pool=[...tier].sort(()=>Math.random()-.5);
+  return pool.pop();
+}
+
+function nextQuestion(){
+  document.getElementById('fb').className='feedback';
+  curQ=drawQuestion();
+  document.getElementById('qTema').textContent='🌺 '+curQ.t;
+  document.getElementById('qTxt').innerHTML=curQ.p;
+  const opts=curQ.a.map((txt,i)=>({txt,ok:i===0})).sort(()=>Math.random()-.5);
+  document.getElementById('qAns').innerHTML=opts.map(o=>`<button class="ans" data-ok="${o.ok}">${o.txt}</button>`).join('');
+  document.querySelectorAll('.ans').forEach(b=>b.onclick=()=>answer(b));
+}
+
+function answer(btn){
+  const ok=btn.dataset.ok==='true';
+  document.querySelectorAll('.ans').forEach(b=>{b.disabled=true;if(b.dataset.ok==='true')b.classList.add('ok')});
+  if(!ok)btn.classList.add('no');
+  const stage=document.getElementById('eggStage');
+  const fb=document.getElementById('fb'),fbTxt=document.getElementById('fbTxt');
+  if(ok){
+    state.prog[curEgg]++;save();
+    renderHeat();renderEgg();
+    stage.className='happy';beep(true);
+    if(state.prog[curEgg]>=EGGS[curEgg].need){setTimeout(hatchEgg,700);return}
+    fb.className='feedback show good';fbTxt.innerHTML='✅ Isso aí! O ovo esquentou! 🔥<br>'+curQ.e;
+  }else{
+    stage.className='sad';beep(false);
+    fb.className='feedback show bad';fbTxt.innerHTML='❌ Quase! '+curQ.e;
+  }
+  setTimeout(()=>stage.className='',600);
+}
+
+function hatchEgg(){
+  state.hatched[curEgg]=true;save();
+  const eg=EGGS[curEgg];
+  document.getElementById('hatchPet').innerHTML=petSVG(eg.pet);
+  document.getElementById('hatchName').textContent=eg.pet.nome;
+  document.getElementById('hatchRar').textContent=eg.rar.toUpperCase()+' • saiu do '+eg.nome;
+  show('hatch');chime();confetti();
+}
+
+function showFim(){
+  document.getElementById('famRow').innerHTML=EGGS.map(eg=>petSVG(eg.pet)).join('');
+  show('fim');confetti();
+}
+
+// ============ EFEITOS ============
+function confetti(){
+  const emo=['🌺','⭐','💙','💗','🎉','✨'];
+  for(let i=0;i<26;i++){
+    const d=document.createElement('div');
+    d.className='confetti';d.textContent=emo[i%emo.length];
+    d.style.left=Math.random()*100+'vw';
+    d.style.animationDuration=(2+Math.random()*2)+'s';
+    d.style.animationDelay=(Math.random()*.8)+'s';
+    document.body.appendChild(d);
+    setTimeout(()=>d.remove(),5000);
+  }
+}
+let actx;
+function tone(f,t0,dur,type){const o=actx.createOscillator(),g=actx.createGain();o.type=type||'sine';o.frequency.value=f;g.gain.setValueAtTime(.16,actx.currentTime+t0);g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+t0+dur);o.connect(g).connect(actx.destination);o.start(actx.currentTime+t0);o.stop(actx.currentTime+t0+dur)}
+function ensureAudio(){try{actx=actx||new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}
+function beep(ok){ensureAudio();if(!actx)return;ok?(tone(523,0,.12),tone(784,.12,.18)):tone(160,0,.3,'square')}
+function chime(){ensureAudio();if(!actx)return;[523,659,784,1047].forEach((f,i)=>tone(f,i*.12,.3))}
+</script>
+</body>
+</html>
