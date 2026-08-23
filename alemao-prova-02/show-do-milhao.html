@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💰 Show do Milhão — Alemão Modul 2</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'Trebuchet MS', Verdana, sans-serif;
+    background: radial-gradient(ellipse at top, #123 0%, #04070f 70%);
+    color:#f3f3f3; min-height:100vh; padding:14px;
+    display:flex; justify-content:center;
+  }
+  .wrap { width:100%; max-width:900px; }
+  h1 { text-align:center; font-size:1.6em; color:#ffd54a; text-shadow:0 0 14px rgba(255,213,74,.55); letter-spacing:1px; }
+  .sub { text-align:center; color:#8fb6d9; font-size:.85em; margin:4px 0 16px; }
+
+  .palco { display:grid; grid-template-columns:1fr 220px; gap:14px; }
+  @media (max-width:760px){ .palco { grid-template-columns:1fr; } } /* escada vai para baixo da pergunta */
+
+  .painel {
+    background:linear-gradient(160deg,#0d1b33,#071021);
+    border:2px solid #2f5c8f; border-radius:14px; padding:18px;
+    box-shadow:0 0 28px rgba(47,92,143,.35);
+  }
+  .tags { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
+  .tag { background:#1d3a5c; color:#9fd2ff; border-radius:20px; padding:3px 12px; font-size:.75em; }
+  .tag.dif { background:#3a2a05; color:#ffd54a; }
+  .pergunta { font-size:1.15em; line-height:1.55; min-height:64px; margin-bottom:16px; }
+  .pergunta b, .pergunta i { color:#ffd54a; }
+
+  .opcoes { display:grid; gap:9px; }
+  .op {
+    display:flex; align-items:center; gap:10px; text-align:left;
+    font-family:inherit; font-size:1em; padding:11px 13px;
+    background:#0f2544; color:#eaf3ff; border:2px solid #2f5c8f;
+    border-radius:999px; cursor:pointer; transition:.15s;
+  }
+  .op:hover:not(:disabled) { background:#1a3a66; transform:translateX(3px); }
+  .op .letra { color:#ffd54a; font-weight:bold; min-width:18px; }
+  .op:disabled { cursor:default; }
+  .op.oculta { visibility:hidden; }
+  .op.certa { background:#1c6b3a; border-color:#4ade80; }
+  .op.errada { background:#6b1c1c; border-color:#f87171; }
+
+  .ajudas { display:flex; gap:8px; margin:16px 0 10px; flex-wrap:wrap; }
+  .ajuda {
+    flex:1; min-width:96px; font-family:inherit; font-size:.85em; padding:9px 6px;
+    background:#3a2a05; color:#ffd54a; border:2px solid #ffd54a; border-radius:10px; cursor:pointer;
+  }
+  .ajuda:hover:not(:disabled) { background:#5a4208; }
+  .ajuda:disabled { opacity:.3; cursor:default; }
+  .parar { width:100%; font-family:inherit; font-size:.9em; padding:10px;
+           background:#4a1030; color:#ffb3d1; border:2px solid #ff6fa8; border-radius:10px; cursor:pointer; }
+  .parar:hover:not(:disabled) { background:#6a1745; }
+
+  .aviso { background:#132a1a; border-left:4px solid #4ade80; padding:11px 13px;
+           border-radius:8px; margin-top:14px; font-size:.92em; line-height:1.5; }
+  .aviso.ruim { background:#2a1313; border-left-color:#f87171; }
+  .aviso b { color:#ffd54a; }
+
+  .escada { background:linear-gradient(160deg,#0d1b33,#071021); border:2px solid #2f5c8f;
+            border-radius:14px; padding:10px; }
+  .escada ol { list-style:none; display:flex; flex-direction:column-reverse; }
+  .escada li { display:flex; justify-content:space-between; gap:6px; font-size:.8em;
+               padding:4px 8px; border-radius:6px; color:#7fa5c9; }
+  .escada li .n { opacity:.6; }
+  .escada li.check { color:#eaf3ff; font-weight:bold; }
+  .escada li.atual { background:#ffd54a; color:#04070f; font-weight:bold; }
+  .escada li.feita { color:#4ade80; }
+
+  .placar { text-align:center; font-size:1.05em; color:#ffd54a; margin-bottom:12px; }
+  .universitarios { margin-top:14px; font-size:.85em; }
+  .barra { display:flex; align-items:center; gap:8px; margin:4px 0; }
+  .barra .b { height:14px; background:#4a90d9; border-radius:3px; }
+  .final { text-align:center; }
+  .final h2 { color:#ffd54a; font-size:1.5em; margin-bottom:8px; }
+  .premio { font-size:2em; color:#4ade80; margin:10px 0; }
+  .final button { font-family:inherit; font-size:1em; padding:12px 26px; margin-top:12px;
+                  background:#ffd54a; color:#04070f; border:none; border-radius:999px;
+                  cursor:pointer; font-weight:bold; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>💰 SHOW DO MILHÃO</h1>
+  <div class="sub">Rodada especial: ALEMÃO — Modul 2 · Besuch bei Familie Lenz</div>
+  <div class="palco">
+    <div class="painel" id="painel"></div>
+    <div class="escada" id="escada"></div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// BANCO DE PERGUNTAS — ALEMÃO, Modul 2 "Besuch bei Familie Lenz"
+// 8 níveis de dificuldade crescente, 6 perguntas cada.
+//   t = tema | p = pergunta | a = alternativas (a[0] é SEMPRE a correta) | e = explicação
+// Usado por: show-do-milhao.html
+// ============================================================
+const NIVEIS = [
+  "Vocabulário",
+  "Cumprimentos",
+  "möchten",
+  "du ou Sie?",
+  "mit / ohne",
+  "Montar frases",
+  "lieber e nicht",
+  "Análise fina"
+];
+
+const BANCO = [
+// ---------- NÍVEL 1 — vocabulário direto ----------
+[
+ {t:"Bebidas", p:"O que significa <b>eine Tasse Kaffee</b>?",
+  a:["uma xícara de café","um copo de café","uma garrafa de café","uma colher de café"],
+  e:"<b>eine Tasse</b> = uma xícara. Para copo usa-se <b>ein Glas</b>."},
+ {t:"Bebidas", p:"Como se diz <b>um copo de água</b> em alemão?",
+  a:["ein Glas Wasser","eine Tasse Wasser","ein Wasser Glas","eine Glas Wasser"],
+  e:"<b>ein Glas Wasser</b>. Glas é neutro, por isso <b>ein</b>."},
+ {t:"Atividades", p:"O que significa <b>Musik hören</b>?",
+  a:["ouvir música","tocar música","fazer música","comprar música"],
+  e:"<b>hören</b> = ouvir. Tocar um instrumento é <b>spielen</b>."},
+ {t:"Atividades", p:"O que significa <b>Hausaufgaben machen</b>?",
+  a:["fazer a lição de casa","limpar a casa","construir uma casa","visitar a casa"],
+  e:"<b>Hausaufgaben</b> = tarefas de casa (da escola), <b>machen</b> = fazer."},
+ {t:"Bebidas", p:"O que é <b>Zucker</b>?",
+  a:["açúcar","leite","gelo","mel"],
+  e:"<b>Zucker</b> = açúcar. Milch = leite, Eis = gelo, Honig = mel."},
+ {t:"Atividades", p:"O que significa <b>Fahrrad fahren</b>?",
+  a:["andar de bicicleta","dirigir um carro","andar a pé","viajar de trem"],
+  e:"<b>Fahrrad</b> = bicicleta, <b>fahren</b> = ir/andar (com veículo)."}
+],
+// ---------- NÍVEL 2 — cumprimentos e diálogo ----------
+[
+ {t:"Cumprimentos", p:"Sofia pergunta para uma amiga como ela está. O que ela diz?",
+  a:["Wie geht's dir?","Wie geht's Ihnen?","Wie heißen Sie?","Wo wohnen Sie?"],
+  e:"Com amigos usa-se <b>dir</b> (du). Com adultos desconhecidos, <b>Ihnen</b> (Sie)."},
+ {t:"Cumprimentos", p:"O que significa a resposta <b>Es geht ...</b>?",
+  a:["Mais ou menos / vai levando","Muito bem!","Péssimo!","Não entendi"],
+  e:"<b>Es geht</b> é a resposta neutra: nem bem, nem mal."},
+ {t:"Diálogo", p:"<b>Bitte, kommen Sie rein!</b> significa:",
+  a:["Por favor, entre!","Por favor, saia!","Por favor, sente-se!","Por favor, espere!"],
+  e:"<b>reinkommen</b> = entrar. Note o <b>Sie</b>: forma formal."},
+ {t:"Diálogo", p:"Como se responde educadamente <b>não</b> a um convite?",
+  a:["Nein, danke.","Ja, gern.","Ja, bitte.","Gern!"],
+  e:"<b>Nein, danke</b> = não, obrigado(a). <b>Ja, gern</b> = sim, com prazer."},
+ {t:"Diálogo", p:"Alguém oferece uma bebida. Você aceita. O que diz?",
+  a:["Ja, bitte. Gern.","Nein, danke.","Es geht.","Wie geht's?"],
+  e:"<b>Ja, bitte</b> ou <b>Ja, gern</b> aceitam a oferta."},
+ {t:"Cumprimentos", p:"<b>Guten Tag, Frau Lemos!</b> — <b>Frau</b> quer dizer:",
+  a:["senhora","senhor","menina","amiga"],
+  e:"<b>Frau</b> = senhora, <b>Herr</b> = senhor. Usa-se com Sie."}
+],
+// ---------- NÍVEL 3 — conjugação de möchten ----------
+[
+ {t:"möchten", p:"<b>Ich ___ eine Tasse Tee.</b>",
+  a:["möchte","möchtest","möchten","möchtet"],
+  e:"ich <b>möchte</b>. A 1ª pessoa do singular não leva -n nem -st."},
+ {t:"möchten", p:"<b>___ du etwas trinken?</b>",
+  a:["Möchtest","Möchte","Möchten","Möchtet"],
+  e:"du <b>möchtest</b> — a terminação de du é sempre <b>-st</b>."},
+ {t:"möchten", p:"<b>Frau Lemos, ___ Sie etwas trinken?</b>",
+  a:["möchten","möchtest","möchte","möchtet"],
+  e:"Sie (formal) <b>möchten</b>, igual à forma do plural."},
+ {t:"möchten", p:"<b>Wir ___ das Haus sehen.</b>",
+  a:["möchten","möchtet","möchte","möchtest"],
+  e:"wir <b>möchten</b>."},
+ {t:"möchten", p:"<b>Sofia ___ mit Lena Hausaufgaben machen.</b>",
+  a:["möchte","möchtest","möchten","möchtet"],
+  e:"er/sie/es <b>möchte</b> — mesma forma de <i>ich</i>."},
+ {t:"möchten", p:"<b>Ihr ___ Karten spielen, oder?</b>",
+  a:["möchtet","möchten","möchte","möchtest"],
+  e:"ihr <b>möchtet</b> — a terminação de ihr é <b>-t</b>."}
+],
+// ---------- NÍVEL 4 — du ou Sie ----------
+[
+ {t:"du ou Sie", p:"Qual pergunta é da forma <b>Sie</b> (formal)?",
+  a:["Haben Sie Geschwister?","Hast du Geschwister?","Wo wohnst du?","Wie geht's dir?"],
+  e:"Sie <b>haben</b>. Com du seria <i>hast du</i>."},
+ {t:"du ou Sie", p:"Passe para a forma <b>Sie</b>: <b>Wo wohnst du?</b>",
+  a:["Wo wohnen Sie?","Wo wohnt Sie?","Wo wohnst Sie?","Wo wohne Sie?"],
+  e:"Sie leva sempre a forma do infinitivo: <b>wohnen</b>."},
+ {t:"du ou Sie", p:"Passe para a forma <b>du</b>: <b>Sind Sie Lehrerin?</b>",
+  a:["Bist du Lehrerin?","Sind du Lehrerin?","Bin du Lehrerin?","Seid du Lehrerin?"],
+  e:"du <b>bist</b>, Sie <b>sind</b> — o verbo <i>sein</i> é irregular."},
+ {t:"du ou Sie", p:"<b>Wie heißen Sie?</b> — a mesma pergunta para um amigo é:",
+  a:["Wie heißt du?","Wie heißen du?","Wie heiße du?","Wie heißt Sie?"],
+  e:"du <b>heißt</b> (o -st junta com o ß: heiß + t)."},
+ {t:"du ou Sie", p:"Você fala com a vizinha adulta que acabou de conhecer. Use:",
+  a:["Sie","du","ihr","wir"],
+  e:"Com adultos desconhecidos usa-se <b>Sie</b>, sempre com letra maiúscula."},
+ {t:"du ou Sie", p:"Qual frase mistura errado du e Sie?",
+  a:["Wie geht's Ihnen, und wohnst Sie in Berlin?","Wie geht's dir? Wohnst du in Berlin?","Wie geht's Ihnen? Wohnen Sie in Berlin?","Hast du Geschwister? Und wo wohnst du?"],
+  e:"<b>wohnst Sie</b> está errado: com Sie o verbo é <b>wohnen</b>."}
+],
+// ---------- NÍVEL 5 — mit / ohne ----------
+[
+ {t:"mit / ohne", p:"<b>Mit Zucker?</b> — <b>Nein, danke. ___ Zucker.</b>",
+  a:["Ohne","Mit","Und","Oder"],
+  e:"<b>ohne</b> = sem. <b>mit</b> = com."},
+ {t:"mit / ohne", p:"Como se pede um café <b>com leite</b>?",
+  a:["Kaffee mit Milch","Kaffee ohne Milch","Kaffee mit Eis","Kaffee ohne Zucker"],
+  e:"<b>mit Milch</b> = com leite."},
+ {t:"mit / ohne", p:"<b>Ein Glas Cola ohne Eis</b> significa:",
+  a:["um copo de coca sem gelo","um copo de coca com gelo","uma xícara de coca com gelo","um copo de coca com limão"],
+  e:"<b>ohne Eis</b> = sem gelo."},
+ {t:"mit / ohne", p:"Qual bebida combina com <b>Honig</b> na lição?",
+  a:["eine Tasse Tee","ein Glas Cola","ein Glas Saft","eine Tasse Kakao"],
+  e:"<b>Honig</b> (mel) aparece como acompanhamento do chá."},
+ {t:"mit / ohne", p:"O que é <b>Zitrone</b>?",
+  a:["limão","leite","gelo","açúcar"],
+  e:"<b>Zitrone</b> = limão."},
+ {t:"mit / ohne", p:"<b>Ich möchte ein Glas Saft mit Eis, ohne Zucker.</b> O pedido é:",
+  a:["suco com gelo e sem açúcar","suco sem gelo e com açúcar","leite com gelo e açúcar","chá com limão e mel"],
+  e:"<b>mit Eis</b> = com gelo; <b>ohne Zucker</b> = sem açúcar."}
+],
+// ---------- NÍVEL 6 — montar frases ----------
+[
+ {t:"Ordem das palavras", p:"Monte a pergunta: <b>möchtest / du / machen / was</b>",
+  a:["Was möchtest du machen?","Was du möchtest machen?","Möchtest was du machen?","Was machen möchtest du?"],
+  e:"Pergunta com palavra interrogativa: <b>Was</b> + verbo + sujeito + infinitivo no fim."},
+ {t:"Ordem das palavras", p:"Onde fica o infinitivo em <b>Ich möchte das Haus sehen</b>?",
+  a:["no fim da frase","logo depois de möchte","antes do sujeito","no começo da frase"],
+  e:"Com <b>möchten</b> o segundo verbo vai para o <b>fim</b> da frase."},
+ {t:"Ordem das palavras", p:"Monte a pergunta sim/não: <b>Sport / möchtest / machen / du</b>",
+  a:["Möchtest du Sport machen?","Du möchtest Sport machen?","Sport möchtest du machen?","Machen du möchtest Sport?"],
+  e:"Sem palavra interrogativa, a pergunta começa pelo <b>verbo</b>."},
+ {t:"Ordem das palavras", p:"Complete: <b>Frau Lemos, ___ Sie etwas trinken?</b>",
+  a:["möchten","möchte","trinken","gern"],
+  e:"O verbo conjugado vem em 1º lugar na pergunta sim/não: <b>Möchten Sie ...?</b>"},
+ {t:"Ordem das palavras", p:"Qual frase está correta?",
+  a:["Ich möchte lieber lesen.","Ich lieber möchte lesen.","Ich möchte lesen lieber.","Lieber ich möchte lesen."],
+  e:"<b>lieber</b> vem antes do infinitivo, que fecha a frase."},
+ {t:"Ordem das palavras", p:"Complete o diálogo: <b>Und du, Sofia? ___ du auch etwas trinken?</b>",
+  a:["Möchtest","Möchten","Möchte","Möchtet"],
+  e:"O <b>du</b> pede <b>möchtest</b>."}
+],
+// ---------- NÍVEL 7 — lieber e negação ----------
+[
+ {t:"lieber", p:"O que significa <b>Ich möchte lieber lesen</b>?",
+  a:["Eu prefiro ler","Eu não quero ler","Eu adoro ler","Eu quero ler agora"],
+  e:"<b>lieber</b> = de preferência, prefiro."},
+ {t:"nicht", p:"Complete: <b>Nein, ich möchte ___ Musik hören.</b>",
+  a:["nicht","kein","nein","ohne"],
+  e:"<b>nicht</b> nega o verbo. <b>Nein</b> só inicia a resposta; <b>kein</b> nega substantivos."},
+ {t:"lieber", p:"<b>Möchtest du Sport machen?</b> Você prefere nadar. Responda:",
+  a:["Nein, ich möchte nicht Sport machen. Ich möchte lieber schwimmen.","Nein, ich möchte lieber nicht schwimmen.","Ja, ich möchte lieber Sport machen.","Nein, ich schwimme nicht lieber."],
+  e:"Primeiro nega com <b>nicht</b>, depois diz a preferência com <b>lieber</b>."},
+ {t:"nicht", p:"Onde entra <b>nicht</b> em <b>Ich möchte Karten spielen</b> para negar?",
+  a:["Ich möchte nicht Karten spielen.","Ich nicht möchte Karten spielen.","Nicht ich möchte Karten spielen.","Ich möchte Karten spielen nicht."],
+  e:"<b>nicht</b> vem depois do verbo conjugado, antes do resto."},
+ {t:"lieber", p:"<b>Ich möchte nicht Musik hören. Ich möchte lieber das Haus sehen.</b> A pessoa quer:",
+  a:["ver a casa","ouvir música","fazer a lição","tocar piano"],
+  e:"Ela nega a música e prefere <b>das Haus sehen</b> (ver a casa)."},
+ {t:"nicht", p:"Qual resposta é coerente com <b>Möchtest du Karten spielen?</b>",
+  a:["Nein, ich möchte nicht Karten spielen. Ich möchte lieber lesen.","Ja, ich möchte nicht Karten spielen.","Nein, gern. Ich möchte Karten spielen.","Nein, danke. Ich möchte lieber Karten spielen."],
+  e:"Negar e depois dar a alternativa é o padrão da <i>Kommunikation</i> da lição."}
+],
+// ---------- NÍVEL 8 — análise fina do texto ----------
+[
+ {t:"Texto", p:"<b>Wo sind Frau Lemos und Sofia?</b> Elas estão:",
+  a:["na casa da Familie Lenz","na escola","no supermercado","no parque"],
+  e:"O módulo se chama <b>Besuch bei Familie Lenz</b> — uma visita à casa da família Lenz."},
+ {t:"Texto", p:"<b>Wo ist Lena?</b> — <b>Sie macht Hausaufgaben.</b> Lena está:",
+  a:["no quarto fazendo a lição","na cozinha tomando café","na rua com amigos","na escola"],
+  e:"Sofia a encontra no quarto: <i>Ist das dein Zimmer?</i> — <i>Ich mache Hausaufgaben.</i>"},
+ {t:"Texto", p:"<b>Was möchte Sofia machen?</b>",
+  a:["das Haus sehen","Musik hören","Klavier spielen","Fußball spielen"],
+  e:"Ela recusa a música: <i>Ich möchte lieber das Haus sehen.</i>"},
+ {t:"Texto", p:"<b>Was möchte Frau Lemos trinken?</b>",
+  a:["eine Tasse Kaffee ohne Zucker, mit Milch","eine Tasse Kaffee mit Zucker","ein Glas Wasser mit Eis","eine Tasse Tee mit Honig"],
+  e:"<i>Mit Zucker?</i> — <i>Nein, danke. Ohne Zucker. Mit Milch.</i>"},
+ {t:"Diálogo", p:"Sofia se apresenta à vizinha: <b>Ich bin neu hier. Wie ___ Sie?</b>",
+  a:["heißen","heißt","heiße","heißest"],
+  e:"Com <b>Sie</b>: <b>Wie heißen Sie?</b> A resposta foi <i>Ich heiße Anna Galdini.</i>"},
+ {t:"Diálogo", p:"<b>Was ___ Sie von Beruf?</b> — <b>Ich bin Fotografin.</b>",
+  a:["sind","ist","bin","seid"],
+  e:"<b>Was sind Sie von Beruf?</b> = qual é a sua profissão?"}
+]
+];
+</script>
+<script>
+// Perguntas: alemao-banco.js (NIVEIS + BANCO)
+const ESCADA = [1000,2000,3000,4000,5000,10000,20000,30000,40000,50000,100000,200000,300000,400000,500000,1000000];
+const SEGUROS = [4, 9];                       // paradas garantidas: 5ª e 10ª perguntas
+const tierDe = n => Math.floor(n / 2);        // 2 perguntas por nível de dificuldade
+
+const brl = v => "R$ " + v.toLocaleString("pt-BR");
+const embaralha = a => a.map(x => [Math.random(), x]).sort((p,q) => p[0]-q[0]).map(p => p[1]);
+
+let nivel, pilhas, atual, ajudas, ocultas, universitarios;
+
+function novoJogo(){
+  nivel = 0;
+  pilhas = BANCO.map(t => embaralha(t.slice()));   // uma pilha por nível de dificuldade
+  ajudas = { cartas:true, universitarios:true, pular:true };
+  sorteia();
+  render();
+}
+
+function sorteia(){
+  const q = pilhas[tierDe(nivel)].pop();
+  const alts = embaralha(q.a.map((txt,i) => ({txt, certa:i===0})));
+  atual = { ...q, alts };
+  ocultas = [];
+  universitarios = null;
+}
+
+// ---------- Ajudas ----------
+function usarCartas(){
+  ajudas.cartas = false;
+  const erradas = atual.alts.map((o,i) => i).filter(i => !atual.alts[i].certa);
+  ocultas = embaralha(erradas).slice(0,2);
+  render();
+}
+
+function usarUniversitarios(){
+  ajudas.universitarios = false;
+  // quanto mais difícil o nível, menos a turma converge na resposta certa
+  const acerto = 90 - tierDe(nivel) * 9;   // nível 1: 90 · nível 8: 27
+  const pesos = atual.alts.map((o,i) =>
+    ocultas.includes(i) ? 0 : (o.certa ? acerto + Math.random()*20 : 5 + Math.random()*20));
+  const soma = pesos.reduce((a,b) => a+b, 0);
+  universitarios = pesos.map(p => Math.round(p/soma*100));
+  render();
+}
+
+function usarPular(){
+  ajudas.pular = false;
+  sorteia();
+  render();
+}
+
+// ---------- Fluxo ----------
+function responde(i){
+  const certa = atual.alts[i].certa;
+  document.querySelectorAll(".op").forEach((b, j) => {
+    b.disabled = true;
+    if (atual.alts[j].certa) b.classList.add("certa");
+    else if (j === i) b.classList.add("errada");
+  });
+  const box = document.createElement("div");
+  box.className = "aviso" + (certa ? "" : " ruim");
+  box.innerHTML = (certa ? "✅ <b>Acertou!</b> " : "❌ <b>Errou.</b> ") + atual.e;
+  document.getElementById("painel").appendChild(box);
+
+  setTimeout(() => {
+    if (!certa) return fim(valorSeguro(), false);
+    if (nivel === ESCADA.length - 1) return fim(ESCADA[nivel], true);
+    nivel++;
+    sorteia();
+    render();
+  }, certa ? 2600 : 4200);
+}
+
+function valorSeguro(){
+  const passou = SEGUROS.filter(s => nivel > s);
+  return passou.length ? ESCADA[passou[passou.length-1]] : 0;
+}
+
+function parar(){
+  fim(nivel === 0 ? 0 : ESCADA[nivel-1], false);
+}
+
+function fim(valor, milhao){
+  document.getElementById("painel").innerHTML = `
+    <div class="final">
+      <h2>${milhao ? "🏆 VOCÊ GANHOU O MILHÃO!" : valor > 0 ? "🎬 Fim de jogo" : "😢 Fim de jogo"}</h2>
+      <p>Você chegou à pergunta ${nivel+1} de ${ESCADA.length} — dificuldade ${tierDe(nivel)+1}/8 (${NIVEIS[tierDe(nivel)]}).</p>
+      <div class="premio">${brl(valor)}</div>
+      <p style="color:#8fb6d9;font-size:.9em">${milhao
+        ? "Perfekt! Domínio total do Modul 2. Impressionante!"
+        : valor > 0 ? "Você saiu com o prêmio garantido." : "Revise möchten, du/Sie e as bebidas, e tente de novo!"}</p>
+      <button onclick="novoJogo()">Jogar de novo</button>
+    </div>`;
+  renderEscada();
+}
+
+// ---------- Render ----------
+function render(){
+  const ultima = nivel === ESCADA.length - 1;
+  const dif = tierDe(nivel);
+  document.getElementById("painel").innerHTML = `
+    <div class="placar">Pergunta ${nivel+1} — valendo ${brl(ESCADA[nivel])}</div>
+    <div class="tags">
+      <span class="tag dif">${"🔥".repeat(dif+1)} Nível ${dif+1}/8 · ${NIVEIS[dif]}</span>
+      <span class="tag">${atual.t}</span>
+    </div>
+    <div class="pergunta">${atual.p}</div>
+    <div class="opcoes">
+      ${atual.alts.map((o,i) => `
+        <button class="op ${ocultas.includes(i) ? "oculta" : ""}" onclick="responde(${i})">
+          <span class="letra">${"ABCD"[i]}</span><span>${o.txt}</span>
+        </button>`).join("")}
+    </div>
+    ${universitarios ? `<div class="universitarios"><b>🎓 Universitários:</b>
+      ${atual.alts.map((o,i) => ocultas.includes(i) ? "" : `
+        <div class="barra"><span class="letra" style="color:#ffd54a">${"ABCD"[i]}</span>
+        <div class="b" style="width:${universitarios[i]*2}px"></div><span>${universitarios[i]}%</span></div>`).join("")}
+      </div>` : ""}
+    <div class="ajudas">
+      <button class="ajuda" onclick="usarCartas()" ${ajudas.cartas && !ultima ? "" : "disabled"}>🃏 Cartas</button>
+      <button class="ajuda" onclick="usarUniversitarios()" ${ajudas.universitarios && !ultima ? "" : "disabled"}>🎓 Universitários</button>
+      <button class="ajuda" onclick="usarPular()" ${ajudas.pular && !ultima ? "" : "disabled"}>⏭️ Pular</button>
+    </div>
+    <button class="parar" onclick="parar()" ${nivel === 0 ? "disabled" : ""}>
+      🛑 Parar e levar ${brl(nivel === 0 ? 0 : ESCADA[nivel-1])}</button>
+    ${ultima ? `<div class="aviso"><b>Pergunta do milhão!</b> Sem ajudas. Se errar, você volta para ${brl(valorSeguro())}.</div>` : ""}`;
+  renderEscada();
+}
+
+function renderEscada(){
+  document.getElementById("escada").innerHTML = "<ol>" + ESCADA.map((v,i) => {
+    const cls = i === nivel ? "atual" : i < nivel ? "feita" : SEGUROS.includes(i) ? "check" : "";
+    return `<li class="${cls}"><span class="n">${i+1}</span><span>${brl(v)}</span></li>`;
+  }).join("") + "</ol>";
+}
+
+// ---------- Autoteste: abra com ?test=1 ou rode autoteste() no console ----------
+function autoteste(){
+  const erros = [];
+  const porNivel = Math.max(...ESCADA.map((_,i) => tierDe(i))) + 1;
+  if (BANCO.length !== porNivel) erros.push(`o banco precisa de ${porNivel} níveis, tem ${BANCO.length}`);
+  if (NIVEIS.length !== BANCO.length) erros.push("NIVEIS não bate com o número de níveis do banco");
+  BANCO.forEach((tier, ti) => {
+    const usadas = ESCADA.filter((_,i) => tierDe(i) === ti).length;
+    if (tier.length < usadas + 3) erros.push(`nível ${ti+1}: ${tier.length} perguntas — pouco para ${usadas} + pular`);
+    tier.forEach((q, qi) => {
+      if (q.a.length !== 4) erros.push(`nível ${ti+1} q${qi+1}: não tem 4 alternativas`);
+      if (new Set(q.a).size !== 4) erros.push(`nível ${ti+1} q${qi+1}: alternativas repetidas`);
+      const correta = q.a[0];
+      const alts = embaralha(q.a.map((txt,i) => ({txt, certa:i===0})));
+      const marcadas = alts.filter(o => o.certa);
+      if (marcadas.length !== 1 || marcadas[0].txt !== correta)
+        erros.push(`nível ${ti+1} q${qi+1}: embaralhamento perdeu a resposta certa`);
+    });
+  });
+  if (ESCADA.length !== 16) erros.push("a escada deveria ter 16 degraus");
+  document.body.innerHTML = `<pre style="padding:20px;font-size:14px;white-space:pre-wrap">${
+    erros.length ? "FALHOU:\n" + erros.join("\n")
+      : `OK — ${BANCO.length} níveis, ${BANCO.flat().length} perguntas, embaralhamento válido`}</pre>`;
+}
+
+if (location.search.includes("test=1")) autoteste(); else novoJogo();
+</script>
+</body>
+</html>
