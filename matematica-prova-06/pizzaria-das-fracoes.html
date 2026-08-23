@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Pizzaria das Frações — Prova de Matemática</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Pizzaria">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--yellow:#fbbf24;--green:#4ade80;--red:#f87171;--cheese:#f6c343}
+body{
+  font-family:'Nunito',sans-serif;
+  background:linear-gradient(180deg,#7c2d12,#9a3412,#c2410c);
+  min-height:100vh;color:#fff;overflow-x:hidden;
+  -webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;
+}
+.screen{display:none;flex-direction:column;align-items:center;min-height:100vh;padding:18px;animation:fadeIn .4s ease}
+.screen.active{display:flex}
+@keyframes fadeIn{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+
+#intro{justify-content:center;text-align:center}
+.logo{font-size:110px;animation:float 2.5s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}
+h1{font-family:'Fredoka One',cursive;font-size:2.1em;margin:8px 0;color:var(--yellow);text-shadow:2px 2px 0 rgba(0,0,0,.3)}
+#intro p{max-width:420px;line-height:1.6;margin-bottom:22px;color:#fed7aa}
+.btn{font-family:'Fredoka One',cursive;font-size:1.25em;padding:14px 40px;
+  background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#3b2500;border:none;border-radius:50px;
+  cursor:pointer;box-shadow:0 6px 20px rgba(251,191,36,.4);transition:transform .2s}
+.btn:hover{transform:scale(1.06)}
+.btn:active{transform:scale(.95)}
+.btn:disabled{opacity:.45;cursor:default;transform:none}
+
+#map{gap:14px}
+#map h2{font-family:'Fredoka One',cursive;font-size:1.4em;color:var(--yellow)}
+.map-container{display:flex;flex-direction:column;gap:12px;max-width:440px;width:100%}
+.phase-card{width:100%;padding:16px;border-radius:18px;display:flex;align-items:center;gap:14px;
+  transition:all .25s;cursor:pointer;background:rgba(255,255,255,.1);border:2px solid transparent}
+.phase-card.locked{opacity:.45;cursor:not-allowed}
+.phase-card.available{background:rgba(255,255,255,.16);border-color:var(--yellow);animation:pulse 2s infinite}
+.phase-card.completed{background:rgba(74,222,128,.18);border-color:var(--green)}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 rgba(251,191,36,0)}50%{box-shadow:0 0 22px rgba(251,191,36,.5)}}
+.phase-icon{font-size:40px}
+.phase-info{text-align:left;flex:1}
+.phase-info h3{font-family:'Fredoka One',cursive;font-size:1.02em}
+.phase-info p{font-size:.8em;color:#fed7aa;margin-top:2px}
+.phase-stars{font-size:17px}
+
+#game{gap:12px}
+.hud{display:flex;justify-content:space-between;align-items:center;width:100%;max-width:560px;
+  background:rgba(255,255,255,.1);border-radius:14px;padding:10px 16px;gap:8px}
+.hud .title{font-family:'Fredoka One',cursive;color:var(--yellow);font-size:.92em}
+.progress{width:100%;max-width:560px;height:10px;background:rgba(255,255,255,.15);border-radius:6px;overflow:hidden}
+.progress-fill{height:100%;width:0;background:linear-gradient(90deg,#4ade80,#22c55e);transition:width .3s}
+.card{width:100%;max-width:560px;background:rgba(255,255,255,.96);color:#431407;border-radius:20px;
+  padding:20px 16px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.q-hint{font-size:.78em;color:#c2410c;font-weight:800;text-transform:uppercase;letter-spacing:1px}
+.q-text{font-size:1.3em;font-weight:900;margin:6px 0;line-height:1.35}
+.q-sub{font-size:.88em;color:#666;margin-bottom:12px}
+
+.pizzas{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:6px 0 12px}
+.pizza{width:132px;height:132px;filter:drop-shadow(0 3px 5px rgba(0,0,0,.25))}
+.pizza.small{width:104px;height:104px}
+.counter{font-weight:900;font-size:1.05em;color:#9a3412;margin-bottom:10px}
+
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;
+  line-height:1.05;margin:0 4px;font-weight:900}
+.frac .den{border-top:2.5px solid currentColor;padding-top:1px}
+
+.choices{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:6px}
+.choice{font-family:'Nunito',sans-serif;font-size:1.05em;font-weight:800;padding:12px 20px;
+  background:#fff7ed;color:#9a3412;border:2px solid #fdba74;border-radius:14px;cursor:pointer;transition:transform .12s}
+.choice:hover{transform:translateY(-2px)}
+.choice.correct{background:var(--green);color:#053b16;border-color:#22c55e}
+.choice.wrong{background:var(--red);color:#4c0519;border-color:#ef4444}
+.choice:disabled{cursor:default}
+
+.trays{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:4px 0 12px}
+.tray{font-family:'Nunito',sans-serif;font-size:1.15em;font-weight:900;padding:14px 4px;
+  background:#fff7ed;color:#9a3412;border:2px solid #fdba74;border-radius:14px;cursor:pointer;transition:all .15s}
+.tray.sel{background:#fdba74;border-color:#c2410c;transform:scale(1.05)}
+.tray.correct{background:var(--green);border-color:#22c55e;color:#053b16}
+.tray.wrong{background:var(--red);border-color:#ef4444;color:#4c0519}
+.tray:disabled{cursor:default}
+
+.bignum{font-family:'Fredoka One',cursive;font-size:2.6em;color:#9a3412;margin:4px 0}
+.factors{font-size:1.05em;font-weight:800;color:#166534;min-height:26px;margin-bottom:8px}
+
+.feedback{margin-top:10px;font-weight:800;font-size:1.02em;min-height:22px}
+.feedback.ok{color:#16a34a}
+.feedback.no{color:#dc2626}
+.explain{margin-top:4px;font-size:.88em;color:#444;font-weight:600;line-height:1.45}
+.next-btn{margin-top:14px;display:none;font-size:1.05em;padding:12px 32px}
+.next-btn.show{display:inline-block}
+
+#result{justify-content:center;text-align:center;gap:12px}
+.result-emoji{font-size:100px}
+#result h2{font-family:'Fredoka One',cursive;font-size:1.7em;color:var(--yellow)}
+.result-score{font-size:1.2em;font-weight:900}
+.star-row{font-size:42px;letter-spacing:4px}
+</style>
+</head>
+<body>
+
+<div id="intro" class="screen active">
+  <div class="logo">🍕</div>
+  <h1>Pizzaria das Frações</h1>
+  <p>Você é o novo dono da pizzaria! Monte pedidos em frações, divida a massa sem deixar sobra, compare pedaços e feche a nota fiscal em fatores primos. Bora abrir a loja?</p>
+  <button class="btn" onclick="showMap()">Abrir a pizzaria 🔥</button>
+</div>
+
+<div id="map" class="screen">
+  <div class="logo" style="font-size:56px">👨‍🍳</div>
+  <h2>Escolha a estação</h2>
+  <div class="map-container" id="mapContainer"></div>
+  <button class="btn" style="font-size:.95em;padding:11px 26px;margin-top:6px" onclick="resetProgress()">🔄 Reiniciar tudo</button>
+</div>
+
+<div id="game" class="screen">
+  <div class="hud">
+    <span class="title" id="gameTitle"></span>
+    <span id="lives"></span>
+  </div>
+  <div class="progress"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="card">
+    <div class="q-hint" id="qHint"></div>
+    <div class="q-text" id="qText"></div>
+    <div class="q-sub" id="qSub"></div>
+    <div id="play"></div>
+    <div class="feedback" id="feedback"></div>
+    <div class="explain" id="explain"></div>
+    <button class="btn next-btn" id="nextBtn" onclick="nextQuestion()">Próximo ▶</button>
+  </div>
+</div>
+
+<div id="result" class="screen">
+  <div class="result-emoji" id="resultEmoji"></div>
+  <h2 id="resultTitle"></h2>
+  <div class="star-row" id="resultStars"></div>
+  <div class="result-score" id="resultScore"></div>
+  <button class="btn" onclick="showMap()">Voltar à pizzaria</button>
+</div>
+
+<script>
+// ---------- CONTEÚDO (Bernoulli, módulos 05 Divisibilidade e 07 Razões/Frações) ----------
+const PHASES=[
+{
+  id:'pedidos',icon:'🍕',name:'Balcão de Pedidos',desc:'Monte a fração que o cliente pediu',
+  type:'pedido',perRound:6,
+  items:[
+    {n:3,d:8,cut:8,pz:1,exp:"3/8 = 3 fatias de uma pizza cortada em 8."},
+    {n:1,d:2,cut:8,pz:1,exp:"A pizza veio cortada em 8. Metade é 4/8, porque 1/2 = 4/8 (frações equivalentes)."},
+    {n:2,d:3,cut:6,pz:1,exp:"2/3 = 4/6: multiplique numerador e denominador por 2."},
+    {n:3,d:4,cut:4,pz:1,exp:"3/4 = 3 fatias de 4."},
+    {n:5,d:4,cut:4,pz:2,exp:"5/4 é fração imprópria (numerador maior): 1 pizza inteira + 1 fatia."},
+    {n:3,d:2,cut:4,pz:2,exp:"3/2 = 1 pizza e meia. Em quartos: 3/2 = 6/4, ou seja, 6 fatias."},
+    {n:9,d:15,cut:5,pz:1,exp:"9/15 simplificando por 3 vira 3/5 → 3 fatias de 5."},
+    {n:2,d:5,cut:10,pz:1,exp:"2/5 = 4/10 (×2 em cima e embaixo)."},
+    {n:11,d:12,cut:12,pz:1,exp:"11/12 é quase a pizza inteira: falta só 1 fatia."},
+    {n:7,d:6,cut:6,pz:2,exp:"7/6 = 1 pizza inteira (6/6) mais 1 fatia."},
+    {n:1,d:3,cut:9,pz:1,exp:"1/3 = 3/9 (×3 em cima e embaixo)."},
+    {n:5,d:8,cut:8,pz:1,exp:"5/8 = 5 fatias de 8."},
+  ]
+},
+{
+  id:'cozinha',icon:'🥖',name:'Cozinha',desc:'Divisão sem sobra: critérios e primos',
+  type:'bandeja',perRound:5,
+  items:[{n:24},{n:30},{n:37},{n:90},{n:45},{n:100},{n:63},{n:29},{n:72},{n:55}]
+},
+{
+  id:'balanca',icon:'⚖️',name:'Qual pedaço é maior?',desc:'Comparação de frações',
+  type:'compara',perRound:6,
+  items:[
+    {a:[2,8],b:[3,8],exp:"Denominadores iguais: basta comparar os numeradores. 3 > 2, então 3/8 > 2/8."},
+    {a:[3,4],b:[5,4],exp:"Mesmo denominador: 5 > 3, então 5/4 > 3/4."},
+    {a:[1,2],b:[1,4],exp:"Quanto maior o denominador, menores as fatias. 1/2 > 1/4."},
+    {a:[2,4],b:[1,2],exp:"2/4 e 1/2 são frações equivalentes: valem exatamente a mesma coisa."},
+    {a:[5,8],b:[7,12],exp:"M(8) e M(12) têm 24 em comum: 5/8 = 15/24 e 7/12 = 14/24. Logo 5/8 é maior."},
+    {a:[4,5],b:[1,3],exp:"Com denominador 15: 4/5 = 12/15 e 1/3 = 5/15. 12/15 é maior."},
+    {a:[3,4],b:[2,3],exp:"Com denominador 12: 3/4 = 9/12 e 2/3 = 8/12. 9/12 é maior."},
+    {a:[6,9],b:[2,3],exp:"6/9 dividido por 3 dá 2/3. São equivalentes."},
+    {a:[3,2],b:[5,4],exp:"3/2 = 6/4. Comparando 6/4 com 5/4, a primeira é maior."},
+    {a:[1,3],b:[2,6],exp:"1/3 = 2/6. São iguais."},
+    {a:[3,8],b:[3,4],exp:"Mesmo numerador: quem tem denominador menor tem fatias maiores. 3/4 > 3/8."},
+    {a:[6,4],b:[5,2],exp:"Como no exercício do sabão em pó: 6/4 kg = 1,5 kg e 5/2 kg = 2,5 kg. A embalagem B é maior."},
+    {a:[10,12],b:[7,12],exp:"Denominadores iguais: 10 > 7."},
+    {a:[1,2],b:[3,8],exp:"1/2 = 4/8, e 4/8 > 3/8."},
+  ]
+},
+{
+  id:'caixa',icon:'🧾',name:'Nota Fiscal',desc:'Decomposição em fatores primos',
+  type:'fatura',perRound:5,
+  items:[{n:60},{n:72},{n:210},{n:900},{n:132},{n:280},{n:630},{n:180},{n:693},{n:275}]
+},
+];
+
+const PRIMOS=[2,3,5,7,11];
+const BANDEJAS=[2,3,4,5,6,8,9,10];
+const CRIT={
+  2:"Divisível por 2 quando termina em 0, 2, 4, 6 ou 8.",
+  3:"Divisível por 3 quando a soma dos algarismos é divisível por 3.",
+  4:"Divisível por 4 quando os dois últimos algarismos formam um número divisível por 4.",
+  5:"Divisível por 5 quando termina em 0 ou 5.",
+  6:"Divisível por 6 quando é divisível por 2 e por 3 ao mesmo tempo.",
+  7:"Para o 7 não tem truque fácil: faça a divisão.",
+  8:"Divisível por 8 quando os três últimos algarismos formam um número divisível por 8.",
+  9:"Divisível por 9 quando a soma dos algarismos é divisível por 9.",
+  10:"Divisível por 10 quando termina em 0.",
+  11:"Para o 11: some os algarismos alternadamente e veja se a diferença dá 0 ou múltiplo de 11.",
+};
+const SUP=['','','²','³','⁴','⁵','⁶'];
+
+// ---------- ESTADO ----------
+const SAVE_KEY="pizzaria-fracoes-progress";
+let progress=load();
+let cur={phase:0,q:0,lives:3,correct:0};
+let answered=false, sel=new Set(), fat=null;
+
+function load(){ try{ return JSON.parse(localStorage.getItem(SAVE_KEY))||{}; }catch{ return {}; } }
+// ponytail: Safari/data: URL bloqueiam storage — sem try o fim de fase quebrava
+function save(){ try{ localStorage.setItem(SAVE_KEY,JSON.stringify(progress)); }catch{} }
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function somaAlg(n){ return String(n).split('').reduce((a,c)=>a+ +c,0); }
+
+// ---------- DESENHO DA PIZZA ----------
+const NS='http://www.w3.org/2000/svg';
+function wedge(cx,cy,r,i,n){
+  const a0=-Math.PI/2+2*Math.PI*i/n, a1=-Math.PI/2+2*Math.PI*(i+1)/n;
+  const big=(2*Math.PI/n)>Math.PI?1:0;
+  return `M${cx},${cy} L${cx+r*Math.cos(a0)},${cy+r*Math.sin(a0)} `+
+         `A${r},${r} 0 ${big} 1 ${cx+r*Math.cos(a1)},${cy+r*Math.sin(a1)} Z`;
+}
+function makePizza(cut,filled,onSlice,small){
+  const svg=document.createElementNS(NS,'svg');
+  svg.setAttribute('viewBox','0 0 140 140');
+  svg.setAttribute('class','pizza'+(small?' small':''));
+  const crust=document.createElementNS(NS,'circle');
+  crust.setAttribute('cx',70);crust.setAttribute('cy',70);crust.setAttribute('r',66);
+  crust.setAttribute('fill','#e0a96d');
+  svg.appendChild(crust);
+  for(let i=0;i<cut;i++){
+    const on=filled.has(i);
+    const p=document.createElementNS(NS,'path');
+    p.setAttribute('d',wedge(70,70,58,i,cut));
+    p.setAttribute('fill',on?'var(--cheese)':'#fdf6e3');
+    p.setAttribute('stroke','#b97a3a');p.setAttribute('stroke-width','1.5');
+    if(onSlice){ p.style.cursor='pointer'; p.onclick=()=>onSlice(i); }
+    svg.appendChild(p);
+    if(on){
+      const a=-Math.PI/2+2*Math.PI*(i+0.5)/cut, r=cut>8?38:32;
+      const d=document.createElementNS(NS,'circle');
+      d.setAttribute('cx',70+r*Math.cos(a));d.setAttribute('cy',70+r*Math.sin(a));
+      d.setAttribute('r',cut>10?4:6);d.setAttribute('fill','#d94f3d');
+      d.style.pointerEvents='none';
+      svg.appendChild(d);
+    }
+  }
+  return svg;
+}
+// pizzas lado a lado; índices das fatias vão de 0 até pz*cut-1
+function pizzaGroup(pz,cut,filled,onSlice,small){
+  const wrap=document.createElement('div'); wrap.className='pizzas';
+  for(let p=0;p<pz;p++){
+    const local=new Set();
+    for(let i=0;i<cut;i++) if(filled.has(p*cut+i)) local.add(i);
+    wrap.appendChild(makePizza(cut,local,onSlice?(i=>onSlice(p*cut+i)):null,small));
+  }
+  return wrap;
+}
+function fracHTML(n,d){ return `<span class="frac"><span>${n}</span><span class="den">${d}</span></span>`; }
+
+// ---------- TELAS ----------
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+
+function showMap(){
+  const c=document.getElementById('mapContainer'); c.innerHTML='';
+  PHASES.forEach((p,i)=>{
+    const done=progress[p.id], unlocked=i===0||progress[PHASES[i-1].id];
+    const div=document.createElement('div');
+    div.className='phase-card '+(done?'completed':unlocked?'available':'locked');
+    const stars=done?'⭐'.repeat(done.stars)+'☆'.repeat(3-done.stars):(unlocked?'▶️':'🔒');
+    div.innerHTML=`<div class="phase-icon">${p.icon}</div>
+      <div class="phase-info"><h3>${i+1}. ${p.name}</h3><p>${p.desc}</p></div>
+      <div class="phase-stars">${stars}</div>`;
+    if(unlocked) div.onclick=()=>startPhase(i);
+    c.appendChild(div);
+  });
+  show('map');
+}
+
+function startPhase(i){
+  cur={phase:i,q:0,lives:3,correct:0};
+  const p=PHASES[i];
+  p._order=shuffle(p.items.map((_,k)=>k)).slice(0,p.perRound);
+  document.getElementById('gameTitle').textContent=p.icon+' '+p.name;
+  renderQuestion(); show('game');
+}
+
+function drawLives(){
+  const l=Math.max(0,cur.lives);
+  document.getElementById('lives').textContent='🍕'.repeat(l)+'🖤'.repeat(3-l);
+}
+
+function renderQuestion(){
+  const p=PHASES[cur.phase], item=p.items[p._order[cur.q]];
+  answered=false; sel=new Set(); fat=null;
+  drawLives();
+  document.getElementById('progressFill').style.width=(cur.q/p._order.length*100)+'%';
+  document.getElementById('qHint').textContent=`Pedido ${cur.q+1} de ${p._order.length}`;
+  document.getElementById('feedback').textContent='';
+  document.getElementById('feedback').className='feedback';
+  document.getElementById('explain').textContent='';
+  document.getElementById('nextBtn').classList.remove('show');
+  const box=document.getElementById('play'); box.innerHTML='';
+  ({pedido:renderPedido,bandeja:renderBandeja,compara:renderCompara,fatura:renderFatura})[p.type](box,item);
+}
+
+function ask(text,sub){
+  document.getElementById('qText').innerHTML=text;
+  document.getElementById('qSub').innerHTML=sub||'';
+}
+
+function finish(ok,exp){
+  answered=true;
+  const fb=document.getElementById('feedback');
+  if(ok){ cur.correct++; fb.textContent='✅ Pedido certo!'; fb.className='feedback ok'; }
+  else{ cur.lives--; drawLives(); fb.textContent='❌ Cliente reclamou!'; fb.className='feedback no'; }
+  document.getElementById('explain').textContent=exp;
+  if(cur.lives<=0){ setTimeout(endPhase,1200); return; }
+  document.getElementById('nextBtn').classList.add('show');
+}
+
+// ---------- 1. PEDIDOS: montar a fração clicando nas fatias ----------
+function renderPedido(box,it){
+  const alvo=it.n*it.cut/it.d;                       // fatias necessárias no corte da bandeja
+  ask(`O cliente pediu ${fracHTML(it.n,it.d)} de pizza`,
+      `A pizza da bancada está cortada em <b>${it.cut}</b> pedaços${it.pz>1?` — e há <b>${it.pz}</b> pizzas na mesa`:''}. Toque nas fatias e mande pro forno.`);
+  const conta=document.createElement('div'); conta.className='counter';
+  let grupo=pizzaGroup(it.pz,it.cut,sel,i=>{
+    if(answered) return;
+    sel.has(i)?sel.delete(i):sel.add(i);
+    redraw();
+  },it.pz>1);
+  const btn=document.createElement('button'); btn.className='btn'; btn.style.fontSize='1em';
+  btn.style.padding='11px 28px'; btn.textContent='Mandar pro forno 🔥';
+  btn.onclick=()=>{
+    if(answered) return;
+    const ok=sel.size*it.d===it.n*it.cut;
+    if(!ok){ sel=new Set(); for(let k=0;k<alvo;k++) sel.add(k); }
+    redraw(); btn.disabled=true;
+    finish(ok, (ok?'':`O certo eram ${alvo} fatias. `)+it.exp);
+  };
+  box.appendChild(conta); box.appendChild(grupo); box.appendChild(btn);
+  function redraw(){
+    conta.textContent=`Selecionadas: ${sel.size} de ${it.pz*it.cut} fatias`;
+    const novo=pizzaGroup(it.pz,it.cut,sel,i=>{
+      if(answered) return;
+      sel.has(i)?sel.delete(i):sel.add(i); redraw();
+    },it.pz>1);
+    grupo.replaceWith(novo); grupo=novo;
+  }
+  redraw();
+}
+
+// ---------- 2. COZINHA: em quais bandejas divide sem sobrar ----------
+function renderBandeja(box,it){
+  const certos=BANDEJAS.filter(d=>it.n%d===0);
+  ask(`Chegaram <b>${it.n}</b> bolinhas de massa`,
+      `Marque <b>todas</b> as bandejas em que dá pra dividir sem sobrar nenhuma. Se nenhuma servir, confira sem marcar nada.`);
+  const grid=document.createElement('div'); grid.className='trays';
+  const botoes={};
+  BANDEJAS.forEach(d=>{
+    const b=document.createElement('button'); b.className='tray'; b.textContent=d;
+    b.onclick=()=>{ if(answered) return; sel.has(d)?sel.delete(d):sel.add(d); b.classList.toggle('sel'); };
+    botoes[d]=b; grid.appendChild(b);
+  });
+  const btn=document.createElement('button'); btn.className='btn'; btn.style.fontSize='1em';
+  btn.style.padding='11px 28px'; btn.textContent='Conferir bandejas ✔️';
+  btn.onclick=()=>{
+    if(answered) return;
+    const ok=certos.length===sel.size && certos.every(d=>sel.has(d));
+    BANDEJAS.forEach(d=>{
+      botoes[d].disabled=true; botoes[d].classList.remove('sel');
+      if(certos.includes(d)) botoes[d].classList.add('correct');
+      else if(sel.has(d)) botoes[d].classList.add('wrong');
+    });
+    btn.disabled=true;
+    finish(ok,expBandeja(it.n,certos));
+  };
+  box.appendChild(grid); box.appendChild(btn);
+}
+function expBandeja(n,certos){
+  if(!certos.length) return `${n} é PRIMO: só é divisível por 1 e por ele mesmo, então só cabe numa bandeja só ou em ${n} bandejas de 1 massa.`;
+  const soma=somaAlg(n);
+  return `${n} divide certinho por ${certos.join(', ')}. Soma dos algarismos = ${soma}`+
+         `${soma%9===0?' (múltiplo de 9, então também de 3)':soma%3===0?' (múltiplo de 3)':' (não é múltiplo de 3)'}. `+
+         (certos.includes(2)?CRIT[2]:'Termina em algarismo ímpar, então não é divisível por 2.');
+}
+
+// ---------- 3. BALANÇA: qual fração é maior ----------
+function renderCompara(box,it){
+  const [an,ad]=it.a,[bn,bd]=it.b;
+  ask(`Qual pedaço é maior?`,`Toque na pizza maior — ou em "São iguais" se valerem a mesma coisa.`);
+  const linha=document.createElement('div');
+  linha.style.cssText='display:flex;gap:14px;justify-content:center;align-items:stretch;flex-wrap:wrap';
+  const cA=coluna('A',an,ad), cB=coluna('B',bn,bd);
+  linha.appendChild(cA.el); linha.appendChild(cB.el);
+  const esc=document.createElement('div'); esc.className='choices';
+  const bIg=document.createElement('button'); bIg.className='choice'; bIg.textContent='🤝 São iguais';
+  esc.appendChild(bIg);
+  const vA=an/ad, vB=bn/bd;
+  const certa = vA>vB?'A':vB>vA?'B':'=';
+  const marcar=(escolha)=>{
+    if(answered) return;
+    cA.btn.disabled=cB.btn.disabled=bIg.disabled=true;
+    const alvo={A:cA.btn,B:cB.btn,'=':bIg}[certa];
+    alvo.classList.add('correct');
+    if(escolha!==certa) ({A:cA.btn,B:cB.btn,'=':bIg})[escolha].classList.add('wrong');
+    finish(escolha===certa,it.exp);
+  };
+  cA.btn.onclick=()=>marcar('A'); cB.btn.onclick=()=>marcar('B'); bIg.onclick=()=>marcar('=');
+  box.appendChild(linha); box.appendChild(esc);
+
+  function coluna(letra,n,d){
+    const el=document.createElement('div');
+    el.style.cssText='max-width:120px;display:flex;flex-direction:column';
+    const pz=Math.max(1,Math.ceil(n/d));
+    const filled=new Set(); for(let k=0;k<n;k++) filled.add(k);
+    el.appendChild(pizzaGroup(pz,d,filled,null,true));
+    const btn=document.createElement('button'); btn.className='choice';
+    btn.innerHTML=`${letra}: ${fracHTML(n,d)}`;
+    btn.style.marginTop='auto';
+    el.appendChild(btn);
+    return {el,btn};
+  }
+}
+
+// ---------- 4. NOTA FISCAL: decompor em fatores primos ----------
+function renderFatura(box,it){
+  fat={left:it.n,fatores:[]};
+  ask(`Fechar a nota do pedido nº <b>${it.n}</b>`,
+      `Vá dividindo pelo menor primo possível até chegar em <b>1</b>.`);
+  const num=document.createElement('div'); num.className='bignum'; num.textContent=it.n;
+  const lista=document.createElement('div'); lista.className='factors';
+  const grid=document.createElement('div'); grid.className='choices';
+  const botoes={};
+  PRIMOS.forEach(p=>{
+    const b=document.createElement('button'); b.className='choice'; b.textContent='÷ '+p;
+    b.onclick=()=>{
+      if(answered) return;
+      if(fat.left%p!==0){
+        cur.lives--; drawLives();
+        b.classList.add('wrong'); setTimeout(()=>b.classList.remove('wrong'),600);
+        const fb=document.getElementById('feedback');
+        fb.textContent='❌ Não dá!'; fb.className='feedback no';
+        document.getElementById('explain').textContent=`${fat.left} não é divisível por ${p}. ${CRIT[p]}`;
+        if(cur.lives<=0){ answered=true; PRIMOS.forEach(q=>botoes[q].disabled=true); setTimeout(endPhase,1400); }
+        return;
+      }
+      fat.left/=p; fat.fatores.push(p);
+      num.textContent=fat.left;
+      lista.textContent=`${it.n} = ${fat.fatores.join(' · ')}${fat.left>1?' · …':''}`;
+      document.getElementById('feedback').textContent='';
+      document.getElementById('explain').textContent='';
+      if(fat.left===1){
+        PRIMOS.forEach(q=>botoes[q].disabled=true);
+        finish(true,`${it.n} = ${potencias(fat.fatores)}`);
+      }
+    };
+    botoes[p]=b; grid.appendChild(b);
+  });
+  box.appendChild(num); box.appendChild(lista); box.appendChild(grid);
+}
+function potencias(fatores){
+  const c={}; fatores.forEach(f=>c[f]=(c[f]||0)+1);
+  return Object.keys(c).map(Number).sort((a,b)=>a-b).map(f=>f+SUP[c[f]]).join(' · ');
+}
+
+// ---------- FIM DE FASE ----------
+function nextQuestion(){
+  const p=PHASES[cur.phase]; cur.q++;
+  if(cur.q>=p._order.length){ endPhase(); return; }
+  renderQuestion();
+}
+
+function endPhase(){
+  const p=PHASES[cur.phase], total=p._order.length, passou=cur.lives>0;
+  const stars=passou?(cur.correct===total?3:cur.correct>=total*0.6?2:1)
+                    :Math.max(1,Math.round(cur.correct/total*3));
+  if(passou){
+    progress[p.id]={stars:Math.max(progress[p.id]?.stars||0,stars),correct:cur.correct};
+    save();
+  }
+  document.getElementById('resultEmoji').textContent=passou?(stars===3?'🏆':'🎉'):'🔥';
+  document.getElementById('resultTitle').textContent=passou?'Estação dominada!':'A pizza queimou!';
+  document.getElementById('resultStars').textContent=passou?'⭐'.repeat(stars)+'☆'.repeat(3-stars):'Tente de novo!';
+  document.getElementById('resultScore').textContent=`Acertos: ${cur.correct} de ${total}`;
+  show('result');
+}
+
+function resetProgress(){ if(confirm('Apagar todo o progresso?')){ progress={}; save(); showMap(); } }
+
+// ---------- SELF-CHECK (ponytail: pega dado impossível antes da criança pegar) ----------
+(function selfCheck(){
+  for(const it of PHASES[0].items){
+    console.assert((it.n*it.cut)%it.d===0, `pedido ${it.n}/${it.d} não fecha em corte de ${it.cut}`);
+    console.assert(it.n*it.cut/it.d<=it.pz*it.cut, `pedido ${it.n}/${it.d} não cabe em ${it.pz} pizza(s)`);
+  }
+  for(const it of PHASES[2].items){
+    const [an,ad]=it.a,[bn,bd]=it.b;
+    console.assert(Math.ceil(an/ad)<=3&&Math.ceil(bn/bd)<=3, `comparação ${an}/${ad} vs ${bn}/${bd} passa de 3 pizzas`);
+  }
+  for(const it of PHASES[3].items){
+    let x=it.n; for(const p of PRIMOS) while(x%p===0) x/=p;
+    console.assert(x===1, `${it.n} tem fator primo fora de ${PRIMOS.join(',')}`);
+  }
+  console.assert(PHASES.every(p=>p.perRound<=p.items.length),'perRound maior que o banco de itens');
+})();
+</script>
+</body>
+</html>
