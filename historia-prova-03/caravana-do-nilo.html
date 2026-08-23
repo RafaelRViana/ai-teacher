@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Caravana do Nilo · Antiguidade Africana: Núbia & Axum</title>
+<style>
+  :root {
+    --bg:      #0d1117;
+    --surface: #161d27;
+    --card:    #1c2634;
+    --border:  #2e4057;
+    --sand:    #e0b95c;
+    --teal:    #3fb8af;
+    --blue:    #4a90d9;
+    --text:    #ede4d0;
+    --muted:   #8a94a6;
+    --ok:      #2ecc71;
+    --bad:     #e74c3c;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: var(--bg);
+    background-image: radial-gradient(ellipse at top, #182234 0%, var(--bg) 60%);
+    color: var(--text);
+    min-height: 100vh;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 24px 16px 70px; }
+  .screen { display:none; animation: fadeUp .35s ease; }
+  .screen.active { display:block; }
+  @keyframes fadeUp { from {opacity:0; transform:translateY(12px);} to {opacity:1; transform:translateY(0);} }
+
+  h1 { font-size: 2rem; color: var(--sand); text-align:center; text-shadow: 0 2px 12px rgba(224,185,92,.25); }
+  h2 { font-size: 1.4rem; color: var(--teal); margin-bottom: 10px; }
+  .sub { color: var(--muted); text-align:center; font-size:.92rem; margin-top:6px; }
+  .big-emoji { font-size: 4rem; display:block; text-align:center; margin-bottom: 8px; }
+
+  .card {
+    background: var(--card); border:1px solid var(--border);
+    border-radius: 14px; padding: 20px; margin-top: 16px;
+  }
+  .btn {
+    display:inline-block; cursor:pointer; border:none; border-radius:10px;
+    padding: 13px 30px; font-size: 1rem; font-family: inherit;
+    background: var(--sand); color: #241a05; font-weight:bold;
+    transition: filter .15s, transform .1s;
+  }
+  .btn:hover { filter: brightness(1.12); }
+  .btn:active { transform: scale(.97); }
+  .btn-ghost { background: transparent; color: var(--muted); border:1px solid var(--border); font-weight:normal; }
+  .btn-full { width:100%; text-align:center; }
+  .btn:disabled { opacity:.4; cursor:not-allowed; }
+
+  input {
+    background: var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding: 12px 15px; color: var(--text); font-size:1rem; font-family:inherit; width:100%;
+  }
+  input:focus { outline:none; border-color: var(--sand); }
+
+  .hero-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(140px,1fr)); gap:10px; margin-top:10px; }
+  .hero-card {
+    background: var(--surface); border:2px solid var(--border); border-radius:12px;
+    padding: 14px 8px; cursor:pointer; text-align:center; transition: border-color .15s, transform .12s;
+  }
+  .hero-card:hover { border-color: var(--teal); transform: translateY(-2px); }
+  .hero-card.sel { border-color: var(--sand); background:#26200f; }
+  .hero-card .he { font-size: 2.2rem; display:block; margin-bottom:4px; }
+  .hero-card .hn { font-size:.9rem; color: var(--sand); font-weight:bold; }
+  .hero-card .hd { font-size:.72rem; color: var(--muted); margin-top:3px; }
+
+  /* trilha de fases */
+  .trail { display:flex; flex-direction:column; gap:10px; margin-top:14px; }
+  .stage {
+    display:flex; align-items:center; gap:14px;
+    background: var(--card); border:1px solid var(--border); border-radius:12px; padding: 13px 16px;
+  }
+  .stage .se { font-size: 1.9rem; }
+  .stage .sn { font-weight:bold; color: var(--text); font-size:.98rem; }
+  .stage .sd { font-size:.78rem; color: var(--muted); }
+  .stage.done { border-color: var(--ok); }
+  .stage.done .sn { color: var(--ok); }
+  .stage.next { border-color: var(--sand); box-shadow: 0 0 14px rgba(224,185,92,.15); }
+  .stage.locked { opacity:.45; }
+  .stage .right { margin-left:auto; font-size:1.2rem; }
+
+  /* topbar do jogo */
+  .topbar { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom: 14px; }
+  .badge {
+    background: var(--card); border:1px solid var(--border); border-radius:99px;
+    padding: 5px 14px; font-size:.85rem; color: var(--muted);
+  }
+  .badge strong { color: var(--sand); }
+  .badge.streak-on { border-color:#e67e22; color:#e67e22; animation: pop .25s ease; }
+  @keyframes pop { from {transform:scale(.7);} to {transform:scale(1);} }
+
+  .prog-wrap { background: var(--surface); border-radius:99px; height:8px; overflow:hidden; margin-bottom:16px; }
+  .prog-fill { background: linear-gradient(90deg, var(--teal), var(--sand)); height:100%; transition: width .4s; }
+
+  .q-cat {
+    display:inline-block; background: var(--teal); color:#04211f; border-radius:99px;
+    padding: 4px 14px; font-size:.78rem; font-weight:bold; margin-bottom:12px;
+  }
+  .q-text {
+    font-size: 1.12rem; line-height: 1.65; padding: 16px;
+    background: var(--surface); border-radius: 12px;
+    border-left: 4px solid var(--sand); margin-bottom: 16px;
+  }
+  .opts { display:grid; gap:10px; }
+  .opt {
+    background: var(--surface); border:2px solid var(--border); border-radius:11px;
+    padding: 13px 16px; cursor:pointer; display:flex; gap:12px; align-items:flex-start;
+    font-family:inherit; font-size:.96rem; color:var(--text); text-align:left; width:100%;
+    transition: border-color .12s, background .12s;
+  }
+  .opt:hover:not(:disabled) { border-color: var(--teal); }
+  .opt .letter {
+    flex-shrink:0; width:26px; height:26px; border-radius:50%;
+    background: var(--card); border:1px solid var(--border);
+    display:flex; align-items:center; justify-content:center;
+    font-size:.8rem; font-weight:bold; color: var(--sand);
+  }
+  .opt.right { border-color: var(--ok); background:#12281a; }
+  .opt.wrong { border-color: var(--bad); background:#2b1412; }
+  .opt:disabled { cursor:default; }
+
+  .feedback {
+    display:none; margin-top:14px; border-radius:12px; padding: 15px 17px;
+    font-size:.95rem; line-height:1.6; animation: fadeUp .3s ease;
+  }
+  .feedback.show { display:block; }
+  .feedback.good { background:#12281a; border:1px solid var(--ok); }
+  .feedback.evil { background:#2b1412; border:1px solid var(--bad); }
+  .feedback .ft { font-weight:bold; margin-bottom:6px; display:block; }
+  .feedback.good .ft { color: var(--ok); }
+  .feedback.evil .ft { color: var(--bad); }
+
+  .relic-row { text-align:center; font-size:2rem; letter-spacing:8px; margin: 12px 0; }
+  .stat-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(130px,1fr)); gap:10px; margin-top:14px; }
+  .stat { background: var(--surface); border:1px solid var(--border); border-radius:12px; padding:14px; text-align:center; }
+  .stat .sv { font-size:1.5rem; color:var(--sand); font-weight:bold; }
+  .stat .sl { font-size:.75rem; color:var(--muted); text-transform:uppercase; letter-spacing:.6px; margin-top:4px; }
+
+  .review-item { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:13px 15px; margin-top:10px; font-size:.9rem; line-height:1.55; }
+  .review-item .rq { font-weight:bold; }
+  .review-item .ra { color: var(--ok); }
+
+  .center { text-align:center; }
+  .mt { margin-top: 16px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ═══ INÍCIO ═══ -->
+  <section class="screen active" id="s-start">
+    <span class="big-emoji">🐪</span>
+    <h1>Caravana do Nilo</h1>
+    <p class="sub">Antiguidade Africana: Núbia & Reino de Axum · Prova de História 03</p>
+    <div class="card">
+      <p style="font-size:.95rem; line-height:1.6;">
+        Você guia uma caravana que sobe o Nilo, de Assuã até o Planalto do Tigré!
+        Atravesse <strong>9 paradas</strong>, responda aos enigmas dos guardiões e reúna os
+        <strong>9 tesouros</strong> da Núbia e de Axum. 🪙
+      </p>
+      <div class="mt">
+        <label style="font-size:.8rem; color:var(--muted); text-transform:uppercase; letter-spacing:.6px;">Seu nome de mercador(a)</label>
+        <input id="inp-name" maxlength="20" placeholder="Ex.: Amani" style="margin-top:6px;" />
+      </div>
+      <div class="mt">
+        <label style="font-size:.8rem; color:var(--muted); text-transform:uppercase; letter-spacing:.6px;">Escolha seu personagem</label>
+        <div class="hero-grid" id="hero-grid"></div>
+      </div>
+      <button class="btn btn-full mt" id="btn-start">Partir com a caravana 🐪</button>
+    </div>
+  </section>
+
+  <!-- ═══ MAPA / TRILHA ═══ -->
+  <section class="screen" id="s-map">
+    <h1 style="font-size:1.5rem;">🗺️ Mapa da Caravana</h1>
+    <p class="sub" id="map-sub"></p>
+    <div class="relic-row" id="relic-row"></div>
+    <div class="trail" id="trail"></div>
+    <p class="center mt"><button class="btn" id="btn-go">Seguir para a próxima parada ➜</button></p>
+  </section>
+
+  <!-- ═══ INTRO DA FASE ═══ -->
+  <section class="screen" id="s-intro">
+    <div class="card center">
+      <span class="big-emoji" id="intro-emoji"></span>
+      <h2 id="intro-title" style="text-align:center;"></h2>
+      <p style="font-size:.95rem; line-height:1.65; color:var(--muted);" id="intro-text"></p>
+      <button class="btn mt" id="btn-enter">Desmontar e explorar ⛏️</button>
+    </div>
+  </section>
+
+  <!-- ═══ PERGUNTA ═══ -->
+  <section class="screen" id="s-game">
+    <div class="topbar">
+      <span class="badge" id="b-hero"></span>
+      <span class="badge">❤️ <strong id="b-lives"></strong></span>
+      <span class="badge">✨ <strong id="b-xp"></strong> XP</span>
+      <span class="badge" id="b-streak" style="display:none;">🔥 <strong id="b-streak-n"></strong> seguidas — bônus x2!</span>
+    </div>
+    <div class="prog-wrap"><div class="prog-fill" id="prog"></div></div>
+    <span class="q-cat" id="q-cat"></span>
+    <div class="q-text" id="q-text"></div>
+    <div class="opts" id="opts"></div>
+    <div class="feedback" id="feedback">
+      <span class="ft" id="fb-title"></span>
+      <span id="fb-text"></span>
+      <p class="mt center"><button class="btn" id="btn-next">Continuar ➜</button></p>
+    </div>
+  </section>
+
+  <!-- ═══ FASE CONCLUÍDA ═══ -->
+  <section class="screen" id="s-done">
+    <div class="card center">
+      <span class="big-emoji" id="done-relic"></span>
+      <h2 style="text-align:center;">Tesouro conquistado!</h2>
+      <p id="done-text" style="color:var(--muted); line-height:1.6;"></p>
+      <button class="btn mt" id="btn-map">Voltar ao mapa 🗺️</button>
+    </div>
+  </section>
+
+  <!-- ═══ SEM VIDAS ═══ -->
+  <section class="screen" id="s-fail">
+    <div class="card center">
+      <span class="big-emoji">💀</span>
+      <h2 style="text-align:center; color:var(--bad);">A caravana se perdeu!</h2>
+      <p style="color:var(--muted);">Você ficou sem vidas nesta parada. Mas toda boa caravana refaz o caminho!</p>
+      <button class="btn mt" id="btn-retry">Refazer esta parada 🔄</button>
+    </div>
+  </section>
+
+  <!-- ═══ FIM ═══ -->
+  <section class="screen" id="s-end">
+    <span class="big-emoji">🏆</span>
+    <h1>Caravana concluída!</h1>
+    <div class="relic-row" id="end-relics"></div>
+    <div class="card">
+      <div class="stat-grid">
+        <div class="stat"><div class="sv" id="e-xp">0</div><div class="sl">XP total</div></div>
+        <div class="stat"><div class="sv" id="e-acc">0%</div><div class="sl">Precisão</div></div>
+        <div class="stat"><div class="sv" id="e-best">0</div><div class="sl">Maior sequência</div></div>
+      </div>
+      <p class="center mt" id="e-rank" style="font-size:1.1rem;"></p>
+    </div>
+    <div class="card" id="e-review-card">
+      <h2>📖 Para revisar antes da prova</h2>
+      <div id="e-review"></div>
+    </div>
+    <p class="center mt"><button class="btn" id="btn-again">Jogar novamente 🔄</button></p>
+  </section>
+
+</div>
+
+<script>
+// ══════════════ CONTEÚDO — apostila Bernoulli cap. 04: Antiguidade Africana ══════════════
+const PHASES = [
+{
+  emoji:'🏹', relic:'🏹', name:'A Terra dos Arqueiros',
+  intro:'Nossa caravana parte de Assuã, no sul do Egito, e sobe o Nilo até as cataratas. Aqui começa a Núbia — terra de ouro, de pedras preciosas e dos melhores arqueiros da Antiguidade.',
+  qs:[
+    {q:'Onde ficava a Núbia na Antiguidade Africana?',
+     o:['No nordeste da África, ao longo do vale do Rio Nilo','No litoral do Atlântico, na África Ocidental','No sul da África, perto do Cabo','Na Ásia Menor, entre o Tigre e o Eufrates'], a:0,
+     e:'A Núbia ficava no nordeste da África, ao longo do vale do Rio Nilo, onde hoje estão o sul do Egito e o norte do Sudão.'},
+    {q:'A quais países atuais corresponde o território da antiga Núbia?',
+     o:['Sul do Egito e norte do Sudão','Etiópia e Eritreia','Marrocos e Argélia','Quênia e Tanzânia'], a:0,
+     e:'Hoje a região da Núbia corresponde ao sul do Egito e ao norte do Sudão.'},
+    {q:'Segundo os registros arqueológicos, a Antiguidade Núbia remonta a pelo menos...',
+     o:['3500 a.C.','500 d.C.','1000 a.C.','10000 a.C.'], a:0,
+     e:'Os registros arqueológicos indicam que a Antiguidade Núbia remonta a pelo menos 3500 a.C., época dos primeiros assentamentos agrícolas nas margens do Nilo.'},
+    {q:'O que atraiu os primeiros assentamentos para as margens do Nilo na Núbia?',
+     o:['A possibilidade de praticar agricultura em terras férteis','A existência de grandes florestas','O clima frio e chuvoso','A proteção contra invasores no deserto'], a:0,
+     e:'Os primeiros assentamentos foram agrícolas: as terras às margens do Nilo eram férteis e permitiam o cultivo.'},
+    {q:'O nome "Ta-Seti", uma das primeiras fases da Núbia, significa...',
+     o:['"Terra dos Arqueiros"','"Terra entre rios"','"Terra do Sol"','"Terra dos faraós"'], a:0,
+     e:'Ta-Seti (cerca de 3500 a.C., período pré-dinástico egípcio) significa "Terra dos Arqueiros". Seus habitantes eram conhecidos pela habilidade como arqueiros.'},
+    {q:'Por que a região de Ta-Seti era tão cobiçada?',
+     o:['Era rica em recursos naturais, como ouro e pedras preciosas','Tinha os melhores portos do Mediterrâneo','Era a única região com trigo','Controlava a rota da seda'], a:0,
+     e:'Ta-Seti era rica em recursos naturais, incluindo ouro e pedras preciosas — riqueza que despertou o interesse do Egito e de outros povos.'},
+  ]
+},
+{
+  emoji:'👑', relic:'🔺', name:'Os Reinos da Núbia',
+  intro:'Descendo a caravana pelas cataratas, você atravessa séculos de história: Ta-Seti, Cuxe, Meroé, a chegada dos romanos e, por fim, o Islã. Vamos organizar essa linha do tempo!',
+  qs:[
+    {q:'Qual reino é uma das fases mais conhecidas da história da Núbia, entre cerca de 747 a.C. e 656 a.C.?',
+     o:['O Reino de Cuxe (Kush)','O Reino de Axum','O Império Persa','O Reino de Ta-Seti'], a:0,
+     e:'O Reino de Cuxe (Kush), cerca de 747 a.C. a 656 a.C., é uma das fases mais conhecidas da história núbia — foi quando os núbios conquistaram o Egito.'},
+    {q:'Durante o Novo Reino do Egito, o que os núbios do Reino de Cuxe fizeram?',
+     o:['Conquistaram o Egito e governaram como a XXV Dinastia','Foram expulsos para o sul da África','Aliaram-se aos romanos contra o Egito','Abandonaram o vale do Nilo'], a:0,
+     e:'Os núbios conquistaram o Egito e governaram como a Dinastia 25 (XXV Dinastia), entre 747 a.C. e 656 a.C.'},
+    {q:'Qual era a primeira capital do Reino de Cuxe, depois transferida para Meroé?',
+     o:['Napata','Adulis','Tebas','Cartum'], a:0,
+     e:'A capital de Cuxe era Napata, posteriormente transferida para Meroé.'},
+    {q:'Que tipo de legado arquitetônico a civilização de Cuxe deixou na Núbia?',
+     o:['Pirâmides e templos','Anfiteatros e aquedutos','Zigurates de argila','Castelos de pedra com fossos'], a:0,
+     e:'A civilização de Cuxe deixou notáveis construções arquitetônicas, como pirâmides e templos.'},
+    {q:'O Período Meroítico (300 a.C. a 350 d.C.) ficou marcado por qual avanço cultural?',
+     o:['Os meroítas desenvolveram seu próprio sistema de escrita','A invenção da roda','A criação do alfabeto grego','O abandono da religião'], a:0,
+     e:'No Período Meroítico, com capital em Meroé, a cultura meroítica floresceu e os meroítas desenvolveram seu próprio sistema de escrita, mantendo relações comerciais com o Mediterrâneo.'},
+    {q:'A partir do século IV, sob influência romana, o que aconteceu com a religião na Núbia?',
+     o:['Muitos povos da região se converteram ao cristianismo','Todos passaram a cultuar Apedemak','A região tornou-se ateia','Voltaram ao culto de Osíris'], a:0,
+     e:'A Núbia passou por influência romana e cristã: os povos da região foram sendo convertidos ao cristianismo a partir do século IV, sob influência do Império Romano e, depois, do Bizantino.'},
+    {q:'O que marcou o declínio das culturas cristãs e meroíticas na Núbia, a partir do século VII?',
+     o:['A islamização da região','A conquista pelos gregos','Uma grande seca do Nilo','A chegada dos portugueses'], a:0,
+     e:'A partir do século VII a Núbia começou a ser islamizada, o que marcou o declínio das culturas cristãs e meroíticas na região.'},
+  ]
+},
+{
+  emoji:'⚔️', relic:'👑', name:'Núbios e Egípcios',
+  intro:'730 a.C. O rei Piye reúne seu exército e marcha para o norte. O Egito está dividido e instável... e um faraó núbio está a caminho do trono!',
+  qs:[
+    {q:'Por que os egípcios historicamente buscavam expandir seu território em direção à Núbia?',
+     o:['Pela localização estratégica e pelos recursos naturais, como minerais e pedras preciosas','Porque precisavam de água doce','Para fugir das invasões romanas','Porque queriam aprender a escrita meroítica'], a:0,
+     e:'A Núbia tinha localização estratégica e era rica em recursos naturais — minerais e pedras preciosas. Do outro lado, a Núbia também tentava expandir sua influência e conquistar o Egito.'},
+    {q:'Por volta de 730 a.C., quem lançou uma campanha militar no Egito?',
+     o:['Piye, rei da Núbia','Ezana, rei de Axum','Hamurabi, rei da Babilônia','Ciro II, o Grande'], a:0,
+     e:'Por volta de 730 a.C., Piye, rei da Núbia, lançou uma campanha militar no Egito, que passava por um período de instabilidade e divisão política.'},
+    {q:'A campanha de Piye foi bem-sucedida. O que ela marcou?',
+     o:['A unificação do Egito sob domínio núbio e o início da XXV Dinastia','A destruição total das pirâmides','A independência da Núbia em relação a Roma','O fim do Reino de Cuxe'], a:0,
+     e:'A campanha levou à unificação do Egito sob o domínio núbio, marcando o início da XXV Dinastia. Piye tornou-se o primeiro faraó núbio da região.'},
+    {q:'Por quanto tempo, aproximadamente, os faraós núbios governaram o Egito?',
+     o:['Cerca de um século','Cerca de mil anos','Apenas dois anos','Cerca de dez anos'], a:0,
+     e:'A XXV Dinastia governou o Egito por cerca de um século, e os faraós núbios deixaram um legado significativo na História do Egito.'},
+    {q:'Além da política, que mudança as conquistas de Piye trouxeram para o Egito?',
+     o:['Arte, arquitetura e religião egípcias foram influenciadas pela cultura núbia','O Egito abandonou os hieróglifos','O Egito deixou de cultuar deuses','O Nilo deixou de ser usado para o comércio'], a:0,
+     e:'A unificação trouxe uma mudança cultural significativa: a arte, a arquitetura e a religião egípcias foram influenciadas pela cultura núbia nesse período. As estátuas núbias da XXV Dinastia mostram essa intersecção.'},
+    {q:'Como se deu o intercâmbio cultural entre Núbia e Egito?',
+     o:['A Núbia adotou elementos da religião, da escrita hieroglífica, da arquitetura e dos sistemas de governo egípcios','Nenhuma das duas influenciou a outra','Somente o Egito copiou a Núbia','As duas regiões nunca tiveram contato'], a:0,
+     e:'Ambas as regiões influenciaram profundamente a cultura uma da outra. Elementos da religião, da escrita hieroglífica, da arquitetura e até dos sistemas de governo egípcios eram frequentemente adotados pela Núbia.'},
+    {q:'Qual era o papel do Rio Nilo nas relações entre Egito e Núbia?',
+     o:['Servia como importante rota comercial de mercadorias valiosas','Era uma fronteira intransponível','Era usado apenas para rituais religiosos','Não tinha importância econômica'], a:0,
+     e:'O Nilo era uma importante rota comercial: ouro, marfim, ébano, pedras preciosas e produtos agrícolas eram trocados entre as duas regiões. O Egito dependia das minas núbias para obter ouro e pedras preciosas.'},
+  ]
+},
+{
+  emoji:'⛏️', relic:'💎', name:'Ouro, Grãos e Mercados',
+  intro:'Nas minas de Meroé o ouro brilha sob o sol; nas margens do rio, camponeses colhem cereais; na cidade, mercadores negociam tecidos e cerâmica. Bem-vindo à economia núbia!',
+  qs:[
+    {q:'Quais eram as três frentes que resumiam a economia da Núbia?',
+     o:['Mineração, agricultura e comércio','Pesca, guerra e navegação','Indústria, turismo e pecuária','Artesanato, caça e coleta'], a:0,
+     e:'A economia núbia refletia a geografia e os recursos naturais da região e pode ser resumida em três frentes: mineração, agricultura e comércio.'},
+    {q:'Qual era uma das características econômicas mais proeminentes da Núbia?',
+     o:['A mineração','A criação de cavalos','A produção de vinho','A construção naval'], a:0,
+     e:'A mineração era uma das características econômicas mais proeminentes: a região era abundante em minerais preciosos como ouro, cobre, pedras preciosas e minerais de ferro.'},
+    {q:'Por que as minas de ouro da Núbia eram tão importantes?',
+     o:['Eram fonte de riqueza cobiçada pelo Egito e por outras civilizações da região','Produziam ferramentas agrícolas','Serviam de moradia para os trabalhadores','Eram usadas como templos'], a:0,
+     e:'As minas de ouro da Núbia eram uma fonte de riqueza valiosa, e o ouro extraído era altamente cobiçado tanto pelo Egito quanto por outras civilizações. Esse comércio permitia adquirir bens de alto valor em troca.'},
+    {q:'Por que as terras da Núbia eram boas para a agricultura?',
+     o:['Eram férteis ao longo das margens do Rio Nilo','Recebiam neve no inverno','Ficavam em planaltos vulcânicos','Tinham irrigação artificial de poços profundos'], a:0,
+     e:'As terras da região eram férteis ao longo das margens do Rio Nilo, usadas para o cultivo de culturas como cereais, leguminosas e frutas.'},
+    {q:'Qual cidade era um centro comercial movimentado da Núbia?',
+     o:['Meroé','Atenas','Adulis','Babilônia'], a:0,
+     e:'Como ponto de encontro entre o Egito e as regiões ao sul da África, a Núbia era um centro comercial movimentado — em especial a cidade de Meroé.'},
+    {q:'Quais produtos núbios eram fabricados internamente e vendidos nas rotas comerciais?',
+     o:['Tecidos e cerâmica','Vidro veneziano e porcelana chinesa','Papiro e papel','Especiarias da Índia'], a:0,
+     e:'Produtos núbios como tecidos e cerâmica eram fabricados internamente. As rotas comerciais contribuíram para a difusão cultural e as trocas entre a Núbia e as civilizações da região.'},
+  ]
+},
+{
+  emoji:'🔺', relic:'🗣️', name:'Sociedade e Oralidade',
+  intro:'Ao anoitecer, os mais velhos da aldeia reúnem as crianças e contam histórias de reis, deuses e heróis. Sem livros nem registros escritos, é a voz que guarda a memória do povo núbio.',
+  qs:[
+    {q:'Como era a sociedade núbia?',
+     o:['Estratificada, com uma hierarquia bem definida','Totalmente igualitária','Formada só por sacerdotes','Nômade e sem divisões'], a:0,
+     e:'A sociedade núbia era estratificada, com uma hierarquia bem definida, representada como uma pirâmide social.'},
+    {q:'Quem estava no topo da hierarquia social núbia?',
+     o:['Os reis e a elite governante','Os sacerdotes','Os agricultores','Os artesãos'], a:0,
+     e:'No topo da hierarquia estavam os reis e a elite governante. A realeza tinha autoridade suprema sobre a terra e o povo, e a aristocracia tinha privilégios especiais: terras, riqueza e poder político.'},
+    {q:'Quais eram as funções dos sacerdotes e dos funcionários do governo na Núbia?',
+     o:['Os sacerdotes cuidavam dos temas religiosos e os funcionários atuavam na administração civil e militar','Ambos trabalhavam nas minas de ouro','Ambos cuidavam apenas da agricultura','Os sacerdotes governavam e os funcionários eram escravos'], a:0,
+     e:'Os sacerdotes eram responsáveis por cuidar de temas religiosos; os funcionários do governo desempenhavam funções importantes na administração civil e militar, contribuindo para a estabilidade do reino.'},
+    {q:'Quem eram os ourives, ceramistas e tecelões na sociedade núbia?',
+     o:['Artistas, artesãos e comerciantes, essenciais na economia e na produção de bens','A elite governante','Escravos de guerra','Sacerdotes do templo de Apedemak'], a:0,
+     e:'Artistas, artesãos e comerciantes desempenhavam papéis essenciais na economia núbia. Os artesãos produziam itens como cerâmica e joias.'},
+    {q:'Quem formava a maior parte da população núbia?',
+     o:['Agricultores e trabalhadores braçais','Sacerdotes','Reis e nobres','Comerciantes estrangeiros'], a:0,
+     e:'A maioria da população núbia era composta por agricultores e trabalhadores braçais, responsáveis pela produção de alimentos e pela construção de monumentos e infraestrutura. Tinham menos privilégios e acesso limitado a recursos.'},
+    {q:'Na base da pirâmide social núbia estavam os escravos. Como as pessoas geralmente chegavam a essa condição?',
+     o:['Como resultado de conflitos e conquistas militares','Por escolha própria','Por não frequentarem os templos','Por serem estrangeiros comerciantes'], a:0,
+     e:'A sociedade núbia, como muitas sociedades antigas, incluía escravidão. Os escravos realizavam trabalho forçado e estavam nessa condição muitas vezes como resultado de conflitos e conquistas militares.'},
+    {q:'Como os saberes eram transmitidos na sociedade núbia, diante da falta de registros escritos extensos?',
+     o:['Pela oralidade — a tradição de transmitir conhecimento pela fala','Por cartas enviadas ao Egito','Por meio de bibliotecas de papiro','Somente por desenhos nas pirâmides'], a:0,
+     e:'A resposta é a oralidade: a tradição de transmitir conhecimento, histórias e informações por meio da fala. Na Núbia ela foi o principal meio de comunicação e de preservação do conhecimento.'},
+    {q:'Quem desempenhava papel crucial na tradição oral núbia?',
+     o:['Os mais velhos, que transmitiam histórias e conhecimentos ancestrais aos mais jovens','Os soldados do rei','Os comerciantes estrangeiros','As crianças da elite'], a:0,
+     e:'Os mais velhos desempenhavam papel crucial na transmissão de histórias, mitos, lendas e conhecimentos ancestrais para as gerações mais jovens — inclusive religião, tradições culturais, técnicas de agricultura e artesanato.'},
+    {q:'Qual era a importância especial das narrativas orais na Núbia?',
+     o:['Preservar a memória histórica e construir a identidade cultural do povo','Registrar impostos e dívidas','Ensinar matemática às crianças','Substituir as leis do rei'], a:0,
+     e:'As narrativas orais tinham importância especial na preservação da memória histórica e na construção de identidades culturais: mitos de criação e histórias de figuras heroicas ajudaram a consolidar a identidade do povo núbio.'},
+  ]
+},
+{
+  emoji:'🦁', relic:'🎶', name:'Os Deuses da Núbia',
+  intro:'No Templo de Apedemak, em Meroé, incensos queimam diante de um deus com corpo humano e cabeça de felino. Ao lado, oferendas para uma boa colheita — e para uma passagem segura ao além.',
+  qs:[
+    {q:'Como pode ser caracterizada a religião dos povos núbios?',
+     o:['Politeísta, com crença na vida após a morte','Monoteísta desde o início','Sem deuses nem rituais','Baseada apenas no culto ao rei'], a:0,
+     e:'Os núbios eram politeístas, cultuavam deuses e deusas e acreditavam na vida após a morte.'},
+    {q:'Quais deuses os núbios compartilhavam com os egípcios?',
+     o:['Osíris e Ísis','Zeus e Hera','Anu e Ishtar','Marém e Shams'], a:0,
+     e:'Alguns deuses eram compartilhados com os do Egito, como Osíris e Ísis. Mesmo assim, os núbios tinham suas próprias divindades locais, o que refletia sua identidade única.'},
+    {q:'Apedemak, representado como um tigre em um corpo humano, era o deus de quê?',
+     o:['Da guerra, da fertilidade e da proteção do rei da Núbia','Do Sol e das estrelas','Da música e da dança','Do comércio marítimo'], a:0,
+     e:'Apedemak era uma figura antropozoomórfica, representada como um tigre em corpo humano: deus da guerra, da fertilidade e da proteção do rei da Núbia. Seu templo ficava em Meroé.'},
+    {q:'Qual divindade núbia era o deus da fertilidade e da colheita, com papel fundamental na agricultura?',
+     o:['Sebiumeker','Bes','Apedemak','Warq'], a:0,
+     e:'Sebiumeker, figura antropomórfica, era o deus da fertilidade e da colheita, desempenhando papel fundamental na agricultura de acordo com a crença núbia.'},
+    {q:'Bes, frequentemente retratado com aparência caricatural, era o deus de quê?',
+     o:['Da música, da dança e da alegria','Da guerra e das batalhas','Do céu e das tribos','Da escrita e dos registros'], a:0,
+     e:'Bes era o deus da música, da dança e da alegria. Era invocado para trazer alegria e proteção.'},
+    {q:'Por que os núbios realizavam rituais de sepultamento elaborados e colocavam objetos valiosos nos túmulos?',
+     o:['Porque acreditavam que a alma sobrevivia à morte e precisava de uma passagem segura ao além','Para enganar os ladrões de tumbas','Porque a lei do rei obrigava','Para agradar aos comerciantes egípcios'], a:0,
+     e:'A crença na vida após a morte era parte importante da religião núbia: a alma sobrevivia à morte e era necessário garantir uma passagem segura para o além, com objetos valiosos que seriam necessários nessa nova vida.'},
+    {q:'O que levou a religião da Núbia Antiga ao declínio?',
+     o:['A conquista romana e a subsequente cristianização','A invasão dos sumérios','O fim das cheias do Nilo','A proibição feita pelos faraós'], a:0,
+     e:'Com a conquista romana da Núbia e a subsequente cristianização, a religião da Núbia Antiga entrou em declínio.'},
+  ]
+},
+{
+  emoji:'⛰️', relic:'✝️', name:'O Reino de Axum',
+  intro:'A caravana segue para sudeste, subindo o Planalto do Tigré. Aqui, entre montanhas, nasce uma potência que vai rivalizar com Roma: o Reino de Axum.',
+  qs:[
+    {q:'Onde se formou o Reino de Axum?',
+     o:['Onde hoje estão Etiópia e Eritreia, no Planalto do Tigré','No norte do Sudão, junto às cataratas do Nilo','Na Península Arábica','No litoral do Mediterrâneo'], a:0,
+     e:'O Reino de Axum se formou onde hoje estão os países Etiópia e Eritreia, na parte ocidental de uma região conhecida como Planalto do Tigré.'},
+    {q:'De quando são os primeiros habitantes registrados na região de Axum?',
+     o:['Do século V a.C.','Do século V d.C.','De 3500 a.C.','Do século VII d.C.'], a:0,
+     e:'Os registros históricos indicam que os primeiros habitantes desse reino eram originários de povos do século V a.C., que se estabeleceram na região e formaram comunidades isoladas.'},
+    {q:'Quem unificou a região de Axum no século I?',
+     o:['O rei Zoscales (também conhecido como Za Hecale)','O rei Ezana','O rei Piye','O rei Kaleb'], a:0,
+     e:'As comunidades permaneceram isoladas até o século I, quando o lugar foi unificado pelo rei Zoscales, também conhecido como Za Hecale.'},
+    {q:'Quando ocorreu o auge do poder do Reino de Axum?',
+     o:['Entre os séculos IV e VII','Entre 3500 a.C. e 3000 a.C.','No século XV','Entre 747 a.C. e 656 a.C.'], a:0,
+     e:'O auge do poder do Reino de Axum ocorreu entre os séculos IV e VII. Nesse período, Axum era uma potência regional, rivalizando comercial e politicamente com grandes civilizações, como o Império Romano.'},
+    {q:'O rei Ezana (ca. 325 a 360) é costumeiramente conhecido por qual feito?',
+     o:['Introduzir o cristianismo no reino axumita','Criar a escrita ge’ez','Conquistar o Egito','Fundar a cidade de Meroé'], a:0,
+     e:'Ezana pacificou tribos em conflito, unificou territórios e é conhecido como o rei que introduziu o cristianismo no reino axumita — apesar de fontes indicarem a presença dessa religião em partes do território antes de seu reinado.'},
+    {q:'Segundo o historiador Alberto da Costa e Silva, por que Ezana teria facilitado a dispersão do cristianismo?',
+     o:['O cristianismo passou a ser religião de prestígio no Império Romano, e Ezana não desejava se indispor com Roma','Porque os sacerdotes de Marém exigiram','Porque queria acabar com o comércio','Porque a população já era toda cristã'], a:0,
+     e:'Segundo o historiador, o cristianismo se tornou uma religião de prestígio após ser considerada oficial do Império Romano, e Ezana não desejava se indispor com Roma. A conversão ampla do norte da Etiópia só viria com missionários sírios, no fim do séc. V ou início do VI.'},
+    {q:'Quem foi Kaleb (ca. 570 a 590), também conhecido como Elesbão?',
+     o:['Um guerreiro que expandiu os territórios de Axum, conquistando partes do sul da Arábia','O rei que criou as primeiras moedas','O último rei de Meroé','Um sacerdote da deusa Astart'], a:0,
+     e:'Kaleb (Elesbão) foi um guerreiro que expandiu os territórios de Axum, incluindo a conquista de partes do sul da Arábia. Foi transformado em santo pela Igreja Ortodoxa Etíope, como Santo Elesbão, e teve papel importante na disseminação do cristianismo.'},
+    {q:'Quais desafios o rei Degna Djan (ca. 600 a 620) enfrentou?',
+     o:['Conflitos internos e a propagação da religião Islã na região do reino','A invasão dos romanos','A perda das minas de ouro','Uma grande peste vinda da Índia'], a:0,
+     e:'Degna Djan enfrentou muitos desafios, como conflitos internos e a propagação da religião Islã na região do reino.'},
+    {q:'Qual é a ordem correta dos principais reinados de Axum entre os séculos IV e VII?',
+     o:['Ezana → Kaleb (Elesbão) → Degna Djan','Degna Djan → Ezana → Kaleb','Kaleb → Ezana → Degna Djan','Zoscales → Degna Djan → Ezana'], a:0,
+     e:'Linha do tempo: Ezana (ca. 325–360) → Kaleb, o Elesbão (ca. 570–590) → Degna Djan (ca. 600–620).'},
+  ]
+},
+{
+  emoji:'⚓', relic:'🪙', name:'As Rotas de Adulis',
+  intro:'No porto de Adulis, navios chegam da Índia, da Pérsia e de Roma. Marfim, ouro, azeite e lanças de ferro trocam de mãos — e uma moeda axumita brilha na palma do mercador.',
+  qs:[
+    {q:'Para que estava voltada, principalmente, a economia do Reino de Axum?',
+     o:['Para o comércio, a agricultura e a mineração','Somente para a pesca','Para a indústria de tecidos de seda','Para a criação de gado nômade'], a:0,
+     e:'O Reino de Axum tinha uma economia voltada principalmente para o comércio, a agricultura e a mineração.'},
+    {q:'Qual cidade de Axum tinha um importante porto e papel crucial no comércio marítimo?',
+     o:['Adulis','Meroé','Napata','Petra'], a:0,
+     e:'A cidade de Adulis, em Axum, tinha um importante porto e desempenhou papel crucial no comércio marítimo entre essa região e outras partes do mundo.'},
+    {q:'Com quais regiões Axum comerciava por via marítima?',
+     o:['Grécia, Roma, Egito, Península Arábica, Pérsia, Síria e Índia','Somente com a Núbia','China e Japão','América e África do Sul'], a:0,
+     e:'Adulis conectava Axum à Grécia, Roma, Egito, Península Arábica, Pérsia, Síria e Índia.'},
+    {q:'Quais produtos eram encontrados em Axum?',
+     o:['Linho e outros tecidos, barras de cobre, vidro, machados, lanças de ferro, objetos de ouro e prata, marfim e azeite','Apenas ouro em pó','Papiro e cerveja','Porcelana e pólvora'], a:0,
+     e:'Entre os produtos de Axum estavam linho e outros tecidos, barras de cobre, vidro, machados, lanças de ferro, objetos de ouro e prata, marfim e azeite.'},
+    {q:'Por que a localização de Axum, perto do Mar Vermelho, era estratégica?',
+     o:['Permitia controlar rotas comerciais entre o interior da África e as civilizações do Mediterrâneo','Protegia o reino de qualquer invasão','Garantia chuvas durante todo o ano','Dava acesso ao Oceano Atlântico'], a:0,
+     e:'A localização estratégica do Reino de Axum nas proximidades do Mar Vermelho permitiu que ele controlasse rotas comerciais importantes, facilitando o comércio entre o interior da África e as civilizações ao redor do Mediterrâneo.'},
+    {q:'Qual pioneirismo econômico marcou o Reino de Axum?',
+     o:['Foi uma das primeiras civilizações africanas a emitir moedas','Foi o primeiro reino a usar o escambo','Inventou o sistema bancário','Criou o primeiro imposto de renda'], a:0,
+     e:'Axum foi uma das primeiras civilizações africanas a emitir moedas, o que facilitou o comércio monetizado e a interação econômica com outras culturas.'},
+    {q:'Qual era o costume do Reino de Axum em relação às moedas?',
+     o:['As moedas vinham com imagens ou nomes dos reis grafados','As moedas eram sempre em branco','As moedas eram feitas de madeira','As moedas traziam mapas das rotas'], a:0,
+     e:'Era um costume do Reino de Axum que as moedas viessem com imagens ou nomes dos reis grafados — como a moeda do rei Ezana, do século IV.'},
+    {q:'Numa moeda axumita aparecem a figura do rei Gersem (Gersão) e uma cruz. O que a cruz indica?',
+     o:['A presença do cristianismo no reino','Uma rota comercial','O valor da moeda','O nome do porto de Adulis'], a:0,
+     e:'Historiadores indicam que a figura provavelmente é o rei Gersem (Gersão), que governou entre os reinados de Kaleb e Degna. A outra inscrição é uma cruz, o que indica a presença do cristianismo no reino.'},
+  ]
+},
+{
+  emoji:'✍️', relic:'🗿', name:'Ge’ez, Deuses e Estelas',
+  intro:'Última parada: a cidade de Axum. Diante de você, obeliscos de pedra apontam para o céu e um livro antigo traz símbolos misteriosos. É hora de decifrar a escrita e os deuses axumitas.',
+  qs:[
+    {q:'Qual idioma os axumitas usavam como escrita?',
+     o:['O ge’ez','O meroítico','O grego','O hieróglifo egípcio'], a:0,
+     e:'Os axumitas usavam o ge’ez como idioma de escrita, empregado em inscrições em pedra, documentos religiosos e textos administrativos.'},
+    {q:'Como funciona a escrita ge’ez?',
+     o:['É silábica: cada símbolo representa uma consoante seguida de uma vogal inerente','É alfabética, com letras separadas para vogais','É formada só por desenhos de animais','É feita com sinais em forma de cunha'], a:0,
+     e:'Na escrita ge’ez, cada símbolo representa uma consoante seguida por uma vogal inerente. O sistema é silábico e a vogal não marcada é geralmente o "a".'},
+    {q:'Como o ge’ez representa vogais diferentes do "a"?',
+     o:['Com diacríticos, sinais gráficos acrescentados à letra','Repetindo o símbolo duas vezes','Usando letras gregas','Não é possível representá-las'], a:0,
+     e:'Para representar outras vogais, são usados diacríticos — sinais gráficos adicionados a uma letra para alterar sua pronúncia, indicar um som especial ou distinguir palavras de significados diferentes.'},
+    {q:'Em que direção o ge’ez é escrito?',
+     o:['Da esquerda para a direita, com palavras separadas por espaço ou linha vertical','Da direita para a esquerda','De cima para baixo','Em espiral'], a:0,
+     e:'O ge’ez é escrito da esquerda para a direita, e as palavras são geralmente separadas por espaço ou por uma linha vertical.'},
+    {q:'Antes da conversão de Ezana, como era a religião em Axum?',
+     o:['Politeísta, com deuses ligados a elementos naturais como o Sol, a Lua e as estrelas','Monoteísta cristã','Sem nenhuma crença religiosa','Igual à religião romana'], a:0,
+     e:'Antes de Ezana, os axumitas eram politeístas e cultuavam deuses muitas vezes ligados a elementos naturais, como o Sol, a Lua e as estrelas. Também acreditavam que seus ancestrais podiam se tornar espíritos e intervir na vida humana.'},
+    {q:'Quem era Marém na religião axumita?',
+     o:['A divindade patrona de Axum, deus do céu, das tribos, da guerra e da família','A deusa do Sol','O deus da fertilidade agrícola','Um rei divinizado'], a:0,
+     e:'Marém era a divindade patrona de Axum e o deus do céu, das tribos, da guerra e da família. Tinha como símbolo uma lua crescente envolta por um disco solar.'},
+    {q:'Qual divindade axumita era associada à fertilidade e tinha papel importante na agricultura?',
+     o:['Astart','Shams','Warq','Marém'], a:0,
+     e:'Astart era uma deusa associada à fertilidade e, na crença axumita, desempenhava papel importante na agricultura e na vida cotidiana.'},
+    {q:'Warq e Shams eram, respectivamente, divindades de quê?',
+     o:['Warq era deus da guerra e Shams era a deusa do Sol','Warq era deus do mar e Shams deusa da Lua','Ambos eram deuses da agricultura','Warq era deusa do Sol e Shams deus do céu'], a:0,
+     e:'Warq era também deus da guerra, e seu culto estava ligado aos conflitos e batalhas. Shams era a deusa do Sol, representando a divindade solar.'},
+    {q:'O que eram as estelas de Axum?',
+     o:['Grandes monumentos que serviam como sepulturas de reis e líderes importantes','Moedas de prata','Livros religiosos em ge’ez','Templos subterrâneos'], a:0,
+     e:'Os axumitas construíram grandes monumentos conhecidos como estelas, que serviam como sepulturas dos reis e líderes importantes mortos em prol do reino — há também indícios de estelas erguidas para comemorar eventos marcantes. A estela de Ezana está na Etiópia.'},
+    {q:'Além do politeísmo e do cristianismo, qual religião era praticada por parte considerável dos axumitas?',
+     o:['O judaísmo','O budismo','O hinduísmo','O xintoísmo'], a:0,
+     e:'Uma parte considerável dos axumitas praticava o judaísmo, religião ainda seguida por menos de 1% da população total na atual Etiópia.'},
+    {q:'Assim como os egípcios, no que os axumitas também acreditavam?',
+     o:['Na vida após a morte, praticando culto aos ancestrais','Que a alma desaparecia com o corpo','Que só os reis tinham alma','Na reencarnação em animais'], a:0,
+     e:'Apesar da expansão do cristianismo no reino, os axumitas, assim como os egípcios, também acreditavam na vida após a morte e praticavam culto aos seus ancestrais.'},
+  ]
+},
+];
+
+const HEROES = [
+  {e:'🏹', n:'Arqueiro', d:'Filho de Ta-Seti'},
+  {e:'⛏️', n:'Mineradora', d:'Conhece o ouro núbio'},
+  {e:'🪙', n:'Mercador', d:'Vive no porto de Adulis'},
+  {e:'🗣️', n:'Contadora', d:'Guarda a oralidade'},
+];
+
+// ══════════════ ESTADO ══════════════
+let S = null;
+function newState() {
+  return { name:'', hero:HEROES[0], phase:0, qi:0, lives:3, xp:0,
+           streak:0, best:0, right:0, total:0, wrongs:[], relics:[] };
+}
+
+const $ = id => document.getElementById(id);
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  $(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ══════════════ INÍCIO ══════════════
+let selHero = 0;
+function renderHeroes() {
+  $('hero-grid').innerHTML = HEROES.map((h,i) =>
+    `<div class="hero-card ${i===selHero?'sel':''}" onclick="pickHero(${i})">
+       <span class="he">${h.e}</span><span class="hn">${h.n}</span><div class="hd">${h.d}</div>
+     </div>`).join('');
+}
+window.pickHero = i => { selHero = i; renderHeroes(); };
+renderHeroes();
+
+$('btn-start').onclick = () => {
+  S = newState();
+  S.name = $('inp-name').value.trim() || 'Mercador(a)';
+  S.hero = HEROES[selHero];
+  renderMap();
+  show('s-map');
+};
+
+// ══════════════ MAPA ══════════════
+function renderMap() {
+  $('map-sub').textContent = `${S.hero.e} ${S.name} · ${S.relics.length}/${PHASES.length} tesouros`;
+  $('relic-row').textContent = PHASES.map((p,i) => S.relics.includes(i) ? p.relic : '❔').join(' ');
+  $('trail').innerHTML = PHASES.map((p,i) => {
+    const done = S.relics.includes(i);
+    const next = i === S.phase && !done;
+    const cls = done ? 'done' : next ? 'next' : 'locked';
+    const mark = done ? '✅' : next ? '📍' : '🔒';
+    return `<div class="stage ${cls}">
+      <span class="se">${p.emoji}</span>
+      <div><div class="sn">Parada ${i+1} · ${p.name}</div><div class="sd">${p.qs.length} enigmas</div></div>
+      <span class="right">${mark}</span></div>`;
+  }).join('');
+  $('btn-go').style.display = S.phase < PHASES.length ? '' : 'none';
+}
+$('btn-go').onclick = () => {
+  const p = PHASES[S.phase];
+  $('intro-emoji').textContent = p.emoji;
+  $('intro-title').textContent = `Parada ${S.phase+1} · ${p.name}`;
+  $('intro-text').textContent = p.intro;
+  show('s-intro');
+};
+$('btn-enter').onclick = () => { S.qi = 0; S.lives = 3; renderQ(); show('s-game'); };
+
+// ══════════════ JOGO ══════════════
+function renderTop() {
+  $('b-hero').textContent = `${S.hero.e} ${S.name}`;
+  $('b-lives').textContent = '❤️'.repeat(S.lives) || '—';
+  $('b-xp').textContent = S.xp;
+  const sb = $('b-streak');
+  if (S.streak >= 3) { sb.style.display=''; sb.classList.add('streak-on'); $('b-streak-n').textContent = S.streak; }
+  else sb.style.display = 'none';
+}
+function renderQ() {
+  const p = PHASES[S.phase], q = p.qs[S.qi];
+  renderTop();
+  $('prog').style.width = (S.qi / p.qs.length * 100) + '%';
+  $('q-cat').textContent = `${p.emoji} ${p.name} · Enigma ${S.qi+1} de ${p.qs.length}`;
+  $('q-text').textContent = q.q;
+  $('feedback').className = 'feedback';
+  // embaralha as opções a cada exibição
+  const order = q.o.map((_,i) => i).sort(() => Math.random() - .5);
+  $('opts').innerHTML = order.map((oi,pos) =>
+    `<button class="opt" data-oi="${oi}" onclick="answer(this)">
+       <span class="letter">${'ABCD'[pos]}</span><span>${q.o[oi]}</span></button>`).join('');
+}
+window.answer = btn => {
+  const p = PHASES[S.phase], q = p.qs[S.qi];
+  const oi = +btn.dataset.oi, correct = oi === q.a;
+  document.querySelectorAll('.opt').forEach(b => {
+    b.disabled = true;
+    if (+b.dataset.oi === q.a) b.classList.add('right');
+    else if (b === btn) b.classList.add('wrong');
+  });
+  S.total++;
+  const fb = $('feedback');
+  if (correct) {
+    S.right++; S.streak++; S.best = Math.max(S.best, S.streak);
+    const gain = S.streak >= 3 ? 20 : 10;
+    S.xp += gain;
+    fb.classList.add('good');
+    $('fb-title').textContent = `✅ Correto! +${gain} XP` + (S.streak >= 3 ? ' (bônus de sequência!)' : '');
+  } else {
+    S.streak = 0; S.lives--;
+    S.wrongs.push({q:q.q, a:q.o[q.a], e:q.e});
+    fb.classList.add('evil');
+    $('fb-title').textContent = '❌ Ops! A resposta certa está em verde.';
+  }
+  $('fb-text').textContent = q.e;
+  fb.classList.add('show');
+  renderTop();
+};
+$('btn-next').onclick = () => {
+  if (S.lives <= 0) { show('s-fail'); return; }
+  S.qi++;
+  const p = PHASES[S.phase];
+  if (S.qi >= p.qs.length) {
+    S.relics.push(S.phase);
+    S.phase++;
+    $('done-relic').textContent = p.relic;
+    $('done-text').textContent = `Você conquistou o tesouro "${p.relic}" da parada ${p.name}! ` +
+      (S.phase < PHASES.length ? `Faltam ${PHASES.length - S.relics.length} tesouros.` : 'Esse era o último!');
+    show('s-done');
+  } else renderQ();
+};
+$('btn-map').onclick = () => {
+  if (S.phase >= PHASES.length) endGame();
+  else { renderMap(); show('s-map'); }
+};
+$('btn-retry').onclick = () => { S.qi = 0; S.lives = 3; renderQ(); show('s-game'); };
+
+// ══════════════ FIM ══════════════
+function endGame() {
+  $('end-relics').textContent = PHASES.map(p => p.relic).join(' ');
+  $('e-xp').textContent = S.xp;
+  const acc = S.total ? Math.round(S.right / S.total * 100) : 0;
+  $('e-acc').textContent = acc + '%';
+  $('e-best').textContent = S.best;
+  const rank = acc >= 90 ? '🏅 Mestre das Rotas! Pronto(a) para a prova!'
+             : acc >= 75 ? '🥈 Grande Caravaneiro(a)! Revise os pontos abaixo e estará pronto(a)!'
+             : acc >= 50 ? '🥉 Aprendiz de rota — vale revisar o conteúdo!'
+             : '🗺️ Caravana perdida no deserto — jogue de novo para fixar o conteúdo!';
+  $('e-rank').textContent = `${S.hero.e} ${S.name}: ${rank}`;
+  if (S.wrongs.length) {
+    const seen = new Set();
+    $('e-review').innerHTML = S.wrongs.filter(w => !seen.has(w.q) && seen.add(w.q)).map(w =>
+      `<div class="review-item"><div class="rq">${w.q}</div>
+       <div class="ra">✔ ${w.a}</div><div style="color:var(--muted); margin-top:4px;">${w.e}</div></div>`).join('');
+    $('e-review-card').style.display = '';
+  } else {
+    $('e-review-card').style.display = 'none';
+  }
+  show('s-end');
+}
+$('btn-again').onclick = () => { show('s-start'); };
+</script>
+</body>
+</html>
