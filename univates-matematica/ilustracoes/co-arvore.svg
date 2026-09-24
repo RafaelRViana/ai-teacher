@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="420" height="240" preserveAspectRatio="xMinYMin meet" viewBox="0 0 420 240" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="420" height="240"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-240)" style="clip-path: url(#clip)">
+		<g transform="">
+			<text x="15" y="214" style="font-family: Helvetica; font-size: 18px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,428) scale(1,-1)">Cada escolha abre novos caminhos</text>
+			<text x="25" y="118" style="font-family: Helvetica; font-size: 18px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,236) scale(1,-1)">Lanche</text>
+			<path d="M 93,124 L 160,168 Z" style="stroke: rgb(81%,41%,21%); stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="160 168, 151.0772 166.8236, 155.375 160.2793" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(81%,41%,21%); fill-rule: evenodd;"/>
+			<text x="171" y="163" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,326) scale(1,-1)">Pão A</text>
+			<path d="M 226,168 L 290,196 Z" style="stroke: rgb(81%,41%,21%); stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="290 196, 281.0064 196.3382, 284.1445 189.1653" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(81%,41%,21%); fill-rule: evenodd;"/>
+			<text x="304" y="191" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,382) scale(1,-1)">Queijo</text>
+			<path d="M 226,168 L 290,140 Z" style="stroke: rgb(81%,41%,21%); stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="290 140, 284.1445 146.8347, 281.0064 139.6618" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(81%,41%,21%); fill-rule: evenodd;"/>
+			<text x="304" y="135" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,270) scale(1,-1)">Ovo</text>
+			<path d="M 93,124 L 160,60 Z" style="stroke: rgb(81%,41%,21%); stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="160 60, 156.8439 68.42847, 151.4359 62.76696" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(81%,41%,21%); fill-rule: evenodd;"/>
+			<text x="171" y="55" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,110) scale(1,-1)">Pão B</text>
+			<path d="M 226,60 L 290,88 Z" style="stroke: rgb(81%,41%,21%); stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="290 88, 281.0064 88.33823, 284.1445 81.16528" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(81%,41%,21%); fill-rule: evenodd;"/>
+			<text x="304" y="83" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,166) scale(1,-1)">Queijo</text>
+			<path d="M 226,60 L 290,32 Z" style="stroke: rgb(81%,41%,21%); stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="290 32, 284.1445 38.83472, 281.0064 31.66177" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(81%,41%,21%); fill-rule: evenodd;"/>
+			<text x="304" y="27" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,54) scale(1,-1)">Ovo</text>
+			<text x="68.72999999999999" y="11" style="font-family: Helvetica; font-size: 17px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,22) scale(1,-1)">2 pães × 2 recheios = 4 combinações</text>
+		</g>
+	</g>
+</svg>

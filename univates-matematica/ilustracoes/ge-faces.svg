@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="420" height="240" preserveAspectRatio="xMinYMin meet" viewBox="0 0 420 240" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="420" height="240"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-240)" style="clip-path: url(#clip)">
+		<g transform="">
+			<text x="15" y="213" style="font-family: Helvetica; font-size: 18px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,426) scale(1,-1)">O contato esconde duas faces</text>
+			<polygon points="75 72, 147 72, 147 144, 75 144" style="stroke: rgb(9%,21%,26%); stroke-linecap: butt; stroke-width: 1; fill: rgb(90%,94%,90%); fill-rule: evenodd;"/>
+			<polygon points="75 144, 87 153, 159 153, 147 144" style="stroke: rgb(9%,21%,26%); stroke-linecap: butt; stroke-width: 1; fill: rgb(91%,70%,27%); fill-rule: evenodd;"/>
+			<polygon points="147 72, 159 81, 159 153, 147 144" style="stroke: rgb(9%,21%,26%); stroke-linecap: butt; stroke-width: 1; fill: rgb(21%,49%,72%); fill-rule: evenodd;"/>
+			<polygon points="185 72, 257 72, 257 144, 185 144" style="stroke: rgb(9%,21%,26%); stroke-linecap: butt; stroke-width: 1; fill: rgb(90%,94%,90%); fill-rule: evenodd;"/>
+			<polygon points="185 144, 197 153, 269 153, 257 144" style="stroke: rgb(9%,21%,26%); stroke-linecap: butt; stroke-width: 1; fill: rgb(91%,70%,27%); fill-rule: evenodd;"/>
+			<polygon points="257 72, 269 81, 269 153, 257 144" style="stroke: rgb(9%,21%,26%); stroke-linecap: butt; stroke-width: 1; fill: rgb(21%,49%,72%); fill-rule: evenodd;"/>
+			<path d="M 170,170 L 150,143 Z" style="stroke: rgb(81%,41%,21%); stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="150 143, 157.9694 147.1819, 151.6781 151.8422" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(81%,41%,21%); fill-rule: evenodd;"/>
+			<path d="M 175,170 L 187,126 Z" style="stroke: rgb(81%,41%,21%); stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="187 126, 188.6444 134.8485, 181.0909 132.7884" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(81%,41%,21%); fill-rule: evenodd;"/>
+			<text x="53.13249999999999" y="25" style="font-family: Helvetica; font-size: 17px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,50) scale(1,-1)">Em cada contato: uma face de cada cubo</text>
+		</g>
+	</g>
+</svg>

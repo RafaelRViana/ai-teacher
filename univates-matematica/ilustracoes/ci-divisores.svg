@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="420" height="240" preserveAspectRatio="xMinYMin meet" viewBox="0 0 420 240" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="420" height="240"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-240)" style="clip-path: url(#clip)">
+		<g transform="">
+			<text x="15" y="212" style="font-family: Helvetica; font-size: 18px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,424) scale(1,-1)">Divisores aparecem aos pares</text>
+			<rect x="45" y="150" width="70" height="40" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(90%,94%,90%); fill-rule: evenodd;"/>
+			<text x="75.55199999999999" y="163" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,326) scale(1,-1)">1</text>
+			<text x="150" y="162" style="font-family: Helvetica; font-size: 22px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,324) scale(1,-1)">×</text>
+			<rect x="190" y="150" width="70" height="40" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(90%,94%,90%); fill-rule: evenodd;"/>
+			<text x="216.10399999999998" y="163" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,326) scale(1,-1)">16</text>
+			<text x="290" y="162" style="font-family: Helvetica; font-size: 20px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,324) scale(1,-1)">= 16</text>
+			<rect x="45" y="96" width="70" height="40" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(90%,94%,90%); fill-rule: evenodd;"/>
+			<text x="75.55199999999999" y="109" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,218) scale(1,-1)">2</text>
+			<text x="150" y="108" style="font-family: Helvetica; font-size: 22px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,216) scale(1,-1)">×</text>
+			<rect x="190" y="96" width="70" height="40" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(90%,94%,90%); fill-rule: evenodd;"/>
+			<text x="220.552" y="109" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,218) scale(1,-1)">8</text>
+			<text x="290" y="108" style="font-family: Helvetica; font-size: 20px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,216) scale(1,-1)">= 16</text>
+			<rect x="45" y="42" width="70" height="40" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(90%,94%,90%); fill-rule: evenodd;"/>
+			<text x="75.55199999999999" y="55" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,110) scale(1,-1)">4</text>
+			<text x="150" y="54" style="font-family: Helvetica; font-size: 22px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,108) scale(1,-1)">×</text>
+			<rect x="190" y="42" width="70" height="40" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(90%,94%,90%); fill-rule: evenodd;"/>
+			<text x="220.552" y="55" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,110) scale(1,-1)">4</text>
+			<text x="290" y="54" style="font-family: Helvetica; font-size: 20px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,108) scale(1,-1)">= 16</text>
+			<text x="90.11599999999999" y="10" style="font-family: Helvetica; font-size: 17px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,20) scale(1,-1)">Divisores: 1, 2, 4, 8, 16 → cinco</text>
+		</g>
+	</g>
+</svg>

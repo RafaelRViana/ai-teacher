@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="420" height="240" preserveAspectRatio="xMinYMin meet" viewBox="0 0 420 240" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="420" height="240"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-240)" style="clip-path: url(#clip)">
+		<g transform="">
+			<text x="15" y="214" style="font-family: Helvetica; font-size: 18px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,428) scale(1,-1)">30 viagens: duas maneiras de pagar</text>
+			<text x="15" y="160" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,320) scale(1,-1)">Bilhetes</text>
+			<rect x="15" y="130" width="288" height="22" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(21%,49%,72%); fill-rule: evenodd;"/>
+			<text x="320" y="133" style="font-family: Helvetica; font-size: 17px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,266) scale(1,-1)">R$ 192</text>
+			<text x="15" y="92" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,184) scale(1,-1)">Passe</text>
+			<rect x="15" y="62" width="225" height="22" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(13%,45%,35%); fill-rule: evenodd;"/>
+			<text x="320" y="65" style="font-family: Helvetica; font-size: 17px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,130) scale(1,-1)">R$ 150</text>
+			<text x="15" y="18" style="font-family: Helvetica; font-size: 17px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,36) scale(1,-1)">R$ 192 - R$ 150 = R$ 42 de economia</text>
+		</g>
+	</g>
+</svg>

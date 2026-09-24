@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="420" height="240" preserveAspectRatio="xMinYMin meet" viewBox="0 0 420 240" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="420" height="240"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-240)" style="clip-path: url(#clip)">
+		<g transform="">
+			<text x="15" y="212" style="font-family: Helvetica; font-size: 17px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,424) scale(1,-1)">A quantidade é a mesma; a unidade muda</text>
+			<rect x="15" y="147" width="115" height="40" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(90%,94%,90%); fill-rule: evenodd;"/>
+			<text x="57.379999999999995" y="160" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,320) scale(1,-1)">1 kg</text>
+			<path d="M 145,167 L 240,167 Z" style="stroke: rgb(81%,41%,21%); stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="240 167, 231.896 170.9147, 231.896 163.0853" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(81%,41%,21%); fill-rule: evenodd;"/>
+			<rect x="260" y="147" width="145" height="40" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<text x="305.812" y="160" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,320) scale(1,-1)">1.000 g</text>
+			<text x="171.13400000000001" y="177" style="font-family: Helvetica; font-size: 13px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,354) scale(1,-1)">× 1.000</text>
+			<rect x="15" y="83" width="115" height="40" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(90%,94%,90%); fill-rule: evenodd;"/>
+			<text x="61.379999999999995" y="96" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,192) scale(1,-1)">1 L</text>
+			<path d="M 145,103 L 240,103 Z" style="stroke: rgb(81%,41%,21%); stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="240 103, 231.896 106.9147, 231.896 99.08531" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(81%,41%,21%); fill-rule: evenodd;"/>
+			<rect x="260" y="83" width="145" height="40" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<text x="299.148" y="96" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,192) scale(1,-1)">1.000 mL</text>
+			<text x="171.13400000000001" y="113" style="font-family: Helvetica; font-size: 13px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,226) scale(1,-1)">× 1.000</text>
+			<rect x="15" y="19" width="115" height="40" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(90%,94%,90%); fill-rule: evenodd;"/>
+			<text x="55.164" y="32" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,64) scale(1,-1)">1 km</text>
+			<path d="M 145,39 L 240,39 Z" style="stroke: rgb(81%,41%,21%); stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="240 39, 231.896 42.91469, 231.896 35.08531" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(81%,41%,21%); fill-rule: evenodd;"/>
+			<rect x="260" y="19" width="145" height="40" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<text x="303.596" y="32" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,64) scale(1,-1)">1.000 m</text>
+			<text x="171.13400000000001" y="49" style="font-family: Helvetica; font-size: 13px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,98) scale(1,-1)">× 1.000</text>
+		</g>
+	</g>
+</svg>

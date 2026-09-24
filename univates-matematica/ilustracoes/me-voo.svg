@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="420" height="240" preserveAspectRatio="xMinYMin meet" viewBox="0 0 420 240" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="420" height="240"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-240)" style="clip-path: url(#clip)">
+		<g transform="">
+			<text x="15" y="212" style="font-family: Helvetica; font-size: 18px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,424) scale(1,-1)">Linha do tempo da viagem</text>
+			<rect x="20" y="137" width="170" height="40" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(90%,94%,90%); fill-rule: evenodd;"/>
+			<text x="44.064" y="150" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,300) scale(1,-1)">Segunda · 22h40</text>
+			<rect x="230" y="137" width="170" height="40" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<text x="270.088" y="150" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,300) scale(1,-1)">Terça · 2h30</text>
+			<path d="M 195,158 L 225,158 Z" style="stroke: rgb(81%,41%,21%); stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="225 158, 216.896 161.9147, 216.896 154.0853" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(81%,41%,21%); fill-rule: evenodd;"/>
+			<text x="159.072" y="112" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,224) scale(1,-1)">+ 3h50 de voo</text>
+			<path d="M 315,130 L 315,90 Z" style="stroke: rgb(81%,41%,21%); stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="315 90, 318.9147 98.10402, 311.0853 98.10402" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(81%,41%,21%); fill-rule: evenodd;"/>
+			<rect x="230" y="42" width="170" height="40" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(90%,94%,90%); fill-rule: evenodd;"/>
+			<text x="270.088" y="55" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,110) scale(1,-1)">Terça · 4h30</text>
+			<text x="20" y="67" style="font-family: Helvetica; font-size: 17px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,134) scale(1,-1)">Destino: 2 horas</text>
+			<text x="20" y="42" style="font-family: Helvetica; font-size: 17px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,84) scale(1,-1)">adiantado</text>
+		</g>
+	</g>
+</svg>

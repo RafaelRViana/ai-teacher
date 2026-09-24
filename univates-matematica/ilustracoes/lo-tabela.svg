@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="420" height="240" preserveAspectRatio="xMinYMin meet" viewBox="0 0 420 240" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="420" height="240"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-240)" style="clip-path: url(#clip)">
+		<g transform="">
+			<text x="15" y="214" style="font-family: Helvetica; font-size: 17px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,428) scale(1,-1)">Uma tabela impede o palpite apressado</text>
+			<rect x="12" y="141" width="100" height="45" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1; fill: rgb(90%,94%,90%); fill-rule: evenodd;"/>
+			<text x="43.2085" y="157" style="font-family: Helvetica; font-size: 13px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,314) scale(1,-1)">Senha</text>
+			<rect x="112" y="141" width="100" height="45" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1; fill: rgb(90%,94%,90%); fill-rule: evenodd;"/>
+			<text x="139.965" y="157" style="font-family: Helvetica; font-size: 13px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,314) scale(1,-1)">Frase 1</text>
+			<rect x="212" y="141" width="100" height="45" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1; fill: rgb(90%,94%,90%); fill-rule: evenodd;"/>
+			<text x="239.965" y="157" style="font-family: Helvetica; font-size: 13px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,314) scale(1,-1)">Frase 2</text>
+			<rect x="312" y="141" width="100" height="45" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1; fill: rgb(90%,94%,90%); fill-rule: evenodd;"/>
+			<text x="339.965" y="157" style="font-family: Helvetica; font-size: 13px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,314) scale(1,-1)">Frase 3</text>
+			<rect x="12" y="96" width="100" height="45" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="51.158" y="112" style="font-family: Helvetica; font-size: 13px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,224) scale(1,-1)">213</text>
+			<rect x="112" y="96" width="100" height="45" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="146.10750000000002" y="112" style="font-family: Helvetica; font-size: 13px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,224) scale(1,-1)">Falsa</text>
+			<rect x="212" y="96" width="100" height="45" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="230.20850000000002" y="112" style="font-family: Helvetica; font-size: 13px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,224) scale(1,-1)">Verdadeira</text>
+			<rect x="312" y="96" width="100" height="45" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="330.2085" y="112" style="font-family: Helvetica; font-size: 13px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,224) scale(1,-1)">Verdadeira</text>
+			<rect x="12" y="51" width="100" height="45" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="51.158" y="67" style="font-family: Helvetica; font-size: 13px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,134) scale(1,-1)">123</text>
+			<rect x="112" y="51" width="100" height="45" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="130.20850000000002" y="67" style="font-family: Helvetica; font-size: 13px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,134) scale(1,-1)">Verdadeira</text>
+			<rect x="212" y="51" width="100" height="45" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="246.10750000000002" y="67" style="font-family: Helvetica; font-size: 13px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,134) scale(1,-1)">Falsa</text>
+			<rect x="312" y="51" width="100" height="45" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="330.2085" y="67" style="font-family: Helvetica; font-size: 13px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,134) scale(1,-1)">Verdadeira</text>
+			<text x="49.095" y="20" style="font-family: Helvetica; font-size: 15px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,40) scale(1,-1)">Exatamente uma verdadeira? Nenhuma dessas!</text>
+		</g>
+	</g>
+</svg>

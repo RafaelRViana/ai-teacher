@@ -1,0 +1,1526 @@
+[
+  {
+    "id": "operacoes-01",
+    "topico": "operacoes",
+    "enunciado": "Um salão tem 4 fileiras com 9 mesas cada. Cada mesa precisa de 6 cadeiras. Quantas cadeiras serão usadas?",
+    "opcoes": [
+      "216",
+      "54",
+      "144",
+      "240"
+    ],
+    "correta": 0,
+    "explicacao": "São 4 × 9 = 36 mesas. Cada uma usa 6 cadeiras: 36 × 6 = 216.",
+    "nivel": "Básico",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU21-6ANO-Q04",
+      "OMU19-6ANO-Q01",
+      "OMU17-6ANO-Q02",
+      "OMU17-6ANO-Q04",
+      "OMU17-6ANO-Q09"
+    ]
+  },
+  {
+    "id": "operacoes-02",
+    "topico": "operacoes",
+    "enunciado": "Uma passagem custa R$ 3,20. Bia faz 2 viagens por dia durante 20 dias. Um passe para todas essas viagens custa R$ 110. Qual é a economia ao comprar o passe?",
+    "opcoes": [
+      "R$ 18,00",
+      "R$ 46,00",
+      "R$ 64,00",
+      "R$ 128,00"
+    ],
+    "correta": 0,
+    "explicacao": "São 40 viagens. Bilhetes: 40 × 3,20 = R$ 128. Economia: 128 − 110 = R$ 18.",
+    "nivel": "Intermediário",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU21-6ANO-Q04",
+      "OMU19-6ANO-Q01",
+      "OMU17-6ANO-Q02",
+      "OMU17-6ANO-Q04",
+      "OMU17-6ANO-Q09"
+    ]
+  },
+  {
+    "id": "operacoes-03",
+    "topico": "operacoes",
+    "enunciado": "Qual é o valor de 18 − 2 × (3 + 4)?",
+    "opcoes": [
+      "4",
+      "112",
+      "−28",
+      "16"
+    ],
+    "correta": 0,
+    "explicacao": "Primeiro os parênteses: 3 + 4 = 7. Depois 2 × 7 = 14. Por fim 18 − 14 = 4.",
+    "nivel": "Básico",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU21-6ANO-Q04",
+      "OMU19-6ANO-Q01",
+      "OMU17-6ANO-Q02",
+      "OMU17-6ANO-Q04",
+      "OMU17-6ANO-Q09"
+    ]
+  },
+  {
+    "id": "operacoes-04",
+    "topico": "operacoes",
+    "enunciado": "Uma calculadora tem as teclas M (multiplica por 3), S (soma 4) e Q (eleva ao quadrado). Começando em 2, qual valor aparece após S, M, Q, nessa ordem?",
+    "opcoes": [
+      "324",
+      "100",
+      "40",
+      "108"
+    ],
+    "correta": 0,
+    "explicacao": "2 → S → 6 → M → 18 → Q → 18 × 18 = 324.",
+    "nivel": "Intermediário",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU21-6ANO-Q04",
+      "OMU19-6ANO-Q01",
+      "OMU17-6ANO-Q02",
+      "OMU17-6ANO-Q04",
+      "OMU17-6ANO-Q09"
+    ]
+  },
+  {
+    "id": "operacoes-05",
+    "topico": "operacoes",
+    "enunciado": "Sem acrescentar parênteses, substitua cada □ por + ou × em 2 □ 3 □ 1 □ 4. Qual é o maior resultado possível?",
+    "opcoes": [
+      "24",
+      "28",
+      "20",
+      "36"
+    ],
+    "correta": 0,
+    "explicacao": "Usando × em todos os espaços, temos 24. As outras combinações resultam em 9, 10, 11 ou 14. A ordem usual das operações deve ser mantida.",
+    "nivel": "Desafio",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU21-6ANO-Q04",
+      "OMU19-6ANO-Q01",
+      "OMU17-6ANO-Q02",
+      "OMU17-6ANO-Q04",
+      "OMU17-6ANO-Q09"
+    ]
+  },
+  {
+    "id": "medidas-01",
+    "topico": "medidas",
+    "enunciado": "Uma receita usa 750 g de farinha de um pacote de 2 kg. Quantos gramas sobram?",
+    "opcoes": [
+      "1.250 g",
+      "1.750 g",
+      "1,25 g",
+      "250 g"
+    ],
+    "correta": 0,
+    "explicacao": "2 kg = 2.000 g. Sobra: 2.000 − 750 = 1.250 g.",
+    "nivel": "Básico",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU22-6ANO-Q02",
+      "OMU21-6ANO-Q02",
+      "OMU20-6ANO-Q03",
+      "OMU17-6ANO-Q01"
+    ]
+  },
+  {
+    "id": "medidas-02",
+    "topico": "medidas",
+    "enunciado": "Foram consumidas 18 garrafas de 2 L de suco. Cada pessoa bebeu exatamente 3 copos de 200 mL. Quantas pessoas beberam suco?",
+    "opcoes": [
+      "60",
+      "30",
+      "90",
+      "120"
+    ],
+    "correta": 0,
+    "explicacao": "Total: 36 L = 36.000 mL. Cada pessoa: 600 mL. 36.000 ÷ 600 = 60.",
+    "nivel": "Intermediário",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU22-6ANO-Q02",
+      "OMU21-6ANO-Q02",
+      "OMU20-6ANO-Q03",
+      "OMU17-6ANO-Q01"
+    ]
+  },
+  {
+    "id": "medidas-03",
+    "topico": "medidas",
+    "enunciado": "Num mapa, 1 cm representa 250 m. O trajeto de casa até a escola mede 6 cm no mapa. Qual a distância de ida e volta percorrida em 4 dias?",
+    "opcoes": [
+      "12 km",
+      "6 km",
+      "1,5 km",
+      "24 km"
+    ],
+    "correta": 0,
+    "explicacao": "Uma ida mede 6 × 250 = 1.500 m. Em 4 dias, são 8 trajetos: 12.000 m = 12 km.",
+    "nivel": "Intermediário",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU22-6ANO-Q02",
+      "OMU21-6ANO-Q02",
+      "OMU20-6ANO-Q03",
+      "OMU17-6ANO-Q01"
+    ]
+  },
+  {
+    "id": "medidas-04",
+    "topico": "medidas",
+    "enunciado": "Um voo parte às 23h20 de segunda-feira e dura 2h50. O destino está 3 horas adiantado em relação à origem. Qual é a hora local da chegada?",
+    "opcoes": [
+      "5h10 de terça-feira",
+      "3h10 de terça-feira",
+      "23h10 de segunda-feira",
+      "6h10 de terça-feira"
+    ],
+    "correta": 0,
+    "explicacao": "No horário de origem: 23h20 + 2h50 = 2h10 de terça. Somando 3 h de fuso: 5h10 de terça.",
+    "nivel": "Desafio",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU22-6ANO-Q02",
+      "OMU21-6ANO-Q02",
+      "OMU20-6ANO-Q03",
+      "OMU17-6ANO-Q01"
+    ]
+  },
+  {
+    "id": "medidas-05",
+    "topico": "medidas",
+    "enunciado": "Uma viagem começa às 8h45. São 1h35 de ônibus, 25 minutos de espera e 50 minutos de trem, sem mudança de fuso. A que horas termina?",
+    "opcoes": [
+      "11h35",
+      "10h55",
+      "11h05",
+      "12h15"
+    ],
+    "correta": 0,
+    "explicacao": "8h45 + 1h35 = 10h20. Espera: 10h45. Trem: 11h35.",
+    "nivel": "Intermediário",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU22-6ANO-Q02",
+      "OMU21-6ANO-Q02",
+      "OMU20-6ANO-Q03",
+      "OMU17-6ANO-Q01"
+    ]
+  },
+  {
+    "id": "fracoes-01",
+    "topico": "fracoes",
+    "enunciado": "Qual é a diferença entre 3/4 e 2/3?",
+    "opcoes": [
+      "1/12",
+      "1/7",
+      "1/3",
+      "5/12"
+    ],
+    "correta": 0,
+    "explicacao": "Use denominador 12: 9/12 − 8/12 = 1/12.",
+    "nivel": "Básico",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU26-6ANO-Q02",
+      "OMU26-6ANO-Q09",
+      "OMU26-6ANO-Q10",
+      "OMU19-6ANO-Q04",
+      "OMU19-6ANO-Q06",
+      "OMU19-6ANO-Q07",
+      "OMU19-6ANO-Q10",
+      "OMU18-6ANO-Q01"
+    ]
+  },
+  {
+    "id": "fracoes-02",
+    "topico": "fracoes",
+    "enunciado": "Um copo pequeno corresponde a 2/3 de um médio. O médio corresponde a 3/4 de um grande. Que fração do grande corresponde ao pequeno?",
+    "opcoes": [
+      "1/2",
+      "5/7",
+      "2/4 de um médio",
+      "8/9"
+    ],
+    "correta": 0,
+    "explicacao": "2/3 × 3/4 = 6/12 = 1/2 do copo grande.",
+    "nivel": "Intermediário",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU26-6ANO-Q02",
+      "OMU26-6ANO-Q09",
+      "OMU26-6ANO-Q10",
+      "OMU19-6ANO-Q04",
+      "OMU19-6ANO-Q06",
+      "OMU19-6ANO-Q07",
+      "OMU19-6ANO-Q10",
+      "OMU18-6ANO-Q01"
+    ]
+  },
+  {
+    "id": "fracoes-03",
+    "topico": "fracoes",
+    "enunciado": "Ana, Beto e Caio pagaram R$ 6, R$ 9 e R$ 15 por uma pizza de R$ 30. A divisão foi proporcional ao pagamento. Qual fração coube a Beto?",
+    "opcoes": [
+      "3/10",
+      "1/5",
+      "1/2",
+      "3/5"
+    ],
+    "correta": 0,
+    "explicacao": "Beto contribuiu com 9 de 30 reais. Sua fração é 9/30 = 3/10.",
+    "nivel": "Intermediário",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU26-6ANO-Q02",
+      "OMU26-6ANO-Q09",
+      "OMU26-6ANO-Q10",
+      "OMU19-6ANO-Q04",
+      "OMU19-6ANO-Q06",
+      "OMU19-6ANO-Q07",
+      "OMU19-6ANO-Q10",
+      "OMU18-6ANO-Q01"
+    ]
+  },
+  {
+    "id": "fracoes-04",
+    "topico": "fracoes",
+    "enunciado": "Pedro comeu 12 fatias. João comeu 1/3 a mais que Pedro. Rafael comeu metade do que João comeu. Quantas fatias Rafael comeu?",
+    "opcoes": [
+      "8",
+      "2",
+      "6",
+      "18"
+    ],
+    "correta": 0,
+    "explicacao": "Um terço de 12 é 4. João comeu 16 e Rafael comeu 16 ÷ 2 = 8.",
+    "nivel": "Intermediário",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU26-6ANO-Q02",
+      "OMU26-6ANO-Q09",
+      "OMU26-6ANO-Q10",
+      "OMU19-6ANO-Q04",
+      "OMU19-6ANO-Q06",
+      "OMU19-6ANO-Q07",
+      "OMU19-6ANO-Q10",
+      "OMU18-6ANO-Q01"
+    ]
+  },
+  {
+    "id": "fracoes-05",
+    "topico": "fracoes",
+    "enunciado": "Uma pessoa pretende dar 6 voltas numa pista. Ela já percorreu 3/8 da distância planejada. Quantas voltas completas e que fração da próxima volta ela percorreu?",
+    "opcoes": [
+      "2 voltas e 1/4",
+      "3 voltas e 1/8",
+      "2 voltas e 3/8",
+      "1 volta e 3/4"
+    ],
+    "correta": 0,
+    "explicacao": "6 × 3/8 = 18/8 = 9/4 = 2 + 1/4.",
+    "nivel": "Desafio",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU26-6ANO-Q02",
+      "OMU26-6ANO-Q09",
+      "OMU26-6ANO-Q10",
+      "OMU19-6ANO-Q04",
+      "OMU19-6ANO-Q06",
+      "OMU19-6ANO-Q07",
+      "OMU19-6ANO-Q10",
+      "OMU18-6ANO-Q01"
+    ]
+  },
+  {
+    "id": "proporcao-01",
+    "topico": "proporcao",
+    "enunciado": "500 g de queijo custam R$ 30. Mantendo o preço por grama, quanto custam 150 g?",
+    "opcoes": [
+      "R$ 9,00",
+      "R$ 4,50",
+      "R$ 15,00",
+      "R$ 10,00"
+    ],
+    "correta": 0,
+    "explicacao": "Cada 100 g custa R$ 6. Logo, 150 g custam R$ 9.",
+    "nivel": "Básico",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU26-6ANO-Q05",
+      "OMU22-6ANO-Q04",
+      "OMU20-6ANO-Q01",
+      "OMU18-6ANO-Q03"
+    ]
+  },
+  {
+    "id": "proporcao-02",
+    "topico": "proporcao",
+    "enunciado": "Um carro percorre 12 km por litro. Uma viagem tem 180 km e o litro custa R$ 6. Há dois pedágios de R$ 7. Qual é o gasto total?",
+    "opcoes": [
+      "R$ 104,00",
+      "R$ 90,00",
+      "R$ 97,00",
+      "R$ 118,00"
+    ],
+    "correta": 0,
+    "explicacao": "Combustível: 180 ÷ 12 = 15 L; custo R$ 90. Pedágios: R$ 14. Total R$ 104.",
+    "nivel": "Intermediário",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU26-6ANO-Q05",
+      "OMU22-6ANO-Q04",
+      "OMU20-6ANO-Q01",
+      "OMU18-6ANO-Q03"
+    ]
+  },
+  {
+    "id": "proporcao-03",
+    "topico": "proporcao",
+    "enunciado": "3 ralos iguais esvaziam 360 L em 4 horas. Quantos desses ralos esvaziam 600 L em 5 horas, com vazão constante?",
+    "opcoes": [
+      "4",
+      "3",
+      "5",
+      "6"
+    ],
+    "correta": 0,
+    "explicacao": "Um ralo retira 360 ÷ 3 ÷ 4 = 30 L/h. Em 5 h retira 150 L. 600 ÷ 150 = 4 ralos.",
+    "nivel": "Desafio",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU26-6ANO-Q05",
+      "OMU22-6ANO-Q04",
+      "OMU20-6ANO-Q01",
+      "OMU18-6ANO-Q03"
+    ]
+  },
+  {
+    "id": "proporcao-04",
+    "topico": "proporcao",
+    "enunciado": "Um veículo usa 20 L a cada 100 km. Uma viagem de 500 km consome exatamente 2,5 tanques. Qual é a capacidade do tanque?",
+    "opcoes": [
+      "40 L",
+      "50 L",
+      "100 L",
+      "25 L"
+    ],
+    "correta": 0,
+    "explicacao": "A viagem consome 5 × 20 = 100 L. Um tanque contém 100 ÷ 2,5 = 40 L.",
+    "nivel": "Intermediário",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU26-6ANO-Q05",
+      "OMU22-6ANO-Q04",
+      "OMU20-6ANO-Q01",
+      "OMU18-6ANO-Q03"
+    ]
+  },
+  {
+    "id": "proporcao-05",
+    "topico": "proporcao",
+    "enunciado": "Uma loja cobra R$ 8 por caderno mais uma taxa fixa de entrega de R$ 6 por pedido. Um pedido com 3 cadernos custa R$ 30. Quanto custa um pedido com 6 cadernos?",
+    "opcoes": [
+      "R$ 54,00",
+      "R$ 60,00",
+      "R$ 48,00",
+      "R$ 66,00"
+    ],
+    "correta": 0,
+    "explicacao": "São 6 × 8 + 6 = 54 reais. Dobrar o número de cadernos não dobra a taxa fixa.",
+    "nivel": "Intermediário",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU26-6ANO-Q05",
+      "OMU22-6ANO-Q04",
+      "OMU20-6ANO-Q01",
+      "OMU18-6ANO-Q03"
+    ]
+  },
+  {
+    "id": "padroes-01",
+    "topico": "padroes",
+    "enunciado": "Uma sequência começa em 7 e aumenta 4 a cada termo: 7, 11, 15... Qual é o décimo termo?",
+    "opcoes": [
+      "43",
+      "40",
+      "47",
+      "44"
+    ],
+    "correta": 0,
+    "explicacao": "Do primeiro ao décimo há 9 aumentos: 7 + 9 × 4 = 43.",
+    "nivel": "Básico",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU26-6ANO-Q01",
+      "OMU26-6ANO-Q06",
+      "OMU22-6ANO-Q01",
+      "OMU22-6ANO-Q10",
+      "OMU20-6ANO-Q04",
+      "OMU18-6ANO-Q08"
+    ]
+  },
+  {
+    "id": "padroes-02",
+    "topico": "padroes",
+    "enunciado": "Um desenho tem 8 filas. Da primeira à oitava, elas contêm 1, 3, 5, 7... azulejos pretos. Quantos azulejos pretos há no desenho inteiro?",
+    "opcoes": [
+      "64",
+      "15",
+      "56",
+      "72"
+    ],
+    "correta": 0,
+    "explicacao": "Some os 8 primeiros ímpares: 1 + 3 + 5 + 7 + 9 + 11 + 13 + 15 = 64.",
+    "nivel": "Intermediário",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU26-6ANO-Q01",
+      "OMU26-6ANO-Q06",
+      "OMU22-6ANO-Q01",
+      "OMU22-6ANO-Q10",
+      "OMU20-6ANO-Q04",
+      "OMU18-6ANO-Q08"
+    ]
+  },
+  {
+    "id": "padroes-03",
+    "topico": "padroes",
+    "enunciado": "Define-se a operação a # b = (a + 1) × b. Qual é o valor de 4 # 9?",
+    "opcoes": [
+      "45",
+      "36",
+      "40",
+      "49"
+    ],
+    "correta": 0,
+    "explicacao": "Substitua: (4 + 1) × 9 = 5 × 9 = 45.",
+    "nivel": "Básico",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU26-6ANO-Q01",
+      "OMU26-6ANO-Q06",
+      "OMU22-6ANO-Q01",
+      "OMU22-6ANO-Q10",
+      "OMU20-6ANO-Q04",
+      "OMU18-6ANO-Q08"
+    ]
+  },
+  {
+    "id": "padroes-04",
+    "topico": "padroes",
+    "enunciado": "Uma folha é dobrada ao meio 3 vezes. Fazem-se 5 furos distintos que atravessam todas as camadas, longe das dobras e das bordas, sem coincidirem ao abrir. Quantos furos aparecem na folha aberta?",
+    "opcoes": [
+      "40",
+      "15",
+      "30",
+      "80"
+    ],
+    "correta": 0,
+    "explicacao": "Três dobras formam 2 × 2 × 2 = 8 camadas. 5 × 8 = 40 furos.",
+    "nivel": "Intermediário",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU26-6ANO-Q01",
+      "OMU26-6ANO-Q06",
+      "OMU22-6ANO-Q01",
+      "OMU22-6ANO-Q10",
+      "OMU20-6ANO-Q04",
+      "OMU18-6ANO-Q08"
+    ]
+  },
+  {
+    "id": "padroes-05",
+    "topico": "padroes",
+    "enunciado": "Observe: 5² = 25; 35² = 1225; 335² = 112225. Calculando 3335², qual é a soma de seus algarismos?",
+    "opcoes": [
+      "16",
+      "14",
+      "17",
+      "20"
+    ],
+    "correta": 0,
+    "explicacao": "3335² = 11.122.225. Soma: 1 + 1 + 1 + 2 + 2 + 2 + 2 + 5 = 16.",
+    "nivel": "Desafio",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU26-6ANO-Q01",
+      "OMU26-6ANO-Q06",
+      "OMU22-6ANO-Q01",
+      "OMU22-6ANO-Q10",
+      "OMU20-6ANO-Q04",
+      "OMU18-6ANO-Q08"
+    ]
+  },
+  {
+    "id": "ciclos-01",
+    "topico": "ciclos",
+    "enunciado": "Qual dos valores não pode ser a soma de dois números de dois algarismos não nulos que tenham os algarismos em ordem invertida?",
+    "opcoes": [
+      "125",
+      "66",
+      "99",
+      "154"
+    ],
+    "correta": 0,
+    "explicacao": "AB + BA = 11 × (A + B). 125 não é múltiplo de 11. Os outros são possíveis: 15+51, 18+81 e 59+95.",
+    "nivel": "Intermediário",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU26-6ANO-Q04",
+      "OMU26-6ANO-Q08",
+      "OMU22-6ANO-Q09",
+      "OMU21-6ANO-Q05",
+      "OMU21-6ANO-Q01",
+      "OMU20-6ANO-Q05",
+      "OMU19-6ANO-Q03",
+      "OMU18-6ANO-Q02",
+      "OMU18-6ANO-Q04",
+      "OMU17-6ANO-Q06",
+      "OMU17-6ANO-Q10"
+    ]
+  },
+  {
+    "id": "ciclos-02",
+    "topico": "ciclos",
+    "enunciado": "Duas luzes piscam a cada 6 e 8 segundos. Elas piscaram juntas agora. Em quantos segundos piscarão juntas novamente?",
+    "opcoes": [
+      "24",
+      "14",
+      "48",
+      "12"
+    ],
+    "correta": 0,
+    "explicacao": "O primeiro múltiplo positivo comum de 6 e 8 é 24.",
+    "nivel": "Básico",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU26-6ANO-Q04",
+      "OMU26-6ANO-Q08",
+      "OMU22-6ANO-Q09",
+      "OMU21-6ANO-Q05",
+      "OMU21-6ANO-Q01",
+      "OMU20-6ANO-Q05",
+      "OMU19-6ANO-Q03",
+      "OMU18-6ANO-Q02",
+      "OMU18-6ANO-Q04",
+      "OMU17-6ANO-Q06",
+      "OMU17-6ANO-Q10"
+    ]
+  },
+  {
+    "id": "ciclos-03",
+    "topico": "ciclos",
+    "enunciado": "Numa pista circular de 5 km, Ana corre 13 km no sentido horário e Beto 9 km no sentido contrário, saindo do mesmo ponto. Qual a menor distância entre eles ao longo da pista?",
+    "opcoes": [
+      "2 km",
+      "1 km",
+      "3 km",
+      "4 km"
+    ],
+    "correta": 0,
+    "explicacao": "Ana termina na posição 3 km. Beto anda 4 km no sentido contrário após uma volta, terminando na posição 1 km na orientação de Ana. Os caminhos entre eles medem 2 e 3 km.",
+    "nivel": "Desafio",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU26-6ANO-Q04",
+      "OMU26-6ANO-Q08",
+      "OMU22-6ANO-Q09",
+      "OMU21-6ANO-Q05",
+      "OMU21-6ANO-Q01",
+      "OMU20-6ANO-Q05",
+      "OMU19-6ANO-Q03",
+      "OMU18-6ANO-Q02",
+      "OMU18-6ANO-Q04",
+      "OMU17-6ANO-Q06",
+      "OMU17-6ANO-Q10"
+    ]
+  },
+  {
+    "id": "ciclos-04",
+    "topico": "ciclos",
+    "enunciado": "Números de 1 a 16 começam apagados. Para cada k de 1 a 16, todos os múltiplos de k trocam de estado: apagado vira aceso e aceso vira apagado. Quais terminam acesos?",
+    "opcoes": [
+      "1, 4, 9 e 16",
+      "2, 4, 8 e 16",
+      "1, 3, 5 e 7",
+      "4, 8, 12 e 16"
+    ],
+    "correta": 0,
+    "explicacao": "Cada número muda uma vez por divisor. Só os quadrados perfeitos têm quantidade ímpar de divisores.",
+    "nivel": "Desafio",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU26-6ANO-Q04",
+      "OMU26-6ANO-Q08",
+      "OMU22-6ANO-Q09",
+      "OMU21-6ANO-Q05",
+      "OMU21-6ANO-Q01",
+      "OMU20-6ANO-Q05",
+      "OMU19-6ANO-Q03",
+      "OMU18-6ANO-Q02",
+      "OMU18-6ANO-Q04",
+      "OMU17-6ANO-Q06",
+      "OMU17-6ANO-Q10"
+    ]
+  },
+  {
+    "id": "ciclos-05",
+    "topico": "ciclos",
+    "enunciado": "Ana folga nos dias 4, 9, 14, 19... Beto folga nos dias 6, 12, 18, 24... A primeira folga comum é no dia 24. Qual é o dia da segunda folga comum, contando os dias continuamente?",
+    "opcoes": [
+      "54",
+      "30",
+      "48",
+      "60"
+    ],
+    "correta": 0,
+    "explicacao": "Os ciclos têm 5 e 6 dias. Entre encontros há MMC(5,6)=30 dias. A segunda coincidência ocorre em 24 + 30 = 54.",
+    "nivel": "Intermediário",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU26-6ANO-Q04",
+      "OMU26-6ANO-Q08",
+      "OMU22-6ANO-Q09",
+      "OMU21-6ANO-Q05",
+      "OMU21-6ANO-Q01",
+      "OMU20-6ANO-Q05",
+      "OMU19-6ANO-Q03",
+      "OMU18-6ANO-Q02",
+      "OMU18-6ANO-Q04",
+      "OMU17-6ANO-Q06",
+      "OMU17-6ANO-Q10"
+    ]
+  },
+  {
+    "id": "incognitas-01",
+    "topico": "incognitas",
+    "enunciado": "Duas pessoas têm a mesma quantidade de figurinhas. Uma doa 8 à outra, que passa a ter o triplo da quantidade da primeira. Quantas cada pessoa tinha antes?",
+    "opcoes": [
+      "16",
+      "8",
+      "24",
+      "32"
+    ],
+    "correta": 0,
+    "explicacao": "Se cada uma tinha x, ficam x − 8 e x + 8. x + 8 = 3x − 24; 32 = 2x; x = 16.",
+    "nivel": "Intermediário",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU26-6ANO-Q07",
+      "OMU22-6ANO-Q05",
+      "OMU21-6ANO-Q03",
+      "OMU21-6ANO-Q06",
+      "OMU21-6ANO-Q08",
+      "OMU20-6ANO-Q02",
+      "OMU19-6ANO-Q08",
+      "OMU18-6ANO-Q07"
+    ]
+  },
+  {
+    "id": "incognitas-02",
+    "topico": "incognitas",
+    "enunciado": "Um pai é 24 anos mais velho que a filha. Qual será a idade do pai quando ele tiver o dobro da idade dela?",
+    "opcoes": [
+      "48 anos",
+      "36 anos",
+      "24 anos",
+      "72 anos"
+    ],
+    "correta": 0,
+    "explicacao": "Se a filha tem x, o pai tem x + 24. Na ocasião, x + 24 = 2x, então x = 24 e o pai tem 48.",
+    "nivel": "Intermediário",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU26-6ANO-Q07",
+      "OMU22-6ANO-Q05",
+      "OMU21-6ANO-Q03",
+      "OMU21-6ANO-Q06",
+      "OMU21-6ANO-Q08",
+      "OMU20-6ANO-Q02",
+      "OMU19-6ANO-Q08",
+      "OMU18-6ANO-Q07"
+    ]
+  },
+  {
+    "id": "incognitas-03",
+    "topico": "incognitas",
+    "enunciado": "Uma pilha de 3 vasos encaixados mede 30 cm e uma de 7 vasos mede 46 cm. Os vasos são idênticos e cada novo vaso acrescenta a mesma altura. Quanto mede um vaso sozinho?",
+    "opcoes": [
+      "22 cm",
+      "4 cm",
+      "10 cm",
+      "26 cm"
+    ],
+    "correta": 0,
+    "explicacao": "Quatro vasos extras acrescentam 16 cm: cada um acrescenta 4 cm. H + 2 × 4 = 30; H = 22.",
+    "nivel": "Desafio",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU26-6ANO-Q07",
+      "OMU22-6ANO-Q05",
+      "OMU21-6ANO-Q03",
+      "OMU21-6ANO-Q06",
+      "OMU21-6ANO-Q08",
+      "OMU20-6ANO-Q02",
+      "OMU19-6ANO-Q08",
+      "OMU18-6ANO-Q07"
+    ]
+  },
+  {
+    "id": "incognitas-04",
+    "topico": "incognitas",
+    "enunciado": "Uma eleição teve 44 votos, todos válidos, para três candidatos. O último recebeu 4 votos; o vencedor recebeu o triplo dos votos do segundo. Quantos votos teve o vencedor?",
+    "opcoes": [
+      "30",
+      "33",
+      "10",
+      "40"
+    ],
+    "correta": 0,
+    "explicacao": "Restam 40 votos para primeiro e segundo. São 4 partes iguais: 3 do primeiro e 1 do segundo. Cada parte vale 10; vencedor: 30.",
+    "nivel": "Intermediário",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU26-6ANO-Q07",
+      "OMU22-6ANO-Q05",
+      "OMU21-6ANO-Q03",
+      "OMU21-6ANO-Q06",
+      "OMU21-6ANO-Q08",
+      "OMU20-6ANO-Q02",
+      "OMU19-6ANO-Q08",
+      "OMU18-6ANO-Q07"
+    ]
+  },
+  {
+    "id": "incognitas-05",
+    "topico": "incognitas",
+    "enunciado": "Um casal tem meninos e meninas. Cada menino tem tantos irmãos quanto irmãs. Cada menina tem o dobro de irmãos em relação às irmãs. Quantos filhos o casal tem ao todo?",
+    "opcoes": [
+      "7",
+      "5",
+      "6",
+      "8"
+    ],
+    "correta": 0,
+    "explicacao": "Com h meninos e m meninas: h − 1 = m e h = 2(m − 1). Resulta m = 3 e h = 4. Total 7.",
+    "nivel": "Desafio",
+    "tabela": null,
+    "origem": "Adaptação para treino da questão OMU19-6ANO-Q08. Alternativas e explicação organizadas para o jogo.",
+    "questao_base": "OMU19-6ANO-Q08",
+    "referencias_conteudo": [
+      "OMU26-6ANO-Q07",
+      "OMU22-6ANO-Q05",
+      "OMU21-6ANO-Q03",
+      "OMU21-6ANO-Q06",
+      "OMU21-6ANO-Q08",
+      "OMU20-6ANO-Q02",
+      "OMU19-6ANO-Q08",
+      "OMU18-6ANO-Q07"
+    ]
+  },
+  {
+    "id": "logica-01",
+    "topico": "logica",
+    "enunciado": "A senha usa 2, 3 e 5, uma vez cada. Exatamente uma frase é verdadeira: “o primeiro algarismo é 2”; “o segundo não é 2”; “o terceiro não é 5”. Qual das senhas abaixo serve?",
+    "opcoes": [
+      "523",
+      "235",
+      "253",
+      "352"
+    ],
+    "correta": 0,
+    "explicacao": "Em 523: a primeira é falsa, a segunda é falsa e a terceira é verdadeira. As outras opções têm duas ou três frases verdadeiras.",
+    "nivel": "Intermediário",
+    "tabela": null,
+    "origem": "Adaptação para treino da questão OMU19-6ANO-Q05. Alternativas e explicação organizadas para o jogo.",
+    "questao_base": "OMU19-6ANO-Q05",
+    "referencias_conteudo": [
+      "OMU22-6ANO-Q03",
+      "OMU21-6ANO-Q09",
+      "OMU20-6ANO-Q07",
+      "OMU20-6ANO-Q09",
+      "OMU19-6ANO-Q05",
+      "OMU19-6ANO-Q09",
+      "OMU18-6ANO-Q09",
+      "OMU18-6ANO-Q10",
+      "OMU17-6ANO-Q07",
+      "OMU17-6ANO-Q08"
+    ]
+  },
+  {
+    "id": "logica-02",
+    "topico": "logica",
+    "enunciado": "Num código, cada letra é substituída pela seguinte no alfabeto, sem acentos. Como fica a palavra MALA?",
+    "opcoes": [
+      "NBMB",
+      "LZKZ",
+      "NBNB",
+      "MBLA"
+    ],
+    "correta": 0,
+    "explicacao": "M vira N, A vira B, L vira M, A vira B. Resultado NBMB.",
+    "nivel": "Básico",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU22-6ANO-Q03",
+      "OMU21-6ANO-Q09",
+      "OMU20-6ANO-Q07",
+      "OMU20-6ANO-Q09",
+      "OMU19-6ANO-Q05",
+      "OMU19-6ANO-Q09",
+      "OMU18-6ANO-Q09",
+      "OMU18-6ANO-Q10",
+      "OMU17-6ANO-Q07",
+      "OMU17-6ANO-Q08"
+    ]
+  },
+  {
+    "id": "logica-03",
+    "topico": "logica",
+    "enunciado": "A senha tem 3 algarismos distintos e não começa com zero. Pistas: nenhum de 4, 2, 9 aparece; em 479 há exatamente um algarismo da senha, fora de posição; em 756 há exatamente um, na posição correta; em 543 há exatamente um, fora de posição; em 268 há exatamente um, na posição correta. Qual senha atende a tudo?",
+    "opcoes": [
+      "738",
+      "783",
+      "358",
+      "736"
+    ],
+    "correta": 0,
+    "explicacao": "4,2,9 são excluídos; 7 está na senha, mas não no meio. Em 756, 7 ocupa corretamente o início e 5,6 são excluídos. De 543 sobra 3 fora da última posição; de 268 sobra 8 no fim. Logo 738.",
+    "nivel": "Desafio",
+    "tabela": null,
+    "origem": "Adaptação para treino da questão OMU19-6ANO-Q09. Alternativas e explicação organizadas para o jogo.",
+    "questao_base": "OMU19-6ANO-Q09",
+    "referencias_conteudo": [
+      "OMU22-6ANO-Q03",
+      "OMU21-6ANO-Q09",
+      "OMU20-6ANO-Q07",
+      "OMU20-6ANO-Q09",
+      "OMU19-6ANO-Q05",
+      "OMU19-6ANO-Q09",
+      "OMU18-6ANO-Q09",
+      "OMU18-6ANO-Q10",
+      "OMU17-6ANO-Q07",
+      "OMU17-6ANO-Q08"
+    ]
+  },
+  {
+    "id": "logica-04",
+    "topico": "logica",
+    "enunciado": "Um produto A custa R$ 2 ou R$ 4; B custa R$ 3 ou R$ 5; C custa R$ 6 ou R$ 9. Você compra um de cada e gasta menos de R$ 12. O que é obrigatório?",
+    "opcoes": [
+      "Escolher C de R$ 6",
+      "Escolher A de R$ 4",
+      "Escolher B de R$ 5",
+      "Gastar exatamente R$ 12"
+    ],
+    "correta": 0,
+    "explicacao": "Com C de R$ 9, até a combinação mais barata custa 2 + 3 + 9 = 14. Com C de R$ 6, a combinação 2 + 3 + 6 = 11 é possível.",
+    "nivel": "Intermediário",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU22-6ANO-Q03",
+      "OMU21-6ANO-Q09",
+      "OMU20-6ANO-Q07",
+      "OMU20-6ANO-Q09",
+      "OMU19-6ANO-Q05",
+      "OMU19-6ANO-Q09",
+      "OMU18-6ANO-Q09",
+      "OMU18-6ANO-Q10",
+      "OMU17-6ANO-Q07",
+      "OMU17-6ANO-Q08"
+    ]
+  },
+  {
+    "id": "logica-05",
+    "topico": "logica",
+    "enunciado": "Use dia e mês com dois algarismos. A soma dos quatro algarismos de uma data é 20. Em qual mês essa data pode ocorrer?",
+    "opcoes": [
+      "Setembro",
+      "Agosto",
+      "Novembro",
+      "Dezembro"
+    ],
+    "correta": 0,
+    "explicacao": "A maior soma dos algarismos de um dia válido é 11, no dia 29. O mês precisa somar pelo menos 9; entre 01 e 12, só 09 chega a 9. A data 29/09 soma 20.",
+    "nivel": "Desafio",
+    "tabela": null,
+    "origem": "Adaptação para treino da questão OMU18-6ANO-Q09. Alternativas e explicação organizadas para o jogo.",
+    "questao_base": "OMU18-6ANO-Q09",
+    "referencias_conteudo": [
+      "OMU22-6ANO-Q03",
+      "OMU21-6ANO-Q09",
+      "OMU20-6ANO-Q07",
+      "OMU20-6ANO-Q09",
+      "OMU19-6ANO-Q05",
+      "OMU19-6ANO-Q09",
+      "OMU18-6ANO-Q09",
+      "OMU18-6ANO-Q10",
+      "OMU17-6ANO-Q07",
+      "OMU17-6ANO-Q08"
+    ]
+  },
+  {
+    "id": "contagem-01",
+    "topico": "contagem",
+    "enunciado": "Quantas senhas de 3 algarismos distintos podem ser feitas com 1, 2, 3 e 4?",
+    "opcoes": [
+      "24",
+      "12",
+      "64",
+      "16"
+    ],
+    "correta": 0,
+    "explicacao": "Há 4 escolhas para o primeiro, 3 para o segundo e 2 para o terceiro: 4 × 3 × 2 = 24.",
+    "nivel": "Básico",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU20-6ANO-Q06",
+      "OMU20-6ANO-Q10"
+    ]
+  },
+  {
+    "id": "contagem-02",
+    "topico": "contagem",
+    "enunciado": "Quantos números de quatro algarismos, sem zero, têm exatamente três algarismos iguais a 7?",
+    "opcoes": [
+      "32",
+      "36",
+      "24",
+      "33"
+    ],
+    "correta": 0,
+    "explicacao": "Escolha a posição do algarismo diferente: 4 opções. Ele pode ser 1,2,3,4,5,6,8 ou 9: 8 opções. Total 4 × 8 = 32.",
+    "nivel": "Intermediário",
+    "tabela": null,
+    "origem": "Adaptação para treino da questão OMU20-6ANO-Q10. Alternativas e explicação organizadas para o jogo.",
+    "questao_base": "OMU20-6ANO-Q10",
+    "referencias_conteudo": [
+      "OMU20-6ANO-Q06",
+      "OMU20-6ANO-Q10"
+    ]
+  },
+  {
+    "id": "contagem-03",
+    "topico": "contagem",
+    "enunciado": "Há 60 peças: 24 azuis e 36 vermelhas. Entre as azuis, 10 são triângulos. Entre as vermelhas, o número de quadrados é o dobro do de triângulos. Todas são quadrados ou triângulos. Quantos quadrados há?",
+    "opcoes": [
+      "38",
+      "24",
+      "36",
+      "42"
+    ],
+    "correta": 0,
+    "explicacao": "Quadrados azuis: 24 − 10 = 14. Vermelhos: 36 ÷ 3 × 2 = 24. Total: 38.",
+    "nivel": "Intermediário",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU20-6ANO-Q06",
+      "OMU20-6ANO-Q10"
+    ]
+  },
+  {
+    "id": "contagem-04",
+    "topico": "contagem",
+    "enunciado": "Um lanche é formado por um pão, um recheio e uma bebida. Há 2 tipos de pão, 3 recheios e 4 bebidas, sem restrições. Quantos lanches diferentes são possíveis?",
+    "opcoes": [
+      "24",
+      "9",
+      "12",
+      "18"
+    ],
+    "correta": 0,
+    "explicacao": "Cada escolha de pão permite 3 recheios; cada par permite 4 bebidas. 2 × 3 × 4 = 24.",
+    "nivel": "Básico",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU20-6ANO-Q06",
+      "OMU20-6ANO-Q10"
+    ]
+  },
+  {
+    "id": "contagem-05",
+    "topico": "contagem",
+    "enunciado": "Quantos números de 3 algarismos distintos podem ser formados usando apenas 0, 1, 2 e 3?",
+    "opcoes": [
+      "18",
+      "24",
+      "12",
+      "16"
+    ],
+    "correta": 0,
+    "explicacao": "A centena não pode ser zero: 3 opções. Sobram 3 opções para a dezena, incluindo zero, e 2 para a unidade: 3 × 3 × 2 = 18.",
+    "nivel": "Desafio",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU20-6ANO-Q06",
+      "OMU20-6ANO-Q10"
+    ]
+  },
+  {
+    "id": "geometria-plana-01",
+    "topico": "geometria-plana",
+    "enunciado": "Um quadrado foi preenchido sem lacunas nem sobreposições por uma peça de 16 cm², cinco de 4 cm² e treze de 1 cm². Quanto mede seu lado?",
+    "opcoes": [
+      "7 cm",
+      "49 cm",
+      "14 cm",
+      "8 cm"
+    ],
+    "correta": 0,
+    "explicacao": "Área: 16 + 5 × 4 + 13 = 49 cm². Como 7 × 7 = 49, o lado mede 7 cm.",
+    "nivel": "Intermediário",
+    "tabela": null,
+    "origem": "Adaptação para treino da questão OMU26-6ANO-Q03. Alternativas e explicação organizadas para o jogo.",
+    "questao_base": "OMU26-6ANO-Q03",
+    "referencias_conteudo": [
+      "OMU26-6ANO-Q03",
+      "OMU22-6ANO-Q06",
+      "OMU21-6ANO-Q07",
+      "OMU18-6ANO-Q05",
+      "OMU18-6ANO-Q06",
+      "OMU17-6ANO-Q03"
+    ]
+  },
+  {
+    "id": "geometria-plana-02",
+    "topico": "geometria-plana",
+    "enunciado": "Um retângulo mede 8 cm por 5 cm. Qual é seu perímetro?",
+    "opcoes": [
+      "26 cm",
+      "40 cm",
+      "13 cm",
+      "80 cm"
+    ],
+    "correta": 0,
+    "explicacao": "Some os quatro lados: 8 + 5 + 8 + 5 = 26 cm. 40 cm² seria a área.",
+    "nivel": "Básico",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU26-6ANO-Q03",
+      "OMU22-6ANO-Q06",
+      "OMU21-6ANO-Q07",
+      "OMU18-6ANO-Q05",
+      "OMU18-6ANO-Q06",
+      "OMU17-6ANO-Q03"
+    ]
+  },
+  {
+    "id": "geometria-plana-03",
+    "topico": "geometria-plana",
+    "enunciado": "Uma diagonal divide um terreno retangular em duas partes. Em uma delas há uma reserva e dois lotes de 8 e 12 hectares. A outra metade tem 30 hectares. Qual é a área da reserva?",
+    "opcoes": [
+      "10 hectares",
+      "20 hectares",
+      "30 hectares",
+      "40 hectares"
+    ],
+    "correta": 0,
+    "explicacao": "A diagonal divide o retângulo em duas áreas iguais. Reserva + 8 + 12 = 30; reserva = 10 hectares.",
+    "nivel": "Intermediário",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU26-6ANO-Q03",
+      "OMU22-6ANO-Q06",
+      "OMU21-6ANO-Q07",
+      "OMU18-6ANO-Q05",
+      "OMU18-6ANO-Q06",
+      "OMU17-6ANO-Q03"
+    ]
+  },
+  {
+    "id": "geometria-plana-04",
+    "topico": "geometria-plana",
+    "enunciado": "Saindo da origem, Lia anda 2 km para norte, 3 km para oeste e 5 km para sul. Em que posição termina? Considere leste e norte positivos.",
+    "opcoes": [
+      "(−3, −3) km",
+      "(3, −3) km",
+      "(−3, 7) km",
+      "(−5, 2) km"
+    ],
+    "correta": 0,
+    "explicacao": "Horizontal: 3 km a oeste, x = −3. Vertical: 2 − 5 = −3. Posição (−3, −3).",
+    "nivel": "Intermediário",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU26-6ANO-Q03",
+      "OMU22-6ANO-Q06",
+      "OMU21-6ANO-Q07",
+      "OMU18-6ANO-Q05",
+      "OMU18-6ANO-Q06",
+      "OMU17-6ANO-Q03"
+    ]
+  },
+  {
+    "id": "geometria-plana-05",
+    "topico": "geometria-plana",
+    "enunciado": "As antenas A, B e C estão em (0,0), (6,0) e (3,3). Qual ponto está à mesma distância das três?",
+    "opcoes": [
+      "(3,0)",
+      "(3,1)",
+      "(0,3)",
+      "(6,3)"
+    ],
+    "correta": 0,
+    "explicacao": "Do ponto (3,0), A fica 3 unidades à esquerda, B 3 à direita e C 3 acima. Todas as distâncias são 3.",
+    "nivel": "Desafio",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU26-6ANO-Q03",
+      "OMU22-6ANO-Q06",
+      "OMU21-6ANO-Q07",
+      "OMU18-6ANO-Q05",
+      "OMU18-6ANO-Q06",
+      "OMU17-6ANO-Q03"
+    ]
+  },
+  {
+    "id": "geometria-espacial-01",
+    "topico": "geometria-espacial",
+    "enunciado": "Uma caixa de 12 × 8 × 6 cm será preenchida com blocos de 3 × 2 × 2 cm, alinhados às arestas e sem espaço entre eles. Quantos blocos cabem?",
+    "opcoes": [
+      "48",
+      "24",
+      "96",
+      "36"
+    ],
+    "correta": 0,
+    "explicacao": "Cabem 12/3 = 4, 8/2 = 4 e 6/2 = 3 blocos nas três direções. Total 4 × 4 × 3 = 48.",
+    "nivel": "Intermediário",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU21-6ANO-Q10",
+      "OMU20-6ANO-Q08"
+    ]
+  },
+  {
+    "id": "geometria-espacial-02",
+    "topico": "geometria-espacial",
+    "enunciado": "Cinco cubos estão empilhados em uma única coluna sobre uma mesa. Quantas faces ficam expostas ao ar, incluindo as laterais de trás?",
+    "opcoes": [
+      "21",
+      "25",
+      "30",
+      "20"
+    ],
+    "correta": 0,
+    "explicacao": "Há 4 faces laterais por cubo: 20. Some a face do topo: 21. A base toca a mesa.",
+    "nivel": "Intermediário",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU21-6ANO-Q10",
+      "OMU20-6ANO-Q08"
+    ]
+  },
+  {
+    "id": "geometria-espacial-03",
+    "topico": "geometria-espacial",
+    "enunciado": "Qual é o volume de um cubo de aresta 4 cm?",
+    "opcoes": [
+      "64 cm³",
+      "16 cm³",
+      "24 cm³",
+      "48 cm³"
+    ],
+    "correta": 0,
+    "explicacao": "Volume = 4 × 4 × 4 = 64 cm³.",
+    "nivel": "Básico",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU21-6ANO-Q10",
+      "OMU20-6ANO-Q08"
+    ]
+  },
+  {
+    "id": "geometria-espacial-04",
+    "topico": "geometria-espacial",
+    "enunciado": "Dois cubos iguais estão lado a lado sobre uma mesa, encostados por uma face inteira. Quantas faces ficam expostas ao ar?",
+    "opcoes": [
+      "8",
+      "9",
+      "10",
+      "12"
+    ],
+    "correta": 0,
+    "explicacao": "Comece com 12 faces. Tire 2 do contato entre os cubos e 2 das bases sobre a mesa: 12 − 2 − 2 = 8.",
+    "nivel": "Intermediário",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU21-6ANO-Q10",
+      "OMU20-6ANO-Q08"
+    ]
+  },
+  {
+    "id": "geometria-espacial-05",
+    "topico": "geometria-espacial",
+    "enunciado": "Uma caixa tem dimensões internas 10 × 10 × 3 cm. Blocos rígidos medem 4 × 4 × 4 cm. Eles devem ficar inteiros e alinhados às arestas da caixa. Quantos cabem completamente dentro dela?",
+    "opcoes": [
+      "0",
+      "4",
+      "3",
+      "1"
+    ],
+    "correta": 0,
+    "explicacao": "A altura interna é 3 cm e qualquer orientação alinhada do cubo exige 4 cm. Não cabe nenhum, apesar de a razão dos volumes ser maior que 4.",
+    "nivel": "Desafio",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU21-6ANO-Q10",
+      "OMU20-6ANO-Q08"
+    ]
+  },
+  {
+    "id": "dados-01",
+    "topico": "dados",
+    "enunciado": "Num pictograma, cada estrela inteira representa 120 livros. Uma turma aparece com 2 estrelas e meia. Quantos livros ela arrecadou?",
+    "opcoes": [
+      "300",
+      "240",
+      "180",
+      "360"
+    ],
+    "correta": 0,
+    "explicacao": "Duas estrelas valem 240; meia vale 60. Total: 300.",
+    "nivel": "Básico",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU22-6ANO-Q07",
+      "OMU22-6ANO-Q08",
+      "OMU19-6ANO-Q02",
+      "OMU17-6ANO-Q05"
+    ]
+  },
+  {
+    "id": "dados-02",
+    "topico": "dados",
+    "enunciado": "A tabela mostra a altura da água num reservatório inicialmente vazio. O crescimento continua à mesma taxa. Em que dia a altura chega a 15 m?",
+    "opcoes": [
+      "10º dia",
+      "5º dia",
+      "8º dia",
+      "12º dia"
+    ],
+    "correta": 0,
+    "explicacao": "A taxa é 3 ÷ 2 = 1,5 m/dia. Para 15 m, são 15 ÷ 1,5 = 10 dias.",
+    "nivel": "Intermediário",
+    "tabela": [
+      [
+        "Tempo (dias)",
+        "0",
+        "2",
+        "4"
+      ],
+      [
+        "Altura (m)",
+        "0",
+        "3",
+        "6"
+      ]
+    ],
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU22-6ANO-Q07",
+      "OMU22-6ANO-Q08",
+      "OMU19-6ANO-Q02",
+      "OMU17-6ANO-Q05"
+    ]
+  },
+  {
+    "id": "dados-03",
+    "topico": "dados",
+    "enunciado": "Considere os custos de duas opções de lâmpadas na tabela. Qual é a economia total ao escolher B no período mostrado?",
+    "opcoes": [
+      "R$ 250",
+      "R$ 400",
+      "R$ 450",
+      "R$ 150"
+    ],
+    "correta": 0,
+    "explicacao": "A: 100 + 700 + 50 = 850. B: 300 + 300 + 0 = 600. Economia: 850 − 600 = 250.",
+    "nivel": "Intermediário",
+    "tabela": [
+      [
+        "Custo",
+        "A",
+        "B"
+      ],
+      [
+        "Compra",
+        "R$ 100",
+        "R$ 300"
+      ],
+      [
+        "Energia",
+        "R$ 700",
+        "R$ 300"
+      ],
+      [
+        "Reposição",
+        "R$ 50",
+        "R$ 0"
+      ]
+    ],
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU22-6ANO-Q07",
+      "OMU22-6ANO-Q08",
+      "OMU19-6ANO-Q02",
+      "OMU17-6ANO-Q05"
+    ]
+  },
+  {
+    "id": "dados-04",
+    "topico": "dados",
+    "enunciado": "São necessários pelo menos 7 kg de ração. Pacotes de 1 kg custam R$ 4; pacotes de 3 kg custam R$ 9. Qual é o menor custo possível?",
+    "opcoes": [
+      "R$ 22",
+      "R$ 21",
+      "R$ 27",
+      "R$ 28"
+    ],
+    "correta": 0,
+    "explicacao": "Dois pacotes grandes e um pequeno fornecem 7 kg por 18 + 4 = 22. Um grande e quatro pequenos custam 25; três grandes custam 27; sete pequenos custam 28.",
+    "nivel": "Desafio",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU22-6ANO-Q07",
+      "OMU22-6ANO-Q08",
+      "OMU19-6ANO-Q02",
+      "OMU17-6ANO-Q05"
+    ]
+  },
+  {
+    "id": "dados-05",
+    "topico": "dados",
+    "enunciado": "Um pictograma mostra 2 símbolos para abril, 3 para maio e 1,5 para junho. Ao todo são 1.300 doações. Quantas doações correspondem a maio?",
+    "opcoes": [
+      "600",
+      "300",
+      "650",
+      "400"
+    ],
+    "correta": 0,
+    "explicacao": "São 6,5 símbolos no total. Um símbolo vale 1.300 ÷ 6,5 = 200. Maio tem 3 × 200 = 600.",
+    "nivel": "Intermediário",
+    "tabela": null,
+    "origem": "Exercício criado para treino dos conteúdos do acervo.",
+    "questao_base": null,
+    "referencias_conteudo": [
+      "OMU22-6ANO-Q07",
+      "OMU22-6ANO-Q08",
+      "OMU19-6ANO-Q02",
+      "OMU17-6ANO-Q05"
+    ]
+  }
+]

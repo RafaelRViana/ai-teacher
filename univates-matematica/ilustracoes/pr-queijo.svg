@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="420" height="240" preserveAspectRatio="xMinYMin meet" viewBox="0 0 420 240" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="420" height="240"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-240)" style="clip-path: url(#clip)">
+		<g transform="">
+			<text x="15" y="213" style="font-family: Helvetica; font-size: 18px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,426) scale(1,-1)">Uma régua para o preço do queijo</text>
+			<path d="M 35,90 L 35,145 Z" style="stroke: rgb(9%,21%,26%); stroke-linecap: butt; stroke-width: 1;"/>
+			<text x="24.575" y="159" style="font-family: Helvetica; font-size: 15px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,318) scale(1,-1)">0 g</text>
+			<text x="19.16" y="66" style="font-family: Helvetica; font-size: 15px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,132) scale(1,-1)">R$ 0</text>
+			<path d="M 121,90 L 121,145 Z" style="stroke: rgb(9%,21%,26%); stroke-linecap: butt; stroke-width: 1;"/>
+			<text x="102.235" y="159" style="font-family: Helvetica; font-size: 15px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,318) scale(1,-1)">100 g</text>
+			<text x="105.16" y="66" style="font-family: Helvetica; font-size: 15px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,132) scale(1,-1)">R$ 6</text>
+			<path d="M 207,90 L 207,145 Z" style="stroke: rgb(9%,21%,26%); stroke-linecap: butt; stroke-width: 1;"/>
+			<text x="188.235" y="159" style="font-family: Helvetica; font-size: 15px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,318) scale(1,-1)">200 g</text>
+			<text x="186.99" y="66" style="font-family: Helvetica; font-size: 15px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,132) scale(1,-1)">R$ 12</text>
+			<path d="M 293,90 L 293,145 Z" style="stroke: rgb(9%,21%,26%); stroke-linecap: butt; stroke-width: 1;"/>
+			<text x="274.235" y="159" style="font-family: Helvetica; font-size: 15px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,318) scale(1,-1)">300 g</text>
+			<text x="272.99" y="66" style="font-family: Helvetica; font-size: 15px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,132) scale(1,-1)">R$ 18</text>
+			<path d="M 379,90 L 379,145 Z" style="stroke: rgb(9%,21%,26%); stroke-linecap: butt; stroke-width: 1;"/>
+			<text x="360.235" y="159" style="font-family: Helvetica; font-size: 15px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,318) scale(1,-1)">400 g</text>
+			<text x="358.99" y="66" style="font-family: Helvetica; font-size: 15px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,132) scale(1,-1)">R$ 24</text>
+			<path d="M 35,117 L 379,117 Z" style="stroke: rgb(13%,45%,35%); stroke-linecap: butt; stroke-width: 3;"/>
+			<circle cx="164.0" cy="117" r="6" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(81%,41%,21%); fill-rule: evenodd;"/>
+			<path d="M 164,41 L 164,103 Z" style="stroke: rgb(81%,41%,21%); stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="164 103, 160.0853 94.89598, 167.9147 94.89598" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(81%,41%,21%); fill-rule: evenodd;"/>
+			<text x="108.587" y="18" style="font-family: Helvetica; font-size: 18px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,36) scale(1,-1)">150 g → R$ 9</text>
+		</g>
+	</g>
+</svg>

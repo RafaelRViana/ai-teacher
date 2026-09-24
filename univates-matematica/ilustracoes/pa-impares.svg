@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="420" height="240" preserveAspectRatio="xMinYMin meet" viewBox="0 0 420 240" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="420" height="240"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-240)" style="clip-path: url(#clip)">
+		<g transform="">
+			<text x="15" y="211" style="font-family: Helvetica; font-size: 18px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,422) scale(1,-1)">Os ímpares constroem um quadrado</text>
+			<rect x="32" y="35" width="30" height="30" style="stroke: rgb(100%,100%,100%); stroke-linecap: butt; stroke-width: 1; fill: rgb(90%,94%,90%); fill-rule: evenodd;"/>
+			<rect x="62" y="35" width="30" height="30" style="stroke: rgb(100%,100%,100%); stroke-linecap: butt; stroke-width: 1; fill: rgb(21%,49%,72%); fill-rule: evenodd;"/>
+			<rect x="92" y="35" width="30" height="30" style="stroke: rgb(100%,100%,100%); stroke-linecap: butt; stroke-width: 1; fill: rgb(91%,70%,27%); fill-rule: evenodd;"/>
+			<rect x="122" y="35" width="30" height="30" style="stroke: rgb(100%,100%,100%); stroke-linecap: butt; stroke-width: 1; fill: rgb(13%,45%,35%); fill-rule: evenodd;"/>
+			<rect x="152" y="35" width="30" height="30" style="stroke: rgb(100%,100%,100%); stroke-linecap: butt; stroke-width: 1; fill: rgb(81%,41%,21%); fill-rule: evenodd;"/>
+			<rect x="32" y="65" width="30" height="30" style="stroke: rgb(100%,100%,100%); stroke-linecap: butt; stroke-width: 1; fill: rgb(21%,49%,72%); fill-rule: evenodd;"/>
+			<rect x="62" y="65" width="30" height="30" style="stroke: rgb(100%,100%,100%); stroke-linecap: butt; stroke-width: 1; fill: rgb(21%,49%,72%); fill-rule: evenodd;"/>
+			<rect x="92" y="65" width="30" height="30" style="stroke: rgb(100%,100%,100%); stroke-linecap: butt; stroke-width: 1; fill: rgb(91%,70%,27%); fill-rule: evenodd;"/>
+			<rect x="122" y="65" width="30" height="30" style="stroke: rgb(100%,100%,100%); stroke-linecap: butt; stroke-width: 1; fill: rgb(13%,45%,35%); fill-rule: evenodd;"/>
+			<rect x="152" y="65" width="30" height="30" style="stroke: rgb(100%,100%,100%); stroke-linecap: butt; stroke-width: 1; fill: rgb(81%,41%,21%); fill-rule: evenodd;"/>
+			<rect x="32" y="95" width="30" height="30" style="stroke: rgb(100%,100%,100%); stroke-linecap: butt; stroke-width: 1; fill: rgb(91%,70%,27%); fill-rule: evenodd;"/>
+			<rect x="62" y="95" width="30" height="30" style="stroke: rgb(100%,100%,100%); stroke-linecap: butt; stroke-width: 1; fill: rgb(91%,70%,27%); fill-rule: evenodd;"/>
+			<rect x="92" y="95" width="30" height="30" style="stroke: rgb(100%,100%,100%); stroke-linecap: butt; stroke-width: 1; fill: rgb(91%,70%,27%); fill-rule: evenodd;"/>
+			<rect x="122" y="95" width="30" height="30" style="stroke: rgb(100%,100%,100%); stroke-linecap: butt; stroke-width: 1; fill: rgb(13%,45%,35%); fill-rule: evenodd;"/>
+			<rect x="152" y="95" width="30" height="30" style="stroke: rgb(100%,100%,100%); stroke-linecap: butt; stroke-width: 1; fill: rgb(81%,41%,21%); fill-rule: evenodd;"/>
+			<rect x="32" y="125" width="30" height="30" style="stroke: rgb(100%,100%,100%); stroke-linecap: butt; stroke-width: 1; fill: rgb(13%,45%,35%); fill-rule: evenodd;"/>
+			<rect x="62" y="125" width="30" height="30" style="stroke: rgb(100%,100%,100%); stroke-linecap: butt; stroke-width: 1; fill: rgb(13%,45%,35%); fill-rule: evenodd;"/>
+			<rect x="92" y="125" width="30" height="30" style="stroke: rgb(100%,100%,100%); stroke-linecap: butt; stroke-width: 1; fill: rgb(13%,45%,35%); fill-rule: evenodd;"/>
+			<rect x="122" y="125" width="30" height="30" style="stroke: rgb(100%,100%,100%); stroke-linecap: butt; stroke-width: 1; fill: rgb(13%,45%,35%); fill-rule: evenodd;"/>
+			<rect x="152" y="125" width="30" height="30" style="stroke: rgb(100%,100%,100%); stroke-linecap: butt; stroke-width: 1; fill: rgb(81%,41%,21%); fill-rule: evenodd;"/>
+			<rect x="32" y="155" width="30" height="30" style="stroke: rgb(100%,100%,100%); stroke-linecap: butt; stroke-width: 1; fill: rgb(81%,41%,21%); fill-rule: evenodd;"/>
+			<rect x="62" y="155" width="30" height="30" style="stroke: rgb(100%,100%,100%); stroke-linecap: butt; stroke-width: 1; fill: rgb(81%,41%,21%); fill-rule: evenodd;"/>
+			<rect x="92" y="155" width="30" height="30" style="stroke: rgb(100%,100%,100%); stroke-linecap: butt; stroke-width: 1; fill: rgb(81%,41%,21%); fill-rule: evenodd;"/>
+			<rect x="122" y="155" width="30" height="30" style="stroke: rgb(100%,100%,100%); stroke-linecap: butt; stroke-width: 1; fill: rgb(81%,41%,21%); fill-rule: evenodd;"/>
+			<rect x="152" y="155" width="30" height="30" style="stroke: rgb(100%,100%,100%); stroke-linecap: butt; stroke-width: 1; fill: rgb(81%,41%,21%); fill-rule: evenodd;"/>
+			<rect x="230" y="163" width="14" height="14" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(90%,94%,90%); fill-rule: evenodd;"/>
+			<text x="256" y="163" style="font-family: Helvetica; font-size: 15px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,326) scale(1,-1)">+ 1 quadradinhos</text>
+			<rect x="230" y="134" width="14" height="14" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(21%,49%,72%); fill-rule: evenodd;"/>
+			<text x="256" y="134" style="font-family: Helvetica; font-size: 15px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,268) scale(1,-1)">+ 3 quadradinhos</text>
+			<rect x="230" y="105" width="14" height="14" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(91%,70%,27%); fill-rule: evenodd;"/>
+			<text x="256" y="105" style="font-family: Helvetica; font-size: 15px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,210) scale(1,-1)">+ 5 quadradinhos</text>
+			<rect x="230" y="76" width="14" height="14" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(13%,45%,35%); fill-rule: evenodd;"/>
+			<text x="256" y="76" style="font-family: Helvetica; font-size: 15px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,152) scale(1,-1)">+ 7 quadradinhos</text>
+			<rect x="230" y="47" width="14" height="14" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(81%,41%,21%); fill-rule: evenodd;"/>
+			<text x="256" y="47" style="font-family: Helvetica; font-size: 15px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,94) scale(1,-1)">+ 9 quadradinhos</text>
+			<text x="74.716" y="12" style="font-family: Helvetica; font-size: 17px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,24) scale(1,-1)">5 × 5 = 25</text>
+		</g>
+	</g>
+</svg>

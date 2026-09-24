@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="400" height="285" preserveAspectRatio="xMinYMin meet" viewBox="0 0 400 285" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="400" height="285"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-285)" style="clip-path: url(#clip)">
+		<g transform="">
+			<text x="12" y="262" style="font-family: Helvetica; font-size: 18px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,524) scale(1,-1)">Compare o custo total</text>
+			<rect x="12" y="229" width="12" height="12" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(13%,36%,30%); fill-rule: evenodd;"/>
+			<text x="30" y="229" style="font-family: Helvetica; font-size: 13px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,458) scale(1,-1)">Compra</text>
+			<rect x="138" y="229" width="12" height="12" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(23%,50%,62%); fill-rule: evenodd;"/>
+			<text x="156" y="229" style="font-family: Helvetica; font-size: 13px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,458) scale(1,-1)">Energia</text>
+			<rect x="264" y="229" width="12" height="12" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(81%,54%,21%); fill-rule: evenodd;"/>
+			<text x="282" y="229" style="font-family: Helvetica; font-size: 13px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,458) scale(1,-1)">Reposição</text>
+			<path d="M 75,66 L 375,66 Z" style="stroke: rgb(83%,87%,85%); stroke-linecap: butt; stroke-width: 1;"/>
+			<text x="54.328" y="62.0" style="font-family: Helvetica; font-size: 12px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,124) scale(1,-1)">0</text>
+			<path d="M 75,109.5 L 375,109.5 Z" style="stroke: rgb(83%,87%,85%); stroke-linecap: butt; stroke-width: 1;"/>
+			<text x="40.984" y="105.5" style="font-family: Helvetica; font-size: 12px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,211) scale(1,-1)">300</text>
+			<path d="M 75,153 L 375,153 Z" style="stroke: rgb(83%,87%,85%); stroke-linecap: butt; stroke-width: 1;"/>
+			<text x="40.984" y="149.0" style="font-family: Helvetica; font-size: 12px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,298) scale(1,-1)">600</text>
+			<path d="M 75,196.5 L 375,196.5 Z" style="stroke: rgb(83%,87%,85%); stroke-linecap: butt; stroke-width: 1;"/>
+			<text x="40.984" y="192.5" style="font-family: Helvetica; font-size: 12px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,385) scale(1,-1)">900</text>
+			<text x="12" y="208" style="font-family: Helvetica; font-size: 13px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,416) scale(1,-1)">R$</text>
+			<rect x="130" y="66" width="54" height="14.5" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(13%,36%,30%); fill-rule: evenodd;"/>
+			<rect x="130" y="80.5" width="54" height="101.5" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(23%,50%,62%); fill-rule: evenodd;"/>
+			<rect x="130" y="182.0" width="54" height="7.25" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(81%,54%,21%); fill-rule: evenodd;"/>
+			<text x="143.656" y="196.25" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,392) scale(1,-1)">850</text>
+			<text x="151.664" y="44" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,88) scale(1,-1)">A</text>
+			<rect x="270" y="66" width="54" height="43.5" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(13%,36%,30%); fill-rule: evenodd;"/>
+			<rect x="270" y="109.5" width="54" height="43.5" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(23%,50%,62%); fill-rule: evenodd;"/>
+			<rect x="270" y="153.0" width="54" height="0.0" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(81%,54%,21%); fill-rule: evenodd;"/>
+			<text x="283.656" y="160.0" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,320) scale(1,-1)">600</text>
+			<text x="291.664" y="44" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,88) scale(1,-1)">B</text>
+			<text x="12" y="16" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,32) scale(1,-1)">Economia: R$ 850 - R$ 600 = R$ 250</text>
+		</g>
+	</g>
+</svg>

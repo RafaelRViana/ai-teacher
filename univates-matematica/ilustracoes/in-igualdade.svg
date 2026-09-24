@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="420" height="240" preserveAspectRatio="xMinYMin meet" viewBox="0 0 420 240" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="420" height="240"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-240)" style="clip-path: url(#clip)">
+		<g transform="">
+			<text x="15" y="213" style="font-family: Helvetica; font-size: 18px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,426) scale(1,-1)">Mantenha os dois lados equilibrados</text>
+			<rect x="28" y="132" width="145" height="40" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<text x="57.588" y="145" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,290) scale(1,-1)">3 caixas + 4</text>
+			<rect x="252" y="132" width="145" height="40" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<text x="280.916" y="145" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,290) scale(1,-1)">19 unidades</text>
+			<path d="M 65,123 L 352,123 Z" style="stroke: rgb(9%,21%,26%); stroke-linecap: butt; stroke-width: 3;"/>
+			<polygon points="210 121, 186 80, 234 80" style="stroke: rgb(9%,21%,26%); stroke-linecap: butt; stroke-width: 1; fill: rgb(91%,70%,27%); fill-rule: evenodd;"/>
+			<text x="152.454" y="60" style="font-family: Helvetica; font-size: 23px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,120) scale(1,-1)">3x + 4 = 19</text>
+			<text x="92.19" y="22" style="font-family: Helvetica; font-size: 18px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,44) scale(1,-1)">Tire 4 dos dois lados: 3x = 15</text>
+		</g>
+	</g>
+</svg>

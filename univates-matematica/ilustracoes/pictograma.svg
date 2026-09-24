@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="400" height="235" preserveAspectRatio="xMinYMin meet" viewBox="0 0 400 235" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="400" height="235"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-235)" style="clip-path: url(#clip)">
+		<g transform="">
+			<text x="12" y="212" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,424) scale(1,-1)">Cada círculo inteiro vale 200 doações</text>
+			<text x="12" y="140" style="font-family: Helvetica; font-size: 17px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,280) scale(1,-1)">Março</text>
+			<circle cx="125" cy="145" r="17" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(13%,36%,30%); fill-rule: evenodd;"/>
+			<circle cx="175" cy="145" r="17" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(13%,36%,30%); fill-rule: evenodd;"/>
+			<circle cx="225" cy="145" r="17" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(13%,36%,30%); fill-rule: evenodd;"/>
+			<text x="295" y="140" style="font-family: Helvetica; font-size: 17px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,280) scale(1,-1)">= 600</text>
+			<text x="12" y="75" style="font-family: Helvetica; font-size: 17px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,150) scale(1,-1)">Abril</text>
+			<circle cx="125" cy="80" r="17" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(13%,36%,30%); fill-rule: evenodd;"/>
+			<circle cx="175" cy="80" r="17" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(13%,36%,30%); fill-rule: evenodd;"/>
+			<circle cx="225" cy="80" r="17" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(89%,93%,90%); fill-rule: evenodd;"/>
+			<polygon points="225 63, 225 63, 223.5184 63.06469, 222.048 63.25827, 220.6001 63.57926, 219.1857 64.02523, 217.8155 64.59277, 216.5 65.27757, 215.2492 66.07442, 214.0726 66.97724, 212.9792 67.97918, 211.9772 69.07261, 211.0744 70.2492, 210.2776 71.5, 209.5928 72.81549, 209.0252 74.18566, 208.5793 75.60008, 208.2583 77.04798, 208.0647 78.51835, 208 80, 208.0647 81.48165, 208.2583 82.95202, 208.5793 84.39992, 209.0252 85.81434, 209.5928 87.18451, 210.2776 88.5, 211.0744 89.7508, 211.9772 90.92739, 212.9792 92.02082, 214.0726 93.02276, 215.2492 93.92558, 216.5 94.72243, 217.8155 95.40723, 219.1857 95.97477, 220.6001 96.42074, 222.048 96.74173, 223.5184 96.93531, 225 97, 225 63" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(13%,36%,30%); fill-rule: evenodd;"/>
+			<text x="295" y="75" style="font-family: Helvetica; font-size: 17px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,150) scale(1,-1)">= 500</text>
+			<text x="12" y="28" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,56) scale(1,-1)">Meio círculo = 100 · Total = 1.100</text>
+		</g>
+	</g>
+</svg>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="420" height="240" preserveAspectRatio="xMinYMin meet" viewBox="0 0 420 240" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="420" height="240"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-240)" style="clip-path: url(#clip)">
+		<g transform="">
+			<text x="15" y="212" style="font-family: Helvetica; font-size: 18px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,424) scale(1,-1)">Teste com os menores preços</text>
+			<rect x="18" y="153" width="180" height="40" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<text x="73.75200000000001" y="166" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,332) scale(1,-1)">Sabonete</text>
+			<text x="240" y="165" style="font-family: Helvetica; font-size: 22px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,330) scale(1,-1)">R$ 2</text>
+			<rect x="18" y="102" width="180" height="40" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<text x="84.0" y="115" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,230) scale(1,-1)">Creme</text>
+			<text x="240" y="114" style="font-family: Helvetica; font-size: 22px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,228) scale(1,-1)">R$ 3</text>
+			<rect x="18" y="51" width="180" height="40" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<text x="62.199999999999996" y="64" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,128) scale(1,-1)">Desodorante</text>
+			<text x="240" y="63" style="font-family: Helvetica; font-size: 22px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,126) scale(1,-1)">R$ 9</text>
+			<text x="79.93299999999999" y="14" style="font-family: Helvetica; font-size: 17px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,28) scale(1,-1)">2 + 3 + 9 = 14 → ultrapassa R$ 12</text>
+		</g>
+	</g>
+</svg>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="420" height="240" preserveAspectRatio="xMinYMin meet" viewBox="0 0 420 240" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="420" height="240"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-240)" style="clip-path: url(#clip)">
+		<g transform="">
+			<text x="15" y="214" style="font-family: Helvetica; font-size: 18px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,428) scale(1,-1)">Some os deslocamentos</text>
+			<path d="M 70,52 L 70,181 Z" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1;"/>
+			<path d="M 113,52 L 113,181 Z" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1;"/>
+			<path d="M 156,52 L 156,181 Z" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1;"/>
+			<path d="M 199,52 L 199,181 Z" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1;"/>
+			<path d="M 242,52 L 242,181 Z" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1;"/>
+			<path d="M 70,52 L 242,52 Z" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1;"/>
+			<path d="M 70,95 L 242,95 Z" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1;"/>
+			<path d="M 70,138 L 242,138 Z" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1;"/>
+			<path d="M 70,181 L 242,181 Z" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1;"/>
+			<path d="M 70,52 L 199,52 Z" style="stroke: rgb(81%,41%,21%); stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="199 52, 190.896 55.91469, 190.896 48.08531" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(81%,41%,21%); fill-rule: evenodd;"/>
+			<path d="M 199,52 L 199,138 Z" style="stroke: rgb(81%,41%,21%); stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="199 138, 195.0853 129.896, 202.9147 129.896" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(81%,41%,21%); fill-rule: evenodd;"/>
+			<path d="M 199,138 L 156,138 Z" style="stroke: rgb(81%,41%,21%); stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="156 138, 164.104 134.0853, 164.104 141.9147" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(81%,41%,21%); fill-rule: evenodd;"/>
+			<text x="65" y="30" style="font-family: Helvetica; font-size: 15px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,60) scale(1,-1)">(0,0)</text>
+			<text x="150" y="166" style="font-family: Helvetica; font-size: 17px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,332) scale(1,-1)">(2,2)</text>
+			<text x="310" y="147" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,294) scale(1,-1)">Norte ↑</text>
+			<text x="310" y="110" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,220) scale(1,-1)">Leste →</text>
+			<text x="86.60999999999999" y="8" style="font-family: Helvetica; font-size: 15px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,16) scale(1,-1)">3 km leste + 2 km norte + 1 km oeste</text>
+		</g>
+	</g>
+</svg>

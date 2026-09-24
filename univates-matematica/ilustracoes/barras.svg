@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="400" height="275" preserveAspectRatio="xMinYMin meet" viewBox="0 0 400 275" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="400" height="275"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-275)" style="clip-path: url(#clip)">
+		<g transform="">
+			<text x="12" y="254" style="font-family: Helvetica; font-size: 18px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,508) scale(1,-1)">Doações por mês</text>
+			<text x="12" y="232" style="font-family: Helvetica; font-size: 14px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,464) scale(1,-1)">Quantidade de doações</text>
+			<path d="M 70,55 L 365,55 Z" style="stroke: rgb(83%,87%,85%); stroke-linecap: butt; stroke-width: 1;"/>
+			<text x="49.772" y="50.0" style="font-family: Helvetica; font-size: 13px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,100) scale(1,-1)">0</text>
+			<path d="M 70,79 L 365,79 Z" style="stroke: rgb(83%,87%,85%); stroke-linecap: butt; stroke-width: 1;"/>
+			<text x="35.316" y="74.0" style="font-family: Helvetica; font-size: 13px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,148) scale(1,-1)">100</text>
+			<path d="M 70,103 L 365,103 Z" style="stroke: rgb(83%,87%,85%); stroke-linecap: butt; stroke-width: 1;"/>
+			<text x="35.316" y="98.0" style="font-family: Helvetica; font-size: 13px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,196) scale(1,-1)">200</text>
+			<path d="M 70,127 L 365,127 Z" style="stroke: rgb(83%,87%,85%); stroke-linecap: butt; stroke-width: 1;"/>
+			<text x="35.316" y="122.0" style="font-family: Helvetica; font-size: 13px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,244) scale(1,-1)">300</text>
+			<path d="M 70,151 L 365,151 Z" style="stroke: rgb(83%,87%,85%); stroke-linecap: butt; stroke-width: 1;"/>
+			<text x="35.316" y="146.0" style="font-family: Helvetica; font-size: 13px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,292) scale(1,-1)">400</text>
+			<path d="M 70,175 L 365,175 Z" style="stroke: rgb(83%,87%,85%); stroke-linecap: butt; stroke-width: 1;"/>
+			<text x="35.316" y="170.0" style="font-family: Helvetica; font-size: 13px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,340) scale(1,-1)">500</text>
+			<path d="M 70,199 L 365,199 Z" style="stroke: rgb(83%,87%,85%); stroke-linecap: butt; stroke-width: 1;"/>
+			<text x="35.316" y="194.0" style="font-family: Helvetica; font-size: 13px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,388) scale(1,-1)">600</text>
+			<path d="M 70,223 L 365,223 Z" style="stroke: rgb(83%,87%,85%); stroke-linecap: butt; stroke-width: 1;"/>
+			<text x="35.316" y="218.0" style="font-family: Helvetica; font-size: 13px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,436) scale(1,-1)">700</text>
+			<rect x="120" y="55" width="60" height="144.0" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(13%,36%,30%); fill-rule: evenodd;"/>
+			<text x="136.656" y="207.0" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,414) scale(1,-1)">600</text>
+			<text x="127.776" y="30" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,60) scale(1,-1)">Março</text>
+			<rect x="250" y="55" width="60" height="120.0" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(13%,36%,30%); fill-rule: evenodd;"/>
+			<text x="266.656" y="183.0" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,366) scale(1,-1)">500</text>
+			<text x="264.0" y="30" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,60) scale(1,-1)">Abril</text>
+			<path d="M 70,55 L 365,55 Z" style="stroke: rgb(9%,21%,26%); stroke-linecap: butt; stroke-width: 1;"/>
+			<text x="335.443" y="9" style="font-family: Helvetica; font-size: 13px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,18) scale(1,-1)">Mês</text>
+		</g>
+	</g>
+</svg>

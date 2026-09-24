@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="420" height="240" preserveAspectRatio="xMinYMin meet" viewBox="0 0 420 240" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="420" height="240"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-240)" style="clip-path: url(#clip)">
+		<g transform="">
+			<text x="15" y="213" style="font-family: Helvetica; font-size: 18px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,426) scale(1,-1)">A diagonal cria duas áreas iguais</text>
+			<polygon points="60 55, 350 55, 350 175" style="stroke: rgb(9%,21%,26%); stroke-linecap: butt; stroke-width: 1; fill: rgb(90%,94%,90%); fill-rule: evenodd;"/>
+			<polygon points="60 55, 60 175, 350 175" style="stroke: rgb(9%,21%,26%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<path d="M 60,55 L 350,175 Z" style="stroke: rgb(81%,41%,21%); stroke-linecap: butt; stroke-width: 3;"/>
+			<text x="130" y="143" style="font-family: Helvetica; font-size: 18px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,286) scale(1,-1)">Metade</text>
+			<text x="260" y="81" style="font-family: Helvetica; font-size: 18px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,162) scale(1,-1)">Metade</text>
+			<text x="51.383999999999986" y="16" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,32) scale(1,-1)">Mesma base e mesma altura → áreas iguais</text>
+		</g>
+	</g>
+</svg>

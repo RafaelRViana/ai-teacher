@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="420" height="240" preserveAspectRatio="xMinYMin meet" viewBox="0 0 420 240" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="420" height="240"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-240)" style="clip-path: url(#clip)">
+		<g transform="">
+			<text x="15" y="214" style="font-family: Helvetica; font-size: 17px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,428) scale(1,-1)">Escolha a posição do algarismo diferente</text>
+			<rect x="24" y="151" width="43" height="40" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(91%,70%,27%); fill-rule: evenodd;"/>
+			<text x="41.052" y="164" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,328) scale(1,-1)">?</text>
+			<rect x="79" y="151" width="43" height="40" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<text x="96.05199999999999" y="164" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,328) scale(1,-1)">5</text>
+			<rect x="134" y="151" width="43" height="40" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<text x="151.052" y="164" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,328) scale(1,-1)">5</text>
+			<rect x="189" y="151" width="43" height="40" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<text x="206.052" y="164" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,328) scale(1,-1)">5</text>
+			<rect x="24" y="107" width="43" height="40" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<text x="41.052" y="120" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,240) scale(1,-1)">5</text>
+			<rect x="79" y="107" width="43" height="40" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(91%,70%,27%); fill-rule: evenodd;"/>
+			<text x="96.05199999999999" y="120" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,240) scale(1,-1)">?</text>
+			<rect x="134" y="107" width="43" height="40" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<text x="151.052" y="120" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,240) scale(1,-1)">5</text>
+			<rect x="189" y="107" width="43" height="40" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<text x="206.052" y="120" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,240) scale(1,-1)">5</text>
+			<rect x="24" y="63" width="43" height="40" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<text x="41.052" y="76" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,152) scale(1,-1)">5</text>
+			<rect x="79" y="63" width="43" height="40" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<text x="96.05199999999999" y="76" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,152) scale(1,-1)">5</text>
+			<rect x="134" y="63" width="43" height="40" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(91%,70%,27%); fill-rule: evenodd;"/>
+			<text x="151.052" y="76" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,152) scale(1,-1)">?</text>
+			<rect x="189" y="63" width="43" height="40" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<text x="206.052" y="76" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,152) scale(1,-1)">5</text>
+			<rect x="24" y="19" width="43" height="40" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<text x="41.052" y="32" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,64) scale(1,-1)">5</text>
+			<rect x="79" y="19" width="43" height="40" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<text x="96.05199999999999" y="32" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,64) scale(1,-1)">5</text>
+			<rect x="134" y="19" width="43" height="40" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<text x="151.052" y="32" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,64) scale(1,-1)">5</text>
+			<rect x="189" y="19" width="43" height="40" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(91%,70%,27%); fill-rule: evenodd;"/>
+			<text x="206.052" y="32" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,64) scale(1,-1)">?</text>
+			<text x="290" y="167" style="font-family: Helvetica; font-size: 18px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,334) scale(1,-1)">4 posições</text>
+			<text x="290" y="122" style="font-family: Helvetica; font-size: 18px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,244) scale(1,-1)">8 valores</text>
+			<text x="290" y="77" style="font-family: Helvetica; font-size: 20px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,154) scale(1,-1)">4 × 8</text>
+			<text x="290" y="40" style="font-family: Helvetica; font-size: 18px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,80) scale(1,-1)">32 números</text>
+		</g>
+	</g>
+</svg>

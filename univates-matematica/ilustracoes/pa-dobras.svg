@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="420" height="240" preserveAspectRatio="xMinYMin meet" viewBox="0 0 420 240" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="420" height="240"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-240)" style="clip-path: url(#clip)">
+		<g transform="">
+			<text x="15" y="212" style="font-family: Helvetica; font-size: 18px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,424) scale(1,-1)">Cada dobra duplica as camadas</text>
+			<rect x="20.0" y="120" width="48.0" height="32" style="stroke: rgb(21%,49%,72%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<text x="39.162" y="83" style="font-family: Helvetica; font-size: 21px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,166) scale(1,-1)">1</text>
+			<text x="20.657999999999998" y="59" style="font-family: Helvetica; font-size: 12px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,118) scale(1,-1)">camadas</text>
+			<rect x="101.0" y="120" width="48.0" height="32" style="stroke: rgb(21%,49%,72%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<rect x="102.5" y="123" width="48.0" height="32" style="stroke: rgb(21%,49%,72%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<text x="120.162" y="83" style="font-family: Helvetica; font-size: 21px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,166) scale(1,-1)">2</text>
+			<text x="101.658" y="59" style="font-family: Helvetica; font-size: 12px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,118) scale(1,-1)">camadas</text>
+			<rect x="182.0" y="120" width="48.0" height="32" style="stroke: rgb(21%,49%,72%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<rect x="183.5" y="123" width="48.0" height="32" style="stroke: rgb(21%,49%,72%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<rect x="185.0" y="126" width="48.0" height="32" style="stroke: rgb(21%,49%,72%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<rect x="186.5" y="129" width="48.0" height="32" style="stroke: rgb(21%,49%,72%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<text x="201.162" y="83" style="font-family: Helvetica; font-size: 21px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,166) scale(1,-1)">4</text>
+			<text x="182.658" y="59" style="font-family: Helvetica; font-size: 12px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,118) scale(1,-1)">camadas</text>
+			<rect x="263.0" y="120" width="48.0" height="32" style="stroke: rgb(21%,49%,72%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<rect x="264.5" y="123" width="48.0" height="32" style="stroke: rgb(21%,49%,72%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<rect x="266.0" y="126" width="48.0" height="32" style="stroke: rgb(21%,49%,72%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<rect x="267.5" y="129" width="48.0" height="32" style="stroke: rgb(21%,49%,72%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<rect x="269.0" y="132" width="48.0" height="32" style="stroke: rgb(21%,49%,72%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<rect x="270.5" y="135" width="48.0" height="32" style="stroke: rgb(21%,49%,72%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<rect x="272.0" y="138" width="48.0" height="32" style="stroke: rgb(21%,49%,72%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<rect x="273.5" y="141" width="48.0" height="32" style="stroke: rgb(21%,49%,72%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<text x="282.162" y="83" style="font-family: Helvetica; font-size: 21px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,166) scale(1,-1)">8</text>
+			<text x="263.658" y="59" style="font-family: Helvetica; font-size: 12px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,118) scale(1,-1)">camadas</text>
+			<rect x="344.0" y="120" width="48.0" height="32" style="stroke: rgb(21%,49%,72%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<rect x="345.5" y="123" width="48.0" height="32" style="stroke: rgb(21%,49%,72%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<rect x="347.0" y="126" width="48.0" height="32" style="stroke: rgb(21%,49%,72%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<rect x="348.5" y="129" width="48.0" height="32" style="stroke: rgb(21%,49%,72%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<rect x="350.0" y="132" width="48.0" height="32" style="stroke: rgb(21%,49%,72%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<rect x="351.5" y="135" width="48.0" height="32" style="stroke: rgb(21%,49%,72%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<rect x="353.0" y="138" width="48.0" height="32" style="stroke: rgb(21%,49%,72%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<rect x="354.5" y="141" width="48.0" height="32" style="stroke: rgb(21%,49%,72%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<rect x="356.0" y="144" width="48.0" height="32" style="stroke: rgb(21%,49%,72%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<rect x="357.5" y="147" width="48.0" height="32" style="stroke: rgb(21%,49%,72%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<rect x="359.0" y="150" width="48.0" height="32" style="stroke: rgb(21%,49%,72%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<rect x="360.5" y="153" width="48.0" height="32" style="stroke: rgb(21%,49%,72%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<rect x="362.0" y="156" width="48.0" height="32" style="stroke: rgb(21%,49%,72%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<rect x="363.5" y="159" width="48.0" height="32" style="stroke: rgb(21%,49%,72%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<rect x="365.0" y="162" width="48.0" height="32" style="stroke: rgb(21%,49%,72%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<rect x="366.5" y="165" width="48.0" height="32" style="stroke: rgb(21%,49%,72%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<text x="357.324" y="83" style="font-family: Helvetica; font-size: 21px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,166) scale(1,-1)">16</text>
+			<text x="344.658" y="59" style="font-family: Helvetica; font-size: 12px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,118) scale(1,-1)">camadas</text>
+			<text x="50.120000000000005" y="19" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,38) scale(1,-1)">4 dobras → 16 camadas → 3 × 16 = 48 furos</text>
+		</g>
+	</g>
+</svg>

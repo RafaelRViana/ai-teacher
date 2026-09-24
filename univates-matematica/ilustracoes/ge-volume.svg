@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="420" height="240" preserveAspectRatio="xMinYMin meet" viewBox="0 0 420 240" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="420" height="240"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-240)" style="clip-path: url(#clip)">
+		<g transform="">
+			<text x="15" y="213" style="font-family: Helvetica; font-size: 18px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,426) scale(1,-1)">Comprimento × largura × altura</text>
+			<polygon points="70 50, 260 50, 260 145, 70 145" style="stroke: rgb(9%,21%,26%); stroke-linecap: butt; stroke-width: 1; fill: rgb(90%,94%,90%); fill-rule: evenodd;"/>
+			<polygon points="70 145, 125 181, 315 181, 260 145" style="stroke: rgb(9%,21%,26%); stroke-linecap: butt; stroke-width: 1; fill: rgb(91%,70%,27%); fill-rule: evenodd;"/>
+			<polygon points="260 50, 315 86, 315 181, 260 145" style="stroke: rgb(9%,21%,26%); stroke-linecap: butt; stroke-width: 1; fill: rgb(21%,49%,72%); fill-rule: evenodd;"/>
+			<text x="114.99199999999999" y="25" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,50) scale(1,-1)">Comprimento</text>
+			<text x="333" y="111" style="font-family: Helvetica; font-size: 15px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,222) scale(1,-1)">Altura</text>
+			<text x="279.155" y="198" style="font-family: Helvetica; font-size: 15px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,396) scale(1,-1)">Largura</text>
+		</g>
+	</g>
+</svg>

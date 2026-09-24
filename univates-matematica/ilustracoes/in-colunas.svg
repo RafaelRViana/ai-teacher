@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="420" height="240" preserveAspectRatio="xMinYMin meet" viewBox="0 0 420 240" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="420" height="240"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-240)" style="clip-path: url(#clip)">
+		<g transform="">
+			<text x="15" y="214" style="font-family: Helvetica; font-size: 18px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,428) scale(1,-1)">Algarismos têm posições</text>
+			<rect x="18" y="97" width="120" height="88" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<text x="47.76" y="161" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,322) scale(1,-1)">Centena</text>
+			<text x="68.662" y="117" style="font-family: Helvetica; font-size: 28px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,234) scale(1,-1)">X</text>
+			<rect x="153" y="97" width="120" height="88" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<text x="185.432" y="161" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,322) scale(1,-1)">Dezena</text>
+			<text x="203.662" y="117" style="font-family: Helvetica; font-size: 28px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,234) scale(1,-1)">Y</text>
+			<rect x="288" y="97" width="120" height="88" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<text x="318.20799999999997" y="161" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,322) scale(1,-1)">Unidade</text>
+			<text x="339.446" y="117" style="font-family: Helvetica; font-size: 28px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,234) scale(1,-1)">Z</text>
+			<text x="99.01" y="53" style="font-family: Helvetica; font-size: 22px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,106) scale(1,-1)">XYZ = 100X + 10Y + Z</text>
+			<text x="94.16999999999999" y="18" style="font-family: Helvetica; font-size: 18px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,36) scale(1,-1)">Exemplo: 247 = 200 + 40 + 7</text>
+		</g>
+	</g>
+</svg>

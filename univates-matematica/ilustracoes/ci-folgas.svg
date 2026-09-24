@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="420" height="240" preserveAspectRatio="xMinYMin meet" viewBox="0 0 420 240" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="420" height="240"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-240)" style="clip-path: url(#clip)">
+		<g transform="">
+			<text x="15" y="213" style="font-family: Helvetica; font-size: 18px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,426) scale(1,-1)">Quando as folgas coincidem?</text>
+			<text x="12" y="162" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,324) scale(1,-1)">Ana</text>
+			<path d="M 66,142 L 387,142 Z" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1;"/>
+			<circle cx="66" cy="142" r="10" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(13%,45%,35%); fill-rule: evenodd;"/>
+			<text x="62.108" y="113" style="font-family: Helvetica; font-size: 14px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,226) scale(1,-1)">4</text>
+			<circle cx="126" cy="142" r="10" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(13%,45%,35%); fill-rule: evenodd;"/>
+			<text x="122.108" y="113" style="font-family: Helvetica; font-size: 14px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,226) scale(1,-1)">8</text>
+			<circle cx="186" cy="142" r="10" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(81%,41%,21%); fill-rule: evenodd;"/>
+			<text x="178.216" y="113" style="font-family: Helvetica; font-size: 14px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,226) scale(1,-1)">12</text>
+			<circle cx="246" cy="142" r="10" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(13%,45%,35%); fill-rule: evenodd;"/>
+			<text x="238.216" y="113" style="font-family: Helvetica; font-size: 14px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,226) scale(1,-1)">16</text>
+			<circle cx="306" cy="142" r="10" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(13%,45%,35%); fill-rule: evenodd;"/>
+			<text x="298.216" y="113" style="font-family: Helvetica; font-size: 14px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,226) scale(1,-1)">20</text>
+			<circle cx="366" cy="142" r="10" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(81%,41%,21%); fill-rule: evenodd;"/>
+			<text x="358.216" y="113" style="font-family: Helvetica; font-size: 14px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,226) scale(1,-1)">24</text>
+			<text x="12" y="94" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,188) scale(1,-1)">Beto</text>
+			<path d="M 66,74 L 387,74 Z" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1;"/>
+			<circle cx="96" cy="74" r="10" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(21%,49%,72%); fill-rule: evenodd;"/>
+			<text x="92.108" y="45" style="font-family: Helvetica; font-size: 14px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,90) scale(1,-1)">6</text>
+			<circle cx="186" cy="74" r="10" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(81%,41%,21%); fill-rule: evenodd;"/>
+			<text x="178.216" y="45" style="font-family: Helvetica; font-size: 14px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,90) scale(1,-1)">12</text>
+			<circle cx="276" cy="74" r="10" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(21%,49%,72%); fill-rule: evenodd;"/>
+			<text x="268.216" y="45" style="font-family: Helvetica; font-size: 14px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,90) scale(1,-1)">18</text>
+			<circle cx="366" cy="74" r="10" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(81%,41%,21%); fill-rule: evenodd;"/>
+			<text x="358.216" y="45" style="font-family: Helvetica; font-size: 14px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,90) scale(1,-1)">24</text>
+			<text x="122.96100000000001" y="15" style="font-family: Helvetica; font-size: 18px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,30) scale(1,-1)">Dias comuns: 12 e 24</text>
+		</g>
+	</g>
+</svg>

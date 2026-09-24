@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="420" height="240" preserveAspectRatio="xMinYMin meet" viewBox="0 0 420 240" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="420" height="240"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-240)" style="clip-path: url(#clip)">
+		<g transform="">
+			<polygon points="113 122, 201 122, 200.8264 127.5256, 200.3061 133.0293, 199.4413 138.4896, 198.2353 143.8847, 196.693 149.1935, 194.8203 154.395, 192.6248 159.4686, 190.115 164.3943, 187.3009 169.1528, 184.1935 173.7251" style="stroke: rgb(100%,100%,100%); stroke-linecap: butt; stroke-width: 1; fill: rgb(13%,45%,35%); fill-rule: evenodd;"/>
+			<polygon points="113 122, 184.1935 173.7251, 180.8052 178.0933, 177.1492 182.2401, 173.2401 186.1492, 169.0933 189.8052, 164.7251 193.1935, 160.1528 196.3009, 155.3943 199.115, 150.4686 201.6248, 145.395 203.8203, 140.1935 205.693" style="stroke: rgb(100%,100%,100%); stroke-linecap: butt; stroke-width: 1; fill: rgb(13%,45%,35%); fill-rule: evenodd;"/>
+			<polygon points="113 122, 140.1935 205.693, 134.8847 207.2353, 129.4896 208.4413, 124.0293 209.3061, 118.5256 209.8264, 113 210, 107.4744 209.8264, 101.9707 209.3061, 96.51044 208.4413, 91.11529 207.2353, 85.8065 205.693" style="stroke: rgb(100%,100%,100%); stroke-linecap: butt; stroke-width: 1; fill: rgb(21%,49%,72%); fill-rule: evenodd;"/>
+			<polygon points="113 122, 85.8065 205.693, 80.60504 203.8203, 75.53142 201.6248, 70.60568 199.115, 65.84724 196.3009, 61.2749 193.1935, 56.90669 189.8052, 52.75985 186.1492, 48.85076 182.2401, 45.19483 178.0933, 41.8065 173.7251" style="stroke: rgb(100%,100%,100%); stroke-linecap: butt; stroke-width: 1; fill: rgb(21%,49%,72%); fill-rule: evenodd;"/>
+			<polygon points="113 122, 41.8065 173.7251, 38.69914 169.1528, 35.88501 164.3943, 33.37522 159.4686, 31.17967 154.395, 29.30703 149.1935, 27.76468 143.8847, 26.55872 138.4896, 25.69391 133.0293, 25.17365 127.5256, 25 122" style="stroke: rgb(100%,100%,100%); stroke-linecap: butt; stroke-width: 1; fill: rgb(21%,49%,72%); fill-rule: evenodd;"/>
+			<polygon points="113 122, 25 122, 25.17365 116.4744, 25.69391 110.9707, 26.55872 105.5104, 27.76468 100.1153, 29.30703 94.8065, 31.17967 89.60504, 33.37522 84.53142, 35.88501 79.60568, 38.69914 74.84724, 41.8065 70.2749" style="stroke: rgb(100%,100%,100%); stroke-linecap: butt; stroke-width: 1; fill: rgb(81%,41%,21%); fill-rule: evenodd;"/>
+			<polygon points="113 122, 41.8065 70.2749, 45.19483 65.90669, 48.85076 61.75985, 52.75985 57.85076, 56.90669 54.19483, 61.2749 50.8065, 65.84724 47.69914, 70.60568 44.88501, 75.53142 42.37522, 80.60504 40.17967, 85.8065 38.30703" style="stroke: rgb(100%,100%,100%); stroke-linecap: butt; stroke-width: 1; fill: rgb(81%,41%,21%); fill-rule: evenodd;"/>
+			<polygon points="113 122, 85.8065 38.30703, 91.11529 36.76468, 96.51044 35.55872, 101.9707 34.69391, 107.4744 34.17365, 113 34, 118.5256 34.17365, 124.0293 34.69391, 129.4896 35.55872, 134.8847 36.76468, 140.1935 38.30703" style="stroke: rgb(100%,100%,100%); stroke-linecap: butt; stroke-width: 1; fill: rgb(81%,41%,21%); fill-rule: evenodd;"/>
+			<polygon points="113 122, 140.1935 38.30703, 145.395 40.17967, 150.4686 42.37522, 155.3943 44.88501, 160.1528 47.69914, 164.7251 50.8065, 169.0933 54.19483, 173.2401 57.85076, 177.1492 61.75985, 180.8052 65.90669, 184.1935 70.2749" style="stroke: rgb(100%,100%,100%); stroke-linecap: butt; stroke-width: 1; fill: rgb(81%,41%,21%); fill-rule: evenodd;"/>
+			<polygon points="113 122, 184.1935 70.2749, 187.3009 74.84724, 190.115 79.60568, 192.6248 84.53142, 194.8203 89.60504, 196.693 94.8065, 198.2353 100.1153, 199.4413 105.5104, 200.3061 110.9707, 200.8264 116.4744, 201 122" style="stroke: rgb(100%,100%,100%); stroke-linecap: butt; stroke-width: 1; fill: rgb(81%,41%,21%); fill-rule: evenodd;"/>
+			<rect x="228" y="180" width="14" height="14" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(13%,45%,35%); fill-rule: evenodd;"/>
+			<text x="251" y="182" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,364) scale(1,-1)">Ana: R$ 8</text>
+			<text x="251" y="159" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,318) scale(1,-1)">Parte: 1/5</text>
+			<rect x="228" y="122" width="14" height="14" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(21%,49%,72%); fill-rule: evenodd;"/>
+			<text x="251" y="124" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,248) scale(1,-1)">Beto: R$ 12</text>
+			<text x="251" y="101" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,202) scale(1,-1)">Parte: 3/10</text>
+			<rect x="228" y="64" width="14" height="14" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(81%,41%,21%); fill-rule: evenodd;"/>
+			<text x="251" y="66" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,132) scale(1,-1)">Caio: R$ 20</text>
+			<text x="251" y="43" style="font-family: Helvetica; font-size: 16px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,86) scale(1,-1)">Parte: 1/2</text>
+			<text x="88.586" y="10" style="font-family: Helvetica; font-size: 17px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,20) scale(1,-1)">A pizza inteira representa R$ 40</text>
+		</g>
+	</g>
+</svg>

@@ -1,0 +1,296 @@
+{
+  "op-grupos": {
+    "titulo": "Grupos iguais",
+    "descricao": "Cada linha representa uma fileira. Contar por grupos evita contar mesa por mesa.",
+    "pergunta": "Se cada mesa recebesse 4 cadeiras, quantas cadeiras seriam necessárias?",
+    "arquivo": "ilustracoes/op-grupos.svg"
+  },
+  "op-ordem": {
+    "titulo": "Uma operação de cada vez",
+    "descricao": "As cores das faixas separam as etapas. Parênteses vêm antes de multiplicação; depois fazemos a subtração.",
+    "pergunta": "O que mudaria se a expressão fosse (18 - 2) × 7?",
+    "arquivo": "ilustracoes/op-ordem.svg"
+  },
+  "op-excursao": {
+    "titulo": "Compare o gasto total",
+    "descricao": "30 bilhetes de R$ 6,40 custam R$ 192. O passe custa R$ 150. As barras partem do mesmo zero.",
+    "pergunta": "Por que não basta comparar o preço de uma passagem com o preço do passe?",
+    "arquivo": "ilustracoes/op-excursao.svg"
+  },
+  "op-salao": {
+    "titulo": "Dois tipos de setor",
+    "descricao": "Calcule o total de cada tipo de setor e depois some. Só então multiplique pelas quatro cadeiras de cada mesa.",
+    "pergunta": "Qual informação diz quantas cadeiras serão usadas por mesa?",
+    "arquivo": "ilustracoes/op-salao.svg"
+  },
+  "me-unidades": {
+    "titulo": "Troque a unidade",
+    "descricao": "Para passar de quilogramas a gramas, de litros a mililitros ou de quilômetros a metros, multiplique por 1.000.",
+    "pergunta": "Qual operação faz o caminho de volta?",
+    "arquivo": "ilustracoes/me-unidades.svg"
+  },
+  "me-mapa": {
+    "titulo": "Distância no trajeto",
+    "descricao": "Há nove trechos de malha no percurso verde: três à direita, três para cima e três à direita. Cada trecho representa 200 m.",
+    "pergunta": "Qual é a distância de ida? E a de ida e volta?",
+    "arquivo": "ilustracoes/me-mapa.svg"
+  },
+  "me-bebida": {
+    "titulo": "Quanto cada pessoa bebe?",
+    "descricao": "Primeiro converta o total para mililitros. Depois divida pelo consumo de uma pessoa.",
+    "pergunta": "Por que 48 litros não podem ser divididos diretamente por 600 mililitros?",
+    "arquivo": "ilustracoes/me-bebida.svg"
+  },
+  "me-voo": {
+    "titulo": "A data também muda",
+    "descricao": "Após o voo, são 2h30 de terça no horário de origem. O destino está duas horas adiantado: lá são 4h30.",
+    "pergunta": "Qual horário seria usado se o destino estivesse duas horas atrasado?",
+    "arquivo": "ilustracoes/me-voo.svg"
+  },
+  "fr-partes": {
+    "titulo": "Partes do mesmo todo",
+    "descricao": "As barras têm o mesmo comprimento. Três quartos equivalem a nove doze avos; dois terços equivalem a oito doze avos.",
+    "pergunta": "Qual é a diferença entre 3/4 e 2/3?",
+    "arquivo": "ilustracoes/fr-partes.svg"
+  },
+  "fr-de-mais": {
+    "titulo": "Uma palavra muda a conta",
+    "descricao": "Os quatro pontos laranja representam um terço dos doze pontos azuis. “A mais” pede acrescentar essa parte ao valor inicial.",
+    "pergunta": "Como seria “1/3 a menos que 12”?",
+    "arquivo": "ilustracoes/fr-de-mais.svg"
+  },
+  "fr-pizza": {
+    "titulo": "A parte acompanha a contribuição",
+    "descricao": "A pizza foi dividida em dez partes iguais: duas verdes, três azuis e cinco laranjas. São 20%, 30% e 50% do total.",
+    "pergunta": "Como você confere que as três frações formam uma pizza inteira?",
+    "arquivo": "ilustracoes/fr-pizza.svg"
+  },
+  "fr-fatias": {
+    "titulo": "Quantidades encadeadas",
+    "descricao": "Breno comeu 12. Pedro comeu dois terços de 12, isto é, 8. João comeu metade a mais que Pedro: 12.",
+    "pergunta": "Por que precisamos descobrir a quantidade de Pedro antes da de João?",
+    "arquivo": "ilustracoes/fr-fatias.svg"
+  },
+  "pr-taxa": {
+    "titulo": "Preço e massa crescem juntos",
+    "descricao": "400 g custam R$ 24. Dividindo ambos por quatro, 100 g custam R$ 6. Uma porção de 150 g custa R$ 9.",
+    "pergunta": "Quanto custariam 200 g?",
+    "arquivo": "ilustracoes/pr-taxa.svg"
+  },
+  "pr-inversa": {
+    "titulo": "Mais ralos, menos horas",
+    "descricao": "Para o mesmo volume, dobrar o número de ralos idênticos reduz o tempo à metade.",
+    "pergunta": "Por que essa relação não funciona se os ralos tiverem vazões diferentes?",
+    "arquivo": "ilustracoes/pr-inversa.svg"
+  },
+  "pr-queijo": {
+    "titulo": "Leia um valor entre as marcas",
+    "descricao": "150 g ficam no meio entre 100 e 200 g. O preço de R$ 9 também fica no meio entre R$ 6 e R$ 12.",
+    "pergunta": "Qual preço corresponde a 250 g?",
+    "arquivo": "ilustracoes/pr-queijo.svg"
+  },
+  "pr-ralos": {
+    "titulo": "O caminho pela unidade",
+    "descricao": "Com a vazão de um ralo conhecida, descubra quanto ele retira no novo tempo. Depois calcule quantos ralos são necessários.",
+    "pergunta": "Qual unidade acompanha a vazão de um ralo?",
+    "arquivo": "ilustracoes/pr-ralos.svg"
+  },
+  "pa-sequencia": {
+    "titulo": "Veja o que é acrescentado",
+    "descricao": "A sequência 4, 7, 10, 13 aumenta três pontos por figura. Os quatro pontos iniciais foram destacados em laranja.",
+    "pergunta": "Quantos pontos você desenharia na figura 5?",
+    "arquivo": "ilustracoes/pa-sequencia.svg"
+  },
+  "pa-impares": {
+    "titulo": "Somar camadas",
+    "descricao": "Cada nova borda em L acrescenta um número ímpar de quadradinhos. Cinco camadas formam um quadrado de área 25.",
+    "pergunta": "A sexta camada acrescentaria quantos quadradinhos?",
+    "arquivo": "ilustracoes/pa-impares.svg"
+  },
+  "pa-distante": {
+    "titulo": "Conte os intervalos",
+    "descricao": "Entre as posições 1 e 12 existem onze aumentos, não doze. Cada aumento acrescenta três pontos.",
+    "pergunta": "Por que a expressão usa 12 - 1?",
+    "arquivo": "ilustracoes/pa-distante.svg"
+  },
+  "pa-dobras": {
+    "titulo": "Dobrar é multiplicar por dois",
+    "descricao": "Os desenhos representam as camadas empilhadas. Depois de quatro dobras ao meio, cada furo atravessa 16 camadas.",
+    "pergunta": "O que aconteceria com o número de camadas após mais uma dobra?",
+    "arquivo": "ilustracoes/pa-dobras.svg"
+  },
+  "ci-multiplos": {
+    "titulo": "Duas sequências na mesma escala",
+    "descricao": "Na linha de cima aparecem múltiplos de 4. Na de baixo, múltiplos de 6. As duas linhas usam a mesma escala.",
+    "pergunta": "Quais valores positivos aparecem nas duas linhas?",
+    "arquivo": "ilustracoes/ci-multiplos.svg"
+  },
+  "ci-divisores": {
+    "titulo": "O par central se repete",
+    "descricao": "No quadrado perfeito 16, o divisor 4 faz par consigo mesmo. Ele é contado uma só vez, por isso há cinco divisores.",
+    "pergunta": "Qual divisor faz par consigo mesmo no número 25?",
+    "arquivo": "ilustracoes/ci-divisores.svg"
+  },
+  "ci-folgas": {
+    "titulo": "Primeiro encontro e repetição",
+    "descricao": "As marcações laranja aparecem nos mesmos dias para os dois trabalhadores: dia 12 e dia 24.",
+    "pergunta": "Quanto tempo passa entre as duas folgas comuns?",
+    "arquivo": "ilustracoes/ci-folgas.svg"
+  },
+  "ci-pista": {
+    "titulo": "Transforme quilômetros em voltas",
+    "descricao": "Os números são posições em quilômetros no sentido horário. Ana termina no 3; Beto, que corre no sentido contrário, termina no 1.",
+    "pergunta": "Por que o outro caminho entre eles mede 3 km?",
+    "arquivo": "ilustracoes/ci-pista.svg"
+  },
+  "in-igualdade": {
+    "titulo": "A igualdade é um equilíbrio",
+    "descricao": "Se retiramos a mesma quantidade dos dois lados, a igualdade continua verdadeira. Depois, dividimos ambos em três partes iguais.",
+    "pergunta": "Quanto vale uma caixa?",
+    "arquivo": "ilustracoes/in-igualdade.svg"
+  },
+  "in-colunas": {
+    "titulo": "Uma letra, um algarismo",
+    "descricao": "O lugar de cada letra determina seu valor. X vale centenas, Y vale dezenas e Z vale unidades.",
+    "pergunta": "No número 352, qual é o valor do algarismo 5?",
+    "arquivo": "ilustracoes/in-colunas.svg"
+  },
+  "in-biscoitos": {
+    "titulo": "Visualize a transferência",
+    "descricao": "Cada um começou com 12 biscoitos. Rui deu 6 a Lia: ela passou a ter 18 e ele ficou com 6, mantendo o total 24.",
+    "pergunta": "Como a figura mostra que Lia ficou com o triplo de Rui?",
+    "arquivo": "ilustracoes/in-biscoitos.svg"
+  },
+  "in-vasos": {
+    "titulo": "Altura inteira e acréscimo",
+    "descricao": "Dois vasos extras acrescentam 8 cm: cada um acrescenta 4 cm. O primeiro vaso mede 26 - 2 × 4 = 18 cm. Desenho esquemático.",
+    "pergunta": "Por que não podemos dividir a altura da pilha por três?",
+    "arquivo": "ilustracoes/in-vasos.svg"
+  },
+  "lo-tabela": {
+    "titulo": "Confira uma pista por vez",
+    "descricao": "As frases são: começa com 1; o segundo algarismo é 1; termina com 3. Cada uma das duas senhas mostradas torna duas frases verdadeiras.",
+    "pergunta": "Teste a senha 312 usando as mesmas três frases.",
+    "arquivo": "ilustracoes/lo-tabela.svg"
+  },
+  "lo-codigo": {
+    "titulo": "Um código mantém a regra",
+    "descricao": "M vira N, A vira B e L vira M. A ordem das letras da palavra deve ser mantida.",
+    "pergunta": "Como ficaria a palavra BOLA com esta regra?",
+    "arquivo": "ilustracoes/lo-codigo.svg"
+  },
+  "lo-verdade": {
+    "titulo": "Conte as frases verdadeiras",
+    "descricao": "Há duas frases verdadeiras. A regra exige exatamente uma, então a senha 213 deve ser descartada.",
+    "pergunta": "Você consegue encontrar uma senha válida com 1, 2 e 3?",
+    "arquivo": "ilustracoes/lo-verdade.svg"
+  },
+  "lo-compra": {
+    "titulo": "Elimine uma opção impossível",
+    "descricao": "Mesmo com sabonete e creme mais baratos, o desodorante de R$ 9 ultrapassa o orçamento. É preciso escolher o de R$ 6.",
+    "pergunta": "Qual é o custo da combinação mais barata com o desodorante de R$ 6?",
+    "arquivo": "ilustracoes/lo-compra.svg"
+  },
+  "co-arvore": {
+    "titulo": "Uma árvore de possibilidades",
+    "descricao": "Há dois caminhos para escolher o pão e, em cada um deles, dois recheios. Cada ponta representa uma combinação.",
+    "pergunta": "Se houvesse três bebidas para cada combinação, quantos lanches seriam possíveis?",
+    "arquivo": "ilustracoes/co-arvore.svg"
+  },
+  "co-senhas": {
+    "titulo": "Escolhas sucessivas",
+    "descricao": "Usando 1, 2, 3 e 4 sem repetir, há quatro opções no início, depois três e depois duas.",
+    "pergunta": "O que mudaria se fosse permitido repetir algarismos?",
+    "arquivo": "ilustracoes/co-senhas.svg"
+  },
+  "co-rifa": {
+    "titulo": "Exatamente três algarismos 5",
+    "descricao": "O algarismo diferente pode ficar em quatro lugares. Sem zero e sem repetir 5 nessa posição, há oito valores possíveis.",
+    "pergunta": "Por que o número 5555 não entra na contagem?",
+    "arquivo": "ilustracoes/co-rifa.svg"
+  },
+  "co-pecas": {
+    "titulo": "As somas precisam fechar",
+    "descricao": "A tabela reúne os dois critérios. Some por linha para conferir a quantidade de cada cor e por coluna para cada formato.",
+    "pergunta": "Em que coluna você encontra a resposta “32 quadrados”?",
+    "arquivo": "ilustracoes/co-pecas.svg"
+  },
+  "gp-area": {
+    "titulo": "Duas medidas diferentes",
+    "descricao": "Os 40 quadradinhos de 1 cm² medem a área. O contorno laranja mede 8 + 5 + 8 + 5 = 26 cm.",
+    "pergunta": "O que acontece com a área se duplicarmos apenas a altura?",
+    "arquivo": "ilustracoes/gp-area.svg"
+  },
+  "gp-diagonal": {
+    "titulo": "Metade do retângulo",
+    "descricao": "As duas regiões triangulares ocupam, juntas, o retângulo inteiro. Cada uma representa metade da área.",
+    "pergunta": "Se o retângulo tem 60 m², qual é a área de cada triângulo?",
+    "arquivo": "ilustracoes/gp-diagonal.svg"
+  },
+  "gp-quadrado": {
+    "titulo": "Some as áreas para achar o lado",
+    "descricao": "O mosaico contém uma região de 25 cm², quatro de 4 cm² e oito de 1 cm². A área total é 49 cm².",
+    "pergunta": "Por que o lado é 7 cm, e não 49 cm?",
+    "arquivo": "ilustracoes/gp-quadrado.svg"
+  },
+  "gp-mapa": {
+    "titulo": "Posição final e caminho percorrido",
+    "descricao": "Cada quadrícula representa 1 km. O percurso tem 6 km, mas o ponto final fica 2 km a leste e 2 km ao norte da origem.",
+    "pergunta": "Qual parte do caminho foi “desfeita” pelo último deslocamento?",
+    "arquivo": "ilustracoes/gp-mapa.svg"
+  },
+  "ge-volume": {
+    "titulo": "Três dimensões, não duas",
+    "descricao": "Cada dimensão informa quantos blocos unitários cabem em uma direção. Multiplique as três contagens para obter o volume.",
+    "pergunta": "Em que unidade medimos o volume de um bloco com medidas em centímetros?",
+    "arquivo": "ilustracoes/ge-volume.svg"
+  },
+  "ge-faces": {
+    "titulo": "Pense antes de somar seis faces",
+    "descricao": "Os cubos estão separados apenas para mostrar quais faces se encostariam. Ao uni-los, duas faces deixam de ficar expostas. Desenho esquemático.",
+    "pergunta": "Se os dois cubos estiverem também sobre a mesa, quantas bases ficam escondidas?",
+    "arquivo": "ilustracoes/ge-faces.svg"
+  },
+  "ge-caixas": {
+    "titulo": "Uma camada vista de cima",
+    "descricao": "No exemplo, cabem quatro caixas no comprimento e quatro na largura. São 16 por camada; cinco camadas totalizam 80.",
+    "pergunta": "Qual divisão informa o número de camadas na altura?",
+    "arquivo": "ilustracoes/ge-caixas.svg"
+  },
+  "ge-torre": {
+    "titulo": "Faces expostas ao ar",
+    "descricao": "Contamos todas as faces externas, inclusive as de trás, e não apenas as que aparecem nesta perspectiva. A face apoiada na mesa fica excluída.",
+    "pergunta": "Uma coluna de cinco cubos teria quantas faces expostas?",
+    "arquivo": "ilustracoes/ge-torre.svg"
+  },
+  "pictograma": {
+    "titulo": "O mesmo total em símbolos",
+    "descricao": "Março tem três círculos inteiros (600 doações); abril tem dois e meio (500). Cada círculo representa 200.",
+    "pergunta": "Quanto representa meio círculo?",
+    "arquivo": "ilustracoes/pictograma.svg"
+  },
+  "barras": {
+    "titulo": "Dos símbolos para as barras",
+    "descricao": "Os mesmos dados: março, 600; abril, 500. O eixo começa em zero e cada intervalo representa 100 doações.",
+    "pergunta": "Quanto março supera abril?",
+    "arquivo": "ilustracoes/barras.svg"
+  },
+  "agua": {
+    "titulo": "Crescimento constante",
+    "descricao": "Reservatório inicialmente vazio: dia 0, 0 m; dia 1, 2 m; dia 2, 4 m; dia 3, 6 m; dia 6, 12 m. O tanque desenhado mostra o terceiro dia.",
+    "pergunta": "Em que dia o tanque chega a 8 metros?",
+    "arquivo": "ilustracoes/agua.svg"
+  },
+  "custos": {
+    "titulo": "As partes formam o custo total",
+    "descricao": "Opção A: compra 100, energia 700 e reposição 50 reais. Opção B: compra 300, energia 300 e reposição zero. Totais: 850 e 600 reais.",
+    "pergunta": "Qual parte do gasto é maior em cada opção?",
+    "arquivo": "ilustracoes/custos.svg"
+  },
+  "pacotes": {
+    "titulo": "Compare combinações de pacotes",
+    "descricao": "Cinco pacotes de 1 kg: 20 reais. Um de 3 kg e dois de 1 kg: 18 reais. Dois de 3 kg: 20 reais e sobra 1 kg.",
+    "pergunta": "Qual compra atende à necessidade com menor custo?",
+    "arquivo": "ilustracoes/pacotes.svg"
+  }
+}

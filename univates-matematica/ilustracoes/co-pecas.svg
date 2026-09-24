@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="420" height="240" preserveAspectRatio="xMinYMin meet" viewBox="0 0 420 240" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="420" height="240"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-240)" style="clip-path: url(#clip)">
+		<g transform="">
+			<text x="15" y="213" style="font-family: Helvetica; font-size: 18px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,426) scale(1,-1)">Cruze cor e formato</text>
+			<rect x="12" y="145" width="100" height="42" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1; fill: rgb(90%,94%,90%); fill-rule: evenodd;"/>
+			<text x="62.0" y="159" style="font-family: Helvetica; font-size: 13px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,318) scale(1,-1)"></text>
+			<rect x="112" y="145" width="100" height="42" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1; fill: rgb(90%,94%,90%); fill-rule: evenodd;"/>
+			<text x="131.658" y="159" style="font-family: Helvetica; font-size: 13px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,318) scale(1,-1)">Triângulos</text>
+			<rect x="212" y="145" width="100" height="42" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1; fill: rgb(90%,94%,90%); fill-rule: evenodd;"/>
+			<text x="229.84449999999998" y="159" style="font-family: Helvetica; font-size: 13px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,318) scale(1,-1)">Quadrados</text>
+			<rect x="312" y="145" width="100" height="42" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1; fill: rgb(90%,94%,90%); fill-rule: evenodd;"/>
+			<text x="347.5505" y="159" style="font-family: Helvetica; font-size: 13px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,318) scale(1,-1)">Total</text>
+			<rect x="12" y="103" width="100" height="42" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1; fill: rgb(90%,94%,90%); fill-rule: evenodd;"/>
+			<text x="46.1075" y="117" style="font-family: Helvetica; font-size: 13px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,234) scale(1,-1)">Azuis</text>
+			<rect x="112" y="103" width="100" height="42" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="158.386" y="117" style="font-family: Helvetica; font-size: 13px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,234) scale(1,-1)">8</text>
+			<rect x="212" y="103" width="100" height="42" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="254.772" y="117" style="font-family: Helvetica; font-size: 13px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,234) scale(1,-1)">12</text>
+			<rect x="312" y="103" width="100" height="42" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="354.772" y="117" style="font-family: Helvetica; font-size: 13px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,234) scale(1,-1)">20</text>
+			<rect x="12" y="61" width="100" height="42" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1; fill: rgb(90%,94%,90%); fill-rule: evenodd;"/>
+			<text x="30.936500000000002" y="75" style="font-family: Helvetica; font-size: 13px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,150) scale(1,-1)">Vermelhas</text>
+			<rect x="112" y="61" width="100" height="42" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="154.772" y="75" style="font-family: Helvetica; font-size: 13px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,150) scale(1,-1)">10</text>
+			<rect x="212" y="61" width="100" height="42" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="254.772" y="75" style="font-family: Helvetica; font-size: 13px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,150) scale(1,-1)">20</text>
+			<rect x="312" y="61" width="100" height="42" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="354.772" y="75" style="font-family: Helvetica; font-size: 13px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,150) scale(1,-1)">30</text>
+			<rect x="12" y="19" width="100" height="42" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1; fill: rgb(90%,94%,90%); fill-rule: evenodd;"/>
+			<text x="47.5505" y="33" style="font-family: Helvetica; font-size: 13px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,66) scale(1,-1)">Total</text>
+			<rect x="112" y="19" width="100" height="42" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="154.772" y="33" style="font-family: Helvetica; font-size: 13px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,66) scale(1,-1)">18</text>
+			<rect x="212" y="19" width="100" height="42" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="254.772" y="33" style="font-family: Helvetica; font-size: 13px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,66) scale(1,-1)">32</text>
+			<rect x="312" y="19" width="100" height="42" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="354.772" y="33" style="font-family: Helvetica; font-size: 13px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,66) scale(1,-1)">50</text>
+		</g>
+	</g>
+</svg>

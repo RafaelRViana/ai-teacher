@@ -1,0 +1,818 @@
+[
+  {
+    "slug": "operacoes",
+    "titulo": "Operações e dinheiro",
+    "resumo": "Escolher operações, respeitar sua ordem e comparar custos.",
+    "refs": {
+      "26": [],
+      "22": [],
+      "21": [
+        4
+      ],
+      "20": [],
+      "19": [
+        1
+      ],
+      "18": [],
+      "17": [
+        2,
+        4,
+        9
+      ]
+    },
+    "secoes": [
+      [
+        "Traduza a situação antes de calcular",
+        "Adição reúne quantidades; subtração compara ou encontra o que sobra; multiplicação reúne grupos iguais; divisão reparte igualmente ou conta quantos grupos cabem. Escreva o que cada resultado representa. Para vários setores, calcule cada tipo de setor e só depois some."
+      ],
+      [
+        "A ordem das operações",
+        "Resolva parênteses, depois potências, depois multiplicações e divisões da esquerda para a direita, e por fim adições e subtrações. Em 2 + 3 × 4, o resultado é 14, não 20. Inserir sinais para maximizar uma expressão exige considerar essa ordem; multiplicar por 1 não aumenta o número."
+      ],
+      [
+        "Dinheiro e escolhas econômicas",
+        "Use reais e centavos na mesma unidade: R$ 4,50 = 450 centavos. Custo total = custo por item × quantidade + taxas fixas. Economia = custo da opção mais cara − custo da mais barata. Compare o custo total, não apenas uma parcela."
+      ],
+      [
+        "Operações em cadeia e estimativa",
+        "Quando uma caixa contém 12 pacotes e cada pacote contém 8 peças, são 12 × 8 peças. Dados extras podem não ser necessários. Em calculadoras especiais, registre o visor depois de cada tecla; a ordem muda a resposta. Faça uma estimativa antes e use a operação inversa para conferir."
+      ]
+    ],
+    "exemplos": [
+      [
+        "Custo de uma excursão",
+        "Um ônibus cobra R$ 6,40 por viagem. Um estudante faz 2 viagens por dia durante 15 dias. Um passe custa R$ 150. Qual a economia?",
+        "São 2 × 15 = 30 viagens. Bilhetes: 30 × 6,40 = R$ 192. Economia: 192 − 150 = R$ 42."
+      ],
+      [
+        "Montagem de um salão",
+        "Há 3 setores com 4 fileiras de 8 mesas e 2 setores com 5 fileiras de 6 mesas. Cada mesa usa 4 cadeiras.",
+        "Mesas: 3 × 4 × 8 + 2 × 5 × 6 = 96 + 60 = 156. Cadeiras: 156 × 4 = 624."
+      ]
+    ],
+    "erros": [
+      "Somar antes de multiplicar sem que haja parênteses.",
+      "Esquecer o trajeto de volta, uma taxa ou um dos setores.",
+      "Confundir economia com custo total."
+    ],
+    "numero": 1,
+    "originais": [
+      "OMU21-6ANO-Q04",
+      "OMU19-6ANO-Q01",
+      "OMU17-6ANO-Q02",
+      "OMU17-6ANO-Q04",
+      "OMU17-6ANO-Q09"
+    ]
+  },
+  {
+    "slug": "medidas",
+    "titulo": "Medidas, escalas e tempo",
+    "resumo": "Converter unidades, interpretar trajetos e atravessar a meia-noite.",
+    "refs": {
+      "22": [
+        2
+      ],
+      "21": [
+        2
+      ],
+      "20": [
+        3
+      ],
+      "17": [
+        1
+      ]
+    },
+    "secoes": [
+      [
+        "Comprimento, massa e capacidade",
+        "1 km = 1.000 m; 1 m = 100 cm; 1 kg = 1.000 g; 1 L = 1.000 mL. Passe tudo para uma unidade comum antes de somar ou comparar. Para converter 2,5 L em mL, multiplique por 1.000: 2.500 mL. Para passar 750 g a kg, divida por 1.000: 0,75 kg."
+      ],
+      [
+        "Receitas e quantidades por pessoa",
+        "Calcule separadamente o total disponível e o consumo de cada pessoa. Divida o total pelo consumo individual. Em receitas, sobra = comprado − utilizado, ingrediente por ingrediente. Some as sobras apenas depois de converter as massas."
+      ],
+      [
+        "Escalas e trajetos",
+        "Se 1 cm no desenho representa 200 m reais, um caminho de 7 cm representa 1.400 m. Meça o caminho indicado, não uma linha reta que não faz parte do trajeto. Ida e volta multiplicam por 2; vários dias exigem outra multiplicação."
+      ],
+      [
+        "Relógios, duração e fuso",
+        "1 hora tem 60 minutos e 1 dia tem 24 horas. Faça uma linha do tempo com partidas, esperas e viagens. Primeiro some a duração no horário de origem; depois aplique a diferença de fuso. Destino adiantado: some. Atrasado: subtraia. A mudança de data faz parte da resposta."
+      ]
+    ],
+    "exemplos": [
+      [
+        "Bebida para uma festa",
+        "Foram consumidas 24 garrafas de 2 L. Cada pessoa bebeu 3 copos de 200 mL. Quantas pessoas foram atendidas?",
+        "Total: 48 L = 48.000 mL. Por pessoa: 600 mL. Pessoas: 48.000 ÷ 600 = 80."
+      ],
+      [
+        "Chegada no dia seguinte",
+        "Um voo parte às 22h40 de segunda-feira, dura 3h50 e chega a uma cidade 2 horas adiantada.",
+        "No horário de origem, chega às 2h30 de terça. No destino são 4h30 de terça-feira."
+      ]
+    ],
+    "erros": [
+      "Misturar litros com mililitros ou quilogramas com gramas.",
+      "Tratar 1h30 como 1,30 hora; ela corresponde a 1,5 hora.",
+      "Aplicar o fuso duas vezes ou esquecer a data."
+    ],
+    "numero": 2,
+    "originais": [
+      "OMU22-6ANO-Q02",
+      "OMU21-6ANO-Q02",
+      "OMU20-6ANO-Q03",
+      "OMU17-6ANO-Q01"
+    ]
+  },
+  {
+    "slug": "fracoes",
+    "titulo": "Frações e partes de um todo",
+    "resumo": "Comparar, operar e interpretar frações em áreas, capacidades e partilhas.",
+    "refs": {
+      "26": [
+        2,
+        9,
+        10
+      ],
+      "19": [
+        4,
+        6,
+        7,
+        10
+      ],
+      "18": [
+        1
+      ]
+    },
+    "secoes": [
+      [
+        "Qual é o todo?",
+        "Em a/b, o denominador b indica em quantas partes iguais o todo foi dividido e a indica quantas são consideradas. A mesma fração pode representar quantidades diferentes se os todos forem diferentes. Numa malha, fração da região = quadradinhos da região ÷ quadradinhos totais."
+      ],
+      [
+        "Equivalência, comparação e operações",
+        "Multiplicar numerador e denominador pelo mesmo número mantém a fração. Para somar, subtrair ou comparar, use denominador comum: 2/3 − 5/8 = 16/24 − 15/24 = 1/24. Na multiplicação, multiplique numeradores e denominadores. Para dividir por uma fração não nula, multiplique por sua inversa."
+      ],
+      [
+        "Fração de uma quantidade e de outra fração",
+        "3/5 de 20 = 20 ÷ 5 × 3 = 12. Se um copo pequeno é 2/3 de um médio e o médio é 3/4 de um grande, o pequeno é 2/3 × 3/4 = 1/2 do grande. Para combinar capacidades, expresse todas na mesma referência."
+      ],
+      [
+        "A mais, partilha, orçamento e voltas",
+        "1/3 a mais que 12 significa 12 + 12/3 = 16; não significa 12/3. Numa divisão proporcional, a parte de cada um é sua contribuição dividida pela soma das contribuições. Limite de 1/6 da renda é renda ÷ 6. Para uma fração de várias voltas, calcule o percurso total antes de localizar a posição."
+      ],
+      [
+        "Decimais e porcentagem como apoio",
+        "1/2 = 0,5 = 50%; 1/4 = 0,25 = 25%; 3/4 = 0,75 = 75%. Porcentagem significa uma fração de denominador 100. Essa conversão ajuda a interpretar dados, embora o acervo use principalmente frações."
+      ]
+    ],
+    "exemplos": [
+      [
+        "Divisão de uma pizza",
+        "Três amigos pagaram R$ 8, R$ 12 e R$ 20. Como dividir proporcionalmente?",
+        "Total: 40. Partes: 8/40 = 1/5; 12/40 = 3/10; 20/40 = 1/2. Conferência: 2/10 + 3/10 + 5/10 = 1."
+      ],
+      [
+        "Frações encadeadas",
+        "Breno comeu 1/4 de 48 fatias. Pedro comeu 2/3 do que Breno comeu; João comeu 1/2 a mais que Pedro.",
+        "Breno: 12. Pedro: 8. João: 8 + 4 = 12. Siga a ordem das dependências."
+      ]
+    ],
+    "erros": [
+      "Somar denominadores: 1/2 + 1/3 não é 2/5.",
+      "Comparar só os numeradores de frações com denominadores diferentes.",
+      "Confundir “metade de” com “metade a mais”."
+    ],
+    "numero": 3,
+    "originais": [
+      "OMU26-6ANO-Q02",
+      "OMU26-6ANO-Q09",
+      "OMU26-6ANO-Q10",
+      "OMU19-6ANO-Q04",
+      "OMU19-6ANO-Q06",
+      "OMU19-6ANO-Q07",
+      "OMU19-6ANO-Q10",
+      "OMU18-6ANO-Q01"
+    ]
+  },
+  {
+    "slug": "proporcao",
+    "titulo": "Proporcionalidade e taxas",
+    "resumo": "Relacionar preço, consumo, vazão e quantidade.",
+    "refs": {
+      "26": [
+        5
+      ],
+      "22": [
+        4
+      ],
+      "20": [
+        1
+      ],
+      "18": [
+        3
+      ]
+    },
+    "secoes": [
+      [
+        "Grandezas diretamente proporcionais",
+        "Se dobrar a quantidade dobra o custo, mantendo o preço por unidade, há proporcionalidade direta. Descubra primeiro o valor de uma unidade. Exemplo: 300 g custam R$ 12; 100 g custam R$ 4; 500 g custam R$ 20."
+      ],
+      [
+        "Consumo e taxas",
+        "Se um carro faz 15 km por litro, litros necessários = distância ÷ 15. Se a informação é litros por 100 km, calcule quantos grupos de 100 km existem. A unidade esclarece qual operação usar. Pedágios são custos adicionais, não combustível."
+      ],
+      [
+        "Trabalho conjunto e relação inversa",
+        "Com a mesma quantidade de água, mais ralos idênticos reduzem o tempo. Calcule a vazão de um ralo: volume ÷ número de ralos ÷ tempo. Depois, número de ralos = novo volume ÷ tempo desejado ÷ vazão de um ralo. Isso pressupõe vazão constante e ralos funcionando juntos."
+      ],
+      [
+        "O que não é proporcional",
+        "Uma taxa fixa somada ao preço por unidade quebra a proporcionalidade do custo total: dobrar a compra não dobra a taxa. Em pilhas de vasos encaixados, a altura inicial também é diferente do acréscimo de cada vaso; esse caso pertence ao estudo de relações e incógnitas."
+      ]
+    ],
+    "exemplos": [
+      [
+        "Preço por massa",
+        "400 g de queijo custam R$ 24. Quanto custam 150 g?",
+        "Preço de 1 g: 24 ÷ 400 = R$ 0,06. Preço de 150 g: 150 × 0,06 = R$ 9."
+      ],
+      [
+        "Reservatórios",
+        "4 ralos esvaziam 480 L em 3 h. Quantos ralos iguais esvaziam 800 L em 4 h?",
+        "Cada ralo retira 480 ÷ 4 ÷ 3 = 40 L/h. Em 4 h, um retira 160 L. São necessários 800 ÷ 160 = 5 ralos."
+      ]
+    ],
+    "erros": [
+      "Inverter km/L com L/km.",
+      "Aplicar regra de três sem analisar o significado dos números.",
+      "Supor que mais ralos exigem mais tempo para o mesmo volume."
+    ],
+    "numero": 4,
+    "originais": [
+      "OMU26-6ANO-Q05",
+      "OMU22-6ANO-Q04",
+      "OMU20-6ANO-Q01",
+      "OMU18-6ANO-Q03"
+    ]
+  },
+  {
+    "slug": "padroes",
+    "titulo": "Sequências, padrões e potências",
+    "resumo": "Descrever uma regra e prever termos distantes.",
+    "refs": {
+      "26": [
+        1,
+        6
+      ],
+      "22": [
+        1,
+        10
+      ],
+      "20": [
+        4
+      ],
+      "18": [
+        8
+      ]
+    },
+    "secoes": [
+      [
+        "Monte uma tabela",
+        "Escreva posição e quantidade nas primeiras figuras. Procure diferenças constantes, grupos que se repetem ou uma multiplicação fixa. Em 5, 9, 13, 17, cada termo cresce 4. O termo de posição n é 5 + 4 × (n − 1)."
+      ],
+      [
+        "Crescimento não é total acumulado",
+        "Se a fila n tem 2n − 1 peças, a décima fila tem 19 peças. Mas as dez filas juntas têm 1 + 3 + ... + 19 = 100. Em desenhos, separe o que permanece fixo do que é acrescentado em cada etapa."
+      ],
+      [
+        "Operações inventadas e códigos",
+        "Um símbolo novo pode representar uma regra própria. Se a regra é a # b = (a + 1) × b, então 3 # 7 = 28. Confira a regra em todos os exemplos. Poucos exemplos podem admitir várias regras: em exercícios escolares, procure a regra simples coerente com todos eles, sem tratá-la como prova de unicidade."
+      ],
+      [
+        "Potências e dobraduras",
+        "a elevado a n representa n fatores iguais a a. Cada dobra ao meio duplica as camadas. Após k dobras, são 2 elevado a k camadas. Se f furos atravessam todas as camadas, longe das bordas e sem sobreposição ao abrir, haverá f × 2 elevado a k furos."
+      ],
+      [
+        "Padrões de algarismos",
+        "Faça contas menores, observe repetições e confira mais um caso. Soma dos algarismos não é soma dos números da sequência. Em padrões de quadrados, observe separadamente quantos algarismos de cada tipo surgem."
+      ]
+    ],
+    "exemplos": [
+      [
+        "Figura distante",
+        "Uma figura tem 4 pontos; cada figura seguinte acrescenta 3. Quantos pontos tem a figura 12?",
+        "Há 11 acréscimos entre a primeira e a décima segunda: 4 + 11 × 3 = 37."
+      ],
+      [
+        "Camadas",
+        "Uma folha é dobrada ao meio 4 vezes. Fazem-se 3 furos separados que atravessam todas as camadas, fora das dobras.",
+        "São 2 × 2 × 2 × 2 = 16 camadas. Ao abrir: 3 × 16 = 48 furos."
+      ]
+    ],
+    "erros": [
+      "Multiplicar o acréscimo por n em vez de n − 1.",
+      "Confundir a quantidade na última fila com a soma das filas.",
+      "Generalizar um padrão sem testar todos os exemplos fornecidos."
+    ],
+    "numero": 5,
+    "originais": [
+      "OMU26-6ANO-Q01",
+      "OMU26-6ANO-Q06",
+      "OMU22-6ANO-Q01",
+      "OMU22-6ANO-Q10",
+      "OMU20-6ANO-Q04",
+      "OMU18-6ANO-Q08"
+    ]
+  },
+  {
+    "slug": "ciclos",
+    "titulo": "Divisibilidade, restos e ciclos",
+    "resumo": "Reconhecer repetições, múltiplos e encontros periódicos.",
+    "refs": {
+      "26": [
+        4,
+        8
+      ],
+      "22": [
+        9
+      ],
+      "21": [
+        5,
+        1
+      ],
+      "20": [
+        5
+      ],
+      "19": [
+        3
+      ],
+      "18": [
+        2,
+        4
+      ],
+      "17": [
+        6,
+        10
+      ]
+    },
+    "secoes": [
+      [
+        "Múltiplos, divisores e critérios",
+        "Múltiplos de 5: 0, 5, 10, 15... Divisores de 12: 1, 2, 3, 4, 6 e 12. Divisibilidade por 2: unidade par; por 3: soma dos algarismos divisível por 3; por 5: termina em 0 ou 5; por 9: soma divisível por 9; por 10: termina em 0. Por 11, a diferença entre somas de posições alternadas é múltipla de 11, incluindo zero."
+      ],
+      [
+        "Algarismos e potências",
+        "Um número de dois algarismos AB vale 10A + B, não A × B. AB + BA = 11 × (A + B); logo é múltiplo de 11. Quadrados perfeitos como 1, 4, 9 e 16 têm uma quantidade ímpar de divisores, pois um dos pares de fatores é formado por números iguais."
+      ],
+      [
+        "MMC e início deslocado",
+        "O mínimo múltiplo comum é o menor múltiplo positivo comum. Ciclos de 4 e 6 dias que começam juntos se reencontram a cada 12 dias. Se começam em datas diferentes, liste os primeiros eventos de cada sequência até achar um encontro; o MMC dá o intervalo entre encontros, não necessariamente a data do primeiro."
+      ],
+      [
+        "Restos, voltas e casas numa roda",
+        "Na divisão 17 = 3 × 5 + 2, o resto 2 representa o avanço depois de 3 voltas de comprimento 5. Para sentidos contrários, marque os pontos numa mesma orientação. A distância menor entre posições numa pista de comprimento L é o menor valor entre d e L − d."
+      ],
+      [
+        "Ciclos de trocas e eliminação",
+        "Em itinerários, siga uma cidade até voltar a ela, determine o tamanho de cada ciclo e calcule o MMC. Em alternância ligado/desligado, conte quantas vezes cada posição muda. Em uma roda que elimina a cada segunda pessoa, simule casos pequenos: com início da contagem em 1, potências de 2 deixam o primeiro como sobrevivente. Não use essa regra se a contagem for diferente."
+      ]
+    ],
+    "exemplos": [
+      [
+        "Folgas",
+        "Ana folga nos dias 4, 8, 12...; Beto nos dias 6, 12, 18... Qual a segunda folga comum?",
+        "A primeira é 12; o intervalo é MMC(4,6) = 12. A segunda é 24."
+      ],
+      [
+        "Corrida circular",
+        "Numa pista de 5 km, Ana anda 13 km no sentido horário e Beto 9 km no sentido contrário, saindo do mesmo ponto.",
+        "Ana termina na posição 3. Beto avança 4 no sentido contrário, isto é, posição 1 na orientação de Ana. As distâncias possíveis são 2 e 3 km; a menor é 2 km."
+      ]
+    ],
+    "erros": [
+      "Usar o MMC como data do primeiro encontro apesar de inícios diferentes.",
+      "Esquecer que uma volta inteira retorna à mesma posição.",
+      "Confundir um algarismo com seu valor posicional."
+    ],
+    "numero": 6,
+    "originais": [
+      "OMU26-6ANO-Q04",
+      "OMU26-6ANO-Q08",
+      "OMU22-6ANO-Q09",
+      "OMU21-6ANO-Q05",
+      "OMU21-6ANO-Q01",
+      "OMU20-6ANO-Q05",
+      "OMU19-6ANO-Q03",
+      "OMU18-6ANO-Q02",
+      "OMU18-6ANO-Q04",
+      "OMU17-6ANO-Q06",
+      "OMU17-6ANO-Q10"
+    ]
+  },
+  {
+    "slug": "incognitas",
+    "titulo": "Relações e valores desconhecidos",
+    "resumo": "Usar desenhos, tentativas organizadas e igualdades.",
+    "refs": {
+      "26": [
+        7
+      ],
+      "22": [
+        5
+      ],
+      "21": [
+        3,
+        6,
+        8
+      ],
+      "20": [
+        2
+      ],
+      "19": [
+        8
+      ],
+      "18": [
+        7
+      ]
+    },
+    "secoes": [
+      [
+        "Uma letra representa uma quantidade",
+        "Se uma quantidade é desconhecida, chame-a de x ou desenhe uma caixa. “O triplo de um número mais 4 é 19” vira 3x + 4 = 19. Desfaça as operações na ordem inversa: subtraia 4 e divida por 3. Também é possível usar barras de tamanhos iguais."
+      ],
+      [
+        "Conservação e transferência",
+        "Se duas pessoas têm x objetos e uma doa 6 à outra, ficam com x − 6 e x + 6. O total continua 2x. Se a segunda passa a ter o triplo da primeira, escreva x + 6 = 3(x − 6). Não confunda “o triplo” com “três a mais”."
+      ],
+      [
+        "Diferenças que permanecem",
+        "A diferença entre as idades de duas pessoas não muda com o tempo. Se a diferença é 20 e a pessoa mais velha tem o dobro da idade da mais nova, esta tem 20 e aquela 40. Em problemas com irmãos, cada pessoa não conta a si mesma: com h meninos e m meninas, um menino tem h − 1 irmãos."
+      ],
+      [
+        "Pilhas e comparação de pacotes",
+        "Um vaso sozinho tem altura H; cada vaso encaixado acrescenta b. Uma pilha de n vasos tem H + (n − 1)b. Subtraia as alturas de duas pilhas para descobrir b. Em pacotes de doces, subtraia duas ofertas para eliminar itens iguais; depois encontre o preço de cada tipo."
+      ],
+      [
+        "Criptoaritmética",
+        "Na soma ou multiplicação com letras, cada letra representa um algarismo. Use valor posicional, contas por coluna e os “vai um”. O primeiro algarismo de um número não pode ser zero. Letras diferentes só precisam ter valores distintos se isso for exigido. Teste a solução na conta original."
+      ]
+    ],
+    "exemplos": [
+      [
+        "Biscoitos",
+        "Lia e Rui têm a mesma quantidade. Rui doa 6 a Lia, que fica com o triplo de Rui. Quanto cada um tinha?",
+        "x + 6 = 3(x − 6). Então x + 6 = 3x − 18; 24 = 2x; x = 12. Depois da doação: 18 e 6."
+      ],
+      [
+        "Vasos encaixados",
+        "Uma pilha de 3 vasos mede 26 cm e uma de 5 vasos mede 34 cm. Qual a altura de um vaso?",
+        "Dois vasos extras acrescentam 8 cm, então cada borda acrescenta 4 cm. H + 2 × 4 = 26; H = 18 cm."
+      ]
+    ],
+    "erros": [
+      "Contar a própria pessoa como irmão ou irmã.",
+      "Achar que cada vaso acrescenta sua altura inteira à pilha.",
+      "Encontrar valores que não conferem na relação inicial."
+    ],
+    "numero": 7,
+    "originais": [
+      "OMU26-6ANO-Q07",
+      "OMU22-6ANO-Q05",
+      "OMU21-6ANO-Q03",
+      "OMU21-6ANO-Q06",
+      "OMU21-6ANO-Q08",
+      "OMU20-6ANO-Q02",
+      "OMU19-6ANO-Q08",
+      "OMU18-6ANO-Q07"
+    ]
+  },
+  {
+    "slug": "logica",
+    "titulo": "Lógica, códigos e restrições",
+    "resumo": "Eliminar possibilidades e justificar a escolha.",
+    "refs": {
+      "22": [
+        3
+      ],
+      "21": [
+        9
+      ],
+      "20": [
+        7,
+        9
+      ],
+      "19": [
+        5,
+        9
+      ],
+      "18": [
+        9,
+        10
+      ],
+      "17": [
+        7,
+        8
+      ]
+    },
+    "secoes": [
+      [
+        "Traduza cada pista",
+        "Faça uma lista curta de condições. “Exatamente uma” não significa “pelo menos uma”. Para cada candidato, marque verdadeiro ou falso em cada pista; elimine aquele que descumprir qualquer condição obrigatória. Em senhas, separe “algarismo presente” de “posição correta”."
+      ],
+      [
+        "Organize sem adivinhar",
+        "Use tabela de possibilidades, uma linha por candidato. Comece pelas pistas que proíbem mais opções. Depois de achar uma resposta, volte a todas as pistas. Uma solução que funciona pode não ser a única; continue verificando se a pergunta exigir unicidade."
+      ],
+      [
+        "Posições, blocos e vizinhança",
+        "Se três vogais precisam ficar juntas numa ordem fixa, trate-as primeiro como um bloco. Depois posicione as demais letras. Em mapas, regiões que compartilham uma fronteira não podem repetir a cor quando essa é a regra; um ponto de encontro isolado não é necessariamente uma fronteira. Em torneios, equipes que aparecem juntas no palpite de vencedores de jogos simultâneos não podem ter se enfrentado nessa rodada."
+      ],
+      [
+        "Códigos e equivalências",
+        "Substitua símbolos por valores usando uma tabela. Em códigos de letras, teste avanço e recuo no alfabeto e a posição da letra na palavra. Uma equivalência deve preservar a sequência inteira, não apenas o conjunto de símbolos. Em códigos com datas, respeite meses de 01 a 12 e os dias válidos de cada mês."
+      ],
+      [
+        "Orçamento e combinação de volumes",
+        "Quando uma compra precisa custar menos de um limite, teste o item suspeito com os menores preços dos outros produtos. Se até essa soma ultrapassa o limite, o item é impossível. Para xícaras ou recipientes, use somas das capacidades e restrições sobre quantos recipientes contêm cada líquido."
+      ]
+    ],
+    "exemplos": [
+      [
+        "Uma única afirmação verdadeira",
+        "Uma senha usa 1, 2 e 3, uma vez cada. As frases são: “começa com 1”; “o segundo algarismo é 1”; “termina com 3”. A senha 213 é permitida se exatamente uma frase deve ser verdadeira?",
+        "Não. A primeira frase é falsa, mas a segunda e a terceira são verdadeiras. Duas frases verdadeiras violam a regra."
+      ],
+      [
+        "Uma compra possível",
+        "Sabonetes custam R$ 2 ou R$ 4; cremes R$ 3 ou R$ 5; desodorantes R$ 6 ou R$ 9. Para comprar um de cada com até R$ 12, qual desodorante é obrigatório?",
+        "O de R$ 6. Mesmo com os outros itens mais baratos, o de R$ 9 levaria a 2 + 3 + 9 = R$ 14. Com o de R$ 6 há compra de R$ 11."
+      ]
+    ],
+    "erros": [
+      "Aceitar uma resposta que satisfaz só parte das pistas.",
+      "Trocar “menos de” por “no máximo”.",
+      "Interpretar igualdade de símbolos como liberdade para trocar a ordem."
+    ],
+    "numero": 8,
+    "originais": [
+      "OMU22-6ANO-Q03",
+      "OMU21-6ANO-Q09",
+      "OMU20-6ANO-Q07",
+      "OMU20-6ANO-Q09",
+      "OMU19-6ANO-Q05",
+      "OMU19-6ANO-Q09",
+      "OMU18-6ANO-Q09",
+      "OMU18-6ANO-Q10",
+      "OMU17-6ANO-Q07",
+      "OMU17-6ANO-Q08"
+    ]
+  },
+  {
+    "slug": "contagem",
+    "titulo": "Contagem e organização de casos",
+    "resumo": "Contar sem repetir nem esquecer possibilidades.",
+    "refs": {
+      "20": [
+        6,
+        10
+      ]
+    },
+    "secoes": [
+      [
+        "Listas e árvores",
+        "Uma lista organizada é uma ferramenta matemática. Separe casos por primeiro algarismo, posição ou categoria. Cada possibilidade deve entrar uma única vez. Uma árvore mostra as escolhas sucessivas, especialmente quando algumas deixam de estar disponíveis."
+      ],
+      [
+        "Princípio multiplicativo",
+        "Se há 3 escolhas para a primeira etapa e, para cada uma, 4 para a segunda, existem 3 × 4 = 12 combinações. Sem repetição, o número de opções diminui: senhas de 3 dígitos distintos escolhidos entre 1, 2, 3 e 4 dão 4 × 3 × 2 = 24."
+      ],
+      [
+        "Exatamente e pelo menos",
+        "Em um número de quatro algarismos com exatamente três algarismos 7, escolha a posição do algarismo diferente (4 opções) e seu valor. Se zero é proibido, esse valor tem 8 opções: 1 a 9, exceto 7. Total: 4 × 8 = 32. “Pelo menos três” incluiria também 7777."
+      ],
+      [
+        "Tabelas de dupla entrada",
+        "Quando há duas classificações, como cor e formato, faça uma tabela. Totais de linhas e colunas precisam concordar. Preencha primeiro os valores conhecidos; use subtração para os complementos e relações como “o dobro” para dividir um subtotal."
+      ],
+      [
+        "Limites e conferência",
+        "Códigos podem começar por zero se isso for permitido; números de quatro algarismos não podem. Ao terminar, compare seu total com uma contagem alternativa ou enumere um exemplo menor. Não use uma fórmula cujo significado não consiga explicar."
+      ]
+    ],
+    "exemplos": [
+      [
+        "Rifa",
+        "Quantos números de quatro algarismos usam exatamente três algarismos 5 e outro algarismo de 1 a 9 diferente de 5?",
+        "Há 4 posições para o diferente e 8 escolhas para seu valor. Total: 32."
+      ],
+      [
+        "Peças",
+        "Há 50 peças: 20 azuis e 30 vermelhas. Das azuis, 8 são triângulos. Das vermelhas, há o dobro de quadrados que triângulos. Quantos quadrados existem?",
+        "Azuis: 20 − 8 = 12 quadrados. Vermelhas: 30 ÷ 3 = 10 triângulos e 20 quadrados. Total: 32 quadrados."
+      ]
+    ],
+    "erros": [
+      "Contar a mesma configuração em duas ordens diferentes.",
+      "Incluir o caso com quatro algarismos iguais quando a regra exige exatamente três.",
+      "Esquecer a proibição de zero na primeira posição."
+    ],
+    "numero": 9,
+    "originais": [
+      "OMU20-6ANO-Q06",
+      "OMU20-6ANO-Q10"
+    ]
+  },
+  {
+    "slug": "geometria-plana",
+    "titulo": "Geometria plana e localização",
+    "resumo": "Comparar áreas, interpretar malhas e acompanhar deslocamentos.",
+    "refs": {
+      "26": [
+        3
+      ],
+      "22": [
+        6
+      ],
+      "21": [
+        7
+      ],
+      "18": [
+        5,
+        6
+      ],
+      "17": [
+        3
+      ]
+    },
+    "secoes": [
+      [
+        "Área e perímetro",
+        "Perímetro é o comprimento do contorno; área é a medida da superfície. Retângulo: área = base × altura, perímetro = 2 × (base + altura). Quadrado de lado l: área = l × l e perímetro = 4l. Se a área é 49 cm², o lado é 7 cm, porque 7 × 7 = 49."
+      ],
+      [
+        "Decomposição e equivalência",
+        "Uma região pode ser cortada e rearranjada sem mudar sua área. Numa malha, conte quadrados inteiros e junte partes iguais. Um triângulo ocupa metade de um retângulo com mesma base e altura. Uma diagonal divide um retângulo em duas áreas iguais."
+      ],
+      [
+        "Área que sobra",
+        "Se um quadrado é preenchido sem sobreposições nem espaços por peças de áreas conhecidas, some as áreas para descobrir a área total. A área de uma reserva dentro de um triângulo pode ser encontrada subtraindo as áreas conhecidas daquela metade do retângulo. 1 hectare = 10.000 m²."
+      ],
+      [
+        "Coordenadas e orientação",
+        "No par (x, y), leia primeiro o deslocamento horizontal, depois o vertical. Use leste para a direita, oeste para a esquerda, norte para cima e sul para baixo. Some deslocamentos opostos com sinais contrários. Distância percorrida pode ser maior que o deslocamento entre início e fim."
+      ],
+      [
+        "Mesma distância de vários pontos",
+        "Pontos equidistantes das extremidades de um segmento ficam em sua mediatriz: reta perpendicular que passa pelo meio. Em uma questão com alternativas numa malha, use simetria e compare deslocamentos. Para aprofundamento, o quadrado da distância é (diferença horizontal)² + (diferença vertical)²; comparar esses quadrados evita calcular raízes."
+      ]
+    ],
+    "exemplos": [
+      [
+        "Peças num quadrado",
+        "Um quadrado maior foi coberto por uma peça de área 25 cm², quatro de 4 cm² e oito de 1 cm². Qual seu lado?",
+        "Área total: 25 + 16 + 8 = 49 cm². O lado mede 7 cm."
+      ],
+      [
+        "Orientação",
+        "Saindo de (0,0), uma pessoa anda 3 km para leste, 2 para norte e 1 para oeste. Onde termina?",
+        "Horizontal: 3 − 1 = 2. Vertical: 2. Termina em (2,2), isto é, 2 km a leste e 2 km ao norte da origem. Andou 6 km ao todo."
+      ]
+    ],
+    "erros": [
+      "Confundir área em cm² com lado em cm.",
+      "Contar quadradinhos pela aparência sem verificar partes fracionadas.",
+      "Trocar a ordem de x e y ou distância percorrida por deslocamento."
+    ],
+    "numero": 10,
+    "originais": [
+      "OMU26-6ANO-Q03",
+      "OMU22-6ANO-Q06",
+      "OMU21-6ANO-Q07",
+      "OMU18-6ANO-Q05",
+      "OMU18-6ANO-Q06",
+      "OMU17-6ANO-Q03"
+    ]
+  },
+  {
+    "slug": "geometria-espacial",
+    "titulo": "Geometria espacial",
+    "resumo": "Contar caixas, camadas e faces expostas.",
+    "refs": {
+      "21": [
+        10
+      ],
+      "20": [
+        8
+      ]
+    },
+    "secoes": [
+      [
+        "Dimensões e volume",
+        "Um bloco retangular tem comprimento, largura e altura. Seu volume é o produto dessas três medidas em unidades compatíveis. Um cubo de aresta 3 cm tem volume 27 cm³. Volume mede espaço ocupado; uma face tem área, não volume."
+      ],
+      [
+        "Quantas caixas cabem?",
+        "Para encaixe alinhado às arestas, conte quantas caixas cabem em cada direção e multiplique. Numa caixa de 12 × 8 × 6 cm, caixas de 3 × 2 × 2 cm cabem em 4 × 4 × 3 = 48 posições. Verifique se girar a caixa muda o encaixe."
+      ],
+      [
+        "Volume dá um limite, não garante encaixe",
+        "Dividir o volume grande pelo pequeno fornece um limite superior para a quantidade. O formato e as medidas podem impedir atingir esse limite. Quando as medidas se dividem exatamente em cada direção, uma montagem em camadas mostra que o limite é alcançado. Em outros casos, justifique o arranjo, sem supor que a divisão de volumes resolve tudo."
+      ],
+      [
+        "Faces expostas",
+        "Cada cubo tem 6 faces. Duas faces ficam escondidas em cada contato entre cubos; cada face apoiada na mesa também deixa de ficar exposta. Numa coluna vertical de n cubos sobre a mesa: 6n − 2(n − 1) − 1 = 4n + 1 faces expostas. O resultado depende da montagem."
+      ],
+      [
+        "Desenhe camadas",
+        "Use vistas de cima, de frente ou uma lista de camadas. Diferencie faces expostas ao ar de faces que aparecem de um único ponto de vista: a expressão usada no problema importa."
+      ]
+    ],
+    "exemplos": [
+      [
+        "Caixas menores",
+        "Uma caixa de 20 × 12 × 10 cm recebe caixas de 5 × 3 × 2 cm, alinhadas. Quantas cabem?",
+        "4 no comprimento, 4 na largura e 5 na altura. Total: 4 × 4 × 5 = 80. Os volumes confirmam: 2.400 ÷ 30 = 80."
+      ],
+      [
+        "Torre de cubos",
+        "Quatro cubos formam uma coluna sobre uma mesa. Quantas faces ficam expostas ao ar?",
+        "Existem 16 faces laterais e 1 face no topo. Total: 17. A face de baixo e as de contato ficam escondidas."
+      ]
+    ],
+    "erros": [
+      "Dividir volumes sem verificar se as dimensões permitem o encaixe.",
+      "Esquecer que cada contato esconde duas faces.",
+      "Contar a base apoiada na mesa como face exposta."
+    ],
+    "numero": 11,
+    "originais": [
+      "OMU21-6ANO-Q10",
+      "OMU20-6ANO-Q08"
+    ]
+  },
+  {
+    "slug": "dados",
+    "titulo": "Gráficos, tabelas e decisões",
+    "resumo": "Ler escalas e legendas e justificar comparações.",
+    "refs": {
+      "22": [
+        7,
+        8
+      ],
+      "19": [
+        2
+      ],
+      "17": [
+        5
+      ]
+    },
+    "secoes": [
+      [
+        "Leia antes de calcular",
+        "Identifique título, eixos, unidades e legenda. Confira se o eixo começa em zero e quanto representa cada intervalo. Em uma tabela, cruze a linha e a coluna corretas. Não compare altura visual de barras se as escalas forem diferentes."
+      ],
+      [
+        "Pictogramas e partes de símbolos",
+        "Se um símbolo representa 200 unidades, meio símbolo representa 100. Para descobrir a legenda a partir de um total, some quantos símbolos inteiros equivalentes aparecem e divida o total por essa quantidade. Ao trocar pictograma por barras, preserve as quantidades e a ordem das categorias."
+      ],
+      [
+        "Crescimento e vazão constante",
+        "Num gráfico de altura por tempo, compare a variação vertical com a horizontal. Se a altura cresce de 2 m a 6 m em 2 dias, a taxa é 2 m/dia. Se começa vazio e mantém a taxa, atinge 12 m em 6 dias. Se já começou com água, use apenas a altura que falta."
+      ],
+      [
+        "Verificação de afirmações",
+        "Calcule cada afirmação separadamente. Custo inicial, reposição e gasto de energia são parcelas diferentes. Divida valores totais pelo número de lâmpadas para obter valores por unidade. “Aproximadamente” permite arredondamento coerente; não transforma valores claramente distintos em iguais."
+      ],
+      [
+        "Compras em pacotes e menor custo",
+        "Primeiro determine a necessidade diária e multiplique pelo número de dias. Depois liste combinações de pacotes que atendem à quantidade. Pode valer a pena comprar um pouco a mais se o preço for menor. Compare custo total de combinações viáveis; menor preço por kg não resolve sozinho toda compra com pacotes indivisíveis."
+      ]
+    ],
+    "exemplos": [
+      [
+        "Legenda desconhecida",
+        "Um pictograma tem 3 símbolos em março e 2,5 em abril, representando 1.100 doações no total. Quanto vale um símbolo?",
+        "São 5,5 símbolos equivalentes. Cada um vale 1.100 ÷ 5,5 = 200 doações. Março: 600; abril: 500."
+      ],
+      [
+        "Pacotes de ração",
+        "São necessários 5 kg. Pacotes de 1 kg custam R$ 4 e os de 3 kg custam R$ 10. Qual a compra mais barata?",
+        "Cinco pequenos custam R$ 20. Um grande e dois pequenos custam R$ 18. Dois grandes custam R$ 20. A melhor combinação custa R$ 18 e fornece 5 kg."
+      ]
+    ],
+    "erros": [
+      "Ignorar a legenda ou usar metade do valor errado.",
+      "Confundir valor total e valor por unidade.",
+      "Escolher uma compra barata que não atende à quantidade mínima."
+    ],
+    "numero": 12,
+    "originais": [
+      "OMU22-6ANO-Q07",
+      "OMU22-6ANO-Q08",
+      "OMU19-6ANO-Q02",
+      "OMU17-6ANO-Q05"
+    ]
+  }
+]

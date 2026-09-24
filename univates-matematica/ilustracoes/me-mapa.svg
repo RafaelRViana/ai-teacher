@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="420" height="240" preserveAspectRatio="xMinYMin meet" viewBox="0 0 420 240" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="420" height="240"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-240)" style="clip-path: url(#clip)">
+		<g transform="">
+			<text x="15" y="213" style="font-family: Helvetica; font-size: 18px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,426) scale(1,-1)">Siga o caminho, não o atalho</text>
+			<path d="M 60,55 L 60,175 Z" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1;"/>
+			<path d="M 100,55 L 100,175 Z" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1;"/>
+			<path d="M 140,55 L 140,175 Z" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1;"/>
+			<path d="M 180,55 L 180,175 Z" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1;"/>
+			<path d="M 220,55 L 220,175 Z" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1;"/>
+			<path d="M 260,55 L 260,175 Z" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1;"/>
+			<path d="M 300,55 L 300,175 Z" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1;"/>
+			<path d="M 60,55 L 300,55 Z" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1;"/>
+			<path d="M 60,95 L 300,95 Z" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1;"/>
+			<path d="M 60,135 L 300,135 Z" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1;"/>
+			<path d="M 60,175 L 300,175 Z" style="stroke: rgb(65%,73%,71%); stroke-linecap: butt; stroke-width: 1;"/>
+			<polygon points="43 63, 60 78, 77 63" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(81%,41%,21%); fill-rule: evenodd;"/>
+			<rect x="47" y="43" width="26" height="20" style="stroke: rgb(9%,21%,26%); stroke-linecap: butt; stroke-width: 1; fill: rgb(90%,94%,90%); fill-rule: evenodd;"/>
+			<rect x="285" y="154" width="34" height="26" style="stroke: rgb(9%,21%,26%); stroke-linecap: butt; stroke-width: 1; fill: rgb(92%,95%,97%); fill-rule: evenodd;"/>
+			<text x="20" y="21" style="font-family: Helvetica; font-size: 14px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,42) scale(1,-1)">Casa</text>
+			<text x="279" y="195" style="font-family: Helvetica; font-size: 14px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,390) scale(1,-1)">Escola</text>
+			<path d="M 60,55 L 180,55 Z" style="stroke: rgb(13%,45%,35%); stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="180 55, 171.896 58.91469, 171.896 51.08531" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(13%,45%,35%); fill-rule: evenodd;"/>
+			<path d="M 180,55 L 180,175 Z" style="stroke: rgb(13%,45%,35%); stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="180 175, 176.0853 166.896, 183.9147 166.896" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(13%,45%,35%); fill-rule: evenodd;"/>
+			<path d="M 180,175 L 300,175 Z" style="stroke: rgb(13%,45%,35%); stroke-linecap: butt; stroke-width: 2;"/>
+			<polygon points="300 175, 291.896 178.9147, 291.896 171.0853" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(13%,45%,35%); fill-rule: evenodd;"/>
+			<text x="140.135" y="23" style="font-family: Helvetica; font-size: 15px;fill: rgb(9%,21%,26%); stroke:none;" transform="translate(0,46) scale(1,-1)">Cada trecho: 200 m</text>
+		</g>
+	</g>
+</svg>
