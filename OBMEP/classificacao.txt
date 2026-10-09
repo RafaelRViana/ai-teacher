@@ -1,0 +1,241 @@
+# ano;fase;tema(s);subtema;título editorial
+2015;1;1;Dinheiro e decimais;Troco de uma compra
+2015;1;2;Múltiplos e divisores;Vizinhos de um múltiplo
+2015;1;5;Composição de figuras;A peça que falta
+2015;1;4,1;Equações e medidas;Peso do garrafão vazio
+2015;1;6,2;Contagem com algarismos;Números de dois algarismos
+2015;1;2,7;Algarismos e paridade;Último algarismo do produto
+2015;1;5,3;Áreas fracionárias;Regiões sombreadas em quadrados
+2015;1;8,1;Faces de dados;Soma das faces escondidas
+2015;1;2,7;Paridade e extremos;Diferença entre números especiais
+2015;1;5;Perímetros;Contornos no quadriculado
+2015;1;3,4;Porcentagem e misturas;Suco depois da diluição
+2015;1;6,7;Garantias e pior caso;Cores das bolas retiradas
+2015;1;1,4;Tabelas e otimização;Distribuição de alunos em salas
+2015;1;4;Proporcionalidade inversa;Voltas de engrenagens
+2015;1;2,7;Criptoaritmética;Letras em duas contas
+2015;1;3,4;Frações e distâncias;Voltas na pista circular
+2015;1;7;Jogos e caminhos;Deslocamento da peça preta
+2015;1;5;Dobraduras e medidas;Comprimento da tira dobrada
+2015;1;6,4;Dupla contagem;Filhos nos quartos do hotel
+2015;1;7;Dedução e ordenação;Amigos em torno da mesa
+2016;1;7,1;Conjuntos;Números dentro e fora
+2016;1;7;Conexões;Anéis entrelaçados
+2016;1;3,1;Reta numérica e medidas;Marcas entre dois pontos
+2016;1;5;Perímetros;Triângulos formando um contorno
+2016;1;2;Múltiplos e divisores;Maior múltiplo de três algarismos
+2016;1;8;Faces de dados;Dado rolando no caminho
+2016;1;4;Equações;Preços dos adesivos
+2016;1;2,6;Intervalos e paridade;Metade e dobro com dois algarismos
+2016;1;5;Simetria e dobraduras;Furo no papel dobrado
+2016;1;7,2;Dedução e restos;Palpites sobre as sementes
+2016;1;5,3;Áreas e dobraduras;Parte visível da folha
+2016;1;2,7;Paridade e invariantes;Trocas de cores no tabuleiro
+2016;1;5,7;Perímetros e padrões;Sequência de figuras justapostas
+2016;1;7;Verdade e mentira;Os dias da semana
+2016;1;3,2;Operações com frações;Numerador escondido
+2016;1;6;Contagem de caminhos;Caminhos da formiga
+2016;1;7,1;Ciclos;Casas em torno da praça
+2016;1;7,2;Periodicidade;Bolas nas caixas consecutivas
+2016;1;5,4;Perímetros e relações;Retângulo cinza na divisão
+2016;1;7,6;Operações inversas;Sequências que chegam a um
+2017;1;4,7;Comparação de pesos;Objetos nas balanças
+2017;1;5;Áreas;Figura azul no quadriculado
+2017;1;3,4;Razões;Quadradinhos brancos e pretos
+2017;1;1,7;Algarismos e extremos;Maior resultado da conta
+2017;1;4,3;Gráficos e frações;Tempo dedicado à leitura
+2017;1;3,4;Repartição proporcional;Água na rede de canos
+2017;1;5,3;Áreas fracionárias;Região sombreada no quadrado
+2017;1;5;Perímetros;Quadrados em ordem crescente
+2017;1;7,2;Ciclos e múltiplos;Números falados em roda
+2017;1;7,1;Dedução com somas;Cartões que ficaram na mesa
+2017;1;3,4;Misturas;Tinta amarela na tinta marrom
+2017;1;7,5;Ciclos e simetria;Bancos da roda-gigante
+2017;1;8;Planificações e vistas;Montagem de uma torre
+2017;1;2,4;Divisores e organização;Cadeiras do auditório
+2017;1;2,7;Criptoaritmética;Letras na adição
+2017;1;8;Faces de dados;Letras em dados encostados
+2017;1;6;Contagem com algarismos;Algarismos que não apareceram
+2017;1;6,4;Conjuntos e tabelas;Pesquisa sobre frutas
+2017;1;4,1;Dupla contagem e tempo;Tempo de jogo dos atletas
+2017;1;6,7;Garantias e pior caso;Bolas de três cores
+2018;1;1;Medidas e escalas;Volume na mamadeira
+2018;1;8,5;Orientação;Curvas no percurso do carro
+2018;1;1;Expressões numéricas;As contas com quatro quatros
+2018;1;7,4;Desigualdades;Janelas dos edifícios
+2018;1;5,3;Áreas fracionárias;Quadrado e região rosa
+2018;1;4;Taxas de produção;Biscoitos feitos por minuto
+2018;1;3,5;Comparação de frações;Maior fração pintada
+2018;1;3,4;Frações e preços;Preço do restante do bolo
+2018;1;4;Médias;Notas de cinco alunos
+2018;1;5,7;Áreas e sobreposições;Regiões azuis e vermelha
+2018;1;7,6;Padrões de crescimento;Torres feitas de cartões
+2018;1;2,7;Algarismos e padrões;Blocos de algarismos iguais
+2018;1;6,7;Contagem com restrições;Números crescentes nas casas
+2018;1;2,7;Criptoaritmética;Adição com letras
+2018;1;3,4;Razões e preços;Comparação das promoções
+2018;1;4;Leitura de gráficos;Avaliação de produtos
+2018;1;6;Colorações;Pintura de regiões vizinhas
+2018;1;2,1;Restos e dinheiro;Preços terminados em centavos
+2018;1;6;Contagem com restrições;Carros separados por vagas
+2018;1;7;Verdade e mentira;O desenho na parede
+2019;1;1,4;Operações inversas;Número escondido na igualdade
+2019;1;3;Frações e inteiros;Pedaços formando pizzas
+2019;1;8,5;Orientação e giros;Direção da formiga
+2019;1;5,3;Áreas fracionárias;Regiões vermelha e azul
+2019;1;5,8;Rotações;Senha no teclado girado
+2019;1;3;Operações com frações;Expressões com mesmo valor
+2019;1;2;Fatoração e primos;Produtos nas casas
+2019;1;7;Dedução e ordenação;Ordem de chegada das amigas
+2019;1;8;Faces de cubos;Face oposta à letra
+2019;1;7,2;Calendários e restos;Último dia do ano fictício
+2019;1;5,3;Áreas;Quadrilátero entre triângulos
+2019;1;6;Contagem de caminhos;Caminhos mínimos até o doce
+2019;1;5;Simetria e dobraduras;Recortes na folha dobrada
+2019;1;2,1;Paridade e somas;Ímpares menos pares
+2019;1;7;Padrões de crescimento;Bolinhas nas figuras em Y
+2019;1;8,1;Visualização e medidas;Distância entre páginas dos livros
+2019;1;3,4;Frações de capacidades;Água nas três canecas
+2019;1;7;Dedução por casos;Pessoas olhando umas às outras
+2019;1;4,5;Equações e medidas;Altura entre retângulos
+2019;1;5;Áreas e dobraduras;Área após três dobras
+2022;1;1;Multiplicação;Produto de números consecutivos
+2022;1;6,7;Contagem de segmentos;Palitos no quadriculado
+2022;1;1;Medidas e decimais;Limites da ponte
+2022;1;7;Tabuleiros e restrições;Formigas nas linhas e colunas
+2022;1;5;Áreas de quadrados;Três quadrados justapostos
+2022;1;6;Conjuntos e sobreposições;Questões comuns entre níveis
+2022;1;7;Permutações e movimentos;Trocas de cartões
+2022;1;5,3;Áreas fracionárias;Regiões azuis no retângulo
+2022;1;7;Dedução por vizinhança;Hexágonos com verso azul
+2022;1;7,2;Periodicidade;Números nas linhas da tabela
+2022;1;7,2;Ciclos;Notas no teclado do piano
+2022;1;7,5;Ciclos e giros;Formiga na malha triangular
+2022;1;5;Áreas e dobraduras;Papel cinzento descoberto
+2022;1;4,1;Distâncias e relações;Percurso entre casa e cinema
+2022;1;7;Dedução e agrupamentos;Crianças nos esconderijos
+2022;1;8;Dados e planificações;Menor soma nas faces externas
+2022;1;3,6;Frações e dupla contagem;Crianças brincando de roda
+2022;1;4,7;Equações e somas;Números nos círculos
+2022;1;7,4;Dedução com quantidades;Maçãs entre irmãos
+2022;1;2,6;Algarismos e operações inversas;Teclas especiais da calculadora
+2023;1;7,8;Dependências e empilhamento;Retirada das latas
+2023;1;1,4;Dinheiro e tabelas;Compras nas três lojas
+2023;1;7;Conexões;As duas partes do colar
+2023;1;7,5;Sobreposição e ordenação;Ordem dos cartões colados
+2023;1;5,7;Composição e sobreposição;Carimbos sobre o retângulo
+2023;1;3;Frações e decimais;Números em ordem crescente
+2023;1;5,3;Áreas fracionárias;Faixas do retângulo
+2023;1;1,4;Expressões e dinheiro;Divisão das compras
+2023;1;5,3;Composição de áreas;Cobertura com peças
+2023;1;3,4;Comparação de frações;Coleções de figurinhas
+2023;1;5;Composição de figuras;O outro pedaço do papel
+2023;1;7,2;Calendários e paridade;Domingos em dias pares
+2023;1;2,4;Divisibilidade e repartição;Fatias de pizza entre amigos
+2023;1;7,1;Limites e extremos;Aniversariantes da turma
+2023;1;8;Faces visíveis e ocultas;Cubos com faces azuis
+2023;1;3;Fração de fração;Pessoas com uma bicicleta
+2023;1;4,1;Proporção e relógios;Tempo fora de casa
+2023;1;5;Perímetros;Trajeto fechado da formiga
+2023;1;7;Verdade e mentira;Idades das crianças
+2023;1;6;Contagem de caminhos;Caminhos por pontos destacados
+2024;1;1;Comparação de medidas;Alturas do gato e cachorro
+2024;1;7,5;Rotações e ciclos;Giros da estrelinha
+2024;1;3,4;Frações e relações;Um quarto da soma restante
+2024;1;2,6;Contagem com restrições;Compra de caixas de comprimidos
+2024;1;5,7;Simetria e ciclos;Cabines da roda-gigante
+2024;1;1;Organização retangular;Cadeiras retiradas do teatro
+2024;1;7;Colorações e vizinhança;Menor número de cores
+2024;1;3;Divisão por frações;Amigos repartindo pizzas
+2024;1;5,6;Malhas e contagem;Padrão do piso ladrilhado
+2024;1;2,7;Criptoaritmética;Algarismos na divisão
+2024;1;6,7;Contagem circular;Pontos coloridos na circunferência
+2024;1;6,2;Contagem com algarismos;Números construídos com palitos
+2024;1;5,4;Perímetros e movimentos;Formiga e aranha no contorno
+2024;1;6;Permutações com restrições;Pilhas de cubos coloridos
+2024;1;4;Equações;Valor subtraído dos números
+2024;1;5;Perímetros;Contorno de quatro quadrados
+2024;1;6;Colorações;Pintura dos círculos ligados
+2024;1;8;Faces de dados;Face superior da pilha
+2024;1;7;Dedução por informação;Flores e pistas das amigas
+2024;1;8;Vistas e cubinhos;Sólido visto de três direções
+2025;1;6,2;Contagem com restrições;Pagamento sem troco
+2025;1;7;Dependências e movimentos;Saída do caminhão
+2025;1;4;Equações e cancelamento;Valores das letras nas palavras
+2025;1;7,4;Balanças e dedução;Bolas de pesos diferentes
+2025;1;5,7;Perímetros e padrões;Cruzes encaixadas
+2025;1;3,7;Metades e divisão;Cortes no canudinho
+2025;1;7;Tabuleiros e restrições;Números não consecutivos
+2025;1;3,1;Porcentagem e medidas;Peso do material na mochila
+2025;1;5,4;Perímetros e dobraduras;Retângulo dobrado ao meio
+2025;1;1;Operações inversas;Temperaturas dos três dias
+2025;1;4,5;Equações e medidas;Comprimentos dos livros
+2025;1;4;Preço unitário;Custo dos pirulitos
+2025;1;6;Escolhas independentes;Ingredientes da sopa
+2025;1;2,7;Criptoaritmética;Letras na conta armada
+2025;1;5;Áreas e decomposição;Peças do tangram
+2025;1;2;Fatoração e quadrados;Fatores retirados do produto
+2025;1;8,2;Caminhos e paridade;Formiga nas arestas do cubo
+2025;1;4,7;Equações e somas;Subtabuleiros com somas iguais
+2025;1;7,2;Paridade e relógios;Números que trocam de cor
+2025;1;7;Verdade e mentira;Pessoas na fila do prêmio
+2015;2;7,2;Ciclos e restos;Bolinha e triângulo em movimento
+2015;2;2,7;Paridade;Cartões retirados da mesa
+2015;2;5,2;Áreas, divisores e dobraduras;As três folhas retangulares
+2015;2;2,7;Múltiplos e divisores;Construção de números especiais
+2015;2;4,6;Gráficos e contagem;Notas na malha triangular
+2015;2;6;Contagem com algarismos;Senhas de onze algarismos
+2016;2;6;Contagem com restrições;Algarismo central maior
+2016;2;5,2;Perímetros e paridade;Figuras montadas com duas peças
+2016;2;7,2;Ciclos e múltiplos;Brincadeira de vai e volta
+2016;2;5,3;Áreas fracionárias;Regiões do quadriculado
+2016;2;7,2;Periodicidade;Números nas casas amarelas
+2016;2;7,2;Paridade e invariantes;Pintura de anéis encaixados
+2017;2;6,4;Resultados possíveis;Dados e casas do tabuleiro
+2017;2;4,7;Somas e extremos;Pirâmide de números
+2017;2;3,4;Frações e relações;Doces divididos entre amigos
+2017;2;8;Vistas e volume;Cubinhos e marcas na mesa
+2017;2;6,5;Contagem de coberturas;Tabuleiros cobertos com dominós
+2017;2;2,6;Fatoração e caminhos;Produtos nos passeios da formiga
+2018;2;2,7;Paridade e invariantes;Máquina que transforma frutas
+2018;2;1,7;Contagem e periodicidade;Figurinhas nas páginas do álbum
+2018;2;7,2;Ciclos e múltiplos;Saltos do sapinho
+2018;2;5,2;Coberturas e invariantes;Peças de madeira no tabuleiro
+2018;2;2,7;Paridade e operações;O truque do matemágico
+2018;2;4,2;Somas e múltiplos;Círculos alinhados
+2019;2;7,1;Dedução e pontuação;Lançamento de argolas
+2019;2;6;Contagem de somas;Números nas duas cartelas
+2019;2;4;Equilíbrio e equações;Pesos das peças geométricas
+2019;2;5;Áreas e decomposição;Triângulos e quadrilátero rosa
+2019;2;8;Planificações e vistas;Desenhos nas faces do cubo
+2019;2;2,6;Restos e permutações;Círculos com somas múltiplas
+2021;2;4,6;Equações e possibilidades;Pontuação dos pinos
+2021;2;7,2;Periodicidade;Pessoas na fila
+2021;2;5;Decomposição e otimização;Quadrados feitos de quadrados
+2021;2;3,6,2;Frações e divisibilidade;Resultados de todas as divisões
+2021;2;6;Colorações;Pintura de trapézios e hexágonos
+2021;2;6,2;Calendários e algarismos;Datas fantásticas
+2022;2;4,7;Equações e dedução;Letras no tabuleiro
+2022;2;1,7;Medidas e periodicidade;Marcações na régua
+2022;2;1,4;Distâncias e otimização;Encontro das três amigas
+2022;2;5;Áreas e composição;Quadrado com buraco
+2022;2;4,6;Somas e dupla contagem;Números no quadriculado
+2022;2;7,2;Ciclos e invariantes;Passeio da abelha na colmeia
+2023;2;7,2;Periodicidade e paridade;Vagões e bandeirinhas
+2023;2;5,2;Perímetros e paridade;Hexágonos pintados
+2023;2;2,7;Múltiplos e caminhos;Sequências especiais de cartões
+2023;2;2,6;Algarismos e contagem;Adições com parcelas repetidas
+2023;2;6;Caminhos e códigos binários;Caminhos codificados da formiga
+2023;2;7,2;Paridade e invariantes;Bolinhas no tabuleiro circular
+2024;2;7;Verdade e mentira;Descobrindo o planeta escolhido
+2024;2;2,7;Paridade e invariantes;Pedaços de papel na cesta
+2024;2;5;Áreas e decomposição;Regiões de quadrados e triângulos
+2024;2;2,7;Divisores comuns;Números nos círculos ligados
+2024;2;8,6;Faces e contagem;Adesivos nos dados colados
+2024;2;6,4;Permutações e somas;Tabelas equilibradas
+2025;2;4,7;Equações e restrições;Círculos com igualdades
+2025;2;3,6;Frações e conjuntos;Atletas na bicicleta e esteira
+2025;2;7;Verdade e mentira;Figuras favoritas das amigas
+2025;2;4,6;Somas e dupla contagem;Linhas e colunas do tabuleiro
+2025;2;5,6;Áreas e coberturas;Triângulos e losangos coloridos
+2025;2;2,7;Divisibilidade e padrões;Números no tabuleiro retangular
